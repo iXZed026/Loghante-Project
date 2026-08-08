@@ -19,8 +19,7 @@ interface ILanguageSwitcherProps {
 
 function LanguageSwitcher({
     className
-}: ILanguageSwitcherProps
-) {
+}: ILanguageSwitcherProps) {
 
     //custom hooks
     const {
@@ -73,12 +72,10 @@ function LanguageSwitcher({
         UnActiveHandler,
     )
 
-
-
     return (
         <div className={cn(
             "w-20",
-            "flex flex-col  justify-center",
+            "flex flex-col justify-center",
             "relative",
             active && "text-black-utility",
         )}>
@@ -88,10 +85,10 @@ function LanguageSwitcher({
                 "font-semibold",
                 "cursor-pointer",
                 "rounded-t-sm",
-                "transition-all ",
+                "transition-all",
                 "hover:bg-white/25",
                 "click-scale",
-                active && "bg-white",
+                active && "bg-white hover:bg-white",
                 className
             )}
                 ref={dropDownRef}
@@ -99,7 +96,10 @@ function LanguageSwitcher({
             >
                 <GrLanguage />
                 {locale.toUpperCase()}
-                <IoMdArrowDropdown className='' />
+                <IoMdArrowDropdown className={cn(
+                    "transition-transform duration-300",
+                    active && "rotate-180"
+                )} />
             </div>
             <AnimatePresenceWrapper isActive={active}>
                 <motion.div
@@ -110,22 +110,24 @@ function LanguageSwitcher({
                     className={cn(
                         "w-full",
                         "flex flex-col items-center",
-                        "absolute top-10",
-                        "rounded-md",
-                        active && "bg-white ",
+                        "absolute",
+                        "top-full",
+                        "rounded-b-md",
+                        "shadow-lg",
+                        active && "bg-white",
                     )}
                 >
                     {languages.map((lang) => (
                         <span
-                            className='
-                                w-full 
-                                text-center 
-                                py-3 
-                                cursor-pointer
-                                transition-all
-                                hover:bg-gray-300/65
-                                click-scale
-                                '
+                            className={cn(
+                                "w-full",
+                                "text-center",
+                                "py-3",
+                                "cursor-pointer",
+                                "transition-all",
+                                "hover:bg-gray-300/65",
+                                "click-scale",
+                            )}
                             key={lang.id}
                             onClick={() => changeLanguage(lang.code)}
                         >
@@ -134,8 +136,7 @@ function LanguageSwitcher({
                     ))}
                 </motion.div>
             </AnimatePresenceWrapper>
-
-        </div >
+        </div>
     )
 }
 

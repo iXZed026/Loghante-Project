@@ -73,7 +73,7 @@ body {
   /* Others */
 
   .button {
-    @apply outline-none cursor-pointer hover:opacity-85 transition-all duration-300;
+    @apply outline-none cursor-pointer transition-all duration-300;
   }
 
   .input {
@@ -81,6 +81,6 @@ body {
   }
 
   .click-scale {
-    @apply active:scale-90
+    @apply active:scale-90 duration-150
   }
 }

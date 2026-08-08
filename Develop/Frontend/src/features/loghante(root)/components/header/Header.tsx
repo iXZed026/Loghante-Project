@@ -5,51 +5,69 @@ import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
 import { IoIosMenu } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
-import TicketDripDown from "./TicketDripDown";
+import TicketDropDown from "./TicketDropDown";
+import Container from "@/components/shared/Container";
 
 function Header() {
   return (
-    <header className="py-3 h-[80px] border-2 text-white-utility bg-blue-300">
-      <div className="grid grid-cols-12">
+    <header className={cn(
+      "bg-blue-300",
+      "h-[80px]",
+      "py-3",
+      "text-white-utility text-sm",
+      "border-2",
+    )}>
+      <Container>
+        <div className="grid grid-cols-12">
 
-        <div className="flex col-span-4 gap-2">
-          <IoIosMenu className="size-13" />
-          <AppLink
-            href="/login"
-          >
-            <Button
+          <div className="flex items-center col-span-4 gap-2">
+            <IoIosMenu
               className={cn(
-                "px-3 py-2.5",
-                "font-semibold",
-                "border-[1px]",
-                "hover:bg-white/35",
+                "size-11",
+                "cursor-pointer",
+                "click-scale",
+                "transition-all",
+                "hover:opacity-50"
               )}
-            >
-              Login
-            </Button>
-          </AppLink>
-        </div>
-
-        <div className="col-span-4 fcc">
-          <AppLink
-            href="/"
-          >
-            <AppImage
-              width={70}
-              height={50}
-              priority={true}
-              src="/images/Loghanteh-logo.svg"
-              alt="loghante"
             />
-          </AppLink>
-        </div>
+            <AppLink
+              href="/login"
+            >
+              <Button
+                className={cn(
+                  "px-4 py-2",
+                  "font-semibold",
+                  "border-[1px]",
+                  "hover:bg-white/35",
+                )}
+              >
+                Login
+              </Button>
+            </AppLink>
+          </div>
 
-        <div className="col-span-4 fec gap-2">
-          <TicketDripDown />
-          <LanguageSwitcher />
-        </div>
+          <div className="col-span-4 fcc">
+            <AppLink
+              href="/"
+            >
+              <AppImage
+                width={70}
+                height={50}
+                priority={true}
+                src="/images/Loghanteh-logo.svg"
+                alt="loghante"
+                className="brightness-0 invert"
+              />
+            </AppLink>
+          </div>
 
-      </div>
+          <div className="col-span-4 fec gap-2">
+            <TicketDropDown />
+            <LanguageSwitcher />
+          </div>
+
+        </div>
+      </Container>
     </header >
   )
 }
