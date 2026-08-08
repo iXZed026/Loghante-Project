@@ -1,0 +1,103 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.16 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" modified="2026-08-03T06:10:27.884Z" version="22.1.16" etag="DDWGwON-BqWo2_Yb_Lle" type="device">
+  <diagram name="Page-1" id="WI4kwvJLgHco2EDKotLL">
+    <mxGraphModel dx="1502" dy="655" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="1bkr1D7jXcA_Sx9MjUJZ-1" target="1bkr1D7jXcA_Sx9MjUJZ-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="1bkr1D7jXcA_Sx9MjUJZ-1" target="1bkr1D7jXcA_Sx9MjUJZ-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="1bkr1D7jXcA_Sx9MjUJZ-1" target="1bkr1D7jXcA_Sx9MjUJZ-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="1bkr1D7jXcA_Sx9MjUJZ-1" target="1bkr1D7jXcA_Sx9MjUJZ-7" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="1bkr1D7jXcA_Sx9MjUJZ-1" target="1bkr1D7jXcA_Sx9MjUJZ-8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="1bkr1D7jXcA_Sx9MjUJZ-1" target="1bkr1D7jXcA_Sx9MjUJZ-9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EMjbdgx9sJEoOjpyL9a2-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="1bkr1D7jXcA_Sx9MjUJZ-1" target="EMjbdgx9sJEoOjpyL9a2-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-1" value="سامانه جامع دیجیتال مجموعه فرهنگی تاریخی لقانطه" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="455" y="125" width="210" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-2" value="موزه قهوه و شکلات" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry y="285" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-5" value="موزه تهران الف" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="150" y="285" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-6" value="موزه قصر لقانطه" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="295" y="285" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-7" value="کافه موزه لقانطه" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="700" y="285" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-8" value="موزه ملی تجارتخانه های ایران" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="840" y="285" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="1bkr1D7jXcA_Sx9MjUJZ-9" value="موزه ملی کارآفرینان" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="980" y="285" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="tRjLXFYhTSdWSUDE1ejZ-1" target="tRjLXFYhTSdWSUDE1ejZ-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="tRjLXFYhTSdWSUDE1ejZ-1" target="tRjLXFYhTSdWSUDE1ejZ-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="tRjLXFYhTSdWSUDE1ejZ-1" target="tRjLXFYhTSdWSUDE1ejZ-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="tRjLXFYhTSdWSUDE1ejZ-1" target="tRjLXFYhTSdWSUDE1ejZ-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="tRjLXFYhTSdWSUDE1ejZ-1" target="tRjLXFYhTSdWSUDE1ejZ-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="tRjLXFYhTSdWSUDE1ejZ-1" target="tRjLXFYhTSdWSUDE1ejZ-7" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="tRjLXFYhTSdWSUDE1ejZ-1" target="tRjLXFYhTSdWSUDE1ejZ-8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-1" value="مدیریت متمرکز سامانه" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="500" y="565" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-2" value="مدیریت فروشگاه ها" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="250" y="655" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-3" value="مدیریت محتوا (CMS)" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="340" y="655" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-4" value="مدیریت کاربران و سطوح دسترسی" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="430" y="655" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-5" value="پنل مدیریت یکپارچه" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="525" y="655" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-6" value="مدیریت رویداد ها و اخبار" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="620" y="655" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-7" value="گزارش گیری و آمار" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="710" y="655" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="tRjLXFYhTSdWSUDE1ejZ-8" value="تنظیمات مشترک سامانه ها" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+          <mxGeometry x="800" y="655" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="EMjbdgx9sJEoOjpyL9a2-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="EMjbdgx9sJEoOjpyL9a2-1" target="tRjLXFYhTSdWSUDE1ejZ-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="EMjbdgx9sJEoOjpyL9a2-1" value="فروشگاه جامع مجموعه فرهنگی تاریخی لقانطه" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="480" y="390" width="160" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
