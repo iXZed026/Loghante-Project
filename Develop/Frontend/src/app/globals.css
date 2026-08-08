@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --crimson-color: #9E092F;
+  --crimson-color: #5c2127;
+  --crimson-hover-color: #42151A;
   --black-color: #161616;
-  --black-light-color: #2A2A2A;
+  --black-light-color: #525252;
   --white-color: #FFFFFF;
   --white-light-color: #FFFFFFCC;
+  --gold-color: #d2ae6d;
 }
 
 
@@ -24,6 +26,9 @@ body {
   /* Colors */
   .bg-crimson {
     @apply bg-[var(--crimson-color)];
+  }
+  .bg-hover-crimson {
+    @apply hover:bg-[var(--crimson-hover-color)];
   }
 
   .text-crimson {
@@ -55,6 +60,10 @@ body {
 
   .fbc {
     @apply flex justify-between items-center;
+  }
+
+  .fec {
+    @apply flex justify-end items-center;
   }
 
   .fcol {
