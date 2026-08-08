@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+:root {
+  --crimson-color: #9E092F;
+  --black-color: #161616;
+  --black-light-color: #2A2A2A;
+  --white-color: #FFFFFF;
+  --white-light-color: #FFFFFFCC;
+}
+
+
+@theme {
+  --font-poppins: var(--font-poppins-local);
+  --font-wulkan: var(--font-wulkan-local);
+}
+
+html,
+body {
+  font-family: var(--font-poppins), sans-serif;
+}
+
+@layer utilities {
+
+  /* Colors */
+  .bg-crimson {
+    @apply bg-[var(--crimson-color)];
+  }
+
+  .text-crimson {
+    @apply text-[var(--crimson-color)];
+  }
+
+  .text-black-utility {
+    @apply text-[var(--black-color)];
+  }
+
+  .text-black-white-utility {
+    @apply text-[var(--black-light-color)];
+  }
+
+  .text-white-utility {
+    @apply text-[var(--white-color)];
+  }
+
+  .text-white-white-utility {
+    @apply text-[var(--white-light-color)];
+  }
+
+
+
+  /* Flex */
+  .fcc {
+    @apply flex justify-center items-center;
+  }
+
+  .fbc {
+    @apply flex justify-between items-center;
+  }
+
+  .fcol {
+    @apply flex flex-col;
+  }
+
+  /* Others */
+
+  .button {
+    @apply outline-none cursor-pointer hover:opacity-85 transition-all duration-300;
+  }
+
+  .input {
+    @apply outline-none rounded-lg px-4 py-2 w-full;
+  }
+
+  .click-scale {
+    @apply active:scale-90
+  }
+}
