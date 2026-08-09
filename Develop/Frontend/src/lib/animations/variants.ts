@@ -31,3 +31,19 @@ export const openSlideMenu: Variants = {
         transition: fastTransitionIn,
     },
 };
+
+export const openSlideMenuFa: Variants = {
+    hidden: {
+        x: 500,
+    },
+
+    visible: {
+        x: 0,
+        transition: defaultTransitionOut,
+    },
+
+    exit: {
+        x: 500,
+        transition: fastTransitionIn,
+    },
+};
