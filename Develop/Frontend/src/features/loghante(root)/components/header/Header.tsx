@@ -9,8 +9,13 @@ import TicketDropDown from "./TicketDropDown";
 import Container from "@/components/shared/Container";
 import HamburgerMenu from "./HamburgerMenu";
 import useActive from "@/hooks/useActive";
+import { useTranslations } from 'next-intl';
+
 
 function Header() {
+
+  const t = useTranslations("header");
+
 
   const [
     activeHumber,
@@ -24,7 +29,7 @@ function Header() {
       "bg-blue-300",
       "h-[80px]",
       "py-3",
-      "text-white-utility text-sm",
+      "text-white-utility md:text-md sm:text-sm text-xs",
       "border-2",
     )}>
       <Container>
@@ -52,7 +57,9 @@ function Header() {
                   "hover:bg-white/35",
                 )}
               >
-                Login
+                {
+                  t("login-button")
+                }
               </Button>
             </AppLink>
           </div>
@@ -66,14 +73,14 @@ function Header() {
                 height={50}
                 priority={true}
                 src="/images/Loghanteh-logo.svg"
-                alt="loghante"
+                alt="loghanteh icon"
                 className="brightness-0 invert"
               />
             </AppLink>
           </div>
 
           <div className="col-span-4 fec gap-2">
-            <TicketDropDown />
+            <TicketDropDown t={t} />
             <LanguageSwitcher />
           </div>
 
@@ -84,6 +91,7 @@ function Header() {
       <HamburgerMenu
         activeHumber={activeHumber}
         UnActiveHumberHandler={UnActiveHumberHandler}
+        t={t}
       />
     </header >
   )

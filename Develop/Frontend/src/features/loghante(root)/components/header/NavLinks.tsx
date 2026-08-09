@@ -5,18 +5,26 @@ import { RiArrowRightSLine } from "react-icons/ri";
 import Button from "@/components/ui/Button";
 import SubMenu from "./SubMenu";
 import useActive from "@/hooks/useActive";
+import { getLocalizedValue } from "@/lib/utils/getLocalizedValue";
+import { useLocale } from "next-intl";
+import { TranslationFunction } from "@/types/translations";
+import ArrowIcon from "@/components/shared/ArrowIcon";
 
 interface INavLinksProps {
     UnActiveHumberHandler: () => void;
+    t: TranslationFunction;
 }
 
 function NavLinks({
     UnActiveHumberHandler,
+    t
 }: INavLinksProps) {
+
+    const locale = useLocale()
 
     const [
         activeSubMenu,
-        activeSubMenuHandler,
+        ,
         UnActiveSubMenuHandler,
         toggleSubMenuHandler,
     ] = useActive(false)
@@ -41,8 +49,8 @@ function NavLinks({
                                 )}
                                 onClick={toggleSubMenuHandler}
                             >
-                                {link.name}
-                                <RiArrowRightSLine className="size-5" />
+                                {getLocalizedValue(link.name, locale)}
+                                <ArrowIcon />
                             </Button>
                             {/* SUB MENU */}
                             <SubMenu
@@ -50,6 +58,7 @@ function NavLinks({
                                 UnActiveHumberHandler={UnActiveHumberHandler}
                                 activeSubMenu={activeSubMenu}
                                 UnActiveSubMenuHandler={UnActiveSubMenuHandler}
+                                t={t}
                             />
                         </li>
                     ) : (
@@ -60,7 +69,7 @@ function NavLinks({
                                     "w-full",
                                     "block",
                                     "px-3",
-                                    "py-3",
+                                    "py-5",
                                     "border-b border-b-black/25",
                                     "hover:bg-[var(--white-light-color)]",
                                     "transition-all",
@@ -69,7 +78,7 @@ function NavLinks({
                                 )}
                                 onClick={UnActiveHumberHandler}
                             >
-                                {link.name}
+                                {getLocalizedValue(link.name, locale)}
                             </AppLink>
                         </li>
                     )

@@ -2,16 +2,21 @@ import AppLink from "@/components/ui/AppLink";
 import Button from "@/components/ui/Button";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils/cn";
-import { INavLinks } from "../../data/navLinks";
+import { INavLink } from "../../data/navLinks";
 import AnimatePresenceWrapper from "@/components/animations/AnimatePresenceWrapper";
-import { openSlideMenu } from "@/lib/animations/variants";
+import { openSlideMenu, openSlideMenuFa } from "@/lib/animations/variants";
 import { RiArrowLeftSLine } from "react-icons/ri";
+import { getLocalizedValue } from "@/lib/utils/getLocalizedValue";
+import { useLocale } from "next-intl";
+import { TranslationFunction } from "@/types/translations";
+import ArrowIcon from "@/components/shared/ArrowIcon";
 
 interface ISubMenu {
-    link: INavLinks;
+    link: INavLink;
     UnActiveHumberHandler: () => void;
     activeSubMenu: boolean;
     UnActiveSubMenuHandler: () => void
+    t: TranslationFunction
 }
 
 function SubMenu({
@@ -19,14 +24,27 @@ function SubMenu({
     UnActiveHumberHandler,
     activeSubMenu,
     UnActiveSubMenuHandler,
+    t,
 }: ISubMenu
-
 ) {
+
+    const locale = useLocale()
+    const isFa = locale === "fa";
+
     return (
         <AnimatePresenceWrapper isActive={activeSubMenu}>
-            <div className="absolute md:left-full top-0 overflow-hidden">
+            <div
+                className={cn(
+                    "absolute top-0 overflow-hidden",
+                    isFa ? "md:right-full" : "md:left-full"
+                )}
+            >
                 <motion.div
-                    variants={openSlideMenu}
+                    variants={
+                        isFa ?
+                            openSlideMenuFa :
+                            openSlideMenu
+                    }
                     initial="hidden"
                     animate="visible"
                     exit="exit"
@@ -36,8 +54,8 @@ function SubMenu({
                         "border-l-2 border-black/20",
                     )}>
                     <div className={cn(
-                        "gap-0.5",
-                        "py-4 px-5  mb-5",
+                        "gap-1",
+                        "py-4 px-2  mb-5",
                         "border-b-2 border-[var(--crimson-color)]",
                     )}
                     >
@@ -51,11 +69,10 @@ function SubMenu({
                             )}
                             onClick={UnActiveSubMenuHandler}
                         >
-                            <RiArrowLeftSLine className={cn(
-                                "size-5",
-                                "text-crimson"
-                            )} />
-                            back
+                            <ArrowIcon direction="left"/>
+                            {
+                                t("back-button")
+                            }
                         </Button>
                     </div>
                     {link.museumParts?.map(part => (
@@ -66,7 +83,7 @@ function SubMenu({
                                 "w-full",
                                 "block",
                                 "px-3",
-                                "py-3",
+                                "py-5",
                                 "border-b border-b-black/25",
                                 "hover:bg-[var(--white-light-color)]",
                                 "transition-all",
@@ -75,7 +92,7 @@ function SubMenu({
                             )}
                             onClick={UnActiveHumberHandler}
                         >
-                            {part.musesumName}
+                            {getLocalizedValue(part.name, locale)}
                         </AppLink>
                     ))}
                 </motion.div>

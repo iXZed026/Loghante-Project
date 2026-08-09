@@ -1,50 +1,57 @@
-"use client"
-import AnimatePresenceWrapper from '@/components/animations/AnimatePresenceWrapper'
-import Button from '@/components/ui/Button'
+"use client";
+
+import AnimatePresenceWrapper from "@/components/animations/AnimatePresenceWrapper";
+import Button from "@/components/ui/Button";
 import { motion } from "framer-motion";
-import { IoIosArrowDown } from 'react-icons/io'
-import { tickets } from '@/data/tickets';
-import AppLink from '@/components/ui/AppLink';
-import useActive from '@/hooks/useActive';
-import { cn } from '@/lib/utils/cn';
-import { useRef } from 'react';
-import useClickOutside from '@/hooks/useClickOutside';
-import { dropdownVariants } from '@/lib/animations/variants';
+import { IoIosArrowDown } from "react-icons/io";
+import { tickets } from "@/data/tickets";
+import AppLink from "@/components/ui/AppLink";
+import useActive from "@/hooks/useActive";
+import { cn } from "@/lib/utils/cn";
+import { useRef } from "react";
+import useClickOutside from "@/hooks/useClickOutside";
+import { dropdownVariants } from "@/lib/animations/variants";
+import { useLocale } from "next-intl";
+import { getLocalizedValue } from "@/lib/utils/getLocalizedValue";
+import { TranslationFunction } from "@/types/translations";
 
-function TicketDropDown() {
+interface ITicketDropDown {
+    t?: TranslationFunction;
+}
 
-    //custom hooks
+function TicketDropDown({ t }: ITicketDropDown) {
     const [
         activeTicketDripDown,
-        activeHandler,
+        ,
         UnActiveTicketDropDownHandler,
         toggleTicketDripDownHandler,
-    ] = useActive(false)
+    ] = useActive(false);
 
-    const dropDownRef =
-        useRef<HTMLDivElement | null>(null)
+    const locale = useLocale();
 
-    useClickOutside(
-        dropDownRef,
-        UnActiveTicketDropDownHandler,
-    )
+    const dropDownRef = useRef<HTMLDivElement | null>(null);
 
+    useClickOutside(dropDownRef, UnActiveTicketDropDownHandler);
 
     return (
-        <div className='relative' ref={dropDownRef}>
+        <div
+            className="relative" ref={dropDownRef}
+            onClick={toggleTicketDripDownHandler}
+        >
             <Button
                 className={cn(
-                    "py-3 fcc gap-2 ",
-                    "font-semibold text-md",
+                    "md:w-40 w-30",
+                    "md:py-3 py-1 fcc gap-2",
+                    "md:font-semibold",
                     "bg-crimson",
                     "hover:bg-[#42151A]",
                     activeTicketDripDown && "rounded-none border-b-1",
                 )}
-                onClick={toggleTicketDripDownHandler}
             >
-                Reserve Ticket
+                {t?.("ticket-button") ?? "Tickets"}
                 <IoIosArrowDown className="size-3" />
             </Button>
+
             <AnimatePresenceWrapper isActive={activeTicketDripDown}>
                 <motion.div
                     variants={dropdownVariants}
@@ -53,26 +60,27 @@ function TicketDropDown() {
                     exit="exit"
                     className={cn(
                         "absolute w-full bg-crimson text-center fcol",
-                        activeTicketDripDown && "rounded=b-md"
+                        activeTicketDripDown && "rounded-b-md",
                     )}
                 >
-                    {tickets.map(t => (
+                    {tickets.map((ticket) => (
                         <span
-                            className="py-3 bg-hover-crimson transition-all"
-                            key={t.id}
+                            className="py-3 px-2 bg-hover-crimson transition-all"
+                            key={ticket.id}
                             onClick={UnActiveTicketDropDownHandler}
                         >
-                            <AppLink
-                                href={`/${t.href}`}
-                            >
-                                {t.ticketType}
+                            <AppLink href={`/${ticket.href}`}>
+                                {getLocalizedValue(
+                                    ticket.ticketType,
+                                    locale,
+                                )}
                             </AppLink>
                         </span>
                     ))}
                 </motion.div>
             </AnimatePresenceWrapper>
         </div>
-    )
+    );
 }
 
-export default TicketDropDown
+export default TicketDropDown;

@@ -1,53 +1,89 @@
-import { IMuseumParts, museumParts } from "./museumParts";
+import { IMuseumPart, museumParts } from "./museumParts";
 
-export interface INavLinks {
-    id: number;
-    name: string;
-    path: string;
-    museumParts?: IMuseumParts[]
+export interface INavLink {
+  id: number;
+
+  name: {
+    en: string;
+    fa: string;
+  };
+
+  path: string;
+
+  museumParts?: IMuseumPart[];
 }
 
-export const navLinks:
-    INavLinks[] = [
-        {
-            id: 1,
-            name: "Home Page",
-            path: "#hero",
-        },
-        {
-            id: 2,
-            name: "Shop",
-            path: "#shop",
-        },
-        {
-            id: 3,
-            name: "About Museum",
-            path: "#about",
-        },
-        {
-            id: 4,
-            name: "Events",
-            path: "#events",
-        },
-        {
-            id: 5,
-            name: "Museum Parts",
-            path: "#meuseum-parts",
-            museumParts: museumParts,
-        },
-        {
-            id: 6,
-            name: "Cinema & Theaters",
-            path: "#cinema_and_theaters",
-        },
-        {
-            id: 7,
-            name: "Virtual Tour",
-            path: "#virtual-tour",
-        },
-        {
-            id: 8,
-            name: "Contact Us",
-            path: "#contact",
-        },
-    ]
+export const navLinks: INavLink[] = [
+  {
+    id: 1,
+    name: {
+      en: "Home Page",
+      fa: "صفحه اصلی",
+    },
+    path: "#hero",
+  },
+
+  {
+    id: 2,
+    name: {
+      en: "Shop",
+      fa: "فروشگاه",
+    },
+    path: "#shop",
+  },
+
+  {
+    id: 3,
+    name: {
+      en: "About Museum",
+      fa: "درباره موزه",
+    },
+    path: "#about",
+  },
+
+  {
+    id: 4,
+    name: {
+      en: "Events",
+      fa: "رویداد ها",
+    },
+    path: "#events",
+  },
+
+  {
+    id: 5,
+    name: {
+      en: "Museum Parts",
+      fa: "مجموعه ها",
+    },
+    path: "#museum-parts",
+    museumParts,
+  },
+
+  {
+    id: 6,
+    name: {
+      en: "Cinema & Theaters",
+      fa: "سینما و تئاتر",
+    },
+    path: "#cinema_and_theaters",
+  },
+
+  {
+    id: 7,
+    name: {
+      en: "Virtual Tour",
+      fa: "تور مجازی",
+    },
+    path: "#virtual-tour",
+  },
+
+  {
+    id: 8,
+    name: {
+      en: "Contact Us",
+      fa: "تماس با ما",
+    },
+    path: "#contact",
+  },
+];

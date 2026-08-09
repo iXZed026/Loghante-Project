@@ -3,22 +3,34 @@ import { cn } from "@/lib/utils/cn"
 import { useLocale } from "next-intl"
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri"
 
-function ArrowIcon() {
+function ArrowIcon({ direction }: { direction?: string }) {
 
 
     function checkLanguage() {
-        const locale = useLocale()
-        if (locale === "fa") {
-            return <RiArrowLeftSLine className={cn(
-                "size-5",
-                "text-crimson"
-            )} />
-        }
 
-        return <RiArrowRightSLine className={cn(
+        const locale = useLocale()
+
+        const leftArrow = <RiArrowLeftSLine className={cn(
             "size-5",
             "text-crimson"
         )} />
+
+        const rightArrow = <RiArrowRightSLine className={cn(
+            "size-5",
+            "text-crimson"
+        )} />
+
+        if (direction) {
+            if (direction === "left" && locale === "en") {
+                return leftArrow
+            }
+            return rightArrow
+        }
+        if (locale === "fa") {
+            return leftArrow
+        }
+
+        return rightArrow
     }
 
     return checkLanguage()

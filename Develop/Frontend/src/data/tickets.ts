@@ -1,17 +1,39 @@
-export const tickets = [
-    {
-        id: 1,
-        ticketType: "Museums",
-        href: "/"
+export interface ITicket {
+  id: number;
+
+  ticketType: {
+    en: string;
+    fa: string;
+  };
+
+  href: string;
+}
+
+export const tickets: ITicket[] = [
+  {
+    id: 1,
+    ticketType: {
+      en: "Museums",
+      fa: "موزه ها",
     },
-    {
-        id: 2,
-        ticketType: "Cinema & Theater",
-        href: "/"
+    href: "/",
+  },
+
+  {
+    id: 2,
+    ticketType: {
+      en: "Cinema & Theater",
+      fa: "سینما و تئاتر",
     },
-    {
-        id: 3,
-        ticketType: "Events & Courses",
-        href: "/"
+    href: "/",
+  },
+
+  {
+    id: 3,
+    ticketType: {
+      en: "Events & Courses",
+      fa: "رویداد ها و دوره ها",
     },
-]
+    href: "/",
+  },
+];

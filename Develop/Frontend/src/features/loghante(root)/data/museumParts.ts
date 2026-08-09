@@ -1,52 +1,102 @@
-export interface IMuseumParts {
-    id: number;
-    musesumName: string;
-    description: string;
-    href: string;
-    imageURL: string;
+export interface IMuseumPart {
+  id: number;
+
+  name: {
+    en: string;
+    fa: string;
+  };
+
+  description: {
+    en: string;
+    fa: string;
+  };
+
+  href: string;
+  imageURL: string;
 }
 
-export const museumParts: IMuseumParts[] = [
-    {
-        id: 1,
-        musesumName: "Chocolate Coffee",
-        description: "this is a test description",
-        href: "/chocolate-coffee",
-        imageURL: "/",
+export const museumParts: IMuseumPart[] = [
+  {
+    id: 1,
+    name: {
+      en: "Chocolate Coffee",
+      fa: "قهوه شکلات",
     },
-    {
-        id: 2,
-        musesumName: "Tehran Alef",
-        description: "this is a test description",
-        href: "/tehran-alef",
-        imageURL: "/",
+    description: {
+      en: "This is a test description",
+      fa: "این یک متن تستی برای دیسکریپشن است",
     },
-    {
-        id: 3,
-        musesumName: "Loghante Palace",
-        description: "this is a test description",
-        href: "/palace",
-        imageURL: "/",
+    href: "/chocolate-coffee",
+    imageURL: "/images/museums/chocolate-coffee.jpg",
+  },
+
+  {
+    id: 2,
+    name: {
+      en: "Tehran Alef",
+      fa: "تهران الف",
     },
-    {
-        id: 4,
-        musesumName: "Loghante cafe",
-        description: "this is a test description",
-        href: "/cafe",
-        imageURL: "/",
+    description: {
+      en: "This is a test description",
+      fa: "این یک متن تستی برای دیسکریپشن است",
     },
-    {
-        id: 5,
-        musesumName: "National Museum of Iranian Trade Houses",
-        description: "this is a test description",
-        href: "/trade-houses",
-        imageURL: "/",
+    href: "/tehran-alef",
+    imageURL: "/images/museums/tehran-alef.jpg",
+  },
+
+  {
+    id: 3,
+    name: {
+      en: "Loghanteh Palace",
+      fa: "موزه قصر",
     },
-    {
-        id: 6,
-        musesumName: "National Museum of Entrepreneurs",
-        description: "this is a test description",
-        href: "/Entrepreneurs",
-        imageURL: "/",
+    description: {
+      en: "This is a test description",
+      fa: "این یک متن تستی برای دیسکریپشن است",
     },
-] 
+    href: "/palace",
+    imageURL: "/images/museums/palace.jpg",
+  },
+
+  {
+    id: 4,
+    name: {
+      en: "Loghanteh Cafe",
+      fa: "کافه لقانطه",
+    },
+    description: {
+      en: "This is a test description",
+      fa: "این یک متن تستی برای دیسکریپشن است",
+    },
+    href: "/cafe",
+    imageURL: "/images/museums/cafe.jpg",
+  },
+
+  {
+    id: 5,
+    name: {
+      en: "National Museum of Iranian Trade Houses",
+      fa: "موزه ملی تجارتخانه ایران",
+    },
+    description: {
+      en: "This is a test description",
+      fa: "این یک متن تستی برای دیسکریپشن است",
+    },
+    href: "/trade-houses",
+    imageURL: "/images/museums/trade-houses.jpg",
+  },
+
+  {
+    id: 6,
+    name: {
+      en: "National Museum of Entrepreneurs",
+      fa: "موزه ملی کارآفرینان",
+    },
+    description: {
+      en: "This is a test description",
+      fa: "این یک متن تستی برای دیسکریپشن است",
+    },
+    href: "/entrepreneurs",
+    imageURL: "/images/museums/entrepreneurs.jpg",
+  },
+];

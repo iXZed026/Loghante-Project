@@ -12,6 +12,7 @@ import { getLocalStorageItem, saveToLocalStorage } from '@/lib/utils/localStorag
 import { useEffect, useRef } from 'react';
 import AnimatePresenceWrapper from '@/components/animations/AnimatePresenceWrapper';
 import useClickOutside from '@/hooks/useClickOutside';
+import { getLocalizedValue } from '@/lib/utils/getLocalizedValue';
 
 interface ILanguageSwitcherProps {
     className?: string
@@ -131,7 +132,7 @@ function LanguageSwitcher({
                             key={lang.id}
                             onClick={() => changeLanguage(lang.code)}
                         >
-                            {lang.name}
+                            {getLocalizedValue(lang.name,locale)}
                         </span>
                     ))}
                 </motion.div>
