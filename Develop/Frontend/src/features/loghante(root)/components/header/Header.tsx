@@ -1,14 +1,24 @@
+"use client"
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import AppImage from "@/components/ui/AppImage";
 import AppLink from "@/components/ui/AppLink";
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
 import { IoIosMenu } from "react-icons/io";
-import { IoIosArrowDown } from "react-icons/io";
 import TicketDropDown from "./TicketDropDown";
 import Container from "@/components/shared/Container";
+import HamburgerMenu from "./HamburgerMenu";
+import useActive from "@/hooks/useActive";
 
 function Header() {
+
+  const [
+    activeHumber,
+    activeHumberHandler,
+    UnActiveHumberHandler,
+    toggleHumberHandler,
+  ] = useActive(false)
+
   return (
     <header className={cn(
       "bg-blue-300",
@@ -29,6 +39,7 @@ function Header() {
                 "transition-all",
                 "hover:opacity-50"
               )}
+              onClick={activeHumberHandler}
             />
             <AppLink
               href="/login"
@@ -68,6 +79,12 @@ function Header() {
 
         </div>
       </Container>
+
+      {/* HUMBURGER MENU */}
+      <HamburgerMenu
+        activeHumber={activeHumber}
+        UnActiveHumberHandler={UnActiveHumberHandler}
+      />
     </header >
   )
 }

@@ -18,16 +18,16 @@ export const dropdownVariants: Variants = {
 
 export const openSlideMenu: Variants = {
     hidden: {
-        left: -500,
+        x: -500,
     },
 
     visible: {
-        left: 0,
+        x: 0,
         transition: defaultTransitionOut,
     },
 
     exit: {
-        left: -500,
+        x: -500,
         transition: fastTransitionIn,
     },
 };

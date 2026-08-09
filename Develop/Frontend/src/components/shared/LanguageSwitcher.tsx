@@ -22,12 +22,12 @@ function LanguageSwitcher({
 }: ILanguageSwitcherProps) {
 
     //custom hooks
-    const {
-        active,
-        activeHandler,
-        UnActiveHandler,
-        toggleHandler,
-    } = useActive(false)
+    const [
+        activeLanguageDropDown,
+        activeLanguageDropDownHandler,
+        UnActiveLanguageDropDownHandler,
+        toggleLanguageDropDownHandler,
+    ] = useActive(false)
 
     //next hooks
     const pathname = usePathname();
@@ -62,14 +62,14 @@ function LanguageSwitcher({
             locale,
             newLocale,
         )
-        UnActiveHandler();
+        UnActiveLanguageDropDownHandler();
         router.push(newPath)
 
     }
 
     useClickOutside(
         dropDownRef,
-        UnActiveHandler,
+        UnActiveLanguageDropDownHandler,
     )
 
     return (
@@ -77,7 +77,7 @@ function LanguageSwitcher({
             "w-20",
             "flex flex-col justify-center",
             "relative",
-            active && "text-black-utility",
+            activeLanguageDropDown && "text-black-utility",
         )}>
             <div className={cn(
                 "flex justify-center items-center",
@@ -88,20 +88,20 @@ function LanguageSwitcher({
                 "transition-all",
                 "hover:bg-white/25",
                 "click-scale",
-                active && "bg-white hover:bg-white",
+                activeLanguageDropDown && "bg-white hover:bg-white",
                 className
             )}
                 ref={dropDownRef}
-                onClick={toggleHandler}
+                onClick={toggleLanguageDropDownHandler}
             >
                 <GrLanguage />
                 {locale.toUpperCase()}
                 <IoMdArrowDropdown className={cn(
                     "transition-transform duration-300",
-                    active && "rotate-180"
+                    activeLanguageDropDown && "rotate-180"
                 )} />
             </div>
-            <AnimatePresenceWrapper isActive={active}>
+            <AnimatePresenceWrapper isActive={activeLanguageDropDown}>
                 <motion.div
                     variants={dropdownVariants}
                     initial="hidden"
@@ -114,7 +114,7 @@ function LanguageSwitcher({
                         "top-full",
                         "rounded-b-md",
                         "shadow-lg",
-                        active && "bg-white",
+                        activeLanguageDropDown && "bg-white",
                     )}
                 >
                     {languages.map((lang) => (

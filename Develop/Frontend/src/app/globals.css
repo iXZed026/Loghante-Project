@@ -6,10 +6,13 @@
   --black-color: #161616;
   --black-light-color: #525252;
   --white-color: #FFFFFF;
-  --white-light-color: #FFFFFFCC;
+  --white-light-color: rgb(231, 225, 225);
   --gold-color: #d2ae6d;
 }
 
+html {
+  scroll-behavior: smooth;
+}
 
 @theme {
   --font-poppins: var(--font-poppins-local);
@@ -24,15 +27,21 @@ body {
 @layer utilities {
 
   /* Colors */
+
   .bg-crimson {
     @apply bg-[var(--crimson-color)];
   }
+
   .bg-hover-crimson {
     @apply hover:bg-[var(--crimson-hover-color)];
   }
 
   .text-crimson {
     @apply text-[var(--crimson-color)];
+  }
+
+  .text-hover-crimson {
+    @apply hover:text-[var(--crimson-hover-color)];
   }
 
   .text-black-utility {
@@ -45,6 +54,10 @@ body {
 
   .text-white-utility {
     @apply text-[var(--white-color)];
+  }
+
+  .bg-white-utility {
+    @apply bg-[var(--white-color)];
   }
 
   .text-white-white-utility {
@@ -82,5 +95,9 @@ body {
 
   .click-scale {
     @apply active:scale-90 duration-150
+  }
+
+  .opacity-utility{
+    @apply opacity-65
   }
 }

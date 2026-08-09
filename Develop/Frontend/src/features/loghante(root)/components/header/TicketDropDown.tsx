@@ -1,32 +1,32 @@
 "use client"
 import AnimatePresenceWrapper from '@/components/animations/AnimatePresenceWrapper'
 import Button from '@/components/ui/Button'
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { IoIosArrowDown } from 'react-icons/io'
-import { TicketdropdownVariants } from '../../animations/loghante.variants';
 import { tickets } from '@/data/tickets';
 import AppLink from '@/components/ui/AppLink';
 import useActive from '@/hooks/useActive';
 import { cn } from '@/lib/utils/cn';
 import { useRef } from 'react';
 import useClickOutside from '@/hooks/useClickOutside';
+import { dropdownVariants } from '@/lib/animations/variants';
 
 function TicketDropDown() {
 
     //custom hooks
-    const {
-        active,
-        // activeHandler,
-        UnActiveHandler,
-        toggleHandler,
-    } = useActive(false)
+    const [
+        activeTicketDripDown,
+        activeHandler,
+        UnActiveTicketDropDownHandler,
+        toggleTicketDripDownHandler,
+    ] = useActive(false)
 
     const dropDownRef =
         useRef<HTMLDivElement | null>(null)
 
     useClickOutside(
         dropDownRef,
-        UnActiveHandler,
+        UnActiveTicketDropDownHandler,
     )
 
 
@@ -38,29 +38,29 @@ function TicketDropDown() {
                     "font-semibold text-md",
                     "bg-crimson",
                     "hover:bg-[#42151A]",
-                    active && "rounded-none border-b-1",
+                    activeTicketDripDown && "rounded-none border-b-1",
                 )}
-                onClick={toggleHandler}
+                onClick={toggleTicketDripDownHandler}
             >
                 Reserve Ticket
                 <IoIosArrowDown className="size-3" />
             </Button>
-            <AnimatePresenceWrapper isActive={active}>
+            <AnimatePresenceWrapper isActive={activeTicketDripDown}>
                 <motion.div
-                    variants={TicketdropdownVariants}
+                    variants={dropdownVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
                     className={cn(
                         "absolute w-full bg-crimson text-center fcol",
-                        active && "rounded=b-md"
+                        activeTicketDripDown && "rounded=b-md"
                     )}
                 >
                     {tickets.map(t => (
                         <span
                             className="py-3 bg-hover-crimson transition-all"
                             key={t.id}
-                            onClick={UnActiveHandler}
+                            onClick={UnActiveTicketDropDownHandler}
                         >
                             <AppLink
                                 href={`/${t.href}`}

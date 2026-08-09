@@ -19,7 +19,7 @@ function useActive(initial: boolean) {
         setActive(prev => !prev)
     }
 
-    return { active, activeHandler, UnActiveHandler,toggleHandler }
+    return [active, activeHandler, UnActiveHandler, toggleHandler ] as any
 }
 
 export default useActive
