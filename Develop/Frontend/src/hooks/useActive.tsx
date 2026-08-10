@@ -1,5 +1,12 @@
 import React, { useState } from 'react'
 
+type UseActive = [
+    active: boolean,
+    activeHandler: () => void,
+    UnActiveHandler: () => void,
+    toggleHandler: () => void,
+]
+
 function useActive(initial: boolean) {
 
     const [active, setActive] =
@@ -19,7 +26,12 @@ function useActive(initial: boolean) {
         setActive(prev => !prev)
     }
 
-    return { active, activeHandler, UnActiveHandler,toggleHandler }
+    return [
+        active,
+        activeHandler,
+        UnActiveHandler,
+        toggleHandler
+    ] as UseActive
 }
 
 export default useActive

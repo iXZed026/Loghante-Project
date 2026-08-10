@@ -1,13 +1,12 @@
-import {getRequestConfig} from "next-intl/server";
+import { getRequestConfig } from "next-intl/server";
 
-export default getRequestConfig(async ({requestLocale}) => {
+export default getRequestConfig(async ({ requestLocale }) => {
+    const locale = (await requestLocale) ?? "en";
 
-  const locale = await requestLocale;
-
-  return {
-    locale,
-    messages: (
-      await import(`../messages/${locale}/Loghante/hero.json`)
-    ).default
-  };
+    return {
+        locale,
+        messages: (
+            await import(`../messages/${locale}/Loghante/header.json`)
+        ).default,
+    };
 });

@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils/cn';
-import { ReactNode } from 'react';
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 
-interface IButtonProps {
+interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   children: ReactNode;
 }
@@ -9,6 +9,7 @@ interface IButtonProps {
 function Button({
   children,
   className,
+  ...props
 }: IButtonProps) {
   return (
     <button
@@ -19,6 +20,7 @@ function Button({
         "text-white-utility",
         className,
       )}
+      {...props}
     >
       {children}
     </button>
