@@ -44,8 +44,8 @@ export const navLinks: INavLink[] = [
   {
     id: 4,
     name: {
-      en: "Events",
-      fa: "رویداد ها",
+      en: "Events & Courses",
+      fa: "رویداد ها و دوره ها",
     },
     path: "#events",
   },

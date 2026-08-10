@@ -27,7 +27,8 @@ function Header() {
   return (
     <header className={cn(
       "h-[80px]",
-      "py-3",
+      "py-3 mb-[80px]",
+      "z-30",
       "text-white-utility md:text-md sm:text-sm text-xs",
       "fixed w-full top-0 ",
     )}>

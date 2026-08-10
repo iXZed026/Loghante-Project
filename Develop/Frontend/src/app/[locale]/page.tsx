@@ -6,8 +6,8 @@ function Loghante() {
   return (
     <div>
       <Header />
-      <Container>
         <HeroSection />
+      <Container>
         <div id="2" className='h-[100vh] scrll-mt-[80]'></div>
       </Container>
     </div>
