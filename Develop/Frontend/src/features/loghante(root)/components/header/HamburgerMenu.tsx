@@ -67,7 +67,7 @@ function HamburgerMenu({
                 >
                     <div className={cn(
                         "gap-1",
-                        "py-4 px-2  mb-5",
+                        "py-4 px-7  mb-5",
                         "border-b-2 border-[var(--crimson-color)]",
                     )}
                     >
