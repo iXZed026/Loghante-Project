@@ -1,4 +1,5 @@
 import Container from '@/components/shared/Container'
+import { cn } from '@/lib/utils/cn'
 import { useTranslations } from 'next-intl'
 import React from 'react'
 
@@ -7,7 +8,7 @@ function HeroSection() {
     const t = useTranslations("hero")
 
     return (
-        <section id="hero" className='relative h-screen'>
+        <section id="hero" className='relative h-screen select-none'>
             {/* Video */}
             <video
                 autoPlay
@@ -21,21 +22,20 @@ function HeroSection() {
                     type="video/mp4"
                 />
             </video>
-
-            {/* Dark Overlay */}
-            {/* <div className="absolute inset-0 bg-black/100" /> */}
-
             {/* Content */}
             <div className={cn(
-                "absolute bottom-0 left-0 w-full py-12 bg-gradient-to-b from-[#0a0a0a0f] to-[#000000]",
+                "w-full",
+                "py-12",
+                "absolute bottom-0 left-0",
+                "gradient-shadow",
             )}>
                 <Container>
-                    <div className="font-wulkan text-white-utility">
-                        <h1 className="text-4xl font-bold md:text-5xl">
+                    <div className="text-white-utility">
+                        <h1 className="font-wulkan mb-7 text-3xl font-bold md:text-5xl">
                             {t("video-title")}
                         </h1>
 
-                        <p className="mt-4 text-lg font-semibold md:text-xl">
+                        <p className="mt-4 text-md md:text-xl">
                             {t("video-description")}
                         </p>
                     </div>
