@@ -48,7 +48,7 @@ body {
     @apply text-[var(--black-color)];
   }
 
-  .text-black-white-utility {
+  .text-black-light-utility {
     @apply text-[var(--black-light-color)];
   }
 
@@ -60,7 +60,7 @@ body {
     @apply bg-[var(--white-color)];
   }
 
-  .text-white-white-utility {
+  .text-white-light-utility {
     @apply text-[var(--white-light-color)];
   }
 
@@ -71,6 +71,9 @@ body {
     @apply flex justify-center items-center;
   }
 
+  .fbs {
+    @apply flex justify-between items-start;
+  }
   .fbc {
     @apply flex justify-between items-center;
   }

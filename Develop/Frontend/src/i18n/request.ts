@@ -11,11 +11,16 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/Loghante/hero.json`)
     ).default;
 
+    const about = (
+        await import(`../messages/${locale}/Loghante/about.json`)
+    ).default;
+
     return {
         locale,
         messages: {
             header,
             hero,
+            about,
         },
     };
 });

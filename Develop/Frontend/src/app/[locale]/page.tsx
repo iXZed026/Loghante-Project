@@ -1,14 +1,15 @@
 import Container from '@/components/shared/Container';
 import Header from '@/features/loghante(root)/components/header/Header';
+import AboutMuseums from '@/features/loghante(root)/components/sections/AboutMuseums';
 import HeroSection from '@/features/loghante(root)/components/sections/HeroSection';
 
 function Loghante() {
   return (
     <div>
       <Header />
-        <HeroSection />
+      <HeroSection />
       <Container>
-        <div id="2" className='h-[100vh] scrll-mt-[80]'></div>
+        <AboutMuseums />
       </Container>
     </div>
   )
