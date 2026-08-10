@@ -55,7 +55,7 @@ function SubMenu({
                     )}>
                     <div className={cn(
                         "gap-1",
-                        "py-4 px-2  mb-5",
+                        "py-4 px-7  mb-5",
                         "border-b-2 border-[var(--crimson-color)]",
                     )}
                     >
@@ -82,7 +82,7 @@ function SubMenu({
                             className={cn(
                                 "w-full",
                                 "block",
-                                "px-3",
+                                "px-7",
                                 "py-5",
                                 "border-b border-b-black/25",
                                 "hover:bg-[var(--white-light-color)]",

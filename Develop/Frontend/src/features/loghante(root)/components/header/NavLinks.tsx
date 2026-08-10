@@ -39,7 +39,7 @@ function NavLinks({
                                 className={cn(
                                     "w-full",
                                     "fbc relative",
-                                    "px-3",
+                                    "px-7",
                                     "py-3",
                                     "border-b border-b-black/25",
                                     "hover:bg-[var(--white-light-color)]",
@@ -68,7 +68,7 @@ function NavLinks({
                                 className={cn(
                                     "w-full",
                                     "block",
-                                    "px-3",
+                                    "px-7",
                                     "py-5",
                                     "border-b border-b-black/25",
                                     "hover:bg-[var(--white-light-color)]",
