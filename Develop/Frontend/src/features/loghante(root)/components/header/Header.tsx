@@ -26,11 +26,10 @@ function Header() {
 
   return (
     <header className={cn(
-      "bg-blue-300",
       "h-[80px]",
       "py-3",
       "text-white-utility md:text-md sm:text-sm text-xs",
-      "border-2",
+      "fixed w-full top-0 ",
     )}>
       <Container>
         <div className="grid grid-cols-12">
