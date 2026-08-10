@@ -426,3 +426,5 @@ VALUES
 1,
 250000
 );
+
+SELECT * FROM Users
