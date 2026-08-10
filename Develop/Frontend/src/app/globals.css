@@ -97,7 +97,11 @@ body {
     @apply active:scale-90 duration-150
   }
 
-  .opacity-utility{
+  .opacity-utility {
     @apply opacity-65
+  }
+
+  .gradient-shadow {
+    @apply bg-gradient-to-b from-[#0a0a0a0f] to-[#000000]
   }
 }
