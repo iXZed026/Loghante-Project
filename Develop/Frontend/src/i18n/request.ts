@@ -16,12 +16,17 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/Loghante/about.json`)
     ).default;
 
+    const LoghantehMuseums = (
+        await import(`../messages/${locale}/Loghante/museums.json`)
+    ).default;
+
     return {
         locale,
         messages: {
             LoghantehHeader,
             LoghantehHero,
             LoghantehAbout,
+            LoghantehMuseums,
         },
     };
 });
