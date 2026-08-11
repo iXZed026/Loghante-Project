@@ -4,12 +4,11 @@ import AboutLoghantehComponent from '../AboutLoghantehComponent'
 
 function AboutMuseums() {
 
-    const t = useTranslations("about")
+    const t = useTranslations("LoghantehAbout")
 
     return (
         <div className='px-20 min-h-screen  py-30'>
             <AboutLoghantehComponent
-                t={t}
                 reverse={false}
                 title={t("about.title")}
                 description={t("about.description")}
@@ -17,7 +16,6 @@ function AboutMuseums() {
             <br /> <br />
 
             <AboutLoghantehComponent
-                t={t}
                 reverse={true}
                 title={t("history.title")}
                 description={t("history.description")}
