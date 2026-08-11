@@ -7,7 +7,7 @@ function AboutMuseums() {
     const t = useTranslations("LoghantehAbout")
 
     return (
-        <div className='px-20 min-h-screen  py-30'>
+        <div id="about" className='px-20 loghante-section'>
             <AboutLoghantehComponent
                 reverse={false}
                 title={t("about.title")}

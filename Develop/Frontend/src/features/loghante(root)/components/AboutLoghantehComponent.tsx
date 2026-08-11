@@ -55,7 +55,7 @@ function AboutLoghantehComponent({
                     >
                         <h2 className={cn(
                             "font-wulkan",
-                            "font-bold text-5xl",
+                            "loghante-section-title",
                             "mb-8"
                         )}>
                             {title}

@@ -1,7 +1,7 @@
 "use client"
 import { slowTransitionOut } from "@/lib/animations/transitions"
 import { Children } from "@/types/children"
-import { motion } from "framer-motion"
+import { motion, Variants } from "framer-motion"
 import { Transition } from "framer-motion";
 
 interface IFadeUp {
@@ -9,6 +9,8 @@ interface IFadeUp {
     transition?: Transition;
     y?: number;
     amount?: number
+    variants?: Variants
+    className?: string
 }
 
 function FadeUp({
@@ -16,9 +18,12 @@ function FadeUp({
     transition = slowTransitionOut,
     y = 50,
     amount = 0.2,
+    variants,
+    className
 }: IFadeUp) {
     return (
         <motion.div
+            variants={variants}
             initial={{
                 opacity: 0,
                 y: y,
@@ -31,6 +36,7 @@ function FadeUp({
             viewport={{
                 amount: amount,
             }}
+            className={className}
         >
             {children}
         </motion.div>
