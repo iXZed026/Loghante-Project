@@ -10,11 +10,14 @@ import Container from "@/components/shared/Container";
 import HamburgerMenu from "./HamburgerMenu";
 import useActive from "@/hooks/useActive";
 import { useTranslations } from 'next-intl';
+import useScroll from "@/hooks/useScroll";
+
 
 
 function Header() {
 
   const t = useTranslations("LoghantehHeader");
+  const isScrolled = useScroll(150);
 
 
   const [
@@ -31,6 +34,8 @@ function Header() {
       "z-30",
       "text-white-utility md:text-md sm:text-sm text-xs",
       "fixed w-full top-0 ",
+      "transition-all duration-300 ease-in-out",
+      isScrolled && "bg-crimson "
     )}>
       <Container>
         <div className="grid grid-cols-12">
@@ -42,7 +47,8 @@ function Header() {
                 "cursor-pointer",
                 "click-scale",
                 "transition-all",
-                "hover:opacity-50"
+                "hover:opacity-50",
+                isScrolled && "text-gold-utility",
               )}
               onClick={activeHumberHandler}
             />
@@ -55,6 +61,7 @@ function Header() {
                   "font-semibold",
                   "border-[1px]",
                   "hover:bg-white/35",
+                  isScrolled && "text-gold-utility",
                 )}
               >
                 {
@@ -74,14 +81,14 @@ function Header() {
                 priority={true}
                 src="/images/Loghanteh-logo.svg"
                 alt="loghanteh icon"
-                className="brightness-0 invert"
+                className="brightness-0 invert text-gold-utility"
               />
             </AppLink>
           </div>
 
           <div className="col-span-4 fec gap-2">
-            <TicketDropDown t={t} />
-            <LanguageSwitcher />
+            <TicketDropDown t={t} isScrolled={isScrolled} />
+            <LanguageSwitcher isScrolled={isScrolled} />
           </div>
 
         </div>

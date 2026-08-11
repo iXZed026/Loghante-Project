@@ -8,6 +8,7 @@
   --white-color: #FFFFFF;
   --white-light-color: rgb(231, 225, 225);
   --gold-color: #d2ae6d;
+  --gold-hover-color: #936c23;
 }
 
 html {
@@ -64,7 +65,17 @@ body {
     @apply text-[var(--white-light-color)];
   }
 
+  .text-gold-utility {
+    @apply text-[var(--gold-color)];
+  }
 
+  .bg-gold-utility {
+    @apply bg-[var(--gold-color)];
+  }
+
+  .bg-hover-gold {
+    @apply hover:bg-[var(--gold-hover-color)];
+  }
 
   /* Flex */
   .fcc {
@@ -74,6 +85,7 @@ body {
   .fbs {
     @apply flex justify-between items-start;
   }
+
   .fbc {
     @apply flex justify-between items-center;
   }

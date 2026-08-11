@@ -16,10 +16,12 @@ import { getLocalizedValue } from '@/lib/utils/getLocalizedValue';
 
 interface ILanguageSwitcherProps {
     className?: string
+    isScrolled: boolean
 }
 
 function LanguageSwitcher({
-    className
+    className,
+    isScrolled,
 }: ILanguageSwitcherProps) {
 
     //custom hooks
@@ -79,6 +81,7 @@ function LanguageSwitcher({
             "flex flex-col justify-center",
             "relative",
             activeLanguageDropDown && "text-black-utility",
+            isScrolled && "text-gold-utility"
         )}>
             <div className={cn(
                 "flex justify-center items-center",
@@ -90,6 +93,7 @@ function LanguageSwitcher({
                 "hover:bg-white/25",
                 "click-scale",
                 activeLanguageDropDown && "bg-white hover:bg-white",
+                activeLanguageDropDown && isScrolled && "text-black",
                 className
             )}
                 ref={dropDownRef}
@@ -116,6 +120,8 @@ function LanguageSwitcher({
                         "rounded-b-md",
                         "shadow-lg",
                         activeLanguageDropDown && "bg-white",
+                        activeLanguageDropDown && isScrolled && "text-black",
+                        
                     )}
                 >
                     {languages.map((lang) => (
@@ -132,7 +138,7 @@ function LanguageSwitcher({
                             key={lang.id}
                             onClick={() => changeLanguage(lang.code)}
                         >
-                            {getLocalizedValue(lang.name,locale)}
+                            {getLocalizedValue(lang.name, locale)}
                         </span>
                     ))}
                 </motion.div>

@@ -17,9 +17,16 @@ import { TranslationFunction } from "@/types/translations";
 
 interface ITicketDropDown {
     t?: TranslationFunction;
+    isScrolled?: Boolean
 }
 
-function TicketDropDown({ t }: ITicketDropDown) {
+function TicketDropDown(
+    {
+        t,
+        isScrolled,
+    }
+        : ITicketDropDown
+) {
     const [
         activeTicketDripDown,
         ,
@@ -44,7 +51,10 @@ function TicketDropDown({ t }: ITicketDropDown) {
                     "md:py-3 py-1 fcc gap-2",
                     "md:font-semibold",
                     "bg-crimson",
-                    "hover:bg-[#42151A]",
+                    isScrolled ?
+                        "hover:bg-[#936c23]" :
+                        "hover:bg-[#42151A]",
+                    isScrolled && "bg-gold-utility",
                     activeTicketDripDown && "rounded-none border-b-1",
                 )}
             >
@@ -61,11 +71,18 @@ function TicketDropDown({ t }: ITicketDropDown) {
                     className={cn(
                         "absolute w-full bg-crimson text-center fcol",
                         activeTicketDripDown && "rounded-b-md",
+                        isScrolled && "bg-gold-utility",
                     )}
                 >
                     {tickets.map((ticket) => (
                         <span
-                            className="py-3 px-2 bg-hover-crimson transition-all"
+                            className={cn(
+                                "py-3 px-2",
+                                "transition-all",
+                                isScrolled ?
+                                    "bg-hover-gold" :
+                                    "bg-hover-crimson",
+                            )}
                             key={ticket.id}
                             onClick={UnActiveTicketDropDownHandler}
                         >
