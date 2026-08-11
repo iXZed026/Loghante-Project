@@ -1,9 +1,33 @@
-import React from 'react'
+"use client";
+import { slowTransitionOut } from "@/lib/animations/transitions";
+import { Children } from "@/types/children";
+import { motion, Transition } from "framer-motion";
 
-function FadeIn() {
-  return (
-    <div>FadeIn</div>
-  )
+interface IFadeIn {
+  children: Children;
+  transition?: Transition;
 }
 
-export default FadeIn
+function FadeIn({
+  children,
+  transition = slowTransitionOut,
+}: IFadeIn) {
+  return (
+    <motion.div
+      initial={{
+        opacity: 0,
+      }}
+      whileInView={{
+        opacity: 1,
+      }}
+      viewport={{
+        amount: 0.2,
+      }}
+      transition={transition}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export default FadeIn;

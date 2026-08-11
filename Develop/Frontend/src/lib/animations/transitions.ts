@@ -1,5 +1,6 @@
 import { Transition } from "framer-motion";
 
+// EASE OUT 
 export const defaultTransitionOut: Transition = {
     duration: 0.3,
     ease: "easeOut",
@@ -15,6 +16,12 @@ export const slowTransitionOut: Transition = {
     ease: "easeOut",
 };
 
+export const verySlowTransitionOut: Transition = {
+    duration: 1,
+    ease: "easeOut",
+};
+
+// EASE IN 
 export const defaultTransitionIn: Transition = {
     duration: 0.3,
     ease: "easeIn",
