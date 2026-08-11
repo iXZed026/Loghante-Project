@@ -5,7 +5,7 @@ import React from 'react'
 
 function HeroSection() {
 
-    const t = useTranslations("hero")
+    const t = useTranslations("LoghantehHero")
 
     return (
         <section id="hero" className='relative h-screen select-none'>

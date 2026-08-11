@@ -14,7 +14,7 @@ import { useTranslations } from 'next-intl';
 
 function Header() {
 
-  const t = useTranslations("header");
+  const t = useTranslations("LoghantehHeader");
 
 
   const [

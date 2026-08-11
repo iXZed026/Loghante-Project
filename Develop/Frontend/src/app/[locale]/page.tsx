@@ -5,7 +5,7 @@ import HeroSection from '@/features/loghante(root)/components/sections/HeroSecti
 
 function Loghante() {
   return (
-    <div>
+    <div className='overflow-x-hidden'>
       <Header />
       <HeroSection />
       <Container>
