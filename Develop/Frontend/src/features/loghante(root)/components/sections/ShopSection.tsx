@@ -7,12 +7,13 @@ function ShopSection() {
     const t = useTranslations("LoghantehShop")
 
     return (
-        <section className='loghante-section'>
+        <section id="shop" className='loghante-section'>
             <LoghantehSectionBox
                 sectionName={t("section-name")}
                 title={t("title")}
                 description={t("description")}
                 reverse={true}
+                href='/shop'
             />
         </section>
     )

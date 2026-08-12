@@ -11,13 +11,15 @@ interface ILoghantehSectionBox {
     title: string
     description: string
     reverse?: boolean;
+    href:string;
 }
 
 function LoghantehSectionBox({
     sectionName,
     title,
     description,
-    reverse,
+    reverse=false,
+    href,
 }: ILoghantehSectionBox) {
     return (
         <div className={cn(
@@ -29,11 +31,16 @@ function LoghantehSectionBox({
         )}>
             <div className={cn(
                 " w-full",
-                "md:flex fcol items-center ",
+                "md:flex flex-row fcol items-center",
                 reverse && "md:flex-row-reverse",
             )}>
                 {/* Image */}
-                <div className='w-full h-113 flex items-center justify-end'>
+                <div className={cn(
+                    "w-full h-113",
+                    "flex items-center",
+                    "justify-end0",
+                    reverse && "justify-end"
+                )}>
                     {/* <AppImage
                     width={500}
                     height={500}
@@ -92,7 +99,7 @@ function LoghantehSectionBox({
                         transition={verySlowTransitionOut}
                     >
                         <AppLink
-                            href='/shop'
+                            href={href}
                         >
                             <Button className={cn(
                                 "xl:text-md",
