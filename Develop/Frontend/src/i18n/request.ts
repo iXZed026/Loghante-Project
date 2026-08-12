@@ -3,6 +3,11 @@ import { getRequestConfig } from "next-intl/server";
 export default getRequestConfig(async ({ requestLocale }) => {
     const locale = (await requestLocale) ?? "en";
 
+    //Gloval
+    // const common = (
+    //     await import(`../messages/${locale}/common.json`)
+    // ).default;
+    
     //Loghanteh(root)
     const LoghantehHeader = (
         await import(`../messages/${locale}/Loghante/header.json`)
@@ -20,13 +25,19 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/Loghante/museums.json`)
     ).default;
 
+    const LoghantehShop = (
+        await import(`../messages/${locale}/Loghante/shop.json`)
+    ).default;
+
     return {
         locale,
         messages: {
+            // common,
             LoghantehHeader,
             LoghantehHero,
             LoghantehAbout,
             LoghantehMuseums,
+            LoghantehShop,
         },
     };
 });

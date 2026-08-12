@@ -6,11 +6,13 @@ import { motion, Transition } from "framer-motion";
 interface IFadeIn {
   children: Children;
   transition?: Transition;
+  className?: string
 }
 
 function FadeIn({
   children,
   transition = slowTransitionOut,
+  className,
 }: IFadeIn) {
   return (
     <motion.div
@@ -24,6 +26,7 @@ function FadeIn({
         amount: 0.2,
       }}
       transition={transition}
+      className={className}
     >
       {children}
     </motion.div>

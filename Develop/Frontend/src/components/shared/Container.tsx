@@ -9,9 +9,7 @@ function Container({
     return (
         <div
             className={cn(
-                "lg:w-[90%]",
-                "sm:w-[95%]",
-                "w-[98%]",
+                "w-[90%]",
                 "mx-auto",
             )}
         >
