@@ -29,7 +29,6 @@ function MuseumsBox(props: MuseumBox) {
                 {/* Content */}
                 <div className='w-full gradient-shadow absolute bottom-0 px-3 py-5 fcol gap-3 rounded-2xl'>
                     <h3>{getLocalizedValue(name, locale)}</h3>
-                    <h6>Alef</h6>
                 </div>
             </div>
         </AppLink>

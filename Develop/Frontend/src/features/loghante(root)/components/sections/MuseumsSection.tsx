@@ -34,7 +34,7 @@ function MuseumsSection() {
       </div>
       {/* CARDS */}
       <StaggerWrapper
-        className='grid grid-cols-12 gap-15 overflow-hidden'
+        className='grid grid-cols-12 gap-10 overflow-hidden'
         variants={MuseumsCardContainerVariant}
       >
         {museumParts.map(museum => (
@@ -43,7 +43,7 @@ function MuseumsSection() {
               variants={MuseumCardVariant}
               transition={defaultTransitionOut}
             >
-              <MuseumsBox key={museum.id} {...museum} />
+              <MuseumsBox {...museum} />
             </FadeUp>
           </div>
         ))}
