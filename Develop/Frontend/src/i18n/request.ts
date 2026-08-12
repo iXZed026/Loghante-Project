@@ -33,6 +33,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/Loghante/events-and-courses.json`)
     ).default;
 
+    const LoghantehCinemaAndTheaters = (
+        await import(`../messages/${locale}/Loghante/cinema-and-theaters.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -43,6 +47,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             LoghantehMuseums,
             LoghantehShop,
             LoghantehEventsAndCourses,
+            LoghantehCinemaAndTheaters,
         },
     };
 });
