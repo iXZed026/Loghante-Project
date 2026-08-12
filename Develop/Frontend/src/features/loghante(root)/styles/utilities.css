@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @utility loghante-section {
-    @apply py-30 min-h-screen overflow-x-hidden;
+    @apply py-30 min-h-screen ;
 }
 
 @utility loghante-section-title {
