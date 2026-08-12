@@ -6,6 +6,7 @@ import HeroSection from '@/features/loghante(root)/components/sections/HeroSecti
 import MuseumsSection from '@/features/loghante(root)/components/sections/MuseumsSection';
 import ShopSection from '@/features/loghante(root)/components/sections/ShopSection';
 import EventsAndCoursesSection from '@/features/loghante(root)/components/sections/EventsAndCoursesSection';
+import CinemaAndTheaters from '@/features/loghante(root)/components/sections/CinemaAndTheaters';
 
 
 function Loghante() {
@@ -18,6 +19,7 @@ function Loghante() {
         <MuseumsSection />
         <EventsAndCoursesSection />
         <ShopSection />
+        <CinemaAndTheaters />
       </Container>
     </div>
   )
