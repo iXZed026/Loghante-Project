@@ -38,13 +38,14 @@ function MuseumsSection() {
         variants={MuseumsCardContainerVariant}
       >
         {museumParts.map(museum => (
-          <FadeUp
-            className="col-span-4 w-full"
-            variants={MuseumCardVariant}
-            transition={defaultTransitionOut}
-          >
-            <MuseumsBox key={museum.id} {...museum} />
-          </FadeUp>
+          <div className='col-span-4 w-full' key={museum.id}>
+            <FadeUp
+              variants={MuseumCardVariant}
+              transition={defaultTransitionOut}
+            >
+              <MuseumsBox key={museum.id} {...museum} />
+            </FadeUp>
+          </div>
         ))}
       </StaggerWrapper>
     </div >
