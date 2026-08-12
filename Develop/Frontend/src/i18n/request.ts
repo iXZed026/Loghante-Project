@@ -7,7 +7,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
     // const common = (
     //     await import(`../messages/${locale}/common.json`)
     // ).default;
-    
+
     //Loghanteh(root)
     const LoghantehHeader = (
         await import(`../messages/${locale}/Loghante/header.json`)
@@ -29,6 +29,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/Loghante/shop.json`)
     ).default;
 
+    const LoghantehEventsAndCourses = (
+        await import(`../messages/${locale}/Loghante/events-and-courses.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -38,6 +42,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             LoghantehAbout,
             LoghantehMuseums,
             LoghantehShop,
+            LoghantehEventsAndCourses,
         },
     };
 });
