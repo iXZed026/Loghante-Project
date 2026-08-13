@@ -31,7 +31,7 @@ function LoghantehSectionBox({
         )}>
             <div className={cn(
                 " w-full",
-                "md:flex flex-row fcol items-center",
+                "md:flex md:flex-row fcol items-center",
                 reverse && "md:flex-row-reverse",
             )}>
                 {/* Image */}

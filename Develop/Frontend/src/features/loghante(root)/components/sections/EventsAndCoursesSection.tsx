@@ -7,7 +7,7 @@ function EventsAndCoursesSection() {
     const t = useTranslations("LoghantehEventsAndCourses")
 
     return (
-        <section id="events-and-courses" className='loghanteh-section'>
+        <section id="events-and-courses" className='loghante-section'>
             <LoghantehSectionBox
                 sectionName={t("section-name")}
                 title={t("title")}

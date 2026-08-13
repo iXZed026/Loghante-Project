@@ -7,12 +7,11 @@ function CinemaAndTheaters() {
     const t = useTranslations("LoghantehCinemaAndTheaters")
 
     return (
-        <section id="cinema-and-theaters" className='loghanteh-section'>
+        <section id="cinema-and-theaters" className='loghante-section'>
             <LoghantehSectionBox
                 sectionName={t("section-name")}
                 title={t("title")}
                 description={t("description")}
-                reverse={true}
                 href='/cinema-and-theaters'
             />
         </section>
