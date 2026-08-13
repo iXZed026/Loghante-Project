@@ -5,6 +5,8 @@ import { useTranslations } from 'next-intl'
 function EventsAndCoursesSection() {
 
     const t = useTranslations("LoghantehEventsAndCourses")
+    //common.json
+    const cmT = useTranslations("common")
 
     return (
         <section id="events-and-courses" className='loghante-section'>
@@ -13,6 +15,7 @@ function EventsAndCoursesSection() {
                 title={t("title")}
                 description={t("description")}
                 href="/events-and-courses"
+                textButton = {cmT("button.show-more")}
             />
         </section>
     )

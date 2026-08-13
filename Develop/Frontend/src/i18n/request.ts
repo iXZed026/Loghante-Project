@@ -4,9 +4,9 @@ export default getRequestConfig(async ({ requestLocale }) => {
     const locale = (await requestLocale) ?? "en";
 
     //Gloval
-    // const common = (
-    //     await import(`../messages/${locale}/common.json`)
-    // ).default;
+    const common = (
+        await import(`../messages/${locale}/common.json`)
+    ).default;
 
     //Loghanteh(root)
     const LoghantehHeader = (
@@ -43,7 +43,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
     return {
         locale,
         messages: {
-            // common,
+            common,
             LoghantehHeader,
             LoghantehHero,
             LoghantehAbout,

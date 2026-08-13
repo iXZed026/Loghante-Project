@@ -11,15 +11,17 @@ interface ILoghantehSectionBox {
     title: string
     description: string
     reverse?: boolean;
-    href:string;
+    href: string;
+    textButton: string,
 }
 
 function LoghantehSectionBox({
     sectionName,
     title,
     description,
-    reverse=false,
+    reverse = false,
     href,
+    textButton,
 }: ILoghantehSectionBox) {
     return (
         <div className={cn(
@@ -108,7 +110,7 @@ function LoghantehSectionBox({
                                 "bg-crimson",
                                 "cliclk-scale",
                             )}>
-                                Show More
+                                {textButton}
                             </Button>
                         </AppLink>
                     </FadeIn>

@@ -5,6 +5,8 @@ import LoghantehSectionBox from '../LoghantehSectionBox'
 function VirtualTourSection() {
 
     const t = useTranslations("LoghantehVirtualTour")
+    //common.json
+    const cmT = useTranslations("common")
 
     return (
         <section id="virtual-tour" className='loghante-section'>
@@ -14,6 +16,7 @@ function VirtualTourSection() {
                 description={t("description")}
                 reverse={true}
                 href='/cinema-and-theaters'
+                textButton={cmT("button.show-more")}
             />
         </section>
     )
