@@ -3,9 +3,13 @@ import { getRequestConfig } from "next-intl/server";
 export default getRequestConfig(async ({ requestLocale }) => {
     const locale = (await requestLocale) ?? "en";
 
-    //Gloval
+    //Global
     const common = (
         await import(`../messages/${locale}/common.json`)
+    ).default;
+
+    const footer = (
+        await import(`../messages/${locale}/footer.json`)
     ).default;
 
     //Loghanteh(root)
@@ -44,6 +48,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
         locale,
         messages: {
             common,
+            footer,
+            
             LoghantehHeader,
             LoghantehHero,
             LoghantehAbout,

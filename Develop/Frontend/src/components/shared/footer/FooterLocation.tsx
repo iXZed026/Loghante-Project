@@ -1,7 +1,12 @@
 import { cn } from '@/lib/utils/cn'
+import { TranslationFunction } from '@/types/translations'
 import React from 'react'
 
-function FooterLocation() {
+function FooterLocation({
+    t
+}: {
+    t: TranslationFunction
+}) {
     return (
         <div
             className={cn(

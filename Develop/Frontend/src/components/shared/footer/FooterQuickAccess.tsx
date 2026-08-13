@@ -1,7 +1,12 @@
 import AppLink from '@/components/ui/AppLink'
 import { cn } from '@/lib/utils/cn'
+import { TranslationFunction } from '@/types/translations'
 
-function FooterQuickAccess() {
+function FooterQuickAccess({
+    t
+}: {
+    t: TranslationFunction
+}) {
     return (
         <div
             className={
@@ -13,7 +18,7 @@ function FooterQuickAccess() {
         >
             <div>
                 <h5 className='font-semibold md:text-lg '>
-                    Quick Access
+                    {t("quick-access.title")}
                 </h5>
             </div>
             <div>
@@ -24,7 +29,7 @@ function FooterQuickAccess() {
                             href='#hero'
                             className='transition-all hover:opacity-50'
                         >
-                            Home Page
+                            {t("quick-access.links.home")}
                         </AppLink>
                     </li>
                     <li
@@ -33,7 +38,7 @@ function FooterQuickAccess() {
                             href='#about'
                             className='transition-all hover:opacity-50'
                         >
-                            About Museum
+                            {t("quick-access.links.about")}
                         </AppLink>
                     </li>
                     <li
@@ -42,7 +47,7 @@ function FooterQuickAccess() {
                             href='#museums'
                             className='transition-all hover:opacity-50'
                         >
-                            Museum
+                            {t("quick-access.links.museums")}
                         </AppLink>
                     </li>
                     <li
@@ -51,7 +56,7 @@ function FooterQuickAccess() {
                             href='/shop'
                             className='transition-all hover:opacity-50'
                         >
-                            Shop
+                            {t("quick-access.links.shop")}
                         </AppLink>
                     </li>
                     <li
@@ -60,7 +65,7 @@ function FooterQuickAccess() {
                             href='/virtual-tour'
                             className='transition-all hover:opacity-50'
                         >
-                            Virtual Tour
+                            {t("quick-access.links.virtual-tour")}
                         </AppLink>
                     </li>
                 </ul>

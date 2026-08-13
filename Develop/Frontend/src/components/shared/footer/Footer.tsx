@@ -4,8 +4,12 @@ import FooterSummery from './FooterSummery'
 import FooterQuickAccess from './FooterQuickAccess'
 import FooterContact from './FooterContact'
 import FooterLocation from './FooterLocation'
+import { useTranslations } from 'next-intl'
 
 function Footer() {
+
+    const t = useTranslations("footer")
+
     return (
         <footer className={cn(
             "bg-crimson",
@@ -17,13 +21,13 @@ function Footer() {
                     "py-15",
                 )}>
                     {/* Summary */}
-                    <FooterSummery />
+                    <FooterSummery t={t} />
                     {/* Quick Access */}
-                    <FooterQuickAccess />
+                    <FooterQuickAccess t={t} />
                     {/* Contact & Address */}
-                    <FooterContact />
+                    <FooterContact t={t} />
                     {/* Location */}
-                    <FooterLocation />
+                    <FooterLocation t={t} />
                 </div>
             </Container>
             {/* Policy */}

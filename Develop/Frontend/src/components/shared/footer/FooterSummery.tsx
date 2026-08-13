@@ -1,8 +1,13 @@
 import AppImage from '@/components/ui/AppImage'
 import AppLink from '@/components/ui/AppLink'
 import { cn } from '@/lib/utils/cn'
+import { TranslationFunction } from '@/types/translations'
 
-function FooterSummery() {
+function FooterSummery({
+    t
+}: {
+    t: TranslationFunction
+}) {
     return (
         <div className={cn(
             "xl:col-span-3 md:col-span-4 col-span-12",
@@ -23,7 +28,7 @@ function FooterSummery() {
             </div>
             <div className='text-white-light-utility'>
                 <p className='md:text-[16px] text-sm'>
-                    Discover a world where history, culture, and heritage come together. Loghanteh Historical and Cultural Complex is home to a collection of unique museums, each offering a distinct journey through art, innovat.
+                    {t("summery.description")}
                 </p>
             </div>
         </div>
