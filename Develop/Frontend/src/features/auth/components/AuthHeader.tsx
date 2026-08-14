@@ -1,9 +1,11 @@
 import AppImage from '@/components/ui/AppImage'
-import React from 'react'
+import AuthRoutes from './AuthRoutes'
 
 function AuthHeader() {
+
+
   return (
-    <div className='fcol gap-10'>
+    <div className='fcol gap-10 mb-7.5'>
       {/* Logo */}
       <div className='fcc'>
         <AppImage
@@ -14,7 +16,8 @@ function AuthHeader() {
           priority={true}
         />
       </div>
-      {/* Checking Auth Route */}
+      {/* Auth Route */}
+      <AuthRoutes />
     </div>
   )
 }

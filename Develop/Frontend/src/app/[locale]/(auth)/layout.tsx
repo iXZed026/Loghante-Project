@@ -9,12 +9,12 @@ export default function AuthLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="w-full h-screen bg-crimson fcc">
+        <div className="w-full min-h-screen sm:py-10 bg-crimson fcc">
             <div className={cn(
-                "w-130 min-h-144",
-                "px-12 py-15",
+                "sm:w-130 w-full",
+                "md:px-15 sm:px-10 px-5 py-15",
                 "bg-white-utility",
-                "rounded-xl"
+                "sm:rounded-xl"
             )}>
                 <AuthHeader />
                 <main>
