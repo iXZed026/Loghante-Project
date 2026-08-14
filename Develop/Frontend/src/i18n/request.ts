@@ -49,6 +49,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/auth/register.json`)
     ).default;
 
+    const authLogin = (
+        await import(`../messages/${locale}/auth/login.json`)
+    ).default;
+
     const authShared = (
         await import(`../messages/${locale}/auth/shared.json`)
     ).default;
@@ -75,6 +79,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             authRegister,
             authShared,
             authRoutes,
+            authLogin,
         },
     };
 });
