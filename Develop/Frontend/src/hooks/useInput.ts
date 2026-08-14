@@ -15,7 +15,7 @@ function useInput(
         setInput("")
     }
 
-    return { input, changeInputValue, clearInputValue }
+    return [input, setInput, changeInputValue, clearInputValue] as any
 
 }
 
