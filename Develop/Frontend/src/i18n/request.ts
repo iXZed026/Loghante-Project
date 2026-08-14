@@ -44,12 +44,25 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/Loghante/virtual-tour.json`)
     ).default;
 
+    //Auth
+    const authRegister = (
+        await import(`../messages/${locale}/auth/register.json`)
+    ).default;
+
+    const authShared = (
+        await import(`../messages/${locale}/auth/shared.json`)
+    ).default;
+
+    const authRoutes = (
+        await import(`../messages/${locale}/auth/routes.json`)
+    ).default;
+
     return {
         locale,
         messages: {
             common,
             footer,
-            
+
             LoghantehHeader,
             LoghantehHero,
             LoghantehAbout,
@@ -58,6 +71,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
             LoghantehEventsAndCourses,
             LoghantehCinemaAndTheaters,
             LoghantehVirtualTour,
+
+            authRegister,
+            authShared,
+            authRoutes,
         },
     };
 });
