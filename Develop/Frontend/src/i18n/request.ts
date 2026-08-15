@@ -61,6 +61,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/auth/routes.json`)
     ).default;
 
+    const authForgotPassword = (
+        await import(`../messages/${locale}/auth/forgot-password/forgot-password.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -80,6 +84,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             authShared,
             authRoutes,
             authLogin,
+            authForgotPassword,
         },
     };
 });

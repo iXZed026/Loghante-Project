@@ -1,4 +1,5 @@
 "use client"
+import AppLink from '@/components/ui/AppLink';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import useInput from '@/hooks/useInput';
@@ -71,6 +72,14 @@ function LoginForm({
                     onChange={ChangePasswordValue}
                 />
             </div>
+            {/* Forget Password Route */}
+            <div className='text-sm text-center hover:opacity-60 transition-all'>
+                <AppLink
+                    href='/login/forgot-password'
+                >
+                    {loginT("forgot")}
+                </AppLink>
+            </div>
             {/* SigIn With Google*/}
             <div className='border-2 border-black/30 h-12.5 rounded-lg fcc gap-3 text-sm'>
                 <GrGoogle className='size-4 text-purple-500' />
@@ -86,8 +95,7 @@ function LoginForm({
                         "hover:opacity-85",
                     )}
                 >
-                    Login
-                    {/* {RegisterT("submit-button")} */}
+                    {loginT("login-button")}
                 </Button>
             </div>
         </form>
