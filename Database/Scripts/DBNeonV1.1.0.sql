@@ -375,3 +375,24 @@ CREATE INDEX IX_Bookings_UserId
 
 CREATE INDEX IX_Bookings_SessionId
     ON Bookings(SessionId);
+
+SELECT * FROM Users;
+
+CREATE TABLE RefreshTokens (
+    RefreshTokenId UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    UserId BIGINT NOT NULL,
+
+    Token TEXT NOT NULL UNIQUE,
+
+    ExpiresAt TIMESTAMPTZ NOT NULL,
+
+    Revoked BOOLEAN NOT NULL DEFAULT FALSE,
+
+    CreatedAt TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT FK_RefreshTokens_User
+        FOREIGN KEY (UserId)
+        REFERENCES Users(UserId)
+        ON DELETE CASCADE
+);
