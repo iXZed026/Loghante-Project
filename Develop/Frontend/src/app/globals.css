@@ -18,12 +18,16 @@ html {
 @theme {
   --font-poppins: var(--font-poppins-local);
   --font-wulkan: var(--font-wulkan-local);
+  --font-rozname: var(--font-rozname-local);
+  /* --font-ordibehesht: var(--font-ordibehesht-local); */
 }
 
-html,
 body {
   font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-rozname), sans-serif;
 }
+
+
 
 @layer utilities {
 

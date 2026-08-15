@@ -13,7 +13,7 @@ import Footer from '@/components/shared/footer/Footer';
 
 function Loghante() {
   return (
-    <div className='overflow-x-hidden'>
+    <div className='overflow-x-hidden '>
       <Header />
       <HeroSection />
       <Container>

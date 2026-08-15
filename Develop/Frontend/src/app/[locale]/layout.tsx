@@ -1,7 +1,7 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import "@/app/globals.css";
-import { poppins, wulkan } from "@/font";
+import { poppins, rozname, wulkan } from "@/font";
 
 
 export default async function LocaleLayout({
@@ -19,15 +19,16 @@ export default async function LocaleLayout({
 
   const direction = locale === "fa" ? "rtl" : "ltr";
   const font = locale === "fa"
-    ? "" : `${poppins.variable} ${wulkan.variable}`
-
+    ? `${rozname.variable} text-lg font-semibold`
+    : `${poppins.variable} ${wulkan.variable}`
+  // ${ordibehesht.variable}
   return (
     <html
       lang={locale}
       dir={direction}
     >
       <body
-        className={font}
+        className={`${font}`}
         cz-shortcut-listen="true"
       >
         <NextIntlClientProvider messages={messages}>

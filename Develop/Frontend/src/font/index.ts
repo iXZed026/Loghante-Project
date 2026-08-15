@@ -1,5 +1,7 @@
 import localFont from "next/font/local";
 
+// ==================== English ====================
+
 export const poppins = localFont({
   src: [
     {
@@ -63,3 +65,30 @@ export const wulkan = localFont({
   variable: "--font-wulkan",
   display: "swap",
 });
+
+// ==================== Persian ====================
+
+export const rozname = localFont({
+  src: [
+    {
+      path: "../../public/fonts/persian/rozname/Far_Rooznameh.ttf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+
+  variable: "--font-rozname",
+  display: "swap",
+});
+
+// export const ordibehesht = localFont({
+//   src: [
+//     {
+//       path: "../../public/fonts/persian/ordibehesht/Ordibehesht.TTF",
+//       weight: "400",
+//       style: "normal",
+//     },
+//   ],
+//   variable: "--font-ordibehesht",
+//   display: "swap",
+// });
