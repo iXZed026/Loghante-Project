@@ -69,12 +69,17 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/auth/verify.json`)
     ).default;
 
+    //Profile
+    const profileDashboard = (
+        await import(`../messages/${locale}/profile/dashboard-links.json`)
+    ).default;
+
     return {
         locale,
         messages: {
             common,
             footer,
-
+            //Loghanteh-root
             LoghantehHeader,
             LoghantehHero,
             LoghantehAbout,
@@ -83,13 +88,15 @@ export default getRequestConfig(async ({ requestLocale }) => {
             LoghantehEventsAndCourses,
             LoghantehCinemaAndTheaters,
             LoghantehVirtualTour,
-
+            //Auth
             authRegister,
             authShared,
             authRoutes,
             authLogin,
             authForgotPassword,
             authVerify,
+            //Profile
+            profileDashboard
         },
     };
 });
