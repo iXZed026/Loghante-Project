@@ -1,7 +1,7 @@
 import VerifyForm from '@/features/auth/components/VerifyForm'
 import React from 'react'
 
-function رثقهبغ() {
+function Verify() {
     return (
         <div>
             <VerifyForm />
@@ -9,4 +9,4 @@ function رثقهبغ() {
     )
 }
 
-export default رثقهبغ
+export default Verify
