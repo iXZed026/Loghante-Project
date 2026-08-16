@@ -1,5 +1,5 @@
+import ProfileDashboard from '@/features/profile/componenets/ProfileDashboard'
 import { Children } from '@/types/children'
-import React from 'react'
 
 function ProfileLayout({
     children
@@ -7,13 +7,13 @@ function ProfileLayout({
     children: Children
 }) {
     return (
-        <div>
+        <div className='flex'>
             {/* Profile Dashbord */}
-            <div>
-                
-            </div>
+                <ProfileDashboard />
             {/* Pages */}
-            {children}
+            <div className='w-full p-8.5'>
+                {children}
+            </div>
         </div>
     )
 }
