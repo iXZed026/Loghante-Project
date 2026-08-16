@@ -1,9 +1,12 @@
+import VerifyForm from '@/features/auth/components/VerifyForm'
 import React from 'react'
 
-function page() {
-  return (
-    <div>page</div>
-  )
+function رثقهبغ() {
+    return (
+        <div>
+            <VerifyForm />
+        </div>
+    )
 }
 
-export default page
+export default رثقهبغ
