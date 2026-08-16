@@ -65,6 +65,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/auth/forgot-password/forgot-password.json`)
     ).default;
 
+    const authVerify = (
+        await import(`../messages/${locale}/auth/verify.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -85,6 +89,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             authRoutes,
             authLogin,
             authForgotPassword,
+            authVerify,
         },
     };
 });
