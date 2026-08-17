@@ -1,40 +1,95 @@
 import AppImage from '@/components/ui/AppImage'
-import AppLink from '@/components/ui/AppLink'
 import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
 import ProfileDashboardLinks from './ProfileDashboardLinks';
 import { IoIosLogOut } from "react-icons/io";
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { openSlideMenu, openSlideMenuFa } from '@/lib/animations/variants';
+import { motion } from "framer-motion";
+import { RefObject } from 'react';
+import { IoMdClose } from "react-icons/io";
 
-function ProfileDashboard() {
+interface IProfileDashboard {
+    isActive: boolean;
+    divElem?: RefObject<HTMLDivElement | null>;
+    UnActiveDashboardHandler?: () => void
+}
+
+function ProfileDashboard({
+    isActive,
+    divElem,
+    UnActiveDashboardHandler,
+}: IProfileDashboard) {
 
     const dashboardLinksT = useTranslations("profileDashboard")
+    const locale = useLocale()
 
     return (
-        <div className="w-106 md:block hidden">
+        <motion.div
+            variants={
+                locale !== "fa" ?
+                    openSlideMenu :
+                    openSlideMenuFa
+            }
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className={cn(
+                "w-106",
+                "bg-white-utility",
+                isActive
+                    ? locale === "fa"
+                        ? "fixed top-0 right-0"
+                        : "fixed top-0 left-0"
+                    : "md:block hidden",
+            )}
+            ref={divElem}
+        >
             <div className={cn(
                 "p-8.5",
                 "h-screen",
-                "border-r-2 border-black/30",
+                " border-black/30",
+                locale === "fa" ? "border-l-2" : "border-r-2",
                 "fcol justify-between",
             )}>
+
                 {/* Profile Dashboard Header */}
                 <div className='fcol gap-3.5 mb-4'>
-                    <AppImage
-                        width={80}
-                        height={60}
-                        src="/images/loghanteh-logo.svg"
-                        alt='loghanteh logo'
-                    />
+
+                    <div className='fbc'>
+                        <AppImage
+                            width={80}
+                            height={60}
+                            src="/images/loghanteh-logo.svg"
+                            alt='loghanteh logo'
+                        />
+
+                        <IoMdClose
+                            className={cn(
+                                "size-6",
+                                "transition-all",
+                                "hover:opacity-65",
+                                "click-scale",
+                                "cursor-pointer",
+                                "md:hidden"
+                            )}
+                            onClick={UnActiveDashboardHandler}
+                        />
+                    </div>
+
                     <h1 className='font-bold text-2xl'>
                         {dashboardLinksT("title")}
                     </h1>
+
                     <span className='text-xl font-light'>
                         Danyal Lotfi
                     </span>
+
                     {/* Profile Dashboard Page Links */}
                     <ProfileDashboardLinks />
+
                 </div>
+
                 {/* Profile Dashboard LogOut */}
                 <div >
                     <Button
@@ -52,8 +107,9 @@ function ProfileDashboard() {
                         {dashboardLinksT("logout")}
                     </Button>
                 </div>
+
             </div >
-        </div>
+        </motion.div>
     )
 }
 

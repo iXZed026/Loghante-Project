@@ -20,6 +20,7 @@ function ProfileDashboardLinks() {
                     <li key={link.id}>
                         <AppLink
                             className={cn(
+                                "font-medium",
                                 "rounded-lg",
                                 "flex items-center",
                                 "p-3",
