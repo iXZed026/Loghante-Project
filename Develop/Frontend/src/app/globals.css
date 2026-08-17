@@ -49,6 +49,10 @@ body {
     @apply hover:text-[var(--crimson-hover-color)];
   }
 
+  .border-crimson-opacity{
+    @apply border-[#5C212759]
+  }
+
   .text-black-utility {
     @apply text-[var(--black-color)];
   }
