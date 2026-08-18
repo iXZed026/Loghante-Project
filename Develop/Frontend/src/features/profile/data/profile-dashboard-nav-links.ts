@@ -50,10 +50,10 @@ export const dashboardNavLinks:
         {
             id: 4,
             name: {
-                en: "Tickets Purchased",
+                en: "Ticket Purchased",
                 fa: "بلیط‌های خریداری شده",
             },
-            href: "/tickets-purchased",
+            href: "/ticket-purchased",
             icon: IoTicketOutline,
         },
         {
