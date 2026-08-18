@@ -35,8 +35,11 @@ function ProfileDashboard({
             animate="visible"
             exit="exit"
             className={cn(
-                "w-106",
+                "w-90",
                 "bg-white-utility",
+                "min-h-screen",
+                " border-black/30",
+                locale === "fa" ? "border-l-1" : "border-r-1",
                 isActive
                     ? locale === "fa"
                         ? "fixed top-0 right-0"
@@ -47,10 +50,8 @@ function ProfileDashboard({
         >
             <div className={cn(
                 "p-8.5",
-                "h-screen",
-                " border-black/30",
-                locale === "fa" ? "border-l-2" : "border-r-2",
                 "fcol justify-between",
+                "min-h-screen",
             )}>
 
                 {/* Profile Dashboard Header */}
@@ -86,7 +87,9 @@ function ProfileDashboard({
                     </span>
 
                     {/* Profile Dashboard Page Links */}
-                    <ProfileDashboardLinks />
+                    <ProfileDashboardLinks 
+                        UnActiveDashboardHandler={UnActiveDashboardHandler}
+                    />
 
                 </div>
 
@@ -95,7 +98,7 @@ function ProfileDashboard({
                     <Button
                         className={cn(
                             "w-full",
-                            "p-5",
+                            "px-5",
                             "text-black-utility font-semibold",
                             "flex items-center gap-3",
                             "transition-all duration-300",

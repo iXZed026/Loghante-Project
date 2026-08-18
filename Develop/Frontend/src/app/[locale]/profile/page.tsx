@@ -25,7 +25,7 @@ function Dashboard() {
         <ProfileNextVisitBox />
       </div>
       {/* Discover Museums Desktop */}
-      <div className='lg:block hidden'>
+      <div className='xl:block hidden'>
         <ProfileDiscoverMuseums />
       </div>
     </div>

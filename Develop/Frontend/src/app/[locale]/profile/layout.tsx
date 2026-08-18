@@ -63,7 +63,7 @@ function ProfileLayout({
                 <ProfileMobileHeader
                     activeDashboardHandler={activeDashboardHandler}
                 />
-                <div className="p-8 5">
+                <div className="md:p-8 p-5 md:overflow-y-scroll md:h-screen">
                     {/* Pages */}
                     {children}
                 </div>

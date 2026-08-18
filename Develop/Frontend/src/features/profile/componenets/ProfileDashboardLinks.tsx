@@ -6,7 +6,14 @@ import { dashboardNavLinks } from "../data/profile-dashboard-nav-links"
 import { getLocalizedValue } from "@/lib/utils/getLocalizedValue"
 import { usePathname } from "next/navigation"
 
-function ProfileDashboardLinks() {
+interface IProfileDashboardLinks {
+    UnActiveDashboardHandler?: () => void
+}
+
+function ProfileDashboardLinks({
+    UnActiveDashboardHandler
+}: IProfileDashboardLinks
+) {
 
     const locale = useLocale()
     const pathname = usePathname()
@@ -32,6 +39,7 @@ function ProfileDashboardLinks() {
                                 "bg-[#5C212733]"
                             )}
                             href={`/profile${link.href}`}
+                            onClick={UnActiveDashboardHandler}
                         >
                             <link.icon
                                 className='size-6 text-crimson'
