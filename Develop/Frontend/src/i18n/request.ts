@@ -74,6 +74,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/profile/dashboard-links.json`)
     ).default;
 
+    const profileDashboardPage = (
+        await import(`../messages/${locale}/profile/profile-dashboard-page.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -96,7 +100,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
             authForgotPassword,
             authVerify,
             //Profile
-            profileDashboard
+            profileDashboard,
+            profileDashboardPage
         },
     };
 });

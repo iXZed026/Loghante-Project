@@ -3,9 +3,16 @@ import AppImage from '@/components/ui/AppImage'
 import AppLink from '@/components/ui/AppLink'
 import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
+import { TranslationFunction } from '@/types/translations'
 import React from 'react'
 
-function ProfileDiscoverMuseums() {
+interface IProfileDiscoverMuseums {
+    dashboardPageT: TranslationFunction
+}
+
+function ProfileDiscoverMuseums({
+    dashboardPageT,
+}: IProfileDiscoverMuseums) {
     return (
         <div className={cn(
             "py-9.5",
@@ -35,10 +42,10 @@ function ProfileDiscoverMuseums() {
                 )}
             >
                 <span className='font-semibold text-lg'>
-                    Discover the museums of Loghanteh
+                    {dashboardPageT("discover-museums.title")}
                 </span>
                 <p className='font-light text-black-light-utility'>
-                    Explore our museums, exhibitions and cultural collections
+                   {dashboardPageT("discover-museums.sub-title")}
                 </p>
             </div>
             <div
@@ -57,7 +64,7 @@ function ProfileDiscoverMuseums() {
                             "hover:bg-[var(--gold-hover-color)]"
                         )}
                     >
-                        Explore Museums
+                        {dashboardPageT("discover-museums.museums-button")}
                         <ArrowIcon />
                     </Button>
                 </AppLink>

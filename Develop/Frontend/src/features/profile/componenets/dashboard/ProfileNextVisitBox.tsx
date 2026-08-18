@@ -2,12 +2,19 @@ import ArrowIcon from '@/components/shared/ArrowIcon';
 import AppLink from '@/components/ui/AppLink';
 import Button from '@/components/ui/Button';
 import { cn } from '@/lib/utils/cn'
+import { TranslationFunction } from '@/types/translations';
 import React from 'react'
 import { CiLocationOn } from "react-icons/ci";
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { IoTimeOutline } from "react-icons/io5";
 
-function ProfileNextVisitBox() {
+interface IProfileNextVisitBox {
+    dashboardPageT: TranslationFunction
+}
+
+function ProfileNextVisitBox({
+    dashboardPageT,
+}: IProfileNextVisitBox) {
     return (
         <div
             className={cn(
@@ -46,7 +53,7 @@ function ProfileNextVisitBox() {
                             14:30
                         </span>
                         <span className='font-semibold'>
-                            Reservation code: 666585
+                            {dashboardPageT("upcoming-ticket.ticket-details.reservation-code")} 666585
                         </span>
                     </div>
                 </div>
@@ -74,7 +81,7 @@ function ProfileNextVisitBox() {
                                 "hover:opacity-75",
                                 "click-scale"
                             )}>
-                                View Ticket
+                                {dashboardPageT("upcoming-ticket.date-and-views.view-ticket-button")}
                                 <ArrowIcon />
                             </Button>
                         </AppLink>

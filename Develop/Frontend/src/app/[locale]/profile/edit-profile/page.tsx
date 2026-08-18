@@ -1,12 +1,14 @@
 import FadeUp from '@/components/animations/FadeUp'
 import React from 'react'
 
-function page() {
+function EditProfile() {
     return (
         <FadeUp>
-            <div>page</div>
+            <div>
+                
+            </div>
         </FadeUp>
     )
 }
 
-export default page
+export default EditProfile

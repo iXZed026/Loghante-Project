@@ -1,10 +1,18 @@
 import { cn } from '@/lib/utils/cn'
+import { TranslationFunction } from '@/types/translations'
 import React from 'react'
 import { FaRegCalendarAlt } from 'react-icons/fa'
 import { GoBookmark } from 'react-icons/go'
 import { LuTicketSlash } from 'react-icons/lu'
 
-function ProfileDashboardActivity() {
+interface IProfileDashboardActivity {
+    dashboardPageT: TranslationFunction
+}
+
+
+function ProfileDashboardActivity({
+    dashboardPageT,
+}: IProfileDashboardActivity) {
     return (
         <div className='grid grid-cols-12 xl:gap-10 gap-5'>
             {/* Upcoming Visit */}
@@ -24,14 +32,14 @@ function ProfileDashboardActivity() {
                     </div>
                 </div>
                 <div className='fcol gap-2 w-full text-sm'>
-                    <span>Upcoming Visit</span>
+                    <span>{dashboardPageT("activity.upcoming-visit.title")}</span>
                     <span className='font-semibold text-xl text-crimson'>
                         12 Aug 2026
                     </span>
                     <span>Loghanteh Museum Tour</span>
                 </div>
             </div>
-            {/* Upcoming Visit */}
+            {/* Tickets */}
             <div className={cn(
                 "xl:col-span-4 col-span-12",
                 "py-5 px-5",
@@ -48,7 +56,7 @@ function ProfileDashboardActivity() {
                     </div>
                 </div>
                 <div className='fcol gap-2 w-full text-sm'>
-                    <span>Tickets</span>
+                    <span>{dashboardPageT("activity.tickets.title")}</span>
                     <span className='font-semibold text-xl text-crimson'>
                         4
                     </span>
@@ -56,7 +64,7 @@ function ProfileDashboardActivity() {
                 </div>
             </div>
 
-            {/* Upcoming Visit */}
+            {/* Collections */}
             <div className={cn(
                 "xl:col-span-4 col-span-12",
                 "py-5 px-5",
@@ -73,7 +81,7 @@ function ProfileDashboardActivity() {
                     </div>
                 </div>
                 <div className='fcol gap-2 w-full text-sm'>
-                    <span>Collections</span>
+                    <span>{dashboardPageT("activity.collections.title")}</span>
                     <span className='font-semibold text-xl text-crimson'>
                         8
                     </span>
