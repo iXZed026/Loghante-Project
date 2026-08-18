@@ -6,7 +6,7 @@ import { LuTicketSlash } from 'react-icons/lu'
 
 function ProfileDashboardActivity() {
     return (
-        <div className='grid grid-cols-12 gap-5'>
+        <div className='grid grid-cols-12 xl:gap-10 gap-5 mb-5'>
             {/* Upcoming Visit */}
             <div className={cn(
                 "xl:col-span-4 col-span-12",

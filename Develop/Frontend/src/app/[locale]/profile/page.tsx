@@ -1,4 +1,5 @@
 import ProfileDashboardActivity from '@/features/profile/componenets/dashboard/ProfileDashboardActivity';
+import ProfileNextVisitBox from '@/features/profile/componenets/dashboard/ProfileNextVisitBox';
 
 function Dashboard() {
   return (
@@ -9,10 +10,10 @@ function Dashboard() {
           Dashboard
         </h2>
         <span
-          className='md:text-xl text-black-light-utility'
+          className='lg:text-xl text-black-light-utility'
         >Welcome back,
           <span className='text-crimson'> Danyal Lotfi</span>
-          <span> here’s a quick overview of your activity at Loghanteh</span>
+          <span > here’s a quick overview of your activity at Loghanteh</span>
         </span>
 
       </div>
@@ -20,7 +21,7 @@ function Dashboard() {
       <ProfileDashboardActivity />
       {/* Next Visit Boxes */}
       <div>
-
+        <ProfileNextVisitBox />
       </div>
       {/* Discover Museums Fesktop */}
       <div>
