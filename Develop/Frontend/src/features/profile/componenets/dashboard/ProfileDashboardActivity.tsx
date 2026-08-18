@@ -6,12 +6,12 @@ import { LuTicketSlash } from 'react-icons/lu'
 
 function ProfileDashboardActivity() {
     return (
-        <div className='grid grid-cols-12 xl:gap-10 gap-5 mb-5'>
+        <div className='grid grid-cols-12 xl:gap-10 gap-5'>
             {/* Upcoming Visit */}
             <div className={cn(
                 "xl:col-span-4 col-span-12",
                 "py-5 px-5",
-                "border-1 border-crimson-opacity",
+                "border-1 border-[var(--crimson-opacity-color)]",
                 "rounded-lg",
                 "fcc",
             )}>
@@ -35,7 +35,7 @@ function ProfileDashboardActivity() {
             <div className={cn(
                 "xl:col-span-4 col-span-12",
                 "py-5 px-5",
-                "border-1 border-crimson-opacity",
+                "border-1 border-[var(--crimson-opacity-color)]",
                 "rounded-lg",
                 "fcc",
             )}>
@@ -60,7 +60,7 @@ function ProfileDashboardActivity() {
             <div className={cn(
                 "xl:col-span-4 col-span-12",
                 "py-5 px-5",
-                "border-1 border-crimson-opacity",
+                "border-1 border-[var(--crimson-opacity-color)]",
                 "rounded-lg",
                 "fcc",
             )}>

@@ -13,7 +13,7 @@ function ProfileNextVisitBox() {
             className={cn(
                 "grid grid-cols-12 gap-5",
                 "lg:p-5",
-                "border-1 border-crimson-opacity",
+                "border-1 border-[var(--crimson-opacity-color)]",
                 "rounded-lg",
                 "overflow-hidden"
             )}

@@ -1,11 +1,12 @@
 import ProfileDashboardActivity from '@/features/profile/componenets/dashboard/ProfileDashboardActivity';
+import ProfileDiscoverMuseums from '@/features/profile/componenets/dashboard/ProfileDiscoverMuseums';
 import ProfileNextVisitBox from '@/features/profile/componenets/dashboard/ProfileNextVisitBox';
 
 function Dashboard() {
   return (
-    <div>
+    <div className='fcol gap-5'>
       {/* Dashboard Header */}
-      <div className='fcol gap-5 mb-5'>
+      <div className='fcol gap-5'>
         <h2 className='font-medium md:text-4xl text-2xl'>
           Dashboard
         </h2>
@@ -23,9 +24,9 @@ function Dashboard() {
       <div>
         <ProfileNextVisitBox />
       </div>
-      {/* Discover Museums Fesktop */}
-      <div>
-
+      {/* Discover Museums Desktop */}
+      <div className='lg:block hidden'>
+        <ProfileDiscoverMuseums />
       </div>
     </div>
   )

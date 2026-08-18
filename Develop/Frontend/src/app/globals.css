@@ -3,11 +3,13 @@
 :root {
   --crimson-color: #5c2127;
   --crimson-hover-color: #42151A;
+  --crimson-opacity-color: #5C212759;
   --black-color: #161616;
   --black-light-color: #313131;
   --white-color: #FFFFFF;
   --white-light-color: rgb(231, 225, 225);
   --gold-color: #d2ae6d;
+  --gold-opacity-color: #D2AE6D59;
   --gold-hover-color: #936c23;
 }
 
@@ -49,10 +51,6 @@ body {
     @apply hover:text-[var(--crimson-hover-color)];
   }
 
-  .border-crimson-opacity{
-    @apply border-[#5C212759]
-  }
-
   .text-black-utility {
     @apply text-[var(--black-color)];
   }
@@ -79,6 +77,14 @@ body {
 
   .bg-gold-utility {
     @apply bg-[var(--gold-color)];
+  }
+
+  .bg-gold-opacity {
+    @apply bg-[#D2AE6D59]
+  }
+
+  .border-gold-opacity {
+    @apply border-[#D2AE6D59]
   }
 
   .bg-hover-gold {
