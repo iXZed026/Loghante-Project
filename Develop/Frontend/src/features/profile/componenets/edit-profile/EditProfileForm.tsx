@@ -3,9 +3,12 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import useInput from '@/hooks/useInput'
 import { cn } from '@/lib/utils/cn'
+import { useTranslations } from 'next-intl'
 import React, { useEffect } from 'react'
 
 function EditProfileForm() {
+
+    const editProfileT = useTranslations("profileEdit")
 
     const [
         fullNameValue,
@@ -67,13 +70,17 @@ function EditProfileForm() {
 
     return (
         <form>
-            <div className='fcol gap-5 sm:w-111 w-full '>
+            <div className='fcol gap-5 lg:w-111 md:w-75 w-full '>
                 {/* Full Name */}
                 <div className='fcol gap-2.5 text-sm'>
-                    <span>Full Name</span>
+                    <span>
+                        {
+                            editProfileT("inputs.full-name.title")
+                        }
+                    </span>
                     <Input
                         className={cn(
-                            "border-b-3 border-black-utility",
+                            "border-b-2 border-black-utility rounded-b-sm",
                         )}
                         maxLength={200}
                         placeholder='Danyal Lotfi'
@@ -84,14 +91,18 @@ function EditProfileForm() {
                 </div>
                 {/* Fhone */}
                 <div className='fcol gap-2.5 text-sm'>
-                    <span>Change Phone Number</span>
+                    <span>
+                        {
+                            editProfileT("inputs.phone.title")
+                        }
+                    </span>
                     <Input
                         className={cn(
-                            "border-b-3 border-black-utility",
+                            "border-b-2 border-black-utility rounded-b-sm",
                         )}
                         maxLength={11}
                         placeholder='09044296231'
-                        type="tel"
+                        // type="tel"
                         value={phonedValue}
                         inputMode="numeric"
                         onChange={(e) => {
@@ -102,10 +113,14 @@ function EditProfileForm() {
                 </div>
                 {/* Email */}
                 <div className='fcol gap-2.5 text-sm'>
-                    <span>Email Addres</span>
+                    <span>
+                        {
+                            editProfileT("inputs.email.title")
+                        }
+                    </span>
                     <Input
                         className={cn(
-                            "border-b-3 border-black-utility",
+                            "border-b-2 border-black-utility rounded-b-sm",
                         )}
                         maxLength={250}
                         placeholder='danyal@gmail.com'
@@ -116,10 +131,14 @@ function EditProfileForm() {
                 </div>
                 {/* Password */}
                 <div className='fcol gap-2.5 text-sm'>
-                    <span>Change Password</span>
+                    <span>
+                        {
+                            editProfileT("inputs.password.title")
+                        }
+                    </span>
                     <Input
                         className={cn(
-                            "border-b-3 border-black-utility",
+                            "border-b-2 border-black-utility rounded-b-sm",
                         )}
                         maxLength={16}
                         placeholder='Danyal Lotfi'
@@ -130,7 +149,11 @@ function EditProfileForm() {
                 </div>
                 {/* Date And Birth */}
                 <div className='fcol gap-2.5 text-sm'>
-                    <span>Date of birth:</span>
+                    <span>
+                        {
+                            editProfileT("inputs.date.title")
+                        }
+                    </span>
                     <div className='fbc gap-3'>
                         {/* Day */}
                         <Input
@@ -142,7 +165,7 @@ function EditProfileForm() {
                                 "text-sm",
                             )}
                             maxLength={2}
-                            placeholder='DD'
+                            placeholder={editProfileT("inputs.date.day")}
                             type='text'
                             value={dayValue}
                             onChange={(e) => {
@@ -160,7 +183,7 @@ function EditProfileForm() {
                                 "text-sm"
                             )}
                             maxLength={2}
-                            placeholder='MM'
+                            placeholder={editProfileT("inputs.date.mounth")}
                             type='text'
                             value={mounthValue}
                             onChange={(e) => {
@@ -178,7 +201,7 @@ function EditProfileForm() {
                                 "text-sm"
                             )}
                             maxLength={4}
-                            placeholder='YYYY'
+                            placeholder={editProfileT("inputs.date.year")}
                             type='text'
                             value={yearValue}
                             onChange={(e) => {
@@ -189,25 +212,34 @@ function EditProfileForm() {
                     </div>
                 </div>
                 {/* Gender */}
-                <div className='fcol gap-7 text-sm'>
-                    <span>Choose your gender:</span>
-                    <div className='fcc'>
-                        <Input
-                            className={cn(
-                                "border-b-3 border-black-utility",
-                                "w-50"
-                            )}
-                            placeholder='Danyal Lotfi'
-                            type='radio'
-                        />
-                        <Input
-                            className={cn(
-                                "border-b-3 border-black-utility",
-                                "w-50"
-                            )}
-                            placeholder='Danyal Lotfi'
-                            type='radio'
-                        />
+                <div className='fcol gap-7'>
+                    <span className='text-sm'>
+                        {
+                            editProfileT("inputs.gender.title")
+                        }
+                    </span>
+                    <div className="flex justify-center items-center gap-40">
+                        <label className="fcc gap-2 cursor-pointer">
+                            <Input
+                                type="radio"
+                                name="gender"
+                                value="male"
+                            />
+                            <span>
+                                {editProfileT("inputs.gender.male")}
+                            </span>
+                        </label>
+
+                        <label className="fcc gap-2 cursor-pointer">
+                            <Input
+                                type="radio"
+                                name="gender"
+                                value="female"
+                            />
+                            <span>
+                                {editProfileT("inputs.gender.female")}
+                            </span>
+                        </label>
                     </div>
                 </div>
                 {/* Done Button */}
@@ -218,7 +250,7 @@ function EditProfileForm() {
                             "px-4 py-3",
                             "hover:bg-[var(--crimson-hover-color)]"
                         )}>
-                        Done
+                        {editProfileT("apply-button")}
                     </Button>
                 </div>
             </div>

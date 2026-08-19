@@ -1,20 +1,28 @@
 import FadeUp from '@/components/animations/FadeUp'
 import EditProfileForm from '@/features/profile/componenets/edit-profile/EditProfileForm'
-import React from 'react'
+import { useTranslations } from 'next-intl'
 
 function EditProfile() {
+
+    const editProfileT = useTranslations("profileEdit")
+
+
     return (
         <FadeUp>
             <div>
                 {/* Edit Profile Header */}
                 <div className='mb-10 fcol  gap-5'>
                     <h2 className='font-medium md:text-4xl text-2xl'>
-                        My profile
+                        {
+                            editProfileT("title")
+                        }
                     </h2>
                     <span
                         className='lg:text-xl text-black-light-utility'
                     >
-                        You can complete or edit your information here.
+                        {
+                            editProfileT("description")
+                        }
                     </span>
                 </div>
                 {/* Edit Profile Form  */}

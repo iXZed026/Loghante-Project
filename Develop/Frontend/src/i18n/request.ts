@@ -78,6 +78,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/profile/profile-dashboard-page.json`)
     ).default;
 
+    const profileEdit = (
+        await import(`../messages/${locale}/profile/edit-profile-page.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -101,7 +105,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
             authVerify,
             //Profile
             profileDashboard,
-            profileDashboardPage
+            profileDashboardPage,
+            profileEdit,
         },
     };
 });
