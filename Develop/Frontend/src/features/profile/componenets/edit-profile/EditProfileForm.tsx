@@ -1,0 +1,229 @@
+"use client"
+import Button from '@/components/ui/Button'
+import Input from '@/components/ui/Input'
+import useInput from '@/hooks/useInput'
+import { cn } from '@/lib/utils/cn'
+import React, { useEffect } from 'react'
+
+function EditProfileForm() {
+
+    const [
+        fullNameValue,
+        ,
+        changeFullNameValue,
+        clearFullNameValue,
+    ] = useInput("");
+
+    const [
+        phonedValue,
+        setPhoneValue,
+        changePhoneValue,
+        clearPhoneValue,
+    ] = useInput("");
+
+    const [
+        emailValue,
+        ,
+        changeEmailValue,
+        clearEmailValue,
+    ] = useInput("");
+
+    const [
+        passwordValue,
+        ,
+        changePasswordValue,
+        clearPasswordValue,
+    ] = useInput("");
+
+    //Date and Bityh
+    const [
+        dayValue,
+        setDayValue,
+        changeDayValue,
+        clearDayValue,
+    ] = useInput("");
+
+    const [
+        mounthValue,
+        setMounthValue,
+        changeMounthValue,
+        clearMounthValue,
+    ] = useInput("");
+
+    const [
+        yearValue,
+        setYearValue,
+        changeYearValue,
+        clearYearValue,
+    ] = useInput("");
+
+    const [
+        genderValue,
+        ,
+        changeGenderValue,
+        clearGenderValue,
+    ] = useInput("");
+
+
+    return (
+        <form>
+            <div className='fcol gap-5 sm:w-111 w-full '>
+                {/* Full Name */}
+                <div className='fcol gap-2.5 text-sm'>
+                    <span>Full Name</span>
+                    <Input
+                        className={cn(
+                            "border-b-3 border-black-utility",
+                        )}
+                        maxLength={200}
+                        placeholder='Danyal Lotfi'
+                        type='text'
+                        value={fullNameValue}
+                        onChange={changeFullNameValue}
+                    />
+                </div>
+                {/* Fhone */}
+                <div className='fcol gap-2.5 text-sm'>
+                    <span>Change Phone Number</span>
+                    <Input
+                        className={cn(
+                            "border-b-3 border-black-utility",
+                        )}
+                        maxLength={11}
+                        placeholder='09044296231'
+                        type="tel"
+                        value={phonedValue}
+                        inputMode="numeric"
+                        onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '')
+                            setPhoneValue(value)
+                        }}
+                    />
+                </div>
+                {/* Email */}
+                <div className='fcol gap-2.5 text-sm'>
+                    <span>Email Addres</span>
+                    <Input
+                        className={cn(
+                            "border-b-3 border-black-utility",
+                        )}
+                        maxLength={250}
+                        placeholder='danyal@gmail.com'
+                        type='email'
+                        value={emailValue}
+                        onChange={changeEmailValue}
+                    />
+                </div>
+                {/* Password */}
+                <div className='fcol gap-2.5 text-sm'>
+                    <span>Change Password</span>
+                    <Input
+                        className={cn(
+                            "border-b-3 border-black-utility",
+                        )}
+                        maxLength={16}
+                        placeholder='Danyal Lotfi'
+                        type='password'
+                        value={passwordValue}
+                        onChange={changePasswordValue}
+                    />
+                </div>
+                {/* Date And Birth */}
+                <div className='fcol gap-2.5 text-sm'>
+                    <span>Date of birth:</span>
+                    <div className='fbc gap-3'>
+                        {/* Day */}
+                        <Input
+                            className={cn(
+                                "h-10",
+                                "border-1 border-black-light-utility",
+                                "rounded-xl",
+                                "px-2 py-10",
+                                "text-sm",
+                            )}
+                            maxLength={2}
+                            placeholder='DD'
+                            type='text'
+                            value={dayValue}
+                            onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '')
+                                setDayValue(value)
+                            }}
+                        />
+                        {/* Mounth */}
+                        <Input
+                            className={cn(
+                                "h-10",
+                                "border-1 b,order-black-light-utility",
+                                "rounded-xl",
+                                "px-2 py-10",
+                                "text-sm"
+                            )}
+                            maxLength={2}
+                            placeholder='MM'
+                            type='text'
+                            value={mounthValue}
+                            onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '')
+                                setMounthValue(value)
+                            }}
+                        />
+                        {/* Year */}
+                        <Input
+                            className={cn(
+                                "h-10",
+                                "border-1 b,order-black-light-utility",
+                                "rounded-xl",
+                                "px-2 py-10",
+                                "text-sm"
+                            )}
+                            maxLength={4}
+                            placeholder='YYYY'
+                            type='text'
+                            value={yearValue}
+                            onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '')
+                                setYearValue(value)
+                            }}
+                        />
+                    </div>
+                </div>
+                {/* Gender */}
+                <div className='fcol gap-7 text-sm'>
+                    <span>Choose your gender:</span>
+                    <div className='fcc'>
+                        <Input
+                            className={cn(
+                                "border-b-3 border-black-utility",
+                                "w-50"
+                            )}
+                            placeholder='Danyal Lotfi'
+                            type='radio'
+                        />
+                        <Input
+                            className={cn(
+                                "border-b-3 border-black-utility",
+                                "w-50"
+                            )}
+                            placeholder='Danyal Lotfi'
+                            type='radio'
+                        />
+                    </div>
+                </div>
+                {/* Done Button */}
+                <div>
+                    <Button
+                        className={cn(
+                            "bg-crimson",
+                            "px-4 py-3",
+                            "hover:bg-[var(--crimson-hover-color)]"
+                        )}>
+                        Done
+                    </Button>
+                </div>
+            </div>
+        </form>
+    )
+}
+
+export default EditProfileForm
