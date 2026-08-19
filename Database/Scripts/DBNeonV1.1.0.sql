@@ -42,6 +42,7 @@ CREATE TABLE Users (
     PasswordHash TEXT NOT NULL
 );
 
+SELECT * FROM Users;
 
 -- =========================================================
 -- LANGUAGES
@@ -396,3 +397,5 @@ CREATE TABLE RefreshTokens (
         REFERENCES Users(UserId)
         ON DELETE CASCADE
 );
+
+--this is a comment
