@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 
 function CinemaAndTheaters() {
 
-    const t = useTranslations("LoghantehCinemaAndTheaters")
+    const t = useTranslations("LoghantehConferenceHall")
     //common.json
     const cmT = useTranslations("common")
 

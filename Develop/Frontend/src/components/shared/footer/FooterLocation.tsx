@@ -10,7 +10,7 @@ function FooterLocation({
     return (
         <div
             className={cn(
-                "xl:col-span-3 lg:col-span-4 md:col-span-8 col-span-12",
+                "xl:col-span-5 lg:col-span-4 md:col-span-8 col-span-12",
                 "fcol gap-10",
             )}
         >

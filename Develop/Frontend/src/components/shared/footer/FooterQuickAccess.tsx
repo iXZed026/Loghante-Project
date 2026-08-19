@@ -11,7 +11,7 @@ function FooterQuickAccess({
         <div
             className={
                 cn(
-                    "xl:col-span-3 md:col-span-4 col-span-6",
+                    "xl:col-span-2 md:col-span-4 col-span-6",
                     "fcol gap-10",
                 )
             }
