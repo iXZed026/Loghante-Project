@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="47db796a-652c-472c-83ed-185dabf84c80" name="Changes" comment="RefrenceToken Table Added">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/data_sources_history.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/data_sources_history.xml" afterDir="false" />
+    <list default="true" id="47db796a-652c-472c-83ed-185dabf84c80" name="Changes" comment="latestUpdate">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -91,6 +90,7 @@
     <MESSAGE value="fixing script folder place.&#10;data script added for DBV1.0.0" />
     <MESSAGE value="DBNeonV1.1.0 Added" />
     <MESSAGE value="RefrenceToken Table Added" />
-    <option name="LAST_COMMIT_MESSAGE" value="RefrenceToken Table Added" />
+    <MESSAGE value="latestUpdate" />
+    <option name="LAST_COMMIT_MESSAGE" value="latestUpdate" />
   </component>
 </project>
