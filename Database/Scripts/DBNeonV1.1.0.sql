@@ -397,3 +397,5 @@ CREATE TABLE RefreshTokens (
         REFERENCES Users(UserId)
         ON DELETE CASCADE
 );
+
+--this is a comment
