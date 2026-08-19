@@ -42,6 +42,7 @@ CREATE TABLE Users (
     PasswordHash TEXT NOT NULL
 );
 
+SELECT * FROM Users;
 
 -- =========================================================
 -- LANGUAGES
