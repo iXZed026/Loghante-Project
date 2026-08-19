@@ -6,7 +6,7 @@ interface ITicketStatus {
 
 function TicketStatus({
     status,
-}: ITicketStatus) {
+}: ITicketStatus) { 
 
     function checkTicketStatus(): string {
         if (status === "upcoming") {
