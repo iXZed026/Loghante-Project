@@ -16,6 +16,7 @@ function ConferenceHall() {
                 description={t("description")}
                 href='/cinema-and-theaters'
                 textButton={cmT("button.show-more")}
+                reverse={true}
             />
         </section>
     )
