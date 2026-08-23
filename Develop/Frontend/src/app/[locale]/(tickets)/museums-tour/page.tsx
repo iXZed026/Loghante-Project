@@ -11,7 +11,7 @@ function MuseumsTour() {
           <MuseumsTourHeaderBox />
         </div>
         {/* Museums Tour Tickets */}
-        <MuseumsTourTickets />
+          <MuseumsTourTickets />
       </div>
     </Container>
   )
