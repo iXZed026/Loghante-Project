@@ -55,6 +55,10 @@ body {
     @apply text-[var(--black-color)];
   }
 
+  .border-black-opacity {
+    @apply border-[#0e0e0e59]
+  }
+
   .text-black-light-utility {
     @apply text-[var(--black-light-color)];
   }
