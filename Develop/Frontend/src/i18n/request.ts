@@ -65,11 +65,14 @@ export default getRequestConfig(async ({ requestLocale }) => {
     ).default;
 
     const authForgotPassword = (
-        await import(`../messages/${locale}/auth/forgot-password/forgot-password.json`)
+        await import(`../messages/${locale}/auth/forgot-password.json`)
     ).default;
 
     const authVerify = (
         await import(`../messages/${locale}/auth/verify.json`)
+    ).default;
+    const authNewPassword = (
+        await import(`../messages/${locale}/auth/new-password.json`)
     ).default;
 
     //Profile
@@ -107,6 +110,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             authLogin,
             authForgotPassword,
             authVerify,
+            authNewPassword,
             //Profile
             profileDashboard,
             profileDashboardPage,

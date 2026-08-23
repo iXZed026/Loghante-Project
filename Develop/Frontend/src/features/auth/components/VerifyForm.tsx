@@ -4,7 +4,6 @@ import Input from '@/components/ui/Input'
 import useInput from '@/hooks/useInput'
 import { cn } from '@/lib/utils/cn'
 import { useTranslations } from 'next-intl'
-import React from 'react'
 
 function VerifyForm() {
 
