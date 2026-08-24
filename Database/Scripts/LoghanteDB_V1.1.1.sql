@@ -161,4 +161,103 @@ JOIN Collections c
     ON c.UserId = u.UserId
 ORDER BY u.UserId, c.CollectionId;
 
-SELECT  FROM Users
+SELECT  FROM Users;
+
+CREATE TABLE Museums (
+    MuseumId INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    EstablishedDate DATE
+);
+
+INSERT INTO Museums (EstablishedDate)
+VALUES
+    ('1998-05-20'),
+    ('2005-09-15'),
+    ('2012-03-10');
+
+SELECT *
+FROM Museums;
+
+CREATE TABLE Artifacts (
+    ArtifactId INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    MuseumId INTEGER NOT NULL,
+
+    ImageURL VARCHAR(500),
+
+    CONSTRAINT FK_Artifacts_Museum
+        FOREIGN KEY (MuseumId)
+        REFERENCES Museums(MuseumId)
+        ON DELETE CASCADE
+);
+
+INSERT INTO Artifacts
+    (MuseumId, ImageURL)
+VALUES
+    (
+        1,
+        'https://example.com/images/artifact-001.jpg'
+    ),
+    (
+        1,
+        'https://example.com/images/artifact-002.jpg'
+    ),
+    (
+        1,
+        'https://example.com/images/artifact-003.jpg'
+    ),
+    (
+        2,
+        'https://example.com/images/artifact-004.jpg'
+    ),
+    (
+        2,
+        'https://example.com/images/artifact-005.jpg'
+    ),
+    (
+        3,
+        'https://example.com/images/artifact-006.jpg'
+    );
+
+SELECT * FROM Artifacts;
+
+
+CREATE TABLE CollectionArtifacts (
+    CollectionId INTEGER NOT NULL,
+
+    ArtifactId INTEGER NOT NULL,
+
+    AddedAt TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    DisplayOrder INTEGER NOT NULL DEFAULT 0,
+
+    Note TEXT,
+
+    CONSTRAINT PK_CollectionArtifacts
+        PRIMARY KEY (CollectionId, ArtifactId),
+
+    CONSTRAINT FK_CollectionArtifacts_Collection
+        FOREIGN KEY (CollectionId)
+        REFERENCES Collections(CollectionId)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_CollectionArtifacts_Artifact
+        FOREIGN KEY (ArtifactId)
+        REFERENCES Artifacts(ArtifactId)
+        ON DELETE CASCADE
+);
+
+INSERT INTO CollectionArtifacts
+    (CollectionId, ArtifactId, DisplayOrder, Note)
+VALUES
+    (1, 1, 1, 'One of my favorite artifacts'),
+    (1, 2, 2, 'Very interesting historical object'),
+    (1, 4, 3, 'From another museum'),
+
+    (2, 1, 1, 'Important artifact'),
+    (2, 3, 2, 'Historical value'),
+
+    (3, 2, 1, 'Interesting piece'),
+
+    (4, 1, 1, 'Ancient Iranian artifact'),
+    (4, 5, 2, 'Worth seeing');
