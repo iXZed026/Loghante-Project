@@ -23,3 +23,62 @@ DROP TABLE IF EXISTS Languages CASCADE;
 DROP TABLE IF EXISTS Users CASCADE;
 
 --DROP ALL Tables if exict
+
+CREATE TABLE Users (
+    UserId INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    FullName VARCHAR(150) NOT NULL,
+
+    Email VARCHAR(254) NOT NULL UNIQUE,
+
+    PhoneNumber VARCHAR(20),
+
+    DOB DATE,
+
+    PasswordHash TEXT NOT NULL
+);
+
+CREATE TABLE Collections (
+    CollectionId INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    UserId INTEGER NOT NULL,
+
+    CollectionName VARCHAR(255) NOT NULL,
+
+    Description TEXT,
+
+    CreatedAt TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT FK_Collections_User
+        FOREIGN KEY (UserId)
+        REFERENCES Users(UserId)
+        ON DELETE CASCADE
+);
+
+
+SELECT * FROM Users;
+
+SELECT * FROM Collections;
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE TABLE RefreshToken (
+    RefreshTokenId UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    UserId INTEGER NOT NULL,
+
+    Token TEXT NOT NULL UNIQUE,
+
+    ExpiresAt TIMESTAMPTZ NOT NULL,
+
+    Revoked BOOLEAN NOT NULL DEFAULT FALSE,
+
+    CreatedAt TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT FK_RefreshToken_User
+        FOREIGN KEY (UserId)
+        REFERENCES Users(UserId)
+        ON DELETE CASCADE
+);
+
+SELECT * FROM RefreshToken;
