@@ -82,3 +82,83 @@ CREATE TABLE RefreshToken (
 );
 
 SELECT * FROM RefreshToken;
+
+SELECT * FROM Users;
+
+alter table users
+    alter column email drop not null;
+
+alter table users
+    alter column phonenumber set not null;
+
+
+CREATE INDEX IX_Collections_UserId
+    ON Collections(UserId);
+
+CREATE INDEX IX_RefreshToken_UserId
+    ON RefreshToken(UserId);
+
+CREATE INDEX IX_RefreshToken_ExpiresAt
+    ON RefreshToken(ExpiresAt);
+
+INSERT INTO Users
+    (FullName, Email, PhoneNumber, DOB, PasswordHash)
+VALUES
+    (
+        'Ali Ahmadi',
+        'ali@example.com',
+        '09121234567',
+        '2002-05-15',
+        'HASH_TEST_001'
+    ),
+    (
+        'Sara Mohammadi',
+        'sara@example.com',
+        '09129876543',
+        '2001-11-20',
+        'HASH_TEST_002'
+    ),
+    (
+        'Reza Karimi',
+        'reza@example.com',
+        '09351234567',
+        '2003-02-10',
+        'HASH_TEST_003'
+    );
+
+
+INSERT INTO Collections
+    (UserId, CollectionName, Description)
+VALUES
+    (
+        1,
+        'My Favorite Artifacts',
+        'My favorite museum artifacts.'
+    ),
+    (
+        1,
+        'Iranian Historical Objects',
+        'A collection of interesting historical objects.'
+    ),
+    (
+        2,
+        'My First Collection',
+        'Sara personal collection.'
+    ),
+    (
+        3,
+        'Ancient Iran',
+        'Artifacts related to ancient Iranian history.'
+    );
+
+SELECT
+    u.UserId,
+    u.FullName,
+    c.CollectionId,
+    c.CollectionName
+FROM Users u
+JOIN Collections c
+    ON c.UserId = u.UserId
+ORDER BY u.UserId, c.CollectionId;
+
+SELECT  FROM Users
