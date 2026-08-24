@@ -261,3 +261,37 @@ VALUES
 
     (4, 1, 1, 'Ancient Iranian artifact'),
     (4, 5, 2, 'Worth seeing');
+
+SELECT * FROM CollectionArtifacts;
+
+CREATE INDEX IX_CollectionArtifacts_ArtifactId
+    ON CollectionArtifacts(ArtifactId);
+
+SELECT
+    ca.CollectionId,
+    ca.ArtifactId,
+    ca.DisplayOrder,
+    ca.Note,
+    ca.AddedAt
+FROM CollectionArtifacts ca
+WHERE ca.CollectionId = 1
+ORDER BY ca.DisplayOrder;
+
+SELECT
+    c.CollectionName,
+    a.ArtifactId,
+    a.ImageURL,
+    m.MuseumId,
+    m.EstablishedDate,
+    ca.DisplayOrder,
+    ca.Note
+FROM CollectionArtifacts ca
+JOIN Collections c
+    ON c.CollectionId = ca.CollectionId
+JOIN Artifacts a
+    ON a.ArtifactId = ca.ArtifactId
+JOIN Museums m
+    ON m.MuseumId = a.MuseumId
+ORDER BY c.CollectionId, ca.DisplayOrder;
+
+SELECT * FROM Users
