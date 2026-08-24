@@ -294,4 +294,4 @@ JOIN Museums m
     ON m.MuseumId = a.MuseumId
 ORDER BY c.CollectionId, ca.DisplayOrder;
 
-SELECT * FROM Users
+SELECT * FROM Users;
