@@ -8,23 +8,6 @@ import (
 	"time"
 )
 
-func (a *App) waitForShutdown() error {
-
-	quit := make(chan os.Signal, 1)
-
-	signal.Notify(
-		quit,
-		os.Interrupt,
-		syscall.SIGTERM,
-	)
-
-	<-quit
-
-	a.Logger.Info("shutdown signal received")
-
-	return a.shutdown()
-}
-
 func (a *App) shutdown() error {
 
 	a.Logger.Info("shutting down application...")
@@ -44,14 +27,14 @@ func (a *App) shutdown() error {
 	}
 
 	// 3. Close Mongo
-	if err := a.DB.Client().Disconnect(ctx); err != nil {
-		return err
-	}
+	// if err := a.DB.Client().Disconnect(ctx); err != nil {
+	// 	return err
+	// }
 
 	// 4. Close Redis
-	if err := a.Redis.Close(); err != nil {
-		return err
-	}
+	// if err := a.Redis.Close(); err != nil {
+	// 	return err
+	// }
 
 	a.Logger.Info("application stopped successfully")
 

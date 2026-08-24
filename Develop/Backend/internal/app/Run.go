@@ -4,7 +4,7 @@ import "net/http"
 
 func (a *App) Run() error {
 
-	go a.startWorkers()
+	// go a.startWorkers()
 
 	a.Server = &http.Server{
 		Addr:    ":" + a.Config.Port,
@@ -26,5 +26,5 @@ func (a *App) Run() error {
 
 	}()
 
-	return a.waitForShutdown()
+	return a.WaitForShutdown()
 }
