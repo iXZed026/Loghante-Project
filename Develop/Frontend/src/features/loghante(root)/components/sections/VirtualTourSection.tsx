@@ -14,7 +14,7 @@ function VirtualTourSection() {
                 sectionName={t("section-name")}
                 title={t("title")}
                 description={t("description")}
-                reverse={true}
+                reverse={false}
                 href='/cinema-and-theaters'
                 textButton={cmT("button.show-more")}
             />
