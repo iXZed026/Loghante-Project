@@ -1,8 +1,25 @@
+"use client"
 import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
-import React from 'react'
+import React, { useState } from 'react'
 
 function MuseumsTourTicketBox() {
+
+    const [ticketCount, setTicketCount] =
+        useState<number>(0)
+
+    const increaseHandler: () => void =
+        () => {
+            setTicketCount(prev => prev + 1)
+        }
+        
+        const decreaseHandler: () => void =
+        () => {
+            if(ticketCount !< 1) return;
+            setTicketCount(prev => prev - 1)
+            
+        }
+
     return (
         <div className={cn(
             "col-span-6",
@@ -24,18 +41,28 @@ function MuseumsTourTicketBox() {
                     Remaining capacity: 12
                 </span>
             </div>
-            <div className='fbc'>
+            <div className='fbc select-none'>
                 <div className='font-semibold'>
-                    <span>Number of visitors: </span>
+                    <span>Number of tickets: </span>
                 </div>
                 <div className='fcc gap-2'>
-                    <div className='fcc gap-3 bg-gray-600/30 px-3 py-1 rounded-4xl font-bold'>
-                        <span className='text-xl cursor-pointer'>+</span>
+                    <div className='fcc  bg-gray-600/30 rounded-4xl font-bold'>
+                        <span
+                            className='text-xl cursor-pointer click-scale px-3 py-1'
+                            onClick={increaseHandler}
+                        >
+                            +
+                        </span>
                         <span>|</span>
-                        <span className='text-xl cursor-pointer'>-</span>
+                        <span
+                            className='text-xl cursor-pointer click-scale px-3 py-1'
+                            onClick={decreaseHandler}
+                        >
+                            -
+                        </span>
                     </div>
                     <div className='bg-gray-600/30 px-2 py-1 rounded-4xl font-bold'>
-                        <span>0</span>
+                        <span>{ticketCount}</span>
                     </div>
                 </div>
             </div>
