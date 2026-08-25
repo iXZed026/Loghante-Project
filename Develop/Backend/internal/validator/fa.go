@@ -1,12 +1,25 @@
 package validator
 
-var faMessages = map[string]string{
+var faMessages = map[string]map[string]string{
+	"FullName": {
+		"required": "نام و نام خانوادگی نباید خالی باشد.",
+	},
 
-	"required": "این فیلد الزامی است",
+	"PhoneNumber": {
+		"required": "شماره تلفن نباید خالی باشد.",
+	},
 
-	"email": "ایمیل معتبر نیست",
+	"Email": {
+		"required": "ایمیل نباید خالی باشد.",
+		"email":    "ایمیل وارد شده معتبر نیست.",
+	},
 
-	"gte": "مقدار وارد شده معتبر نیست",
+	"Password": {
+		"required": "رمز عبور نباید خالی باشد.",
+		"min":      "رمز عبور باید حداقل ۸ کاراکتر باشد.",
+	},
 
-	"price5000": "قیمت باید مضرب ۵۰۰۰ باشد",
+	"RepeatPassword": {
+		"required": "تکرار رمز عبور نباید خالی باشد.",
+	},
 }

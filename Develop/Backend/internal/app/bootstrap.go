@@ -7,13 +7,10 @@ import (
 	"log/slog"
 	"loghanteh-project/internal/config"
 	"loghanteh-project/internal/database"
+	"loghanteh-project/internal/handlers"
+	"loghanteh-project/internal/repositories"
 	"loghanteh-project/internal/routes"
-
-	// "test-postgres/internal/database"
-	// "test-postgres/internal/handlers"
-	// "test-postgres/internal/repositories"
-	// "test-postgres/internal/routes"
-	// "test-postgres/internal/services"
+	"loghanteh-project/internal/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -55,25 +52,31 @@ func New() (*App, error) {
 	//////////////
 	//Repositories
 	//////////////
-	// userRepo := repositories.NewUserRepository(db)
+
+	userRepo :=
+		repositories.NewUserRepository(db)
 
 	//////////////
 	//Services
 	//////////////
-	// userService :=
-	// services.NewUserService(userRepo)
+	authService :=
+		services.NewAuthService(userRepo)
 
 	//////////////
-	//Services
+	//Handlers
 	//////////////
-	// userHandler :=
-	// 	handlers.NewUserHandler(userService)
+	authHandler :=
+		handlers.NewAuthHandler(
+			authService,
+			logger,
+		)
 
 	r := gin.Default()
 
 	routes.SetupRoutes(
 		r,
 		logger,
+		authHandler,
 	)
 
 	return &App{

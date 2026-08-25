@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	appErr "museum_ticket/internal/errors"
+	appErr "loghanteh-project/internal/errors"
 
 	"github.com/gin-gonic/gin"
 )

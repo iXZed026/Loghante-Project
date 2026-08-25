@@ -2,45 +2,62 @@ package handlers
 
 import (
 	"context"
-	"errors"
+	"log/slog"
+	"net/http"
 
-	appErrors "loghanteh-project/internal/errors"
+	"loghanteh-project/internal/dto"
+	"loghanteh-project/internal/response"
 	"loghanteh-project/internal/services"
+	"loghanteh-project/internal/validator"
 
 	"github.com/gin-gonic/gin"
 )
 
 type AuthHandler struct {
 	authService *services.AuthService
+	logger      *slog.Logger
 }
 
 func NewAuthHandler(
 	authService *services.AuthService,
+	logger *slog.Logger,
 ) *AuthHandler {
 	return &AuthHandler{
 		authService: authService,
+		logger:      logger,
 	}
 }
 
-type RegisterRequest struct {
-	FullName       string `json:"fullName" binding:"required,max=150"`
-	PhoneNumber    string `json:"phoneNumber" binding:"required,max=20"`
-	Email          string `json:"email" binding:"required,email,max=254"`
-	Password       string `json:"password" binding:"required,min=8"`
-	RepeatPassword string `json:"repeatPassword" binding:"required,eqfield=Password"`
-}
-
 func (h *AuthHandler) Register(c *gin.Context) {
-	var req RegisterRequest
+	var req dto.RegisterRequest
+
+	lang := c.GetHeader("Accept-Language")
+
+	if lang == "" {
+		lang = "en"
+	}
 
 	// Bind and validate request body.
 	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Error(
+			"failed to get register request",
+			"error", err,
+		)
+
+		message := validator.TranslateErrors(err, lang)
+
 		c.JSON(
-			appErrors.ErrInvalidInput.Code,
+			http.StatusBadRequest,
 			gin.H{
-				"error": appErrors.ErrInvalidInput.Message,
+				"message": message,
 			},
 		)
+
+		// response.HandleError(
+		// 	c,
+		// 	err,
+		// 	h.logger,
+		// )
 		return
 	}
 
@@ -54,31 +71,49 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	)
 
 	if err != nil {
-		var appErr *appErrors.AppError
+		h.logger.Error(
+			"failed to reguster user",
+			"error", err,
+		)
 
-		if errors.As(err, &appErr) {
-			c.JSON(
-				appErr.Code,
-				gin.H{
-					"error": appErr.Message,
-				},
-			)
-			return
-		}
-
-		c.JSON(
-			appErrors.ErrInternalServer.Code,
-			gin.H{
-				"error": appErrors.ErrInternalServer.Message,
-			},
+		response.HandleError(
+			c,
+			err,
+			h.logger,
 		)
 		return
 	}
 
-	c.JSON(
-		201,
-		gin.H{
-			"message": "user registered successfully",
-		},
+	response.Success(
+		c,
+		"user registered successfully",
+		nil,
+	)
+}
+
+func (h *AuthHandler) FindAll(c *gin.Context) {
+
+	ctx := c.Request.Context()
+	users, err :=
+		h.authService.FindAll(ctx)
+
+	if err != nil {
+		h.logger.Error(
+			"failed to get all users",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+		return
+	}
+
+	response.Success(
+		c,
+		"get all users successfuly",
+		users,
 	)
 }

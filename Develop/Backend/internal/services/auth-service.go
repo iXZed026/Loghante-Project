@@ -51,8 +51,19 @@ func (s *AuthService) Register(
 	}
 
 	if err := s.userRepository.CreateUser(user, ctx); err != nil {
-		return appErrors.ErrInternalServer
+		return err
 	}
 
 	return nil
+}
+
+func (s *AuthService) FindAll(
+	ctx context.Context,
+) ([]models.User, error) {
+	users, err := s.userRepository.FindAll(ctx)
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	return users, nil
 }

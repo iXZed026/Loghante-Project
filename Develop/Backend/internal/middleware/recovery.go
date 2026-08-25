@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"log/slog"
+	"runtime/debug"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +19,7 @@ func RecoveryMiddleware(logger *slog.Logger) gin.HandlerFunc {
 					"panic recovered",
 					"request_id", value,
 					"error", err, //Panic error
-					// "stack", string(debug.Stack()), //main.go 50 ...
+					"stack", string(debug.Stack()), //main.go 50 ...
 				)
 				c.Abort()
 				c.JSON(

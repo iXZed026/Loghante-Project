@@ -17,4 +17,19 @@ var (
 		Code:    http.StatusBadRequest,
 		Message: "passwords do not match",
 	}
+
+	ErrTooManyRequests = &AppError{
+		Code:    http.StatusTooManyRequests,
+		Message: "too many requests",
+	}
+
+	ErrEmailAlreadyExists = &AppError{
+		Code:    http.StatusConflict,
+		Message: "email already exists",
+	}
+
+	ErrPhoneAlreadyExists = &AppError{
+		Code:    http.StatusConflict,
+		Message: "phone number already exists",
+	}
 )

@@ -1,12 +1,25 @@
 package validator
 
-var enMessages = map[string]string{
+var enMessages = map[string]map[string]string{
+	"FullName": {
+		"required": "Full name is required.",
+	},
 
-	"required": "This field is required",
+	"PhoneNumber": {
+		"required": "Phone number is required.",
+	},
 
-	"email": "Invalid email",
+	"Email": {
+		"required": "Email is required.",
+		"email":    "Please enter a valid email address.",
+	},
 
-	"gte": "Invalid value",
+	"Password": {
+		"required": "Password is required.",
+		"min":      "Password must be at least 8 characters.",
+	},
 
-	"price5000": "Price must be multiple of 5000",
+	"RepeatPassword": {
+		"required": "Repeat password is required.",
+	},
 }
