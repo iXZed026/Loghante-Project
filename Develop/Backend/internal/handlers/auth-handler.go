@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"log/slog"
+	"net/http"
+	"strconv"
 
 	"loghanteh-project/internal/dto"
 	"loghanteh-project/internal/response"
@@ -152,5 +154,108 @@ func (h *AuthHandler) FindAll(c *gin.Context) {
 		c,
 		"get all users successfully",
 		users,
+	)
+}
+
+func (h *AuthHandler) Refresh(c *gin.Context) {
+
+	var req dto.RefreshRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+
+		h.logger.Error(
+			"failed to get refresh token request",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	accessToken, err := h.authService.RefreshAccessToken(
+		c.Request.Context(),
+		req.RefreshToken,
+	)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to refresh access token",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	response.Success(
+		c,
+		"access token refreshed successfully",
+		dto.RefreshResponse{
+			AccessToken: accessToken,
+		},
+	)
+}
+
+func (h *AuthHandler) Profile(c *gin.Context) {
+
+	userID, exists := c.Get("user_id")
+
+	if !exists {
+		c.JSON(
+			http.StatusUnauthorized,
+			gin.H{
+				"success": false,
+				"message": "unauthorized",
+			},
+		)
+		return
+	}
+
+	id, err := strconv.ParseUint(
+		userID.(string),
+		10,
+		64,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusUnauthorized,
+			gin.H{
+				"success": false,
+				"message": "invalid user id",
+			},
+		)
+		return
+	}
+
+	user, err := h.authService.GetProfile(
+		c.Request.Context(),
+		uint(id),
+	)
+
+	if err != nil {
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+		return
+	}
+
+	response.Success(
+		c,
+		"profile fetched successfully",
+		user,
 	)
 }

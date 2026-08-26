@@ -97,3 +97,26 @@ func (r *UserRepository) FindAll(
 
 	return users, nil
 }
+
+func (r *UserRepository) FindByID(
+	ctx context.Context,
+	userID uint,
+) (*models.User, error) {
+
+	var user models.User
+
+	err := r.db.
+		WithContext(ctx).
+		First(&user, userID).
+		Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, appErrors.ErrInvalidCredentials
+		}
+
+		return nil, err
+	}
+
+	return &user, nil
+}

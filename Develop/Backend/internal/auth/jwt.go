@@ -19,16 +19,16 @@ func NewJWTService(secret string) *JWTService {
 
 func (j *JWTService) GenerateAccessToken(
 	userID string,
-	role string,
+	// role string,
 ) (string, error) {
 
 	now := time.Now()
 
 	claims := jwt.MapClaims{
 		"user_id": userID,
-		"role":    role,
-		"iat":     now.Unix(),
-		"exp":     now.Add(15 * time.Minute).Unix(),
+		// "role":    role,
+		"iat": now.Unix(),
+		"exp": now.Add(15 * time.Minute).Unix(),
 	}
 
 	token := jwt.NewWithClaims(

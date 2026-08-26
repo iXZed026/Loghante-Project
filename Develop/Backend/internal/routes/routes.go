@@ -2,6 +2,7 @@ package routes
 
 import (
 	"log/slog"
+	"loghanteh-project/internal/auth"
 	"loghanteh-project/internal/handlers"
 	"loghanteh-project/internal/middleware"
 
@@ -13,6 +14,7 @@ func SetupRoutes(
 	r *gin.Engine,
 	logger *slog.Logger,
 	authHandler *handlers.AuthHandler,
+	jwtService *auth.JWTService,
 ) {
 
 	r.Use(
@@ -33,6 +35,13 @@ func SetupRoutes(
 		api.GET("/users", authHandler.FindAll)
 		api.POST("/register", authHandler.Register)
 		api.POST("/login", authHandler.Login)
+		api.POST("/auth/refresh", authHandler.Refresh)
+
+		api.GET(
+			"/profile",
+			middleware.AuthMiddleware(jwtService),
+			authHandler.Profile,
+		)
 	}
 
 }

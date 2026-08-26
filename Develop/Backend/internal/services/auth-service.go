@@ -2,7 +2,10 @@ package services
 
 import (
 	"context"
+	"strconv"
+	"time"
 
+	appAuth "loghanteh-project/internal/auth"
 	"loghanteh-project/internal/dto"
 	appErrors "loghanteh-project/internal/errors"
 	"loghanteh-project/internal/models"
@@ -12,14 +15,20 @@ import (
 )
 
 type AuthService struct {
-	userRepository *repositories.UserRepository
+	userRepository         *repositories.UserRepository
+	refreshTokenRepository *repositories.RefreshTokenRepository
+	jwtService             *appAuth.JWTService
 }
 
 func NewAuthService(
 	userRepository *repositories.UserRepository,
+	refreshTokenRepository *repositories.RefreshTokenRepository,
+	jwtService *appAuth.JWTService,
 ) *AuthService {
 	return &AuthService{
-		userRepository: userRepository,
+		userRepository:         userRepository,
+		refreshTokenRepository: refreshTokenRepository,
+		jwtService:             jwtService,
 	}
 }
 
@@ -83,12 +92,89 @@ func (s *AuthService) Login(
 		return nil, appErrors.ErrInvalidCredentials
 	}
 
+	accessToken, err := s.jwtService.GenerateAccessToken(
+		strconv.FormatUint(uint64(user.UserID), 10),
+		// user.Role,
+	)
+
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	refreshToken, err := appAuth.GenerateRefreshToken()
+
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	refreshTokenModel := &models.RefreshToken{
+		UserID:    uint(user.UserID),
+		Token:     refreshToken,
+		ExpiresAt: time.Now().Add(30 * 24 * time.Hour),
+		Revoked:   false,
+		CreatedAt: time.Now(),
+	}
+
+	err = s.refreshTokenRepository.Create(
+		ctx,
+		refreshTokenModel,
+	)
+
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
 	return &dto.LoginResponse{
-		UserID:      uint(user.UserID),
-		FullName:    user.FullName,
-		Email:       user.Email,
-		PhoneNumber: user.PhoneNumber,
+		UserID:       uint(user.UserID),
+		FullName:     user.FullName,
+		Email:        user.Email,
+		PhoneNumber:  user.PhoneNumber,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 	}, nil
+}
+
+func (s *AuthService) RefreshAccessToken(
+	ctx context.Context,
+	refreshToken string,
+) (string, error) {
+
+	token, err := s.refreshTokenRepository.FindValidToken(
+		ctx,
+		refreshToken,
+	)
+
+	if err != nil {
+		return "", err
+	}
+
+	accessToken, err := s.jwtService.GenerateAccessToken(
+		strconv.FormatUint(uint64(token.UserID), 10),
+		// "",
+	)
+
+	if err != nil {
+		return "", appErrors.ErrInternalServer
+	}
+
+	return accessToken, nil
+}
+
+func (s *AuthService) GetProfile(
+	ctx context.Context,
+	userID uint,
+) (*models.User, error) {
+
+	user, err := s.userRepository.FindByID(
+		ctx,
+		userID,
+	)
+
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	return user, nil
 }
 
 func (s *AuthService) FindAll(

@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 	"log/slog"
+
+	"loghanteh-project/internal/auth"
 	"loghanteh-project/internal/config"
 	"loghanteh-project/internal/database"
 	"loghanteh-project/internal/handlers"
@@ -21,9 +23,11 @@ func New() (*App, error) {
 	cfg, err := config.Load()
 	if err != nil {
 		logger.Error(
-			"Failed to Load env: ",
-			"err,", err,
+			"Failed to Load env",
+			"err", err,
 		)
+
+		return nil, err
 	}
 
 	ctx, cancel := context.WithCancel(
@@ -32,43 +36,84 @@ func New() (*App, error) {
 
 	db, err := database.Connect(cfg.DatabaseURL)
 	if err != nil {
-		log.Fatal("failed to connect database:", err)
+		cancel()
+
+		log.Fatal(
+			"failed to connect database:",
+			err,
+		)
 	}
 
-	logger.Info("PostgreSQL connected successfully!")
+	logger.Info(
+		"PostgreSQL connected successfully!",
+	)
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		log.Fatal("failed to get sql database:", err)
+		cancel()
+
+		log.Fatal(
+			"failed to get sql database:",
+			err,
+		)
 	}
 
 	if err := sqlDB.Ping(); err != nil {
-		log.Fatal("database ping failed:", err)
+		cancel()
+
+		log.Fatal(
+			"database ping failed:",
+			err,
+		)
 	}
 
-	logger.Info("Database ping successful!")
+	logger.Info(
+		"Database ping successful!",
+	)
 
 	//////////////
-	//Repositories
+	// JWT
 	//////////////
 
-	userRepo :=
-		repositories.NewUserRepository(db)
+	jwtService := auth.NewJWTService(
+		cfg.JwtSecret,
+	)
 
 	//////////////
-	//Services
+	// Repositories
 	//////////////
-	authService :=
-		services.NewAuthService(userRepo)
 
-	//////////////
-	//Handlers
-	//////////////
-	authHandler :=
-		handlers.NewAuthHandler(
-			authService,
-			logger,
+	userRepo := repositories.NewUserRepository(
+		db,
+	)
+
+	refreshTokenRepo :=
+		repositories.NewRefreshTokenRepository(
+			db,
 		)
+
+	//////////////
+	// Services
+	//////////////
+
+	authService := services.NewAuthService(
+		userRepo,
+		refreshTokenRepo,
+		jwtService,
+	)
+
+	//////////////
+	// Handlers
+	//////////////
+
+	authHandler := handlers.NewAuthHandler(
+		authService,
+		logger,
+	)
+
+	//////////////
+	// Router
+	//////////////
 
 	r := gin.Default()
 
@@ -76,6 +121,7 @@ func New() (*App, error) {
 		r,
 		logger,
 		authHandler,
+		jwtService,
 	)
 
 	return &App{
@@ -83,7 +129,6 @@ func New() (*App, error) {
 		Logger:  logger,
 		Context: ctx,
 		Cancel:  cancel,
-
-		Router: r,
+		Router:  r,
 	}, nil
 }
