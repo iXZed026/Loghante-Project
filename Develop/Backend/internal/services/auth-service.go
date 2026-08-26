@@ -2,10 +2,11 @@ package services
 
 import (
 	"context"
+
+	"loghanteh-project/internal/dto"
+	appErrors "loghanteh-project/internal/errors"
 	"loghanteh-project/internal/models"
 	"loghanteh-project/internal/repositories"
-
-	appErrors "loghanteh-project/internal/errors"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -39,6 +40,7 @@ func (s *AuthService) Register(
 		[]byte(password),
 		bcrypt.DefaultCost,
 	)
+
 	if err != nil {
 		return appErrors.ErrInternalServer
 	}
@@ -57,10 +59,44 @@ func (s *AuthService) Register(
 	return nil
 }
 
+func (s *AuthService) Login(
+	ctx context.Context,
+	emailOrPhone string,
+	password string,
+) (*dto.LoginResponse, error) {
+
+	user, err := s.userRepository.FindByEmailOrPhone(
+		ctx,
+		emailOrPhone,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = bcrypt.CompareHashAndPassword(
+		[]byte(user.PasswordHash),
+		[]byte(password),
+	)
+
+	if err != nil {
+		return nil, appErrors.ErrInvalidCredentials
+	}
+
+	return &dto.LoginResponse{
+		UserID:      uint(user.UserID),
+		FullName:    user.FullName,
+		Email:       user.Email,
+		PhoneNumber: user.PhoneNumber,
+	}, nil
+}
+
 func (s *AuthService) FindAll(
 	ctx context.Context,
 ) ([]models.User, error) {
+
 	users, err := s.userRepository.FindAll(ctx)
+
 	if err != nil {
 		return nil, appErrors.ErrInternalServer
 	}

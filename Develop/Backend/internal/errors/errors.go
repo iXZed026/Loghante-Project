@@ -32,4 +32,9 @@ var (
 		Code:    http.StatusConflict,
 		Message: "phone number already exists",
 	}
+
+	ErrInvalidCredentials = &AppError{
+		Code:    http.StatusUnauthorized,
+		Message: "invalid email/phone or password",
+	}
 )

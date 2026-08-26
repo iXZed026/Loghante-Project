@@ -54,6 +54,33 @@ func (r *UserRepository) CreateUser(
 	return nil
 }
 
+func (r *UserRepository) FindByEmailOrPhone(
+	ctx context.Context,
+	emailOrPhone string,
+) (*models.User, error) {
+
+	var user models.User
+
+	result := r.db.
+		WithContext(ctx).
+		Where(
+			"email = ? OR PhoneNumber = ?",
+			emailOrPhone,
+			emailOrPhone,
+		).
+		First(&user)
+
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, appErrors.ErrInvalidCredentials
+		}
+
+		return nil, result.Error
+	}
+
+	return &user, nil
+}
+
 func (r *UserRepository) FindAll(
 	ctx context.Context,
 ) ([]models.User, error) {

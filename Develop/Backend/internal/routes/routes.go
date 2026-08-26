@@ -32,6 +32,7 @@ func SetupRoutes(
 	{
 		api.GET("/users", authHandler.FindAll)
 		api.POST("/register", authHandler.Register)
+		api.POST("/login", authHandler.Login)
 	}
 
 }

@@ -9,6 +9,13 @@ type RegisterRequest struct {
 }
 
 type LoginRequest struct {
-	Email    string `json:"email" binding:"required,email,max=254"`
-	Password string `json:"password" binding:"required"`
+	EmailOrPhone string `json:"emailOrPhone" binding:"required"`
+	Password     string `json:"password" binding:"required"`
+}
+
+type LoginResponse struct {
+	UserID      uint   `json:"userId"`
+	FullName    string `json:"fullName"`
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phoneNumber"`
 }

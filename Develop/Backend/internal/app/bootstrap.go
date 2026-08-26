@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"log/slog"
 	"loghanteh-project/internal/config"
@@ -36,7 +35,7 @@ func New() (*App, error) {
 		log.Fatal("failed to connect database:", err)
 	}
 
-	fmt.Println("PostgreSQL connected successfully!")
+	logger.Info("PostgreSQL connected successfully!")
 
 	sqlDB, err := db.DB()
 	if err != nil {
@@ -47,7 +46,7 @@ func New() (*App, error) {
 		log.Fatal("database ping failed:", err)
 	}
 
-	fmt.Println("Database ping successful!")
+	logger.Info("Database ping successful!")
 
 	//////////////
 	//Repositories

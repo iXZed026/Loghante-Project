@@ -1,14 +1,11 @@
 package handlers
 
 import (
-	"context"
 	"log/slog"
-	"net/http"
 
 	"loghanteh-project/internal/dto"
 	"loghanteh-project/internal/response"
 	"loghanteh-project/internal/services"
-	"loghanteh-project/internal/validator"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,50 +26,13 @@ func NewAuthHandler(
 }
 
 func (h *AuthHandler) Register(c *gin.Context) {
+
 	var req dto.RegisterRequest
 
-	lang := c.GetHeader("Accept-Language")
-
-	if lang == "" {
-		lang = "en"
-	}
-
-	// Bind and validate request body.
 	if err := c.ShouldBindJSON(&req); err != nil {
+
 		h.logger.Error(
 			"failed to get register request",
-			"error", err,
-		)
-
-		message := validator.TranslateErrors(err, lang)
-
-		c.JSON(
-			http.StatusBadRequest,
-			gin.H{
-				"message": message,
-			},
-		)
-
-		// response.HandleError(
-		// 	c,
-		// 	err,
-		// 	h.logger,
-		// )
-		return
-	}
-
-	err := h.authService.Register(
-		context.Background(),
-		req.FullName,
-		req.PhoneNumber,
-		req.Email,
-		req.Password,
-		req.RepeatPassword,
-	)
-
-	if err != nil {
-		h.logger.Error(
-			"failed to reguster user",
 			"error", err,
 		)
 
@@ -81,6 +41,32 @@ func (h *AuthHandler) Register(c *gin.Context) {
 			err,
 			h.logger,
 		)
+
+		return
+	}
+
+	err := h.authService.Register(
+		c.Request.Context(),
+		req.FullName,
+		req.PhoneNumber,
+		req.Email,
+		req.Password,
+		req.RepeatPassword,
+	)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to register user",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
 		return
 	}
 
@@ -91,13 +77,63 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	)
 }
 
+func (h *AuthHandler) Login(c *gin.Context) {
+
+	var req dto.LoginRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+
+		h.logger.Error(
+			"failed to get login request",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	user, err := h.authService.Login(
+		c.Request.Context(),
+		req.EmailOrPhone,
+		req.Password,
+	)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to login user",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	response.Success(
+		c,
+		"user logged in successfully",
+		user,
+	)
+}
+
 func (h *AuthHandler) FindAll(c *gin.Context) {
 
 	ctx := c.Request.Context()
-	users, err :=
-		h.authService.FindAll(ctx)
+
+	users, err := h.authService.FindAll(ctx)
 
 	if err != nil {
+
 		h.logger.Error(
 			"failed to get all users",
 			"error", err,
@@ -108,12 +144,13 @@ func (h *AuthHandler) FindAll(c *gin.Context) {
 			err,
 			h.logger,
 		)
+
 		return
 	}
 
 	response.Success(
 		c,
-		"get all users successfuly",
+		"get all users successfully",
 		users,
 	)
 }
