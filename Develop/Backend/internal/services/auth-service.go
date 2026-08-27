@@ -124,7 +124,7 @@ func (s *AuthService) Login(
 	}
 
 	return &dto.LoginResponse{
-		UserID:      uint(user.UserID),
+		UserID:      user.UserID,
 		FullName:    user.FullName,
 		Email:       user.Email,
 		PhoneNumber: user.PhoneNumber,
