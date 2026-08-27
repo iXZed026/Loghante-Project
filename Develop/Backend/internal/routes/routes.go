@@ -36,6 +36,8 @@ func SetupRoutes(
 		api.POST("/register", authHandler.Register)
 		api.POST("/login", authHandler.Login)
 		api.POST("/auth/refresh", authHandler.Refresh)
+		api.GET("/tokens", authHandler.GetAllRefreshTokens)
+		api.GET("/logout", authHandler.Logout)
 
 		api.GET(
 			"/profile",

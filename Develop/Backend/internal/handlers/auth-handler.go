@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"loghanteh-project/internal/dto"
+	appErrors "loghanteh-project/internal/errors"
 	"loghanteh-project/internal/response"
 	"loghanteh-project/internal/services"
 
@@ -85,11 +86,6 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 
-		h.logger.Error(
-			"failed to get login request",
-			"error", err,
-		)
-
 		response.HandleError(
 			c,
 			err,
@@ -99,11 +95,12 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	user, err := h.authService.Login(
-		c.Request.Context(),
-		req.EmailOrPhone,
-		req.Password,
-	)
+	user, refreshToken, err :=
+		h.authService.Login(
+			c.Request.Context(),
+			req.EmailOrPhone,
+			req.Password,
+		)
 
 	if err != nil {
 
@@ -120,6 +117,18 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 		return
 	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+
+	c.SetCookie(
+		"refresh_token",
+		refreshToken,
+		30*24*60*60,
+		"/",
+		"",
+		true,
+		true,
+	)
 
 	response.Success(
 		c,
@@ -157,35 +166,17 @@ func (h *AuthHandler) FindAll(c *gin.Context) {
 	)
 }
 
-func (h *AuthHandler) Refresh(c *gin.Context) {
+func (h *AuthHandler) GetAllRefreshTokens(c *gin.Context) {
 
-	var req dto.RefreshRequest
+	ctx := c.Request.Context()
 
-	if err := c.ShouldBindJSON(&req); err != nil {
-
-		h.logger.Error(
-			"failed to get refresh token request",
-			"error", err,
-		)
-
-		response.HandleError(
-			c,
-			err,
-			h.logger,
-		)
-
-		return
-	}
-
-	accessToken, err := h.authService.RefreshAccessToken(
-		c.Request.Context(),
-		req.RefreshToken,
-	)
+	tokens, err :=
+		h.authService.GetAllRefreshTokens(ctx)
 
 	if err != nil {
 
 		h.logger.Error(
-			"failed to refresh access token",
+			"failed to get all tokens",
 			"error", err,
 		)
 
@@ -200,9 +191,62 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 
 	response.Success(
 		c,
-		"access token refreshed successfully",
-		dto.RefreshResponse{
-			AccessToken: accessToken,
+		"get all tokens successfully",
+		tokens,
+	)
+}
+
+func (h *AuthHandler) Refresh(c *gin.Context) {
+
+	refreshToken, err := c.Cookie(
+		"refresh_token",
+	)
+
+	if err != nil {
+
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidCredentials,
+			h.logger,
+		)
+
+		return
+	}
+
+	accessToken, newRefreshToken, err :=
+		h.authService.RefreshAccessToken(
+			c.Request.Context(),
+			refreshToken,
+		)
+
+	if err != nil {
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+
+	c.SetCookie(
+		"refresh_token",
+		newRefreshToken,
+		30*24*60*60,
+		"/",
+		"",
+		true,
+		true,
+	)
+
+	response.Success(
+		c,
+		"token refreshed successfully",
+		gin.H{
+			"accessToken": accessToken,
 		},
 	)
 }
@@ -257,5 +301,47 @@ func (h *AuthHandler) Profile(c *gin.Context) {
 		c,
 		"profile fetched successfully",
 		user,
+	)
+}
+
+func (h *AuthHandler) Logout(c *gin.Context) {
+
+	refreshToken, err := c.Cookie(
+		"refresh_token",
+	)
+
+	if err == nil {
+
+		err = h.authService.Logout(
+			c.Request.Context(),
+			refreshToken,
+		)
+
+		if err != nil {
+
+			response.HandleError(
+				c,
+				err,
+				h.logger,
+			)
+
+			return
+		}
+	}
+
+	c.SetCookie(
+		"refresh_token",
+		"",
+		-1,
+		"/",
+		"",
+		true,
+		true,
+	)
+
+	response.Success(
+		c,
+		"logged out successfully",
+		nil,
 	)
 }

@@ -72,7 +72,7 @@ func (s *AuthService) Login(
 	ctx context.Context,
 	emailOrPhone string,
 	password string,
-) (*dto.LoginResponse, error) {
+) (*dto.LoginResponse, string, error) {
 
 	user, err := s.userRepository.FindByEmailOrPhone(
 		ctx,
@@ -80,7 +80,7 @@ func (s *AuthService) Login(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	err = bcrypt.CompareHashAndPassword(
@@ -89,30 +89,29 @@ func (s *AuthService) Login(
 	)
 
 	if err != nil {
-		return nil, appErrors.ErrInvalidCredentials
+		return nil, "", appErrors.ErrInvalidCredentials
 	}
 
 	accessToken, err := s.jwtService.GenerateAccessToken(
-		strconv.FormatUint(uint64(user.UserID), 10),
-		// user.Role,
+		strconv.Itoa(user.UserID),
 	)
 
 	if err != nil {
-		return nil, appErrors.ErrInternalServer
+		return nil, "", appErrors.ErrInternalServer
 	}
 
 	refreshToken, err := appAuth.GenerateRefreshToken()
 
 	if err != nil {
-		return nil, appErrors.ErrInternalServer
+		return nil, "", appErrors.ErrInternalServer
 	}
 
 	refreshTokenModel := &models.RefreshToken{
-		UserID:    uint(user.UserID),
+		UserID:    user.UserID,
 		Token:     refreshToken,
-		ExpiresAt: time.Now().Add(30 * 24 * time.Hour),
-		Revoked:   false,
-		CreatedAt: time.Now(),
+		ExpiresAt: time.Now().Add(1 * time.Minute),
+		// ExpiresAt: time.Now().Add(30 * 24 * time.Hour),
+		Revoked: false,
 	}
 
 	err = s.refreshTokenRepository.Create(
@@ -121,43 +120,76 @@ func (s *AuthService) Login(
 	)
 
 	if err != nil {
-		return nil, appErrors.ErrInternalServer
+		return nil, "", appErrors.ErrInternalServer
 	}
 
 	return &dto.LoginResponse{
-		UserID:       uint(user.UserID),
-		FullName:     user.FullName,
-		Email:        user.Email,
-		PhoneNumber:  user.PhoneNumber,
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}, nil
+		UserID:      uint(user.UserID),
+		FullName:    user.FullName,
+		Email:       user.Email,
+		PhoneNumber: user.PhoneNumber,
+		AccessToken: accessToken,
+	}, refreshToken, nil
 }
 
 func (s *AuthService) RefreshAccessToken(
 	ctx context.Context,
-	refreshToken string,
-) (string, error) {
+	oldRefreshToken string,
+) (string, string, error) {
 
-	token, err := s.refreshTokenRepository.FindValidToken(
+	token, err :=
+		s.refreshTokenRepository.FindValidToken(
+			ctx,
+			oldRefreshToken,
+		)
+
+	if err != nil {
+		return "", "", err
+	}
+
+	err = s.refreshTokenRepository.Revoke(
 		ctx,
-		refreshToken,
+		oldRefreshToken,
 	)
 
 	if err != nil {
-		return "", err
+		return "", "", appErrors.ErrInternalServer
 	}
 
-	accessToken, err := s.jwtService.GenerateAccessToken(
-		strconv.FormatUint(uint64(token.UserID), 10),
-		// "",
+	accessToken, err :=
+		s.jwtService.GenerateAccessToken(
+			strconv.Itoa(token.UserID),
+		)
+
+	if err != nil {
+		return "", "", appErrors.ErrInternalServer
+	}
+
+	newRefreshToken, err :=
+		appAuth.GenerateRefreshToken()
+
+	if err != nil {
+		return "", "", appErrors.ErrInternalServer
+	}
+
+	newRefreshTokenModel := &models.RefreshToken{
+		UserID:    token.UserID,
+		Token:     newRefreshToken,
+		ExpiresAt: time.Now().Add(1 * time.Minute),
+		// ExpiresAt: time.Now().Add(30 * 24 * time.Hour),
+		Revoked: false,
+	}
+
+	err = s.refreshTokenRepository.Create(
+		ctx,
+		newRefreshTokenModel,
 	)
 
 	if err != nil {
-		return "", appErrors.ErrInternalServer
+		return "", "", appErrors.ErrInternalServer
 	}
 
-	return accessToken, nil
+	return accessToken, newRefreshToken, nil
 }
 
 func (s *AuthService) GetProfile(
@@ -188,4 +220,34 @@ func (s *AuthService) FindAll(
 	}
 
 	return users, nil
+}
+
+func (s *AuthService) GetAllRefreshTokens(
+	ctx context.Context,
+) ([]models.RefreshToken, error) {
+
+	tokens, err :=
+		s.refreshTokenRepository.GetAllRefreshTokens(ctx)
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	return tokens, nil
+}
+
+func (s *AuthService) Logout(
+	ctx context.Context,
+	refreshToken string,
+) error {
+
+	err := s.refreshTokenRepository.Revoke(
+		ctx,
+		refreshToken,
+	)
+
+	if err != nil {
+		return appErrors.ErrInternalServer
+	}
+
+	return nil
 }

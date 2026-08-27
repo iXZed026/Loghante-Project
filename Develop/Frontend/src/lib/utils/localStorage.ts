@@ -1,6 +1,4 @@
-import { json } from "stream/consumers";
 import { DEVELOPMENT } from "../constants";
-import { SiTruenas } from "react-icons/si";
 
 export function saveToLocalStorage(
     itemName: string,

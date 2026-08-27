@@ -14,12 +14,11 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	UserID       uint   `json:"userId"`
-	FullName     string `json:"fullName"`
-	Email        string `json:"email"`
-	PhoneNumber  string `json:"phoneNumber"`
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken"`
+	UserID            int    `json:"userId"`
+	FullName          string `json:"fullName"`
+	Email             string `json:"email"`
+	PhoneNumber       string `json:"phoneNumber"`
+	VerificationToken string `json:"verificationToken"`
 }
 
 type RefreshRequest struct {

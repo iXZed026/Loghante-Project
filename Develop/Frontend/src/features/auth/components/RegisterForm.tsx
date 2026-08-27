@@ -2,8 +2,9 @@
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import useInput from '@/hooks/useInput'
+import { register } from '@/lib/api/auth/register'
 import { cn } from '@/lib/utils/cn'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { GrGoogle } from 'react-icons/gr'
 
 interface IRegisterForm {
@@ -13,6 +14,8 @@ interface IRegisterForm {
 function RegisterForm({
   googleText
 }: IRegisterForm) {
+
+  const locale = useLocale()
 
   const RegisterT = useTranslations("authRegister")
 
@@ -52,12 +55,37 @@ function RegisterForm({
   ] =
     useInput("")
 
+  async function registerSubmitForm(
+    e: React.FormEvent<HTMLFormElement>
+  ) {
+    e.preventDefault()
+
+    const response = await register(
+      {
+        fullName,
+        phoneNumber: phone,
+        email,
+        password,
+        repeatPassword: repPassword,
+      },
+      locale
+    )
+
+    if (!response.success) {
+      console.log(response.message)
+      return
+    }
+
+    console.log(response)
+  }
+
   return (
     <form
       action=""
       className={cn(
         "fcol gap-5"
       )}
+      onSubmit={registerSubmitForm}
     >
       <div>
         <span className='text-sm text-black-light-utility'>

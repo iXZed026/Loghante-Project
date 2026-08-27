@@ -44,7 +44,7 @@ func (r *RefreshTokenRepository) FindValidToken(
 	err := r.db.
 		WithContext(ctx).
 		Where(
-			"token = ? AND revoked = ? AND expires_at > ?",
+			"token = ? AND revoked = ? AND expiresat > ?",
 			token,
 			false,
 			time.Now(),
@@ -76,4 +76,21 @@ func (r *RefreshTokenRepository) Revoke(
 		Update("revoked", true)
 
 	return result.Error
+}
+
+func (r *RefreshTokenRepository) GetAllRefreshTokens(
+	ctx context.Context,
+) ([]models.RefreshToken, error) {
+
+	var tokens []models.RefreshToken
+
+	result := r.db.
+		WithContext(ctx).
+		Find(&tokens)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return tokens, nil
 }
