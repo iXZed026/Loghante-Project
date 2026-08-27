@@ -295,3 +295,5 @@ JOIN Museums m
 ORDER BY c.CollectionId, ca.DisplayOrder;
 
 SELECT * FROM Users;
+
+SELECT * FROM RefreshToken;
