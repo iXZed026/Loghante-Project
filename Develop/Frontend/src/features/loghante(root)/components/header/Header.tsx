@@ -11,7 +11,7 @@ import HamburgerMenu from "./HamburgerMenu";
 import useActive from "@/hooks/useActive";
 import { useTranslations } from 'next-intl';
 import useScroll from "@/hooks/useScroll";
-
+import { FiShoppingBag } from "react-icons/fi";
 
 
 function Header() {
@@ -52,6 +52,7 @@ function Header() {
               )}
               onClick={activeHumberHandler}
             />
+            {/* Login Button */}
             <AppLink
               href="/login"
             >
@@ -69,6 +70,8 @@ function Header() {
                 }
               </Button>
             </AppLink>
+            {/* Select Language */}
+            <LanguageSwitcher isScrolled={isScrolled} />
           </div>
 
           <div className="col-span-4 fcc">
@@ -85,12 +88,32 @@ function Header() {
               />
             </AppLink>
           </div>
-
           <div className="col-span-4 fec gap-2">
+            {/* Tickets DropDown */}
             <TicketDropDown t={t} isScrolled={isScrolled} />
-            <LanguageSwitcher isScrolled={isScrolled} />
+            {/* Shop Button */}
+            <AppLink
+              href="/shop"
+            >
+              <Button
+                className={cn(
+                  "md:w-25 w-20",
+                  "md:py-3 py-1 fcc gap-2",
+                  "md:font-semibold",
+                  "bg-crimson",
+                  isScrolled ?
+                    "hover:bg-[#936c23]" :
+                    "hover:bg-[#42151A]",
+                  isScrolled && "bg-gold-utility",
+                )}
+              >
+                <FiShoppingBag className={cn(
+                  "size-4",
+                )} />
+                Shop
+              </Button>
+            </AppLink>
           </div>
-
         </div>
       </Container>
 
