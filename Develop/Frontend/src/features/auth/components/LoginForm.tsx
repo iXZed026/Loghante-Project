@@ -1,5 +1,6 @@
 "use client"
 
+import Modal from '@/components/shared/modal/Modal';
 import AppLink from '@/components/ui/AppLink';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -8,12 +9,18 @@ import { login } from '@/lib/api/auth/login';
 import { cn } from '@/lib/utils/cn';
 import { saveToLocalStorage } from '@/lib/utils/localStorage';
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { GrGoogle } from 'react-icons/gr';
 
 interface ILoginForm {
     googleText: string;
+}
+
+interface IModalState {
+    active: boolean;
+    success: boolean | "warning";
+    message: string;
+    pushUrl?: string;
 }
 
 function LoginForm({
@@ -22,10 +29,17 @@ function LoginForm({
 
     const loginT = useTranslations("authLogin");
     const locale = useLocale();
-    const router = useRouter();
 
     const [isLoading, setIsLoading] =
         useState<boolean>(false);
+
+    const [modal, setModal] =
+        useState<IModalState>({
+            active: false,
+            success: false,
+            message: "",
+            pushUrl: undefined,
+        });
 
     const [
         emailOrPhone,
@@ -58,8 +72,14 @@ function LoginForm({
             );
 
             if (!response.success) {
-                console.log(response.message);
-                alert(response.message);
+
+                setModal({
+                    active: true,
+                    success: false,
+                    message: response.message,
+                    pushUrl: undefined,
+                });
+
                 return;
             }
 
@@ -68,16 +88,12 @@ function LoginForm({
                 response.data.verificationToken
             );
 
-            alert(response.message)
-
-            router.push(
-                `/${locale}/login/verify`
-            );
-
-        } catch (error) {
-
-            alert("catch: " + error);
-            console.error(error);
+            setModal({
+                active: true,
+                success: true,
+                message: response.message,
+                pushUrl: "/login/verify",
+            });
 
         } finally {
 
@@ -87,87 +103,102 @@ function LoginForm({
     }
 
     return (
-        <form
-            className={cn(
-                "fcol gap-5"
-            )}
-            onSubmit={loginSubmitedForm}
-        >
+        <>
+            <Modal
+                active={modal.active}
+                message={modal.message}
+                success={modal.success}
+                pushUrl={modal.pushUrl}
+                onClose={() => {
+                    setModal(prev => ({
+                        ...prev,
+                        active: false,
+                    }));
+                }}
+            />
 
-            <div>
-                <span className='text-sm text-black-light-utility'>
-                    {loginT("inputs.phone-or-email")}
-                </span>
+            <form
+                className={cn(
+                    "fcol gap-5"
+                )}
+                onSubmit={loginSubmitedForm}
+            >
 
-                <Input
-                    className={cn(
-                        "w-full",
-                        "border-b-3 border-[#525252]",
-                        "rounded-sm"
-                    )}
-                    type='text'
-                    maxLength={100}
-                    value={emailOrPhone}
-                    onChange={ChangeEailOrPhoneValue}
-                />
-            </div>
+                <div>
+                    <span className='text-sm text-black-light-utility'>
+                        {loginT("inputs.phone-or-email")}
+                    </span>
 
-            <div>
-                <span className='text-sm text-black-light-utility'>
-                    {loginT("inputs.password")}
-                </span>
+                    <Input
+                        className={cn(
+                            "w-full",
+                            "border-b-3 border-[#525252]",
+                            "rounded-sm"
+                        )}
+                        type="text"
+                        maxLength={100}
+                        value={emailOrPhone}
+                        onChange={ChangeEailOrPhoneValue}
+                    />
+                </div>
 
-                <Input
-                    className={cn(
-                        "w-full",
-                        "border-b-3 border-[#525252]",
-                        "rounded-sm"
-                    )}
-                    type="password"
-                    maxLength={100}
-                    value={password}
-                    onChange={ChangePasswordValue}
-                />
-            </div>
+                <div>
+                    <span className='text-sm text-black-light-utility'>
+                        {loginT("inputs.password")}
+                    </span>
 
-            {/* Forget Password Route */}
-            <div className='text-sm text-center hover:opacity-60 transition-all'>
-                <AppLink
-                    href='/login/forgot-password'
-                >
-                    {loginT("forgot")}
-                </AppLink>
-            </div>
+                    <Input
+                        className={cn(
+                            "w-full",
+                            "border-b-3 border-[#525252]",
+                            "rounded-sm"
+                        )}
+                        type="password"
+                        maxLength={100}
+                        value={password}
+                        onChange={ChangePasswordValue}
+                    />
+                </div>
 
-            {/* Sign In With Google */}
-            <div className='border-2 border-black/30 h-12.5 rounded-lg fcc gap-3 text-sm'>
-                <GrGoogle className='size-4 text-purple-500' />
+                {/* Forget Password Route */}
+                <div className="text-sm text-center hover:opacity-60 transition-all">
+                    <AppLink
+                        href="/login/forgot-password"
+                    >
+                        {loginT("forgot")}
+                    </AppLink>
+                </div>
 
-                <span>
-                    {googleText}
-                </span>
-            </div>
+                {/* Sign In With Google */}
+                <div className="border-2 border-black/30 h-12.5 rounded-lg fcc gap-3 text-sm">
+                    <GrGoogle className="size-4 text-purple-500" />
 
-            {/* Login Button */}
-            <div>
-                <Button
-                    type="submit"
-                    disabled={isLoading}
-                    className={cn(
-                        "h-12.5 w-full",
-                        "bg-crimson",
-                        "font-bold",
-                        "hover:opacity-85",
-                    )}
-                >
-                    {isLoading
-                        ? "Loading..."
-                        : loginT("login-button")
-                    }
-                </Button>
-            </div>
+                    <span>
+                        {googleText}
+                    </span>
+                </div>
 
-        </form>
+                {/* Login Button */}
+                <div>
+                    <Button
+                        type="submit"
+                        disabled={isLoading}
+                        className={cn(
+                            "h-12.5 w-full",
+                            "bg-crimson",
+                            "font-bold",
+                            "hover:opacity-85",
+                        )}
+                    >
+                        {isLoading
+                            ? "Loading..."
+                            : loginT("login-button")
+                        }
+                    </Button>
+                </div>
+
+            </form>
+        </>
     );
 }
 

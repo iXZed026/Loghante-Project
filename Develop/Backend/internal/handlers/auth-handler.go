@@ -125,7 +125,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	response.Success(
 		c,
-		"verification required",
+		"login is successful",
 		user,
 	)
 }
