@@ -25,7 +25,7 @@ var faMessages = map[string]map[string]string{
 
 	//Login
 	"EmailOrPhone": {
-		"required": "ایمل یا تلفن نباید خالی باشد",
+		"required": "ایمیل یا تلفن نباید خالی باشد",
 		"max":      "ایمیل یا شماره تلفن نباید بیشتر از ۲۵۴ کاراکتر باشد",
 	},
 }

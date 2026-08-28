@@ -59,6 +59,7 @@ function LoginForm({
 
             if (!response.success) {
                 console.log(response.message);
+                alert(response.message);
                 return;
             }
 
@@ -67,12 +68,15 @@ function LoginForm({
                 response.data.verificationToken
             );
 
+            alert(response.message)
+
             router.push(
                 `/${locale}/login/verify`
             );
 
         } catch (error) {
 
+            alert("catch: " + error);
             console.error(error);
 
         } finally {
