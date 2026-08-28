@@ -20,7 +20,7 @@ export async function register(
 ): Promise<RegisterResponse> {
 
   return fetcher<RegisterResponse>(
-    "/register",
+    "/auth/register",
     {
       method: "POST",
       body: JSON.stringify(data),

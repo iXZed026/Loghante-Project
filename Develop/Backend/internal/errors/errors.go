@@ -13,6 +13,21 @@ var (
 		Message: "invalid input",
 	}
 
+	ErrUserAlreadyVerified = &AppError{
+		Code:    http.StatusConflict,
+		Message: "user already verified",
+	}
+
+	ErrVerificationTokenExpired = &AppError{
+		Code:    http.StatusGone,
+		Message: "verification token has expired",
+	}
+
+	ErrInvalidVerificationCode = &AppError{
+		Code:    http.StatusBadRequest,
+		Message: "invalid verification code",
+	}
+
 	ErrPasswordMismatch = &AppError{
 		Code:    http.StatusBadRequest,
 		Message: "passwords do not match",

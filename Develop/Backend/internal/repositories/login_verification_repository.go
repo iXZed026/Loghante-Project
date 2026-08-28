@@ -28,16 +28,10 @@ func (r *LoginVerificationRepository) Create(
 	verification *models.LoginVerification,
 ) error {
 
-	err := r.db.
+	return r.db.
 		WithContext(ctx).
 		Create(verification).
 		Error
-
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (r *LoginVerificationRepository) FindValidToken(
@@ -75,14 +69,12 @@ func (r *LoginVerificationRepository) MarkVerified(
 	verification *models.LoginVerification,
 ) error {
 
-	result := r.db.
+	return r.db.
 		WithContext(ctx).
 		Model(verification).
-		Update("verified", true)
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
+		Update(
+			"verified",
+			true,
+		).
+		Error
 }

@@ -5,16 +5,16 @@ export interface ILoginData {
     password: string;
 }
 
-export interface LoginUserData {
+export interface LoginResponseData {
     userId: number;
     fullName: string;
     email: string;
     phoneNumber: string;
-    accessToken: string;
+    verificationToken: string;
 }
 
 export interface LoginResponse {
-    data: LoginUserData;
+    data: LoginResponseData;
     message: string;
     success: boolean;
 }
@@ -25,11 +25,10 @@ export async function login(
 ): Promise<LoginResponse> {
 
     return fetcher<LoginResponse>(
-        "/login",
+        "/auth/login",
         {
             method: "POST",
             body: JSON.stringify(data),
-            credentials: "include",
         },
         locale,
     );

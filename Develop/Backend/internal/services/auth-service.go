@@ -15,20 +15,24 @@ import (
 )
 
 type AuthService struct {
-	userRepository         *repositories.UserRepository
-	refreshTokenRepository *repositories.RefreshTokenRepository
-	jwtService             *appAuth.JWTService
+	userRepository              *repositories.UserRepository
+	refreshTokenRepository      *repositories.RefreshTokenRepository
+	jwtService                  *appAuth.JWTService
+	loginVerificationRepository *repositories.LoginVerificationRepository
 }
 
 func NewAuthService(
 	userRepository *repositories.UserRepository,
 	refreshTokenRepository *repositories.RefreshTokenRepository,
 	jwtService *appAuth.JWTService,
+	loginVerificationRepository *repositories.LoginVerificationRepository,
 ) *AuthService {
+
 	return &AuthService{
-		userRepository:         userRepository,
-		refreshTokenRepository: refreshTokenRepository,
-		jwtService:             jwtService,
+		userRepository:              userRepository,
+		refreshTokenRepository:      refreshTokenRepository,
+		jwtService:                  jwtService,
+		loginVerificationRepository: loginVerificationRepository,
 	}
 }
 
@@ -72,64 +76,60 @@ func (s *AuthService) Login(
 	ctx context.Context,
 	emailOrPhone string,
 	password string,
-) (*dto.LoginResponse, string, error) {
+) (*dto.LoginResponse, error) {
 
+	// Find user
 	user, err := s.userRepository.FindByEmailOrPhone(
 		ctx,
 		emailOrPhone,
 	)
 
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 
+	// Check password
 	err = bcrypt.CompareHashAndPassword(
 		[]byte(user.PasswordHash),
 		[]byte(password),
 	)
 
 	if err != nil {
-		return nil, "", appErrors.ErrInvalidCredentials
+		return nil, appErrors.ErrInvalidCredentials
 	}
 
-	accessToken, err := s.jwtService.GenerateAccessToken(
-		strconv.Itoa(user.UserID),
-	)
+	// Generate temporary verification token
+	verificationToken, err :=
+		appAuth.GenerateVerificationToken()
 
 	if err != nil {
-		return nil, "", appErrors.ErrInternalServer
+		return nil, appErrors.ErrInternalServer
 	}
 
-	refreshToken, err := appAuth.GenerateRefreshToken()
-
-	if err != nil {
-		return nil, "", appErrors.ErrInternalServer
-	}
-
-	refreshTokenModel := &models.RefreshToken{
+	// Save verification session
+	verification := &models.LoginVerification{
 		UserID:    user.UserID,
-		Token:     refreshToken,
-		ExpiresAt: time.Now().Add(1 * time.Minute),
-		// ExpiresAt: time.Now().Add(30 * 24 * time.Hour),
-		Revoked: false,
+		Token:     verificationToken,
+		ExpiresAt: time.Now().Add(5 * time.Minute),
+		Verified:  false,
 	}
 
-	err = s.refreshTokenRepository.Create(
+	err = s.loginVerificationRepository.Create(
 		ctx,
-		refreshTokenModel,
+		verification,
 	)
 
 	if err != nil {
-		return nil, "", appErrors.ErrInternalServer
+		return nil, appErrors.ErrInternalServer
 	}
 
 	return &dto.LoginResponse{
-		UserID:      user.UserID,
-		FullName:    user.FullName,
-		Email:       user.Email,
-		PhoneNumber: user.PhoneNumber,
-		AccessToken: accessToken,
-	}, refreshToken, nil
+		UserID:            user.UserID,
+		FullName:          user.FullName,
+		Email:             user.Email,
+		PhoneNumber:       user.PhoneNumber,
+		VerificationToken: verificationToken,
+	}, nil
 }
 
 func (s *AuthService) RefreshAccessToken(
@@ -250,4 +250,102 @@ func (s *AuthService) Logout(
 	}
 
 	return nil
+}
+
+func (s *AuthService) VerifyLogin(
+	ctx context.Context,
+	verificationToken string,
+	code string,
+) (*dto.VerifyLoginResponse, string, error) {
+
+	verification, err :=
+		s.loginVerificationRepository.FindByToken(
+			ctx,
+			verificationToken,
+		)
+
+	if err != nil {
+		return nil, "", err
+	}
+
+	// Already verified
+	if verification.Verified {
+		return nil, "", appErrors.ErrUserAlreadyVerified
+	}
+
+	// Token expired
+	if time.Now().After(verification.ExpiresAt) {
+		return nil, "", appErrors.ErrVerificationTokenExpired
+	}
+
+	// Temporary OTP
+	// بعداً این قسمت را با OTP واقعی جایگزین می‌کنیم.
+	if code != "123456" {
+		return nil, "", appErrors.ErrInvalidVerificationCode
+	}
+
+	// Mark verification as verified
+	err = s.loginVerificationRepository.MarkVerified(
+		ctx,
+		verification,
+	)
+
+	if err != nil {
+		return nil, "", appErrors.ErrInternalServer
+	}
+
+	// Get user
+	user, err :=
+		s.userRepository.FindByID(
+			ctx,
+			uint(verification.UserID),
+		)
+
+	if err != nil {
+		return nil, "", err
+	}
+
+	// Generate Access Token
+	accessToken, err :=
+		s.jwtService.GenerateAccessToken(
+			strconv.Itoa(user.UserID),
+		)
+
+	if err != nil {
+		return nil, "", appErrors.ErrInternalServer
+	}
+
+	// Generate Refresh Token
+	refreshToken, err :=
+		appAuth.GenerateRefreshToken()
+
+	if err != nil {
+		return nil, "", appErrors.ErrInternalServer
+	}
+
+	refreshTokenModel := &models.RefreshToken{
+		UserID: verification.UserID,
+		Token:  refreshToken,
+		ExpiresAt: time.Now().Add(
+			30 * 24 * time.Hour,
+		),
+		Revoked: false,
+	}
+
+	err = s.refreshTokenRepository.Create(
+		ctx,
+		refreshTokenModel,
+	)
+
+	if err != nil {
+		return nil, "", appErrors.ErrInternalServer
+	}
+
+	return &dto.VerifyLoginResponse{
+		UserID:      user.UserID,
+		FullName:    user.FullName,
+		Email:       user.Email,
+		PhoneNumber: user.PhoneNumber,
+		AccessToken: accessToken,
+	}, refreshToken, nil
 }

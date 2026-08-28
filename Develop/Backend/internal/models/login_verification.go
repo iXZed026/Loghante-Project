@@ -3,7 +3,7 @@ package models
 import "time"
 
 type LoginVerification struct {
-	ID        string    `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"-"`
+	ID        string    `gorm:"column:loginverificationid;type:uuid;primaryKey;default:gen_random_uuid()" json:"-"`
 	UserID    int       `gorm:"column:userid;not null;index" json:"-"`
 	Token     string    `gorm:"column:token;type:text;not null;unique" json:"-"`
 	ExpiresAt time.Time `gorm:"column:expiresat;not null" json:"-"`
@@ -12,5 +12,5 @@ type LoginVerification struct {
 }
 
 func (LoginVerification) TableName() string {
-	return "loginverification"
+	return "loginverifications"
 }

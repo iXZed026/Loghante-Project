@@ -86,6 +86,11 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 
+		h.logger.Error(
+			"user login bad request",
+			"error", err,
+		)
+
 		response.HandleError(
 			c,
 			err,
@@ -95,7 +100,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	user, refreshToken, err :=
+	user, err :=
 		h.authService.Login(
 			c.Request.Context(),
 			req.EmailOrPhone,
@@ -118,21 +123,9 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	c.SetSameSite(http.SameSiteLaxMode)
-
-	c.SetCookie(
-		"refresh_token",
-		refreshToken,
-		30*24*60*60,
-		"/",
-		"",
-		true,
-		true,
-	)
-
 	response.Success(
 		c,
-		"user logged in successfully",
+		"verification required",
 		user,
 	)
 }
@@ -343,5 +336,63 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 		c,
 		"logged out successfully",
 		nil,
+	)
+}
+
+func (h *AuthHandler) VerifyLogin(c *gin.Context) {
+
+	var req dto.VerifyLoginRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	user, refreshToken, err :=
+		h.authService.VerifyLogin(
+			c.Request.Context(),
+			req.VerificationToken,
+			req.Code,
+		)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to verify login",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	// Refresh Token → HttpOnly Cookie
+	c.SetSameSite(http.SameSiteLaxMode)
+
+	c.SetCookie(
+		"refresh_token",
+		refreshToken,
+		30*24*60*60,
+		"/",
+		"",
+		true,
+		true,
+	)
+
+	response.Success(
+		c,
+		"user login verified successfully",
+		user,
 	)
 }

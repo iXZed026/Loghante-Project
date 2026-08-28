@@ -92,6 +92,9 @@ func New() (*App, error) {
 			db,
 		)
 
+	loginVerificationRepository :=
+		repositories.NewLoginVerificationRepository(db)
+
 	//////////////
 	// Services
 	//////////////
@@ -100,6 +103,7 @@ func New() (*App, error) {
 		userRepo,
 		refreshTokenRepo,
 		jwtService,
+		loginVerificationRepository,
 	)
 
 	//////////////

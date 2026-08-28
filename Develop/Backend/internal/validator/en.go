@@ -1,6 +1,7 @@
 package validator
 
 var enMessages = map[string]map[string]string{
+	//Register
 	"FullName": {
 		"required": "Full name is required.",
 	},
@@ -21,5 +22,11 @@ var enMessages = map[string]map[string]string{
 
 	"RepeatPassword": {
 		"required": "Repeat password is required.",
+	},
+
+	//Login
+	"EmailOrPhone": {
+		"required": "Email or phone number is required.",
+		"max":      "Email or phone number cannot exceed 254 characters",
 	},
 }

@@ -94,3 +94,28 @@ func (r *RefreshTokenRepository) GetAllRefreshTokens(
 
 	return tokens, nil
 }
+
+func (r *LoginVerificationRepository) FindByToken(
+	ctx context.Context,
+	token string,
+) (*models.LoginVerification, error) {
+
+	var verification models.LoginVerification
+
+	err := r.db.
+		WithContext(ctx).
+		Where("token = ?", token).
+		First(&verification).
+		Error
+
+	if err != nil {
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, appErrors.ErrInvalidInput
+		}
+
+		return nil, err
+	}
+
+	return &verification, nil
+}

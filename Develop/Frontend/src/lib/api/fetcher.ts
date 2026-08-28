@@ -15,6 +15,11 @@ interface RefreshResponse {
   success: boolean;
 }
 
+interface ApiErrorResponse {
+  message?: string;
+  success?: boolean;
+}
+
 export async function fetcher<T>(
   endpoint: string,
   options?: RequestInit,
@@ -30,7 +35,7 @@ export async function fetcher<T>(
     {
       ...options,
 
-      //HttpOnly Cookie
+      // HttpOnly Cookie
       credentials: "include",
 
       headers: {
@@ -49,7 +54,10 @@ export async function fetcher<T>(
     }
   );
 
-
+  /*
+   * If access token is expired,
+   * try to get a new one using the refresh token.
+   */
   if (
     response.status === 401 &&
     !isRetry &&
@@ -63,7 +71,7 @@ export async function fetcher<T>(
         {
           method: "POST",
 
-          // Refresh Token داخل HttpOnly Cookie
+          // Refresh token is stored in HttpOnly Cookie
           credentials: "include",
 
           headers: {
@@ -76,16 +84,13 @@ export async function fetcher<T>(
         }
       );
 
-
       if (!refreshResponse.ok) {
 
         localStorage.removeItem(
           ACCESS_TOKEN_KEY
         );
 
-        throw new Error(
-          "Session expired"
-        );
+        throw new Error("Session expired");
       }
 
       const refreshData =
@@ -96,7 +101,10 @@ export async function fetcher<T>(
         refreshData.data.accessToken
       );
 
-
+      /*
+       * Retry the original request
+       * with the new access token.
+       */
       return fetcher<T>(
         endpoint,
         options,
@@ -114,23 +122,33 @@ export async function fetcher<T>(
     }
   }
 
-
+  /*
+   * API errors such as:
+   * 400, 401, 404, 409, 422, 500
+   *
+   * are returned as normal API responses
+   * so the component can use response.message.
+   */
   if (!response.ok) {
 
-    let errorData: {
-      message?: string;
-    } | null = null;
+    let errorData: ApiErrorResponse | null = null;
 
     try {
-      errorData = await response.json();
+
+      errorData =
+        await response.json();
+
     } catch {
+
       errorData = null;
     }
 
-    throw new Error(
-      errorData?.message ||
-      "An error occurred while fetching data."
-    );
+    return {
+      success: false,
+      message:
+        errorData?.message ||
+        "An error occurred while fetching data.",
+    } as T;
   }
 
   return response.json();

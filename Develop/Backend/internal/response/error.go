@@ -6,8 +6,10 @@ import (
 	"net/http"
 
 	appErr "loghanteh-project/internal/errors"
+	appValidator "loghanteh-project/internal/validator"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 func HandleError(
@@ -20,6 +22,31 @@ func HandleError(
 		err.Error(),
 	)
 
+	// Handle validation errors
+	var validationErrors validator.ValidationErrors
+
+	if errors.As(err, &validationErrors) {
+
+		lang := c.GetHeader("Accept-Language")
+
+		message :=
+			appValidator.TranslateErrors(
+				validationErrors,
+				lang,
+			)
+
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{
+				"success": false,
+				"message": message,
+			},
+		)
+
+		return
+	}
+
+	// Handle application errors
 	var e *appErr.AppError
 
 	if errors.As(err, &e) {
@@ -35,6 +62,7 @@ func HandleError(
 		return
 	}
 
+	// Unknown errors
 	c.JSON(
 		http.StatusInternalServerError,
 		gin.H{

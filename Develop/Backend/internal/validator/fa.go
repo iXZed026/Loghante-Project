@@ -22,4 +22,10 @@ var faMessages = map[string]map[string]string{
 	"RepeatPassword": {
 		"required": "تکرار رمز عبور نباید خالی باشد.",
 	},
+
+	//Login
+	"EmailOrPhone": {
+		"required": "ایمل یا تلفن نباید خالی باشد",
+		"max":      "ایمیل یا شماره تلفن نباید بیشتر از ۲۵۴ کاراکتر باشد",
+	},
 }

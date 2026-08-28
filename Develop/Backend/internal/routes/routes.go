@@ -33,11 +33,15 @@ func SetupRoutes(
 	api := r.Group("api")
 	{
 		api.GET("/users", authHandler.FindAll)
-		api.POST("/register", authHandler.Register)
-		api.POST("/login", authHandler.Login)
-		api.POST("/auth/refresh", authHandler.Refresh)
-		api.GET("/tokens", authHandler.GetAllRefreshTokens)
-		api.GET("/logout", authHandler.Logout)
+
+		//auth
+		auth := api.Group("auth")
+		auth.POST("/register", authHandler.Register)
+		auth.POST("/login", authHandler.Login)
+		auth.POST("/login/verify", authHandler.VerifyLogin)
+		auth.POST("/refresh", authHandler.Refresh)
+		auth.GET("/tokens", authHandler.GetAllRefreshTokens)
+		auth.GET("/logout", authHandler.Logout)
 
 		api.GET(
 			"/profile",
