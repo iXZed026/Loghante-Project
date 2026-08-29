@@ -23,3 +23,6 @@ CREATE INDEX IX_LoginVerifications_UserId
 CREATE INDEX IX_LoginVerifications_ExpiresAt
     ON LoginVerifications(ExpiresAt);
 
+SELECT * FROM LoginVerifications;
+
+DROP TABLE IF EXISTS LoginVerifications CASCADE;
