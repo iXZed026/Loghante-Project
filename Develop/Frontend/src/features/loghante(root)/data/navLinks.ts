@@ -66,11 +66,29 @@ export const navLinks: INavLink[] = [
       en: "Cinema & Theaters",
       fa: "سینما و تئاتر",
     },
-    path: "#cinema_and_theaters",
+    path: "#cinema-and-theaters",
   },
 
   {
     id: 7,
+    name: {
+      en: "Cafe Menus",
+      fa: "منو کافه ها",
+    },
+    path: "#cafe_menus",
+  },
+
+  {
+    id: 8,
+    name: {
+      en: "Conference Hall Reservation",
+      fa: "رزرو سالن کنفرانس",
+    },
+    path: "#conference-hall-reservation",
+  },
+
+  {
+    id: 9,
     name: {
       en: "Virtual Tour",
       fa: "تور مجازی",
@@ -79,7 +97,16 @@ export const navLinks: INavLink[] = [
   },
 
   {
-    id: 8,
+    id: 10,
+    name: {
+      en: "Work With Us",
+      fa: "همکاری با ما",
+    },
+    path: "#work-with-us",
+  },
+
+  {
+    id: 11,
     name: {
       en: "Contact Us",
       fa: "تماس با ما",

@@ -77,11 +77,12 @@ function LanguageSwitcher({
 
     return (
         <div className={cn(
-            "w-20",
-            "flex flex-col justify-center",
+            "md:w-20 w-full",
+            "flex flex-col justify-center ",
             "relative",
             activeLanguageDropDown && "text-black-utility",
-            isScrolled && "text-gold-utility"
+            isScrolled && "text-gold-utility",
+            "z-50"
         )}>
             <div className={cn(
                 "flex justify-center items-center",
@@ -121,7 +122,7 @@ function LanguageSwitcher({
                         "shadow-lg",
                         activeLanguageDropDown && "bg-white",
                         activeLanguageDropDown && isScrolled && "text-black",
-                        
+
                     )}
                 >
                     {languages.map((lang) => (

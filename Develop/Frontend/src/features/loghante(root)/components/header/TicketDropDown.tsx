@@ -47,8 +47,8 @@ function TicketDropDown(
         >
             <Button
                 className={cn(
-                    "md:w-40 w-30",
-                    "md:py-3 py-1 fcc gap-2",
+                    "md:w-40 w-full",
+                    "py-3 flex justify-center items-center gap-2 ",
                     "md:font-semibold",
                     "bg-crimson",
                     isScrolled ?

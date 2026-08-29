@@ -58,6 +58,7 @@ function Header() {
             >
               <Button
                 className={cn(
+                  "md:block hidden",
                   "px-4 py-2",
                   "font-semibold",
                   "border-[1px]",
@@ -97,8 +98,8 @@ function Header() {
             >
               <Button
                 className={cn(
-                  "md:w-25 w-20",
-                  "md:py-3 py-1 fcc gap-2",
+                  "md:w-25 w-22",
+                  "md:py-3 py-2 md:px-0  fcc gap-2",
                   "md:font-semibold",
                   "bg-crimson",
                   isScrolled ?

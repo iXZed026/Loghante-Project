@@ -9,6 +9,9 @@ import { IoMdClose } from "react-icons/io";
 import Button from '@/components/ui/Button';
 import { TranslationFunction } from '@/types/translations';
 import { useLocale } from 'next-intl';
+import TicketDropDown from './TicketDropDown';
+import LanguageSwitcher from '@/components/shared/LanguageSwitcher';
+import AppLink from '@/components/ui/AppLink';
 
 interface IHamburgerMenuProps {
     activeHumber: boolean
@@ -45,7 +48,7 @@ function HamburgerMenu({
                     "z-40",
                 )}
             >
-                {/* SLIDEBAR(HUMBURGER MENY) */}
+                {/* SLIDEBAR(HUMBURGER MENu) */}
                 <motion.div
                     variants={
                         locale !== "fa" ?
@@ -57,6 +60,7 @@ function HamburgerMenu({
                     exit="exit"
                     className={cn(
                         "w-90 h-[100vh]",
+                        "fcol gap-3",
                         "bg-white-utility",
                         "fixed top-0",
                         locale === "fa" ? "right-0" : "left-0",
@@ -67,7 +71,7 @@ function HamburgerMenu({
                 >
                     <div className={cn(
                         "gap-1",
-                        "py-4 px-7  mb-5",
+                        "py-4 md:px-7 px-4 mb-5",
                         "border-b-2 border-[var(--crimson-color)]",
                     )}
                     >
@@ -91,11 +95,35 @@ function HamburgerMenu({
                             )} />
                         </Button>
                     </div>
+                    {/* Links */}
                     <div>
                         <NavLinks
                             UnActiveHumberHandler={UnActiveHumberHandler}
                             t={t}
                         />
+                    </div>
+                    {/* Buttons(Mobile) */}
+                    <div className='gap-3 fcol md:px-7 px-4'>
+                        {/* <LanguageSwitcher /> */}
+                        <TicketDropDown />
+                        <AppLink
+                            href="/login"
+                        >
+                            <Button
+                                className={cn(
+                                    "w-full",
+                                    "px-4 py-3",
+                                    "font-semibold",
+                                    "border-[1px]",
+                                    "text-black-utility",
+                                    "hover:bg-white/35",
+                                )}
+                            >
+                                {
+                                    t("login-button")
+                                }
+                            </Button>
+                        </AppLink>
                     </div>
                 </motion.div>
 
