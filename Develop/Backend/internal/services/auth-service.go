@@ -15,10 +15,11 @@ import (
 )
 
 type AuthService struct {
-	userRepository              *repositories.UserRepository
-	refreshTokenRepository      *repositories.RefreshTokenRepository
-	jwtService                  *appAuth.JWTService
-	loginVerificationRepository *repositories.LoginVerificationRepository
+	userRepository                 *repositories.UserRepository
+	refreshTokenRepository         *repositories.RefreshTokenRepository
+	jwtService                     *appAuth.JWTService
+	loginVerificationRepository    *repositories.LoginVerificationRepository
+	registerVerificationRepository *repositories.RegisterVerificationRepository
 }
 
 func NewAuthService(
@@ -26,13 +27,15 @@ func NewAuthService(
 	refreshTokenRepository *repositories.RefreshTokenRepository,
 	jwtService *appAuth.JWTService,
 	loginVerificationRepository *repositories.LoginVerificationRepository,
+	registerVerificationRepository *repositories.RegisterVerificationRepository,
 ) *AuthService {
 
 	return &AuthService{
-		userRepository:              userRepository,
-		refreshTokenRepository:      refreshTokenRepository,
-		jwtService:                  jwtService,
-		loginVerificationRepository: loginVerificationRepository,
+		userRepository:                 userRepository,
+		refreshTokenRepository:         refreshTokenRepository,
+		jwtService:                     jwtService,
+		loginVerificationRepository:    loginVerificationRepository,
+		registerVerificationRepository: registerVerificationRepository,
 	}
 }
 
@@ -43,10 +46,10 @@ func (s *AuthService) Register(
 	email string,
 	password string,
 	repeatPassword string,
-) error {
+) (*dto.RegisterResponse, error) {
 
 	if password != repeatPassword {
-		return appErrors.ErrPasswordMismatch
+		return nil, appErrors.ErrPasswordMismatch
 	}
 
 	passwordHash, err := bcrypt.GenerateFromPassword(
@@ -55,21 +58,48 @@ func (s *AuthService) Register(
 	)
 
 	if err != nil {
-		return appErrors.ErrInternalServer
+		return nil, appErrors.ErrInternalServer
 	}
 
-	user := &models.User{
+	// Generate verification token
+	verificationToken, err :=
+		appAuth.GenerateVerificationToken()
+
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	// Save registration data temporarily
+	verification := &models.RegisterVerification{
 		FullName:     fullName,
 		PhoneNumber:  phoneNumber,
 		Email:        email,
 		PasswordHash: string(passwordHash),
+
+		Token: verificationToken,
+
+		ExpiresAt: time.Now().Add(
+			5 * time.Minute,
+		),
+
+		Verified: false,
 	}
 
-	if err := s.userRepository.CreateUser(user, ctx); err != nil {
-		return err
+	err = s.registerVerificationRepository.Create(
+		ctx,
+		verification,
+	)
+
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
 	}
 
-	return nil
+	return &dto.RegisterResponse{
+		FullName:          fullName,
+		Email:             email,
+		PhoneNumber:       phoneNumber,
+		VerificationToken: verificationToken,
+	}, nil
 }
 
 func (s *AuthService) Login(
@@ -348,4 +378,65 @@ func (s *AuthService) VerifyLogin(
 		PhoneNumber: user.PhoneNumber,
 		AccessToken: accessToken,
 	}, refreshToken, nil
+}
+
+func (s *AuthService) VerifyRegister(
+	ctx context.Context,
+	verificationToken string,
+	code string,
+) error {
+
+	verification, err :=
+		s.registerVerificationRepository.FindByToken(
+			ctx,
+			verificationToken,
+		)
+
+	if err != nil {
+		return err
+	}
+
+	// Already verified
+	if verification.Verified {
+		return appErrors.ErrUserAlreadyVerified
+	}
+
+	// Token expired
+	if time.Now().After(verification.ExpiresAt) {
+		return appErrors.ErrVerificationTokenExpired
+	}
+
+	// Check verification code
+	if code != "123456" {
+		return appErrors.ErrInvalidVerificationCode
+	}
+
+	// Create user ONLY after successful verification
+	user := &models.User{
+		FullName:     verification.FullName,
+		PhoneNumber:  verification.PhoneNumber,
+		Email:        verification.Email,
+		PasswordHash: verification.PasswordHash,
+	}
+
+	err = s.userRepository.CreateUser(
+		user,
+		ctx,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	// Mark verification as verified
+	err = s.registerVerificationRepository.MarkVerified(
+		ctx,
+		verification,
+	)
+
+	if err != nil {
+		return appErrors.ErrInternalServer
+	}
+
+	return nil
 }

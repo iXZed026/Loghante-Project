@@ -1,10 +1,11 @@
 "use client"
 
-import Modal from '@/components/shared/modal/Modal';
+import Modal from '@/components/shared/modal/Modal'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import useInput from '@/hooks/useInput'
 import { verifyLogin } from '@/lib/api/auth/verifyLogin'
+import { verifyRegister } from '@/lib/api/auth/verifyRegister'
 import { cn } from '@/lib/utils/cn'
 import {
     getLocalStorageItem,
@@ -57,6 +58,7 @@ function VerifyForm({
         verify,
         ,
         changeVerifyValue,
+        clearVerifyValue,
     ] = useInput("");
 
     const tokenKey =
@@ -111,18 +113,66 @@ function VerifyForm({
 
         setIsLoading(true);
 
-        if (mode === "login") {
+        try {
 
+            /*
+             * Login verification
+             */
+            if (mode === "login") {
+
+                const response =
+                    await verifyLogin(
+                        {
+                            verificationToken,
+                            code: verify,
+                        },
+                        locale
+                    );
+
+                if (!response.success) {
+
+                    setModal({
+                        active: true,
+                        success: false,
+                        message: response.message,
+                        pushUrl: undefined,
+                    });
+
+                    return;
+                }
+
+                removeFromLocalStorage(
+                    tokenKey
+                );
+
+                saveToLocalStorage(
+                    "accessToken",
+                    response.data.accessToken
+                );
+
+                setModal({
+                    active: true,
+                    success: true,
+                    message: response.message,
+                    pushUrl: "/profile",
+                });
+
+                clearVerifyValue()
+
+                return;
+            }
+
+            /*
+             * Register verification
+             */
             const response =
-                await verifyLogin(
+                await verifyRegister(
                     {
                         verificationToken,
                         code: verify,
                     },
                     locale
                 );
-
-            setIsLoading(false);
 
             if (!response.success) {
 
@@ -140,34 +190,20 @@ function VerifyForm({
                 tokenKey
             );
 
-            saveToLocalStorage(
-                "accessToken",
-                response.data.accessToken
-            );
-
             setModal({
                 active: true,
                 success: true,
                 message: response.message,
-                pushUrl: "/profile",
+                pushUrl: "/login",
             });
 
-            return;
+            clearVerifyValue()
+
+        } finally {
+
+            setIsLoading(false);
+
         }
-
-        /*
-         * Register verification will be implemented
-         * when the register verification API is ready.
-         */
-
-        setIsLoading(false);
-
-        setModal({
-            active: true,
-            success: "warning",
-            message: "Register verification is not implemented yet.",
-            pushUrl: undefined,
-        });
     }
 
     if (isCheckingToken) {
@@ -176,7 +212,6 @@ function VerifyForm({
 
     return (
         <>
-            {/* Verification Modal */}
             <Modal
                 active={modal.active}
                 message={modal.message}
@@ -227,7 +262,6 @@ function VerifyForm({
 
                     </div>
 
-                    {/* Verify Button */}
                     <div>
 
                         <Button
@@ -256,4 +290,3 @@ function VerifyForm({
 }
 
 export default VerifyForm;
-

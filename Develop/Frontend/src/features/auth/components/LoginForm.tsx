@@ -44,13 +44,15 @@ function LoginForm({
     const [
         emailOrPhone,
         ,
-        ChangeEailOrPhoneValue,
+        ChangeEmailOrPhoneValue,
+        clearEmailOrPhoneValue,
     ] = useInput("");
 
     const [
         password,
         ,
-        ChangePasswordValue,
+        changePasswordValue,
+        clearPasswordValue,
     ] = useInput("");
 
     async function loginSubmitedForm(
@@ -80,6 +82,8 @@ function LoginForm({
                     pushUrl: undefined,
                 });
 
+                clearPasswordValue()
+
                 return;
             }
 
@@ -94,6 +98,9 @@ function LoginForm({
                 message: response.message,
                 pushUrl: "/login/verify",
             });
+
+            clearEmailOrPhoneValue()
+            clearPasswordValue()
 
         } finally {
 
@@ -138,7 +145,7 @@ function LoginForm({
                         type="text"
                         maxLength={100}
                         value={emailOrPhone}
-                        onChange={ChangeEailOrPhoneValue}
+                        onChange={ChangeEmailOrPhoneValue}
                     />
                 </div>
 
@@ -156,7 +163,7 @@ function LoginForm({
                         type="password"
                         maxLength={100}
                         value={password}
-                        onChange={ChangePasswordValue}
+                        onChange={changePasswordValue}
                     />
                 </div>
 

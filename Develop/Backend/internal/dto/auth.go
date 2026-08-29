@@ -8,6 +8,14 @@ type RegisterRequest struct {
 	RepeatPassword string `json:"repeatPassword" binding:"required"`
 }
 
+type RegisterResponse struct {
+	UserID            int    `json:"userId"`
+	FullName          string `json:"fullName"`
+	Email             string `json:"email"`
+	PhoneNumber       string `json:"phoneNumber"`
+	VerificationToken string `json:"verificationToken"`
+}
+
 type LoginRequest struct {
 	EmailOrPhone string `json:"emailOrPhone" binding:"required,max=254"`
 	Password     string `json:"password" binding:"required,min=8"`

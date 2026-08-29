@@ -8,8 +8,16 @@ export interface RegisterData {
   repeatPassword: string;
 }
 
+export interface RegisterResponseData {
+  userId: number;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  verificationToken: string;
+}
+
 export interface RegisterResponse {
-  data?: null;
+  data: RegisterResponseData;
   message: string;
   success: boolean;
 }

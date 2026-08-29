@@ -35,7 +35,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	if err := c.ShouldBindJSON(&req); err != nil {
 
 		h.logger.Error(
-			"failed to get register request",
+			"failed to bind register request",
 			"error", err,
 		)
 
@@ -48,7 +48,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
-	err := h.authService.Register(
+	user, err := h.authService.Register(
 		c.Request.Context(),
 		req.FullName,
 		req.PhoneNumber,
@@ -75,8 +75,8 @@ func (h *AuthHandler) Register(c *gin.Context) {
 
 	response.Success(
 		c,
-		"user registered successfully",
-		nil,
+		"verification required",
+		user,
 	)
 }
 
@@ -394,5 +394,54 @@ func (h *AuthHandler) VerifyLogin(c *gin.Context) {
 		c,
 		"user login verified successfully",
 		user,
+	)
+}
+
+func (h *AuthHandler) VerifyRegister(c *gin.Context) {
+
+	var req dto.VerifyRegisterRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+
+		h.logger.Error(
+			"failed to bind register verification request",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	err := h.authService.VerifyRegister(
+		c.Request.Context(),
+		req.VerificationToken,
+		req.Code,
+	)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to verify register",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	response.Success(
+		c,
+		"user registration verified successfully",
+		nil,
 	)
 }

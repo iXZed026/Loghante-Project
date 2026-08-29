@@ -29,4 +29,9 @@ var enMessages = map[string]map[string]string{
 		"required": "Email or phone number is required.",
 		"max":      "Email or phone number cannot exceed 254 characters",
 	},
+
+	//VerificationToken
+	"VerificationToken": {
+		"required": "verification token or phone number is required.",
+	},
 }
