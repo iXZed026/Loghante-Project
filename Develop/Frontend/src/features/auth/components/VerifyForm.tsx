@@ -1,5 +1,6 @@
 "use client"
 
+import Modal from '@/components/shared/modal/Modal';
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import useInput from '@/hooks/useInput'
@@ -16,6 +17,13 @@ import React, { useEffect, useState } from 'react'
 
 interface IVerifyForm {
     mode: "login" | "register";
+}
+
+interface IModalState {
+    active: boolean;
+    success: boolean | "warning";
+    message: string;
+    pushUrl?: string;
 }
 
 function VerifyForm({
@@ -36,6 +44,14 @@ function VerifyForm({
 
     const [isCheckingToken, setIsCheckingToken] =
         useState<boolean>(true);
+
+    const [modal, setModal] =
+        useState<IModalState>({
+            active: false,
+            success: false,
+            message: "",
+            pushUrl: undefined,
+        });
 
     const [
         verify,
@@ -95,61 +111,63 @@ function VerifyForm({
 
         setIsLoading(true);
 
-        try {
+        if (mode === "login") {
 
-            if (mode === "login") {
-
-                const response =
-                    await verifyLogin(
-                        {
-                            verificationToken,
-                            code: verify,
-                        },
-                        locale
-                    );
-
-                if (!response.success) {
-
-                    console.log(
-                        response.message
-                    );
-
-                    return;
-                }
-
-                removeFromLocalStorage(
-                    tokenKey
+            const response =
+                await verifyLogin(
+                    {
+                        verificationToken,
+                        code: verify,
+                    },
+                    locale
                 );
 
-                saveToLocalStorage(
-                    "accessToken",
-                    response.data.accessToken
-                );
+            setIsLoading(false);
 
-                router.push(
-                    `/${locale}/profile`
-                );
+            if (!response.success) {
+
+                setModal({
+                    active: true,
+                    success: false,
+                    message: response.message,
+                    pushUrl: undefined,
+                });
 
                 return;
             }
 
-            /*
-             * Register verification will be implemented
-             * when the register verification API is ready.
-             */
-            console.log(
-                "Register verification is not implemented yet."
+            removeFromLocalStorage(
+                tokenKey
             );
 
-        } catch (error) {
+            saveToLocalStorage(
+                "accessToken",
+                response.data.accessToken
+            );
 
-            console.error(error);
+            setModal({
+                active: true,
+                success: true,
+                message: response.message,
+                pushUrl: "/profile",
+            });
 
-        } finally {
-
-            setIsLoading(false);
-
+            return;
         }
+
+        /*
+         * Register verification will be implemented
+         * when the register verification API is ready.
+         */
+
+        setIsLoading(false);
+
+        setModal({
+            active: true,
+            success: "warning",
+            message: "Register verification is not implemented yet.",
+            pushUrl: undefined,
+        });
     }
 
     if (isCheckingToken) {
@@ -157,68 +175,85 @@ function VerifyForm({
     }
 
     return (
-        <div>
+        <>
+            {/* Verification Modal */}
+            <Modal
+                active={modal.active}
+                message={modal.message}
+                success={modal.success}
+                pushUrl={modal.pushUrl}
+                onClose={() => {
+                    setModal(prev => ({
+                        ...prev,
+                        active: false,
+                    }));
+                }}
+            />
 
-            <form
-                className={cn(
-                    "fcol gap-10"
-                )}
-                onSubmit={submitVerify}
-            >
+            <div>
 
-                <div className='text-center text-2xl font-semibold'>
-                    {verifyT("title")}
-                </div>
+                <form
+                    className={cn(
+                        "fcol gap-10"
+                    )}
+                    onSubmit={submitVerify}
+                >
 
-                <div>
-
-                    <div className='text-center mb-10'>
-                        <span className='text-black-light-utility'>
-                            {verifyT("sent-message")}
-                        </span>
+                    <div className="text-center text-2xl font-semibold">
+                        {verifyT("title")}
                     </div>
 
-                    <Input
-                        className={cn(
-                            "w-full",
-                            "border-b-3 border-[#525252]",
-                            "rounded-sm",
-                            "italic"
-                        )}
-                        type="text"
-                        maxLength={6}
-                        inputMode="numeric"
-                        value={verify}
-                        onChange={changeVerifyValue}
-                    />
+                    <div>
 
-                </div>
+                        <div className="text-center mb-10">
+                            <span className="text-black-light-utility">
+                                {verifyT("sent-message")}
+                            </span>
+                        </div>
 
-                {/* Verify Button */}
-                <div>
+                        <Input
+                            className={cn(
+                                "w-full",
+                                "border-b-3 border-[#525252]",
+                                "rounded-sm",
+                                "italic"
+                            )}
+                            type="text"
+                            maxLength={6}
+                            inputMode="numeric"
+                            value={verify}
+                            onChange={changeVerifyValue}
+                        />
 
-                    <Button
-                        type="submit"
-                        disabled={isLoading}
-                        className={cn(
-                            "h-12.5 w-full",
-                            "bg-crimson",
-                            "font-bold",
-                            "hover:opacity-85",
-                        )}
-                    >
-                        {isLoading
-                            ? "Loading..."
-                            : verifyT("verify-button")
-                        }
-                    </Button>
+                    </div>
 
-                </div>
+                    {/* Verify Button */}
+                    <div>
 
-            </form>
+                        <Button
+                            type="submit"
+                            disabled={isLoading}
+                            className={cn(
+                                "h-12.5 w-full",
+                                "bg-crimson",
+                                "font-bold",
+                                "hover:opacity-85",
+                            )}
+                        >
+                            {isLoading
+                                ? "Loading..."
+                                : verifyT("verify-button")
+                            }
+                        </Button>
 
-        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </>
     );
 }
 
 export default VerifyForm;
+
