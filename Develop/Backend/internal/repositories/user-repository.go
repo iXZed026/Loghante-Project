@@ -54,6 +54,46 @@ func (r *UserRepository) CreateUser(
 	return nil
 }
 
+func (r *UserRepository) ExistsByEmail(
+	ctx context.Context,
+	email string,
+) (bool, error) {
+
+	var count int64
+
+	result := r.db.
+		WithContext(ctx).
+		Model(&models.User{}).
+		Where("email = ?", email).
+		Count(&count)
+
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	return count > 0, nil
+}
+
+func (r *UserRepository) ExistsByPhone(
+	ctx context.Context,
+	phoneNumber string,
+) (bool, error) {
+
+	var count int64
+
+	result := r.db.
+		WithContext(ctx).
+		Model(&models.User{}).
+		Where("phonenumber = ?", phoneNumber).
+		Count(&count)
+
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	return count > 0, nil
+}
+
 func (r *UserRepository) FindByEmailOrPhone(
 	ctx context.Context,
 	emailOrPhone string,
