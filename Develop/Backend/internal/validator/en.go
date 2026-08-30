@@ -32,6 +32,6 @@ var enMessages = map[string]map[string]string{
 
 	//VerificationToken
 	"VerificationToken": {
-		"required": "verification token or phone number is required.",
+		"required": "verification token is required.",
 	},
 }

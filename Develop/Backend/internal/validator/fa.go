@@ -28,4 +28,9 @@ var faMessages = map[string]map[string]string{
 		"required": "ایمیل یا تلفن نباید خالی باشد",
 		"max":      "ایمیل یا شماره تلفن نباید بیشتر از ۲۵۴ کاراکتر باشد",
 	},
+
+	//VerificationToken
+	"VerificationToken": {
+		"required": "توکن تأیید الزامی است.",
+	},
 }
