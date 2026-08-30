@@ -49,13 +49,23 @@ func (s *AuthService) Register(
 		return nil, appErrors.ErrPasswordMismatch
 	}
 
-	//check kardan inke email ya telephone az ghabl bode ya na
-	/////////////////////
-	/////////////////////
-	/////////////////////
-	/////////////////////
-	/////////////////////
-	/////////////////////
+	emailExists, err := s.userRepository.ExistsByEmail(ctx, email)
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	if emailExists {
+		return nil, appErrors.ErrEmailAlreadyExists
+	}
+
+	phoneExists, err := s.userRepository.ExistsByPhone(ctx, phoneNumber)
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	if phoneExists {
+		return nil, appErrors.ErrPhoneAlreadyExists
+	}
 
 	passwordHash, err := security.HashPassword(password)
 	if err != nil {
