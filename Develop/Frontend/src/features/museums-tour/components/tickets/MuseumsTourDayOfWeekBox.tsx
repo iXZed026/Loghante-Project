@@ -3,8 +3,10 @@ import { cn } from '@/lib/utils/cn';
 
 function MuseumsTourDayOfWeekBox() {
 
-  const date = new Date()
+  const date = new Date();
+
   const todayNum = date.getDate();
+
   const month = date.toLocaleDateString("en-US", {
     month: "long",
   });
@@ -16,6 +18,7 @@ function MuseumsTourDayOfWeekBox() {
           key={day.id}
           className={cn(
             "col-span-1",
+            "min-w-0",
             "py-6",
             "fcol gap-5",
             "border-[1px] border-black-opacity",
@@ -24,16 +27,17 @@ function MuseumsTourDayOfWeekBox() {
             "text-center",
           )}
         >
-          <span className='font-bold text-lg'>
+          <span className="font-bold text-lg">
             {day.dayOTWeek}
           </span>
+
           <span>
-            {`${(todayNum + Number(key))}  ${month}`}
+            {`${todayNum + Number(key)} ${month}`}
           </span>
         </div>
       ))}
     </>
-  )
+  );
 }
 
-export default MuseumsTourDayOfWeekBox
+export default MuseumsTourDayOfWeekBox;
