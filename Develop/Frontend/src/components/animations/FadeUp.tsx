@@ -8,9 +8,10 @@ interface IFadeUp {
     children: Children;
     transition?: Transition;
     y?: number;
-    amount?: number
-    variants?: Variants
-    className?: string
+    amount?: number;
+    once?: boolean;
+    variants?: Variants;
+    className?: string;
 }
 
 function FadeUp({
@@ -18,6 +19,7 @@ function FadeUp({
     transition = slowTransitionOut,
     y = 50,
     amount = 0.2,
+    once = false,
     variants,
     className
 }: IFadeUp) {
@@ -35,6 +37,7 @@ function FadeUp({
             transition={transition}
             viewport={{
                 amount: amount,
+                once: once,
             }}
             className={className}
         >

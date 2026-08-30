@@ -22,7 +22,7 @@ function MuseumsTourTicketBox() {
 
     return (
         <div className={cn(
-            "col-span-6",
+            "lg:col-span-6 col-span-12",
             "fcol gap-10",
             "p-8",
             "border-[1px] border-black-opacity",

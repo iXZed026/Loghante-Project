@@ -7,12 +7,14 @@ interface IFadeIn {
   children: Children;
   transition?: Transition;
   className?: string
+  once?: boolean
 }
 
 function FadeIn({
   children,
   transition = slowTransitionOut,
   className,
+  once = false,
 }: IFadeIn) {
   return (
     <motion.div
@@ -24,6 +26,7 @@ function FadeIn({
       }}
       viewport={{
         amount: 0.2,
+        once,
       }}
       transition={transition}
       className={className}

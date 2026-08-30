@@ -7,7 +7,7 @@ function MuseumsTour() {
     <Container>
       <div className='py-7.5 xl:px-36'>
         {/* Museums Tout Header */}
-        <div className='mb-30'>
+        <div className='mb-15'>
           <MuseumsTourHeaderBox />
         </div>
         {/* Museums Tour Tickets */}

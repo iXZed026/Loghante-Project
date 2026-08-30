@@ -1,6 +1,8 @@
 import React from 'react'
 import MuseumsTourDayOfWeekBox from './MuseumsTourDayOfWeekBox'
 import MuseumsTourTicketBox from './MuseumsTourTicketBox'
+import StaggerWrapper from '@/components/animations/StaggerWrapper'
+import { dayOfTheWeeksContainerVariant } from '@/features/loghante(root)/animations/loghante.variants'
 
 function MuseumsTourTickets() {
     return (
@@ -10,10 +12,13 @@ function MuseumsTourTickets() {
                     Choose a date and buy a ticket
                 </h3>
             </div>
-            <div className="w-full overflow-x-auto xl:overflow-x-visible">
-                <div className="grid grid-cols-7 gap-5 min-w-[1000px] xl:min-w-0 py-2">
+            <div className="w-full overflow-y-hidden overflow-x-auto xl:overflow-x-visible">
+                <StaggerWrapper
+                    variants={dayOfTheWeeksContainerVariant}
+                    className="grid grid-cols-7 gap-5 min-w-[1000px] xl:min-w-0 py-2"
+                >
                     <MuseumsTourDayOfWeekBox />
-                </div>
+                </StaggerWrapper>
             </div>
             <div className='grid grid-cols-12 gap-10 xl:px-20'>
                 <MuseumsTourTicketBox />

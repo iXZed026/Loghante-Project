@@ -20,3 +20,25 @@ export const MuseumCardVariant: Variants = {
     },
 
 }
+
+export const dayOfTheWeeksContainerVariant: Variants = {
+    hidden: {},
+    visible: {
+        transition: {
+            staggerChildren: 0.1,
+        }
+    },
+}
+
+export const dayOfTheWeeksVariant: Variants = {
+    hidden: {
+        opacity: 0,
+        y: 40,
+    },
+    visible: {
+        opacity: 1,
+        y: 4,
+    },
+
+}
+

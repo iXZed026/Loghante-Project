@@ -1,4 +1,7 @@
+import FadeUp from '@/components/animations/FadeUp';
 import { DayOfTheWeek } from '@/data/days-of-the-week';
+import { dayOfTheWeeksVariant } from '@/features/loghante(root)/animations/loghante.variants';
+import { fastTransitionOut } from '@/lib/animations/transitions';
 import { cn } from '@/lib/utils/cn';
 
 function MuseumsTourDayOfWeekBox() {
@@ -14,7 +17,11 @@ function MuseumsTourDayOfWeekBox() {
   return (
     <>
       {DayOfTheWeek.map((day, key) => (
-        <div
+        <FadeUp
+          variants={dayOfTheWeeksVariant}
+          transition={fastTransitionOut}
+          once={true}
+
           key={day.id}
           className={cn(
             "col-span-1",
@@ -25,6 +32,8 @@ function MuseumsTourDayOfWeekBox() {
             "shadow-xl",
             "rounded-xl",
             "text-center",
+            "hover:bg-[var(--crimson-color)] hover:text-white",
+            "click-scale cursor-pointer"
           )}
         >
           <span className="font-bold text-lg">
@@ -34,7 +43,7 @@ function MuseumsTourDayOfWeekBox() {
           <span>
             {`${todayNum + Number(key)} ${month}`}
           </span>
-        </div>
+        </FadeUp>
       ))}
     </>
   );

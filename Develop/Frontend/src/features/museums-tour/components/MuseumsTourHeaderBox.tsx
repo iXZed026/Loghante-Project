@@ -1,3 +1,6 @@
+import FadeIn from '@/components/animations/FadeIn'
+import FadeUp from '@/components/animations/FadeUp'
+import { slowTransitionOut, verySlowTransitionOut } from '@/lib/animations/transitions'
 import { cn } from '@/lib/utils/cn'
 import React from 'react'
 
@@ -14,7 +17,9 @@ function MuseumsTourHeaderBox() {
       )}
     >
       {/* Images */}
-      <div
+      <FadeIn
+        transition={slowTransitionOut}
+        once={true}
         className={cn(
           "md:col-span-6 col-span-12",
           "fec",
@@ -28,28 +33,39 @@ function MuseumsTourHeaderBox() {
             "rounded-xl",
           )}
         />
-      </div>
+      </FadeIn>
 
       {/* Content */}
       <div
         className={cn(
+          "overflow-hidden",
           "md:col-span-6 col-span-12",
           "fcol justify-center gap-7.5",
           "md:px-0 px-7",
           "order-2 md:order-1",
         )}
       >
-        <h2 className="font-wulkan md:text-4xl text-2xl font-bold ">
-          Loghanteh tour Museum
-        </h2>
+        <FadeIn
+          transition={verySlowTransitionOut}
+          once={true}
+        >
+          <h2 className="font-wulkan md:text-4xl text-2xl font-bold ">
+            Loghanteh tour Museum
+          </h2>
+        </FadeIn>
+        <FadeUp
+          transition={verySlowTransitionOut}
+          once={true}
+        >
+          <p className="text-base  leading-relaxed">
+            At Loghanteh Store, you can purchase cultural products,
+            collectible models, books, and special souvenirs from the
+            collection. At Loghanteh Store, you can purchase cultural
+            products, collectible models, books, and special souvenirs
+            from the collection.
+          </p>
 
-        <p className="text-base  leading-relaxed">
-          At Loghanteh Store, you can purchase cultural products,
-          collectible models, books, and special souvenirs from the
-          collection. At Loghanteh Store, you can purchase cultural
-          products, collectible models, books, and special souvenirs
-          from the collection.
-        </p>
+        </FadeUp>
       </div>
     </div>
   )
