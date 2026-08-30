@@ -3,13 +3,20 @@ import MuseumsTourDayOfWeekBox from './MuseumsTourDayOfWeekBox'
 import MuseumsTourTicketBox from './MuseumsTourTicketBox'
 import StaggerWrapper from '@/components/animations/StaggerWrapper'
 import { dayOfTheWeeksContainerVariant } from '@/features/loghante(root)/animations/loghante.variants'
+import { useTranslations } from 'next-intl'
 
 function MuseumsTourTickets() {
+
+    const DayOFTheWeeksT =
+        useTranslations("museumsTour.day-of-the-weeks")
+
     return (
         <div className='fcol gap-6'>
             <div>
                 <h3 className='text-xl'>
-                    Choose a date and buy a ticket
+                    {
+                        DayOFTheWeeksT("title")
+                    }
                 </h3>
             </div>
             <div className="w-full overflow-y-hidden overflow-x-auto xl:overflow-x-visible">

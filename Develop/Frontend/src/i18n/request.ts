@@ -88,6 +88,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/profile/edit-profile-page.json`)
     ).default;
 
+    //Museums Tour
+    const museumsTour = (
+        await import(`../messages/${locale}/museums-tour/museums-tour.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -115,6 +120,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
             profileDashboard,
             profileDashboardPage,
             profileEdit,
+            //Museums Tour
+            museumsTour
         },
     };
 });

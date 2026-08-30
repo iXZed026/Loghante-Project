@@ -2,9 +2,12 @@ import FadeIn from '@/components/animations/FadeIn'
 import FadeUp from '@/components/animations/FadeUp'
 import { slowTransitionOut, verySlowTransitionOut } from '@/lib/animations/transitions'
 import { cn } from '@/lib/utils/cn'
-import React from 'react'
+import { useTranslations } from 'next-intl'
 
 function MuseumsTourHeaderBox() {
+
+  const headerBoxT = useTranslations("museumsTour.header")
+
   return (
     <div
       className={cn(
@@ -50,7 +53,9 @@ function MuseumsTourHeaderBox() {
           once={true}
         >
           <h2 className="font-wulkan md:text-4xl text-2xl font-bold ">
-            Loghanteh tour Museum
+            {
+              headerBoxT("title")
+            }
           </h2>
         </FadeIn>
         <FadeUp
@@ -58,11 +63,9 @@ function MuseumsTourHeaderBox() {
           once={true}
         >
           <p className="text-base  leading-relaxed">
-            At Loghanteh Store, you can purchase cultural products,
-            collectible models, books, and special souvenirs from the
-            collection. At Loghanteh Store, you can purchase cultural
-            products, collectible models, books, and special souvenirs
-            from the collection.
+            {
+              headerBoxT("description")
+            }
           </p>
 
         </FadeUp>

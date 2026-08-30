@@ -1,9 +1,12 @@
 "use client"
 import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
+import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
 
 function MuseumsTourTicketBox() {
+
+    const ticketBoxT = useTranslations("museumsTour.ticket-box")
 
     const [ticketCount, setTicketCount] =
         useState<number>(0)
@@ -12,12 +15,12 @@ function MuseumsTourTicketBox() {
         () => {
             setTicketCount(prev => prev + 1)
         }
-        
-        const decreaseHandler: () => void =
+
+    const decreaseHandler: () => void =
         () => {
-            if(ticketCount !< 1) return;
+            if (ticketCount! < 1) return;
             setTicketCount(prev => prev - 1)
-            
+
         }
 
     return (
@@ -38,12 +41,12 @@ function MuseumsTourTicketBox() {
             {/* Remaining Capacity */}
             <div>
                 <span className='text-lg font-semibold'>
-                    Remaining capacity: 12
+                    {ticketBoxT("capacity")} 12
                 </span>
             </div>
             <div className='fbc select-none'>
                 <div className='font-semibold'>
-                    <span>Number of tickets: </span>
+                    <span>{ticketBoxT("capacity")} </span>
                 </div>
                 <div className='fcc gap-2'>
                     <div className='fcc  bg-gray-600/30 rounded-4xl font-bold'>
@@ -69,13 +72,15 @@ function MuseumsTourTicketBox() {
             <div className='fcc'>
                 <Button
                     className={cn(
-                        "text-lg font-bold",
+                        "font-semibold",
                         "px-3 py-2",
                         "bg-crimson",
                         "hover:bg-[var(--crimson-hover-color)]",
                     )}
                 >
-                    Book a Ticket
+                    {
+                        ticketBoxT("book-button")
+                    }
                 </Button>
             </div>
         </div>
