@@ -2,7 +2,7 @@
 
 :root {
   --crimson-color: #5c2127;
-  --crimson-hover-color: #42151A;
+  --crimson-hover-color: #630a14;
   --crimson-opacity-color: #5C212759;
   --black-color: #161616;
   --black-light-color: #313131;
@@ -13,9 +13,6 @@
   --gold-hover-color: #936c23;
 }
 
-html {
-  scroll-behavior: smooth;
-}
 
 @theme {
   --font-poppins: var(--font-poppins-local);
@@ -29,6 +26,10 @@ body {
   font-family: var(--font-rozname), sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+  scrollbar-color: var(--crimson-color) transparent;
+}
 
 
 @layer utilities {
