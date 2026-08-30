@@ -105,9 +105,9 @@ function HamburgerMenu({
                     {/* Buttons(Mobile) */}
                     <div className='gap-3 fcol md:px-7 px-4'>
                         {/* <LanguageSwitcher /> */}
-                        <TicketDropDown />
-                        <AppLink
-                            href="/login"
+                        {/* <TicketDropDown /> */}
+                        {/* <AppLink
+                            href="/login"   
                         >
                             <Button
                                 className={cn(
@@ -123,7 +123,7 @@ function HamburgerMenu({
                                     t("login-button")
                                 }
                             </Button>
-                        </AppLink>
+                        </AppLink> */}
                     </div>
                 </motion.div>
 

@@ -3,6 +3,13 @@ package errors
 import "net/http"
 
 var (
+	//Global Errors
+
+	ErrEmptyValue = &AppError{
+		Code:    http.StatusBadRequest,
+		Message: "value must not be empty",
+	}
+
 	ErrInternalServer = &AppError{
 		Code:    http.StatusInternalServerError,
 		Message: "internal server error",

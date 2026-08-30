@@ -130,65 +130,6 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	)
 }
 
-func (h *AuthHandler) FindAll(c *gin.Context) {
-
-	ctx := c.Request.Context()
-
-	users, err := h.authService.FindAll(ctx)
-
-	if err != nil {
-
-		h.logger.Error(
-			"failed to get all users",
-			"error", err,
-		)
-
-		response.HandleError(
-			c,
-			err,
-			h.logger,
-		)
-
-		return
-	}
-
-	response.Success(
-		c,
-		"get all users successfully",
-		users,
-	)
-}
-
-func (h *AuthHandler) GetAllRefreshTokens(c *gin.Context) {
-
-	ctx := c.Request.Context()
-
-	tokens, err :=
-		h.authService.GetAllRefreshTokens(ctx)
-
-	if err != nil {
-
-		h.logger.Error(
-			"failed to get all tokens",
-			"error", err,
-		)
-
-		response.HandleError(
-			c,
-			err,
-			h.logger,
-		)
-
-		return
-	}
-
-	response.Success(
-		c,
-		"get all tokens successfully",
-		tokens,
-	)
-}
-
 func (h *AuthHandler) Refresh(c *gin.Context) {
 
 	refreshToken, err := c.Cookie(

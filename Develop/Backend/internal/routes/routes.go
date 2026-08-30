@@ -32,7 +32,6 @@ func SetupRoutes(
 
 	api := r.Group("api")
 	{
-		api.GET("/users", authHandler.FindAll)
 
 		//auth
 		auth := api.Group("auth")
@@ -41,7 +40,6 @@ func SetupRoutes(
 		auth.POST("/login/verify", authHandler.VerifyLogin)
 		auth.POST("/register/verify", authHandler.VerifyRegister)
 		auth.POST("/refresh", authHandler.Refresh)
-		auth.GET("/tokens", authHandler.GetAllRefreshTokens)
 		auth.GET("/logout", authHandler.Logout)
 
 		api.GET(
