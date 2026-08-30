@@ -5,7 +5,7 @@ import MuseumsTourTickets from '@/features/museums-tour/components/tickets/Museu
 function MuseumsTour() {
   return (
     <Container>
-      <div className='py-7.5 px-36'>
+      <div className='py-7.5 xl:px-36'>
         {/* Museums Tout Header */}
         <div className='mb-30'>
           <MuseumsTourHeaderBox />
