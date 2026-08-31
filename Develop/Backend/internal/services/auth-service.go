@@ -107,26 +107,26 @@ func (s *AuthService) VerifyRegister(
 	ctx context.Context,
 	verificationToken string,
 	code string,
-) error {
+) (*dto.RegisterResponse, error) {
 	verification, err :=
 		s.registerVerificationRepository.FindByToken(
 			ctx,
 			security.HashToken(verificationToken),
 		)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if verification.Verified {
-		return appErrors.ErrUserAlreadyVerified
+		return nil, appErrors.ErrUserAlreadyVerified
 	}
 
 	if time.Now().After(verification.ExpiresAt) {
-		return appErrors.ErrVerificationTokenExpired
+		return nil, appErrors.ErrVerificationTokenExpired
 	}
 
 	if code != "123456" {
-		return appErrors.ErrInvalidVerificationCode
+		return nil, appErrors.ErrInvalidVerificationCode
 	}
 
 	user := &models.User{
@@ -138,7 +138,7 @@ func (s *AuthService) VerifyRegister(
 
 	err = s.userRepository.CreateUser(user, ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	err = s.registerVerificationRepository.MarkVerified(
@@ -146,10 +146,16 @@ func (s *AuthService) VerifyRegister(
 		verification,
 	)
 	if err != nil {
-		return appErrors.ErrInternalServer
+		return nil, appErrors.ErrInternalServer
 	}
 
-	return nil
+	return &dto.RegisterResponse{
+		UserID:            user.UserID,
+		FullName:          user.FullName,
+		Email:             user.Email,
+		PhoneNumber:       user.PhoneNumber,
+		VerificationToken: verificationToken,
+	}, nil
 }
 
 func (s *AuthService) Login(

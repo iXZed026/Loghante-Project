@@ -1,37 +1,40 @@
 "use client"
 
-import Modal from '@/components/shared/modal/Modal';
-import AppLink from '@/components/ui/AppLink';
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import useInput from '@/hooks/useInput';
-import { login } from '@/lib/api/auth/login';
-import { cn } from '@/lib/utils/cn';
-import { saveToLocalStorage } from '@/lib/utils/localStorage';
-import { useLocale, useTranslations } from 'next-intl';
-import React, { useState } from 'react';
-import { GrGoogle } from 'react-icons/gr';
+import Modal from '@/components/shared/modal/Modal'
+import AppLink from '@/components/ui/AppLink'
+import Button from '@/components/ui/Button'
+import Input from '@/components/ui/Input'
+import useInput from '@/hooks/useInput'
+import { login } from '@/lib/api/auth/login'
+import { cn } from '@/lib/utils/cn'
+import { saveToLocalStorage } from '@/lib/utils/localStorage'
+import { useLocale, useTranslations } from 'next-intl'
+import React, { useState } from 'react'
+import { GrGoogle } from 'react-icons/gr'
 
 interface ILoginForm {
-    googleText: string;
+    googleText: string
 }
 
 interface IModalState {
-    active: boolean;
-    success: boolean | "warning";
-    message: string;
-    pushUrl?: string;
+    active: boolean
+    success: boolean | "warning"
+    message: string
+    pushUrl?: string
 }
 
 function LoginForm({
     googleText,
 }: ILoginForm) {
 
-    const loginT = useTranslations("authLogin");
-    const locale = useLocale();
+    const loginT =
+        useTranslations("authLogin")
+
+    const locale =
+        useLocale()
 
     const [isLoading, setIsLoading] =
-        useState<boolean>(false);
+        useState<boolean>(false)
 
     const [modal, setModal] =
         useState<IModalState>({
@@ -39,29 +42,29 @@ function LoginForm({
             success: false,
             message: "",
             pushUrl: undefined,
-        });
+        })
 
     const [
         emailOrPhone,
         ,
         ChangeEmailOrPhoneValue,
         clearEmailOrPhoneValue,
-    ] = useInput("");
+    ] = useInput("")
 
     const [
         password,
         ,
         changePasswordValue,
         clearPasswordValue,
-    ] = useInput("");
+    ] = useInput("")
 
     async function loginSubmitedForm(
         e: React.FormEvent<HTMLFormElement>
     ) {
 
-        e.preventDefault();
+        e.preventDefault()
 
-        setIsLoading(true);
+        setIsLoading(true)
 
         try {
 
@@ -71,7 +74,7 @@ function LoginForm({
                     password,
                 },
                 locale
-            );
+            )
 
             if (!response.success) {
 
@@ -80,31 +83,38 @@ function LoginForm({
                     success: false,
                     message: response.message,
                     pushUrl: undefined,
-                });
+                })
 
                 clearPasswordValue()
 
-                return;
+                return
             }
 
+            // Save verification token
             saveToLocalStorage(
                 "loginVerificationToken",
                 response.data.verificationToken
-            );
+            )
+
+            // Save email for verification page
+            saveToLocalStorage(
+                "loginVerificationEmail",
+                response.data.email
+            )
 
             setModal({
                 active: true,
                 success: true,
                 message: response.message,
                 pushUrl: "/login/verify",
-            });
+            })
 
             clearEmailOrPhoneValue()
             clearPasswordValue()
 
         } finally {
 
-            setIsLoading(false);
+            setIsLoading(false)
 
         }
     }
@@ -120,7 +130,7 @@ function LoginForm({
                     setModal(prev => ({
                         ...prev,
                         active: false,
-                    }));
+                    }))
                 }}
             />
 
@@ -131,8 +141,9 @@ function LoginForm({
                 onSubmit={loginSubmitedForm}
             >
 
+                {/* Phone Or Email */}
                 <div>
-                    <span className='text-sm text-black-light-utility'>
+                    <span className="text-sm text-black-light-utility">
                         {loginT("inputs.phone-or-email")}
                     </span>
 
@@ -149,8 +160,9 @@ function LoginForm({
                     />
                 </div>
 
+                {/* Password */}
                 <div>
-                    <span className='text-sm text-black-light-utility'>
+                    <span className="text-sm text-black-light-utility">
                         {loginT("inputs.password")}
                     </span>
 
@@ -167,7 +179,7 @@ function LoginForm({
                     />
                 </div>
 
-                {/* Forget Password Route */}
+                {/* Forget Password */}
                 <div className="text-sm text-center hover:opacity-60 transition-all">
                     <AppLink
                         href="/login/forgot-password"
@@ -206,7 +218,7 @@ function LoginForm({
 
             </form>
         </>
-    );
+    )
 }
 
-export default LoginForm;
+export default LoginForm

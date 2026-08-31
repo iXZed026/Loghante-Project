@@ -17,14 +17,14 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 interface IVerifyForm {
-    mode: "login" | "register";
+    mode: "login" | "register"
 }
 
 interface IModalState {
-    active: boolean;
-    success: boolean | "warning";
-    message: string;
-    pushUrl?: string;
+    active: boolean
+    success: boolean | "warning"
+    message: string
+    pushUrl?: string
 }
 
 function VerifyForm({
@@ -32,19 +32,22 @@ function VerifyForm({
 }: IVerifyForm) {
 
     const verifyT =
-        useTranslations("authVerify");
+        useTranslations("authVerify")
 
     const locale =
-        useLocale();
+        useLocale()
 
     const router =
-        useRouter();
+        useRouter()
 
     const [isLoading, setIsLoading] =
-        useState<boolean>(false);
+        useState<boolean>(false)
 
     const [isCheckingToken, setIsCheckingToken] =
-        useState<boolean>(true);
+        useState<boolean>(true)
+
+    const [sendingTo, setSendingTo] =
+        useState<string>("")
 
     const [modal, setModal] =
         useState<IModalState>({
@@ -52,66 +55,91 @@ function VerifyForm({
             success: false,
             message: "",
             pushUrl: undefined,
-        });
+        })
 
     const [
         verify,
         ,
         changeVerifyValue,
         clearVerifyValue,
-    ] = useInput("");
+    ] = useInput("")
 
     const tokenKey =
         mode === "login"
             ? "loginVerificationToken"
-            : "registerVerificationToken";
+            : "registerVerificationToken"
+
+    const emailKey =
+        mode === "login"
+            ? "loginVerificationEmail"
+            : "registerVerificationEmail"
 
     const redirectPath =
         mode === "login"
             ? `/${locale}/login`
-            : `/${locale}/register`;
+            : `/${locale}/register`
 
     useEffect(() => {
 
         const verificationToken =
-            getLocalStorageItem(tokenKey);
+            getLocalStorageItem(tokenKey)
 
         if (!verificationToken) {
 
             router.replace(
                 redirectPath
-            );
+            )
 
-            return;
+            return
         }
 
-        setIsCheckingToken(false);
+        /*
+         * Get email based on mode
+         */
+        const email =
+            getLocalStorageItem(emailKey)
+
+        if (email) {
+
+            setSendingTo(email)
+
+            /*
+             * Remove email immediately
+             * after getting it from LocalStorage
+             */
+            removeFromLocalStorage(
+                emailKey
+            )
+        }
+
+        setIsCheckingToken(false)
 
     }, [
         tokenKey,
+        emailKey,
         redirectPath,
         router
-    ]);
+    ])
 
     async function submitVerify(
         e: React.FormEvent<HTMLFormElement>
     ) {
 
-        e.preventDefault();
+        e.preventDefault()
 
         const verificationToken =
-            getLocalStorageItem(tokenKey);
+            getLocalStorageItem(tokenKey)
 
         if (!verificationToken) {
 
             router.replace(
                 redirectPath
-            );
+            )
 
-            return;
+            return
         }
 
-        setIsLoading(true);
+        setIsLoading(true)
 
         try {
 
@@ -127,7 +155,7 @@ function VerifyForm({
                             code: verify,
                         },
                         locale
-                    );
+                    )
 
                 if (!response.success) {
 
@@ -136,30 +164,30 @@ function VerifyForm({
                         success: false,
                         message: response.message,
                         pushUrl: undefined,
-                    });
+                    })
 
-                    return;
+                    return
                 }
 
                 removeFromLocalStorage(
                     tokenKey
-                );
+                )
 
                 saveToLocalStorage(
                     "accessToken",
                     response.data.accessToken
-                );
+                )
 
                 setModal({
                     active: true,
                     success: true,
                     message: response.message,
                     pushUrl: "/profile",
-                });
+                })
 
                 clearVerifyValue()
 
-                return;
+                return
             }
 
             /*
@@ -172,7 +200,7 @@ function VerifyForm({
                         code: verify,
                     },
                     locale
-                );
+                )
 
             if (!response.success) {
 
@@ -181,33 +209,33 @@ function VerifyForm({
                     success: false,
                     message: response.message,
                     pushUrl: undefined,
-                });
+                })
 
-                return;
+                return
             }
 
             removeFromLocalStorage(
                 tokenKey
-            );
+            )
 
             setModal({
                 active: true,
                 success: true,
                 message: response.message,
                 pushUrl: "/login",
-            });
+            })
 
             clearVerifyValue()
 
         } finally {
 
-            setIsLoading(false);
+            setIsLoading(false)
 
         }
     }
 
     if (isCheckingToken) {
-        return null;
+        return null
     }
 
     return (
@@ -221,7 +249,7 @@ function VerifyForm({
                     setModal(prev => ({
                         ...prev,
                         active: false,
-                    }));
+                    }))
                 }}
             />
 
@@ -234,15 +262,17 @@ function VerifyForm({
                     onSubmit={submitVerify}
                 >
 
+                    {/* Title */}
                     <div className="text-center text-2xl font-semibold">
                         {verifyT("title")}
                     </div>
 
+                    {/* Verification */}
                     <div>
 
                         <div className="text-center mb-10">
                             <span className="text-black-light-utility">
-                                {verifyT("sent-message")}
+                                {verifyT("sent-message") + " " + sendingTo}
                             </span>
                         </div>
 
@@ -262,6 +292,7 @@ function VerifyForm({
 
                     </div>
 
+                    {/* Verify Button */}
                     <div>
 
                         <Button
@@ -286,7 +317,7 @@ function VerifyForm({
 
             </div>
         </>
-    );
+    )
 }
 
-export default VerifyForm;
+export default VerifyForm

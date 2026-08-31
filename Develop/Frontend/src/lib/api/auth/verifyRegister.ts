@@ -5,8 +5,16 @@ export interface VerifyRegisterData {
   code: string;
 }
 
+export interface VerifyRegisterResponseData {
+  userId: number;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  accessToken: string;
+}
+
 export interface VerifyRegisterResponse {
-  data?: null;
+  data: VerifyRegisterResponseData;
   message: string;
   success: boolean;
 }

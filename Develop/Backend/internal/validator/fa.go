@@ -33,4 +33,8 @@ var faMessages = map[string]map[string]string{
 	"VerificationToken": {
 		"required": "توکن تأیید الزامی است.",
 	},
+
+	"Code": {
+		"required": "کد تأیید الزامی است.",
+	},
 }

@@ -286,6 +286,11 @@ func (h *AuthHandler) VerifyLogin(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 
+		h.logger.Error(
+			"failed to get verify register request",
+			"error", err,
+		)
+
 		response.HandleError(
 			c,
 			err,
@@ -358,7 +363,7 @@ func (h *AuthHandler) VerifyRegister(c *gin.Context) {
 		return
 	}
 
-	err := h.authService.VerifyRegister(
+	user, err := h.authService.VerifyRegister(
 		c.Request.Context(),
 		req.VerificationToken,
 		req.Code,
@@ -383,6 +388,6 @@ func (h *AuthHandler) VerifyRegister(c *gin.Context) {
 	response.Success(
 		c,
 		"user registration verified successfully",
-		nil,
+		user,
 	)
 }
