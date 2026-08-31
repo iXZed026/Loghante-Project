@@ -64,6 +64,10 @@ html {
     @apply text-[var(--black-light-color)];
   }
 
+  .bg-black-light-utility {
+    @apply bg-[var(--black-light-color)];
+  }
+
   .text-white-utility {
     @apply text-[var(--white-color)];
   }
