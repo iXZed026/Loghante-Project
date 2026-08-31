@@ -1,5 +1,6 @@
 import FadeUp from "@/components/animations/FadeUp";
-import AuthHeader from "@/features/auth/components/AuthHeader";
+import AuthHeader from "@/features/loghante(root)/auth/components/AuthHeader";
+
 import { cn } from "@/lib/utils/cn";
 
 export default function AuthLayout({

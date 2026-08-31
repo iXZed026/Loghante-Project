@@ -1,10 +1,10 @@
-import VerifyForm from '@/features/auth/components/VerifyForm'
+import VerifyForm from '@/features/loghante(root)/auth/components/VerifyForm'
 import React from 'react'
 
 function Verify() {
     return (
         <div>
-            <VerifyForm />
+            <VerifyForm mode='register'/>
         </div>
     )
 }

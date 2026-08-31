@@ -1,4 +1,4 @@
-import NewPasswordForm from '@/features/auth/components/NewPasswordForm'
+import NewPasswordForm from '@/features/loghante(root)/auth/components/NewPasswordForm'
 import React from 'react'
 
 function NewPassword() {

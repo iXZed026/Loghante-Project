@@ -1,10 +1,9 @@
-import VerifyForm from '@/features/auth/components/VerifyForm'
-import React from 'react'
+import VerifyForm from '@/features/loghante(root)/auth/components/VerifyForm'
 
 function Verify() {
     return (
         <div>
-            <VerifyForm />
+            <VerifyForm mode='login' />
         </div>
     )
 }

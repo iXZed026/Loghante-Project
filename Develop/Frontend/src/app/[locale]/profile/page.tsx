@@ -1,7 +1,8 @@
 import FadeUp from '@/components/animations/FadeUp';
-import ProfileDashboardActivity from '@/features/profile/componenets/dashboard/ProfileDashboardActivity';
-import ProfileDiscoverMuseums from '@/features/profile/componenets/dashboard/ProfileDiscoverMuseums';
-import ProfileNextVisitBox from '@/features/profile/componenets/dashboard/ProfileNextVisitBox';
+import ProfileDashboardActivity from '@/features/loghante(root)/profile/componenets/dashboard/ProfileDashboardActivity';
+import ProfileDiscoverMuseums from '@/features/loghante(root)/profile/componenets/dashboard/ProfileDiscoverMuseums';
+import ProfileNextVisitBox from '@/features/loghante(root)/profile/componenets/dashboard/ProfileNextVisitBox';
+
 import { useTranslations } from 'next-intl';
 
 function Dashboard() {

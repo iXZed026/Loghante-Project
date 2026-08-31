@@ -1,8 +1,8 @@
 "use client"
 import AnimatePresenceWrapper from '@/components/animations/AnimatePresenceWrapper';
 import AppImage from '@/components/ui/AppImage'
-import ProfileDashboard from '@/features/profile/componenets/ProfileDashboard'
-import ProfileMobileHeader from '@/features/profile/componenets/ProfileMobileHeader';
+import ProfileDashboard from '@/features/loghante(root)/profile/componenets/ProfileDashboard';
+import ProfileMobileHeader from '@/features/loghante(root)/profile/componenets/ProfileMobileHeader';
 import useActive from '@/hooks/useActive';
 import useClickOutside from '@/hooks/useClickOutside';
 import { cn } from '@/lib/utils/cn'

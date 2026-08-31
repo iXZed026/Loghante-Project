@@ -1,5 +1,5 @@
 import FadeUp from '@/components/animations/FadeUp'
-import EditProfileForm from '@/features/profile/componenets/edit-profile/EditProfileForm'
+import EditProfileForm from '@/features/loghante(root)/profile/componenets/edit-profile/EditProfileForm'
 import { useTranslations } from 'next-intl'
 
 function EditProfile() {

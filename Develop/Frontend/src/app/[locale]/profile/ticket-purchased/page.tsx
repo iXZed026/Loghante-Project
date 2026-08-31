@@ -1,7 +1,5 @@
 import FadeUp from '@/components/animations/FadeUp'
-import TicketBox from '@/features/profile/componenets/ticket-purchased/TicketBox'
-import TicketStatus from '@/features/profile/componenets/ui/TicketStatus'
-import React from 'react'
+import TicketBox from '@/features/loghante(root)/profile/componenets/ticket-purchased/TicketBox'
 
 function page() {
     return (

@@ -1,4 +1,4 @@
-import LoginForm from '@/features/auth/components/LoginForm'
+import LoginForm from '@/features/loghante(root)/auth/components/LoginForm'
 import { useTranslations } from 'next-intl'
 import React from 'react'
 
