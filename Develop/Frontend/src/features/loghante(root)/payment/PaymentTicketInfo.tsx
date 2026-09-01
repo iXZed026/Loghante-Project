@@ -9,7 +9,7 @@ function PaymentTicketInfo() {
     return (
         <div className={cn(
             "lg:col-span-6 col-span-12",
-            "p-10",
+            "md:p-10 p-7",
             "border-[1px] border-black-opacity",
             "rounded-xl",
             "md:text-base text-sm",
@@ -70,7 +70,7 @@ function PaymentTicketInfo() {
                 <div>
                     <ul
                         className='fcol gap-10 pl-5 py-5 list-disc leading-9 text-black-light-utility'
-                        >
+                    >
                         <li>
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                         </li>
