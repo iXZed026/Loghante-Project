@@ -1,5 +1,8 @@
 {
     "ticket-info": {
+        "ticket-date":{
+            "change-button":"Change"
+        },
         "rules": {
             "title": "Payment and tour rules"
         }

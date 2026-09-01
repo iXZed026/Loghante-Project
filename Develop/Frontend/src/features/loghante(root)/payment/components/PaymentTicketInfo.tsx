@@ -38,7 +38,7 @@ function PaymentTicketInfo() {
                             "click-scale",
                         )}
                     >
-                        Change
+                        {paymentTicketInfoT("ticket-date.change-button")}
                     </Button>
                 </div>
             </div>

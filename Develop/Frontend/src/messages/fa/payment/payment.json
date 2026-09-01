@@ -1,5 +1,8 @@
 {
   "ticket-info": {
+    "ticket-date": {
+      "change-button": "عوض کردن"
+    },
     "rules": {
       "title": "قوانین پرداخت و بازدید"
     }
