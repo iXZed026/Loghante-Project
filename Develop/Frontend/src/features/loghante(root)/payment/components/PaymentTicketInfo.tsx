@@ -1,11 +1,15 @@
-import AppLink from '@/components/ui/AppLink'
 import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
+import { useLocale, useTranslations } from 'next-intl';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { FaLocationDot, FaRegClock } from 'react-icons/fa6';
-import { SlCalender } from "react-icons/sl";
+import { ticketRules } from '../data/ticketRules';
+import { getLocalizedValue } from '@/lib/utils/getLocalizedValue';
 
 function PaymentTicketInfo() {
+
+    const paymentTicketInfoT = useTranslations("payment.ticket-info")
+
     return (
         <div className={cn(
             "lg:col-span-6 col-span-12",
@@ -64,22 +68,19 @@ function PaymentTicketInfo() {
             <div>
                 <div>
                     <span className='md:text-xl text-lg'>
-                        Payment and tour rules
+                        {paymentTicketInfoT("rules.title")}
                     </span>
                 </div>
                 <div>
                     <ul
                         className='fcol gap-10 pl-5 py-5 list-disc leading-9 text-black-light-utility'
                     >
-                        <li>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                        </li>
-                        <li>
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-                        </li>
-                        <li>
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-                        </li>
+                        {ticketRules.map(rule => {
+                            const locale = useLocale()
+                            return <li key={rule.id}>
+                                {getLocalizedValue(rule.rulesText, locale)}
+                            </li>
+                        })}
                     </ul>
                 </div>
             </div>

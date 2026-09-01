@@ -1,14 +1,15 @@
 "use client"
 
 import Button from '@/components/ui/Button'
-import Input from '@/components/ui/Input'
 import { cn } from '@/lib/utils/cn'
 import React, { useState } from 'react'
-import { CiDiscount1 } from 'react-icons/ci'
-import { MdKeyboardArrowDown } from 'react-icons/md'
-import PaymentDiscoutCode from './PaymentDiscoutCodeDropDown'
+import { useTranslations } from 'next-intl'
+import PaymentDiscoutCodeDropDown from './PaymentDiscoutCodeDropDown'
 
 function PaymentDetails() {
+
+    const paymentPaymentDetailsT =
+        useTranslations("payment.payment-details")
 
     const [paymentMethod, setPaymentMethod] =
         useState<string>("")
@@ -28,7 +29,7 @@ function PaymentDetails() {
             {/* Payment Details */}
             <div>
                 <span className="text-xl font-semibold">
-                    Payment Details
+                    {paymentPaymentDetailsT("title")}
                 </span>
             </div>
 
@@ -40,11 +41,11 @@ function PaymentDetails() {
                     <div className="fbc mb-5">
 
                         <span className="w-full">
-                            TIcket 5$
+                            {paymentPaymentDetailsT("ticket-details.ticket")} 5$
                         </span>
 
                         <span className="w-full text-center">
-                            1 person
+                            1 {paymentPaymentDetailsT("ticket-details.ticket-count")}
                         </span>
 
                         <span className="w-full text-end">
@@ -56,7 +57,7 @@ function PaymentDetails() {
                     <div className="fbc">
 
                         <span className="w-full">
-                            Ticket VAT%
+                            {paymentPaymentDetailsT("ticket-vat.ticket-vat")}
                         </span>
 
                         <span className="w-full text-center">
@@ -71,10 +72,11 @@ function PaymentDetails() {
 
                 </div>
 
+                {/* Payable */}
                 <div className="py-10 fbc">
 
                     <span className="font-bold text-xl">
-                        Amount payable
+                        {paymentPaymentDetailsT("payable")}
                     </span>
 
                     <span className="text-xl font-bold text-crimson">
@@ -86,19 +88,14 @@ function PaymentDetails() {
             </div>
 
             {/* Discount */}
-
-            {/* Discount Button */}
-
-            <PaymentDiscoutCode />
-
-            {/* Discount Code */}
+            <PaymentDiscoutCodeDropDown />
 
             {/* Payment Method */}
             <div className="fcol items-start gap-10 mb-15">
 
                 <div>
                     <span className="text-xl">
-                        Payment method
+                        {paymentPaymentDetailsT("payment-method.title")}
                     </span>
                 </div>
 
@@ -123,7 +120,7 @@ function PaymentDetails() {
                         />
 
                         <span>
-                            Saman Portal
+                            {paymentPaymentDetailsT("payment-method.saman")}
                         </span>
 
                     </label>
@@ -147,7 +144,7 @@ function PaymentDetails() {
                         />
 
                         <span>
-                            Another Portal
+                            {paymentPaymentDetailsT("payment-method.another")}
                         </span>
 
                     </label>
@@ -164,10 +161,8 @@ function PaymentDetails() {
                     "left-0",
                     "right-0",
                     "z-50",
-                    "px-5",
-                    "pb-5",
                     "bg-white",
-                    "md:static",
+                    "sm:static",
                     "md:p-0",
                     "md:bg-transparent",
                     "md:z-auto",
@@ -180,14 +175,15 @@ function PaymentDetails() {
                         "w-full",
                         "fbc",
                         "font-bold",
-                        "px-4 md:py-3 py-4",
+                        "px-4 md:py-4 py-5",
                         "bg-crimson",
+                        "md:rounded-lg rounded-none",
                         "hover:bg-[var(--crimson-hover-color)]",
                     )}
                 >
 
                     <span>
-                        Payment and receipt of tickets
+                        {paymentPaymentDetailsT("payment-button")}
                     </span>
 
                     <span>

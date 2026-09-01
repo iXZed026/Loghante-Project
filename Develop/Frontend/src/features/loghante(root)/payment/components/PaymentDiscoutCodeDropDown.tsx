@@ -7,12 +7,16 @@ import useActive from '@/hooks/useActive'
 import { cn } from '@/lib/utils/cn'
 import { CiDiscount1 } from 'react-icons/ci'
 import { MdKeyboardArrowDown } from 'react-icons/md'
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"
 import { dropdownVariants } from '@/lib/animations/variants'
 import { useRef } from 'react'
 import useClickOutside from '@/hooks/useClickOutside'
+import { useTranslations } from 'next-intl'
 
 function PaymentDiscoutCodeDropDown() {
+
+    const paymentPaymentDetailsDDT =
+        useTranslations("payment.payment-details.drop-down")
 
     const [
         activeDD,
@@ -22,13 +26,12 @@ function PaymentDiscoutCodeDropDown() {
     ] = useActive(false)
 
     const dropDownRef =
-        useRef<HTMLDivElement | null>(null);
+        useRef<HTMLDivElement | null>(null)
 
     useClickOutside(
         dropDownRef,
         unActiveDDHandler,
-
-    );
+    )
 
     return (
         <div
@@ -36,6 +39,7 @@ function PaymentDiscoutCodeDropDown() {
             ref={dropDownRef}
         >
 
+            {/* Discount Button */}
             <Button
                 type="button"
                 className={cn(
@@ -44,7 +48,7 @@ function PaymentDiscoutCodeDropDown() {
                     "rounded-md",
                     "text-black-utility",
                     "border-[1px] border-black-opacity",
-                    "hover:bg-[var(--crimson-opacity-color)]"
+                    "hover:bg-[var(--crimson-opacity-color)]",
                 )}
                 onClick={toggleDDHandler}
             >
@@ -54,14 +58,27 @@ function PaymentDiscoutCodeDropDown() {
                     <CiDiscount1 className="size-6" />
 
                     <span>
-                        Do you have a discount code?
+                        {paymentPaymentDetailsDDT("title")}
                     </span>
 
                 </div>
 
-                <MdKeyboardArrowDown className="size-7" />
+                {/* Arrow */}
+                <motion.div
+                    animate={{
+                        rotate: activeDD ? 180 : 0,
+                    }}
+                    transition={{
+                        duration: 0.25,
+                        ease: "easeInOut",
+                    }}
+                >
+                    <MdKeyboardArrowDown className="size-7" />
+                </motion.div>
 
             </Button>
+
+            {/* Discount Code */}
             <AnimatePresenceWrapper isActive={activeDD}>
                 <motion.div
                     variants={dropdownVariants}
@@ -74,6 +91,7 @@ function PaymentDiscoutCodeDropDown() {
                         "mt-3",
                     )}
                 >
+
                     <Input
                         className={cn(
                             "w-full",
@@ -81,7 +99,11 @@ function PaymentDiscoutCodeDropDown() {
                             "border-[1px] border-black-opacity",
                         )}
                         type="text"
-                        placeholder="Enter your discount code"
+                        placeholder={
+                            paymentPaymentDetailsDDT(
+                                "discount-placeholder"
+                            )
+                        }
                     />
 
                     <Button
@@ -94,12 +116,13 @@ function PaymentDiscoutCodeDropDown() {
                             "hover:bg-[var(--crimson-opacity-color)]",
                         )}
                     >
-                        Apply
+                        {paymentPaymentDetailsDDT("apply-button")}
                     </Button>
+
                 </motion.div>
             </AnimatePresenceWrapper>
-        </div>
 
+        </div>
     )
 }
 

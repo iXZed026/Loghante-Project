@@ -1,7 +1,7 @@
 import FadeUp from '@/components/animations/FadeUp'
 import Container from '@/components/shared/Container'
-import PaymentDetails from '@/features/loghante(root)/payment/PaymentDetails'
-import PaymentTicketInfo from '@/features/loghante(root)/payment/PaymentTicketInfo'
+import PaymentDetails from '@/features/loghante(root)/payment/components/PaymentDetails'
+import PaymentTicketInfo from '@/features/loghante(root)/payment/components/PaymentTicketInfo'
 import { cn } from '@/lib/utils/cn'
 
 function Payment() {

@@ -1,0 +1,29 @@
+{
+    "ticket-info": {
+        "rules": {
+            "title": "Payment and tour rules"
+        }
+    },
+    "payment-details": {
+        "title": "Payment Details",
+        "ticket-details": {
+            "ticket": "TIcket ",
+            "ticket-count": "person"
+        },
+        "ticket-vat": {
+            "ticket-vat": "Ticket VAT%"
+        },
+        "payable": "Amount payable",
+        "drop-down": {
+            "title": "Do you have a discount code?",
+            "discount-placeholder": "Enter your discount code",
+            "apply-button": "Apply"
+        },
+        "payment-method": {
+            "title": "Payment method",
+            "saman": "Saman Portal",
+            "another": "Another Portal"
+        },
+        "payment-button": "Payment and receipt of tickets"
+    }
+}
