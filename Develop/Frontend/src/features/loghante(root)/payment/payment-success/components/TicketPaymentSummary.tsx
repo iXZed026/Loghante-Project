@@ -1,13 +1,18 @@
 import { cn } from '@/lib/utils/cn'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 import { FaCalendarAlt } from 'react-icons/fa'
 import { FaRegClock } from 'react-icons/fa6'
 
 function TicketPaymentSummary() {
+
+    const PaymentSuccessSummaryT =
+        useTranslations("paymentSuccess.summary-payment-details")
+
     return (
         <div className={cn(
             "py-10",
-            "flex lg:flex-row flex-col gap-5"
+            "flex lg:flex-row flex-col lg:gap-5 gap-y-10"
         )}>
             <div className='fcc w-full'>
                 <div className='border-2 p-30'>
@@ -16,7 +21,10 @@ function TicketPaymentSummary() {
             </div>
             <div className='fcol w-full items-start gap-5'>
                 <div>
-                    <span className='text-lg'>Reservation Code</span>
+                    <span className='text-lg'>
+                        {PaymentSuccessSummaryT("title")}
+
+                    </span>
                 </div>
                 <div>
                     <span className='text-5xl text-bold text-crimson'>
@@ -25,8 +33,7 @@ function TicketPaymentSummary() {
                 </div>
                 <div className='w-80'>
                     <span className='text-black-light-utility text-sm'>
-                        Show this QR code at the entrance
-                        or use your reservation code
+                        {PaymentSuccessSummaryT("description")}
                     </span>
                 </div>
                 <div>
@@ -34,7 +41,7 @@ function TicketPaymentSummary() {
                         Loghanteh Museum Tour
                     </span>
                 </div>
-                <div className='fcol gap-4'>
+                <div className='fcol gap-4 text-sm text-'>
                     <div className='flex gap-2'>
                         <span>
                             <FaCalendarAlt

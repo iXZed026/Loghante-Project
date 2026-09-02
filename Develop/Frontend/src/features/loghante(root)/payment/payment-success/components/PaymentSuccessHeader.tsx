@@ -1,9 +1,14 @@
 import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
+import { useTranslations } from 'next-intl'
 import { IoMdCheckmark, IoMdDownload } from 'react-icons/io'
 import { MdOutlinePictureAsPdf } from 'react-icons/md'
 
 function PaymentSuccessHeader() {
+
+    const PaymentSuccessT =
+        useTranslations("paymentSuccess.payment-success")
+
     return (
         <div className={cn(
             "fcol justify-center items-center gap-7.5 shadow-xl",
@@ -14,13 +19,13 @@ function PaymentSuccessHeader() {
             </div>
             <div>
                 <span className='font-wulkan text-4xl text-crimson'>
-                    Thank You!
+                    {PaymentSuccessT("tank-you")}
                 </span>
             </div>
             <div>
                 <p className='md:w-140 w-full text-center'>
-                    Your payment was successful and your ticket is confirmed.
-                    we look forward to welcoming you.
+                    {PaymentSuccessT("description")}
+
                 </p>
             </div>
             <div>
@@ -35,7 +40,7 @@ function PaymentSuccessHeader() {
                         <MdOutlinePictureAsPdf className='size-5' />
                     </span>
                     <span>
-                        Download Ticket (PDF)
+                        {PaymentSuccessT("download-pdf-button")}
                     </span>
                     <span>
                         <IoMdDownload className='size-5' />
