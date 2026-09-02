@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2026-08-24T06:57:29.492Z" agent="Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.16 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="Z3BmKXQRZOpgkZ-QXOHz" version="22.1.16" type="device">
+<mxfile host="Electron" modified="2026-09-02T06:53:51.009Z" agent="Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.16 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="0JDU-yWwmTe2TmUNqJvE" version="22.1.16" type="device">
   <diagram name="Page-1" id="rE9RoVvX53ocwQWYoAQw">
-    <mxGraphModel dx="2390" dy="621" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+    <mxGraphModel dx="4100" dy="1774" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -302,6 +302,21 @@
         </mxCell>
         <mxCell id="26Tn6l4Rxbhhsgb56VVf-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="26Tn6l4Rxbhhsgb56VVf-2" target="kypA1kfzzhGkplOl2yWJ-35" edge="1">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-GSrH1zIMzNHinKCeNr4-1" value="LoginVerifiactions" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;" parent="1" vertex="1">
+          <mxGeometry x="-270" y="60" width="160" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="-GSrH1zIMzNHinKCeNr4-2" value="&lt;div&gt;userid: INT&lt;/div&gt;&lt;div&gt;token: text&lt;/div&gt;&lt;div&gt;expiresat: timestamp with time zone&lt;/div&gt;&lt;div&gt;verified: boolean&lt;/div&gt;&lt;div&gt;createdat: timestamp with time zone&lt;/div&gt;&lt;div&gt;loginVerifiactionId: uuid&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" parent="-GSrH1zIMzNHinKCeNr4-1" vertex="1">
+          <mxGeometry y="50" width="160" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="-GSrH1zIMzNHinKCeNr4-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="-GSrH1zIMzNHinKCeNr4-2" target="kypA1kfzzhGkplOl2yWJ-36" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="M1HMad9iJCVEOH9yNfI2-1" value="RegisterVerifiaction" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-660" y="80" width="160" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="M1HMad9iJCVEOH9yNfI2-2" value="RegisterVerifactionId:UUID&lt;br&gt;FullName:Varchar(50)&lt;br&gt;Email:Varchar(254)&lt;br&gt;PhoneNumber:Varchar(20)&lt;br&gt;Token:Text&lt;br&gt;expiresat: timestamp with time zone&lt;br&gt;&lt;div&gt;verified: boolean&lt;/div&gt;&lt;div&gt;createdat: timestamp with time zone&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="M1HMad9iJCVEOH9yNfI2-1">
+          <mxGeometry y="50" width="160" height="160" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
