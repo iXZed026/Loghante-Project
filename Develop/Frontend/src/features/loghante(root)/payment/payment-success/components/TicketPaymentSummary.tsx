@@ -14,11 +14,13 @@ function TicketPaymentSummary() {
             "py-10",
             "flex lg:flex-row flex-col lg:gap-5 gap-y-10"
         )}>
+            {/* QR Code */}
             <div className='fcc w-full'>
                 <div className='border-2 p-30'>
 
                 </div>
             </div>
+            {/* Summary Details */}
             <div className='fcol w-full items-start gap-5'>
                 <div>
                     <span className='text-lg'>
