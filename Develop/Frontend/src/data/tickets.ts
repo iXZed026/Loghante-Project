@@ -16,7 +16,7 @@ export const tickets: ITicket[] = [
       en: "Museums",
       fa: "موزه ها",
     },
-    href: "/",
+    href: "/museums-tour",
   },
 
   {
@@ -25,7 +25,7 @@ export const tickets: ITicket[] = [
       en: "Cinema & Theater",
       fa: "سینما و تئاتر",
     },
-    href: "/",
+    href: "/cinema-and-theater",
   },
 
   {
@@ -34,6 +34,6 @@ export const tickets: ITicket[] = [
       en: "Events & Courses",
       fa: "رویداد ها و دوره ها",
     },
-    href: "/",
+    href: "/events-and-courses",
   },
 ];
