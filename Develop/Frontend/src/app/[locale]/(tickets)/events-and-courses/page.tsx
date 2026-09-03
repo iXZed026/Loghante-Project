@@ -1,11 +1,12 @@
-import FadeUp from '@/components/animations/FadeUp'
-import EventsAndCoursesHeader from '@/features/loghante(root)/tickets/events-and-courses/EventsAndCoursesHeader'
+import EventsAndCoursesDate from '@/features/loghante(root)/tickets/events-and-courses/components/EventsAndCoursesDate'
+import EventsAndCoursesHeader from '@/features/loghante(root)/tickets/events-and-courses/components/EventsAndCoursesHeader'
 import React from 'react'
 
 function EventsAndCourses() {
   return (
       <div className='py-18'>
         <EventsAndCoursesHeader />
+        <EventsAndCoursesDate/>
       </div>
   )
 }

@@ -98,10 +98,14 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/payment/payment.json`)
     ).default;
 
-
     //Payment Success
     const paymentSuccess = (
         await import(`../messages/${locale}/payment-success/payment-success.json`)
+    ).default;
+
+    //Evemts And Courses
+    const eventsAndCourses = (
+        await import(`../messages/${locale}/events-and-courses/events-and-courses.json`)
     ).default;
 
     return {
@@ -137,6 +141,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
             payment,
             //Payment Success
             paymentSuccess,
+            //Evemts And Courses
+            eventsAndCourses,
         },
     };
 });

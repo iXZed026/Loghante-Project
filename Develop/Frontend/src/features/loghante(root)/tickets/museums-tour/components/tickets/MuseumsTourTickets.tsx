@@ -27,7 +27,7 @@ function MuseumsTourTickets() {
                     <MuseumsTourDayOfWeekBox />
                 </StaggerWrapper>
             </div>
-            <div className='grid grid-cols-12 gap-10 xl:px-20'>
+            <div className='grid grid-cols-12 md:gap-10 gap-y-10 xl:px-20'>
                 <MuseumsTourTicketBox />
                 <MuseumsTourTicketBox />
                 <MuseumsTourTicketBox />

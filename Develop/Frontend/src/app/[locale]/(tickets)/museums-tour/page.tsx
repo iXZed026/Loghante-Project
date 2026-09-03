@@ -1,6 +1,7 @@
 import Container from '@/components/shared/Container'
-import MuseumsTourHeaderBox from '@/features/loghante(root)/museums-tour/components/MuseumsTourHeaderBox'
-import MuseumsTourTickets from '@/features/loghante(root)/museums-tour/components/tickets/MuseumsTourTickets'
+import MuseumsTourHeaderBox from '@/features/loghante(root)/tickets/museums-tour/components/MuseumsTourHeaderBox'
+import MuseumsTourTickets from '@/features/loghante(root)/tickets/museums-tour/components/tickets/MuseumsTourTickets'
+
 
 
 function MuseumsTour() {
@@ -9,7 +10,7 @@ function MuseumsTour() {
       <div className='py-7.5 xl:px-36'>
         {/* Museums Tout Header */}
         <div className='mb-15'>
-          <MuseumsTourHeaderBox />
+          <MuseumsTourHeaderBox/>
         </div>
         {/* Museums Tour Tickets */}
           <MuseumsTourTickets />

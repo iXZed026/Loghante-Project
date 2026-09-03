@@ -7,7 +7,7 @@ import { fastTransitionOut } from "@/lib/animations/transitions";
 import { getLocalizedValue } from "@/lib/utils/getLocalizedValue";
 import { cn } from "@/lib/utils/cn";
 import { useLocale } from "next-intl";
-import { formatDate } from "@/lib/utils/date";
+import { formatMonthDay } from "@/lib/utils/date";
 
 function MuseumsTourDayOfWeekBox() {
 
@@ -59,7 +59,7 @@ function MuseumsTourDayOfWeekBox() {
             </span>
 
             <span>
-              {formatDate(currentDate,locale)}
+              {formatMonthDay(currentDate,locale)}
             </span>
           </FadeUp>
         );
