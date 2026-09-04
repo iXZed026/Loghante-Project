@@ -204,7 +204,7 @@ function EventsAndCoursesDate() {
 
             <div className="py-10 text-center">
 
-                <span className="text-4xl">
+                <span className="md:text-4xl text-2xl font-semibold font-wulkan">
                     {monthTitle}
                 </span>
 

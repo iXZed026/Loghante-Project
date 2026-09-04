@@ -1,7 +1,6 @@
 import Container from '@/components/shared/Container'
 import { cn } from '@/lib/utils/cn'
 import { useTranslations } from 'next-intl'
-import React from 'react'
 
 function HeroSection() {
 

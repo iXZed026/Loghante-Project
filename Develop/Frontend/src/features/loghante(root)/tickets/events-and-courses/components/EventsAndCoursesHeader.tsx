@@ -1,9 +1,7 @@
-"use client"
-
 import FadeUp from '@/components/animations/FadeUp'
 import { verySlowTransitionOut } from '@/lib/animations/transitions'
 import { formatMonthYear } from '@/lib/utils/date'
-import { useLocale, useTranslations } from 'use-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 function EventsAndCoursesHeader() {
 
