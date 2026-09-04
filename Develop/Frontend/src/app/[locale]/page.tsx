@@ -15,7 +15,7 @@ import ConferenceHall from '@/features/loghante(root)/components/sections/Confer
 function Loghante() {
   return (
     <div className='overflow-x-hidden '>
-      <Header />
+      {/* <Header /> */}
       <HeroSection />
       <Container>
         <AboutMuseums />
@@ -26,7 +26,7 @@ function Loghante() {
         <ConferenceHall />
         <VirtualTourSection />
       </Container>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   )
 }

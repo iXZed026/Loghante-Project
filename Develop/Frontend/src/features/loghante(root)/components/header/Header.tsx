@@ -9,33 +9,46 @@ import TicketDropDown from "./TicketDropDown";
 import Container from "@/components/shared/Container";
 import HamburgerMenu from "./HamburgerMenu";
 import useActive from "@/hooks/useActive";
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import useScroll from "@/hooks/useScroll";
 import { FiShoppingBag } from "react-icons/fi";
+import { usePathname } from "next/navigation";
 
 
 function Header() {
 
   const t = useTranslations("LoghantehHeader");
-  const isScrolled = useScroll(150);
+  const locale = useLocale()
 
+  const isScrolled = useScroll(150);
+  const pathname = usePathname()
 
   const [
     activeHumber,
     activeHumberHandler,
     UnActiveHumberHandler,
-    toggleHumberHandler,
+    ,
   ] = useActive(false)
+
+  function checkBackground() {
+    if (pathname === `${locale}/` && isScrolled) {
+      return "bg-crimson"
+    } else if (pathname === `/${locale}` && !isScrolled) {
+      return "bg-transparent"
+    } else {
+      return "bg-crimson"
+    }
+  }
 
   return (
     <header className={cn(
       "h-[80px]",
-      "py-3 mb-[80px]",
+      "py-3",
       "z-30",
       "text-white-utility md:text-md sm:text-sm text-xs",
       "fixed w-full top-0 ",
       "transition-all duration-300 ease-in-out",
-      isScrolled && "bg-crimson "
+      checkBackground()
     )}>
       <Container>
         <div className="grid grid-cols-12">

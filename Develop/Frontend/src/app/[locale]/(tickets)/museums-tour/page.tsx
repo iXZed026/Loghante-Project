@@ -7,13 +7,13 @@ import MuseumsTourTickets from '@/features/loghante(root)/tickets/museums-tour/c
 function MuseumsTour() {
   return (
     <Container>
-      <div className='py-7.5 xl:px-36'>
+      <div className='xl:px-36 py-18 mt-20'>
         {/* Museums Tout Header */}
         <div className='mb-15'>
-          <MuseumsTourHeaderBox/>
+          <MuseumsTourHeaderBox />
         </div>
         {/* Museums Tour Tickets */}
-          <MuseumsTourTickets />
+        <MuseumsTourTickets />
       </div>
     </Container>
   )
