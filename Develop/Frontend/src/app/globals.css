@@ -44,6 +44,10 @@ html {
     @apply hover:bg-[var(--crimson-hover-color)];
   }
 
+  .bg-opacity-hover-crimson {
+    @apply hover:bg-[var(--crimson-opacity-color)];
+  }
+
   .text-crimson {
     @apply text-[var(--crimson-color)];
   }

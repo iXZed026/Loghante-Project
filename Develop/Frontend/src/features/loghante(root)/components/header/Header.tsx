@@ -30,16 +30,17 @@ function Header() {
     ,
   ] = useActive(false)
 
-  function checkBackground() {
-    if (pathname === `${locale}/` && isScrolled) {
-      return "bg-crimson"
-    } else if (pathname === `/${locale}` && !isScrolled) {
-      return "bg-transparent"
-    } else {
-      return "bg-crimson"
-    }
+function checkBackground() {
+  const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
+  const isCafeMenu = pathname === `/${locale}/cafe-menu`;
+  const isCafeOrHome = isHome || isCafeMenu;
+  
+  if (isCafeOrHome) {
+    return isScrolled ? "bg-crimson" : "bg-transparent";
   }
-
+  
+  return "bg-crimson";
+}
   return (
     <header className={cn(
       "h-[80px]",
