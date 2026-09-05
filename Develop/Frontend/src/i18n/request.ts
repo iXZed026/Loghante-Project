@@ -108,6 +108,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/events-and-courses/events-and-courses.json`)
     ).default;
 
+    //Evemts And Courses Details
+    const eventsAndCoursesDetails = (
+        await import(`../messages/${locale}/events-and-courses/events-and-courses-details/events-and-courses-details.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -143,6 +148,9 @@ export default getRequestConfig(async ({ requestLocale }) => {
             paymentSuccess,
             //Evemts And Courses
             eventsAndCourses,
+            //Evemts And Courses details
+            eventsAndCoursesDetails,
+
         },
     };
 });

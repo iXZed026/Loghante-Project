@@ -7,6 +7,9 @@ import { getLocalizedValue } from '@/lib/utils/getLocalizedValue'
 import { cn } from '@/lib/utils/cn'
 import { useLocale } from 'next-intl'
 import React from 'react'
+import FadeUp from '@/components/animations/FadeUp'
+import { slowTransitionIn, verySlowTransitionOut } from '@/lib/animations/transitions'
+import FadeIn from '@/components/animations/FadeIn'
 
 interface ICalendarEvent {
     background: string
@@ -203,138 +206,146 @@ function EventsAndCoursesDate() {
         >
 
             <div className="py-10 text-center">
-
-                <span className="md:text-4xl text-2xl font-semibold font-wulkan">
-                    {monthTitle}
-                </span>
+                <FadeIn
+                    once={true}
+                >
+                    <span className="md:text-4xl text-2xl font-semibold font-wulkan">
+                        {monthTitle}
+                    </span>
+                </FadeIn>
 
             </div>
-
-            <div
-                className={cn(
-                    "w-full",
-                    "grid grid-cols-12 md:grid-cols-7 gap-0.5",
-                    "border-t border-l border-black-opacity",
-                )}
+            <FadeUp
+                once={true}
+                amount={0}
+                transition={slowTransitionIn}
             >
+                <div
+                    className={cn(
+                        "w-full",
+                        "grid grid-cols-12 md:grid-cols-7 gap-0.5",
+                        "border-t border-l border-black-opacity",
+                    )}
+                >
 
-                {weekDays.map((day) => (
+                    {weekDays.map((day) => (
 
-                    <div
-                        key={day.id}
-                        className={cn(
-                            "col-span-12 md:col-span-1",
-                            "border-r border-b border-black-opacity",
-                            "p-2",
-                            "text-sm",
-                            "font-semibold",
-                            "text-black-light-utility",
-                            "bg-gray-100",
-                            "hidden md:block",
-                        )}
-                    >
-                        {getLocalizedValue(
-                            day.dayOTWeek,
-                            locale
-                        )}
-                    </div>
-
-                ))}
-
-                {calendarDates.map(
-                    (date, index) => {
-
-                        const event =
-                            CalendarEvents[index]
-
-                        const isPast =
-                            index < 2
-
-                        const hasEvent =
-                            event.background !== "bg-white"
-
-                        const formattedDate =
-                            formatMonthDay(
-                                date,
+                        <div
+                            key={day.id}
+                            className={cn(
+                                "col-span-12 md:col-span-1",
+                                "border-r border-b border-black-opacity",
+                                "p-2",
+                                "text-sm",
+                                "font-semibold",
+                                "text-black-light-utility",
+                                "bg-gray-100",
+                                "hidden md:block",
+                            )}
+                        >
+                            {getLocalizedValue(
+                                day.dayOTWeek,
                                 locale
-                            )
+                            )}
+                        </div>
 
-                        const content = (
+                    ))}
 
-                            <div
-                                className={cn(
-                                    "relative fcol justify-between",
-                                    "w-full md:h-35 sm:h-45 h-50",
-                                    "p-3",
-                                    "border-r border-b border-black-opacity",
-                                    "transition-all",
-                                    "col-span-6 sm:col-span-4 md:col-span-1",
-                                    event.background,
-                                    isPast &&
-                                    "opacity-50",
-                                    hasEvent
-                                        ? "text-white-light-utility"
-                                        : "text-black",
-                                )}
-                            >
-                                <div className="text-sm opacity-80 font-semibold">
-                                    {formattedDate}
-                                </div>
+                    {calendarDates.map(
+                        (date, index) => {
 
-                                {event.title && (
-                                    <div
-                                        className={cn(
-                                            "font-bold",
-                                            "line-clamp-2",
-                                            "break-all",
-                                        )}
-                                        title={event.title}
-                                    >
-                                        {event.title}
-                                    </div>
-                                )}
+                            const event =
+                                CalendarEvents[index]
 
-                            </div>
-                        )
+                            const isPast =
+                                index < 2
 
-                        if (isPast) {
+                            const hasEvent =
+                                event.background !== "bg-white"
 
-                            return (
-                                <React.Fragment
-                                    key={date.toISOString()}
-                                >
-                                    {content}
-                                </React.Fragment>
-                            )
-                        }
+                            const formattedDate =
+                                formatMonthDay(
+                                    date,
+                                    locale
+                                )
 
-                        if (!hasEvent) {
+                            const content = (
 
-                            return (
                                 <div
-                                    key={date.toISOString()}
-                                    className="hidden md:block"
+                                    className={cn(
+                                        "relative fcol justify-between",
+                                        "w-full md:h-35 sm:h-45 h-50",
+                                        "p-3",
+                                        "border-r border-b border-black-opacity",
+                                        "transition-all",
+                                        "col-span-6 sm:col-span-4 md:col-span-1",
+                                        event.background,
+                                        isPast &&
+                                        "opacity-50",
+                                        hasEvent
+                                            ? "text-white-light-utility"
+                                            : "text-black",
+                                    )}
                                 >
-                                    {content}
+                                    <div className="text-sm opacity-80 font-semibold">
+                                        {formattedDate}
+                                    </div>
+
+                                    {event.title && (
+                                        <div
+                                            className={cn(
+                                                "font-bold",
+                                                "line-clamp-2",
+                                                "break-all",
+                                            )}
+                                            title={event.title}
+                                        >
+                                            {event.title}
+                                        </div>
+                                    )}
+
                                 </div>
                             )
+
+                            if (isPast) {
+
+                                return (
+                                    <React.Fragment
+                                        key={date.toISOString()}
+                                    >
+                                        {content}
+                                    </React.Fragment>
+                                )
+                            }
+
+                            if (!hasEvent) {
+
+                                return (
+                                    <div
+                                        key={date.toISOString()}
+                                        className="hidden md:block"
+                                    >
+                                        {content}
+                                    </div>
+                                )
+                            }
+
+                            return (
+                                <AppLink
+                                    key={date.toISOString()}
+                                    href={`/events-and-courses/id`}
+                                    className="block col-span-6 sm:col-span-4 md:col-span-1"
+                                >
+                                    {content}
+                                </AppLink>
+                            )
                         }
+                    )}
 
-                        return (
-                            <AppLink
-                                key={date.toISOString()}
-                                href="/"
-                                className="block col-span-6 sm:col-span-4 md:col-span-1"
-                            >
-                                {content}
-                            </AppLink>
-                        )
-                    }
-                )}
+                </div>
+            </FadeUp >
 
-            </div>
-
-        </div>
+        </div >
     )
 }
 
