@@ -21,6 +21,7 @@ function MuseumsTourTickets() {
             </div>
             <div className="w-full overflow-y-hidden overflow-x-auto xl:overflow-x-visible">
                 <StaggerWrapper
+                once
                     variants={dayOfTheWeeksContainerVariant}
                     className="grid grid-cols-7 gap-5 min-w-[1000px] xl:min-w-0 py-2"
                 >

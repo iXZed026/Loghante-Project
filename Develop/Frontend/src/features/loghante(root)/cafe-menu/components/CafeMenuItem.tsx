@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils/cn'
 import React from 'react'
 import { cafeMenusVariant } from '../../animations/loghante.variants';
 import FadeUp from '@/components/animations/FadeUp';
+import { useTranslations } from 'next-intl';
 
 interface ICafeMenuItem {
     name: string;
@@ -16,6 +17,9 @@ function CafeMenuItem({
     price,
     image,
 }: ICafeMenuItem) {
+
+    const commonT = useTranslations("common")
+
     return (
         <FadeUp
             once={true}
@@ -39,13 +43,19 @@ function CafeMenuItem({
                 </div>
                 <div>
                     <div
-                        className='fbc px-5 py-4'
+                        className='fbc lg:px-5 px-2 min-h-20'
                     >
-                        <span className='font-bold text-sm'>
+                        <span 
+                        className='font-bold text-sm line-clamp-2'
+                            title={name}
+                        >
                             {name}
                         </span>
-                        <span className='text-crimson font-semibold text-sm'>
-                            {price}$
+                        <span className='text-crimson font-semibold text-sm text-center fcol gap-1'>
+                            <span>{price}</span>
+                            <span>
+                                {commonT("price-type")}
+                            </span>
                         </span>
                     </div>
                 </div>

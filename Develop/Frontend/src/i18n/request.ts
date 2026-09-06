@@ -113,6 +113,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/events-and-courses/events-and-courses-details/events-and-courses-details.json`)
     ).default;
 
+    //Cafe Menu
+    const cafeMenu = (
+        await import(`../messages/${locale}/cafe-menu/cafe-menu.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -150,7 +155,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
             eventsAndCourses,
             //Evemts And Courses details
             eventsAndCoursesDetails,
-
+            //Cafe Menu
+            cafeMenu,
         },
     };
 });

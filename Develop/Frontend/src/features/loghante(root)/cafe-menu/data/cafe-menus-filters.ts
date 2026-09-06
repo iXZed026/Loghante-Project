@@ -1,28 +1,43 @@
 interface ICafeMenusFilters {
     id: number;
-    name: string;
+    name: {
+        en: string;
+        fa: string;
+    };
     slug: string;
 }
 
 export const cafeMenusFilters: ICafeMenusFilters[] = [
     {
         id: 1,
-        name: "Food",
+        name: {
+            en: "Food",
+            fa: "غذا"
+        },
         slug: "food",
     },
     {
         id: 2,
-        name: "Hot drinks",
+        name: {
+            en: "Hot drinks",
+            fa: "نوشیدنی‌های گرم"
+        },
         slug: "hot-drinks",
     },
     {
         id: 3,
-        name: "Cold drinks",
+        name: {
+            en: "Cold drinks",
+            fa: "نوشیدنی‌های سرد"
+        },
         slug: "cold-drinks",
     },
     {
         id: 4,
-        name: "Cake & Dessert",
+        name: {
+            en: "Cake & Dessert",
+            fa: "کیک و دسر"
+        },
         slug: "cake-dessert",
     },
-]
+];

@@ -1,8 +1,13 @@
 import Container from '@/components/shared/Container'
 import { cn } from '@/lib/utils/cn'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 
 function CafeMenuHero() {
+
+    const cafeMenuHeroT =
+        useTranslations("cafeMenu.hero")
+
     return (
         <section id="hero" className='relative h-screen select-none'>
             {/* Video */}
@@ -28,7 +33,7 @@ function CafeMenuHero() {
                 <Container>
                     <div className="text-white-utility">
                         <h1 className="font-wulkan mb-7 text-3xl font-bold md:text-5xl">
-                            Loghanteh Museum Cafe Bar
+                            {cafeMenuHeroT("title")}
                         </h1>
                     </div>
                 </Container>

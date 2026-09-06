@@ -43,7 +43,6 @@ function TicketDropDown(
     return (
         <div
             className="relative" ref={dropDownRef}
-            onClick={toggleTicketDripDownHandler}
         >
             <Button
                 className={cn(
@@ -57,9 +56,13 @@ function TicketDropDown(
                     isScrolled && "bg-gold-utility",
                     activeTicketDripDown && "rounded-none border-b-1",
                 )}
+                onClick={toggleTicketDripDownHandler}
             >
                 {t?.("ticket-button") ?? "Tickets"}
-                <IoIosArrowDown className="size-3" />
+                <IoIosArrowDown className={cn(
+                    "size-3 transition-transform duration-300",
+                    activeTicketDripDown && "rotate-180"
+                )} />
             </Button>
 
             <AnimatePresenceWrapper isActive={activeTicketDripDown}>
@@ -69,30 +72,29 @@ function TicketDropDown(
                     animate="visible"
                     exit="exit"
                     className={cn(
-                        "absolute w-full bg-crimson text-center fcol",
+                        "absolute w-full bg-crimson text-center fcol overflow-hidden",
                         activeTicketDripDown && "rounded-b-md",
                         isScrolled && "bg-gold-utility",
                     )}
                 >
                     {tickets.map((ticket) => (
-                        <span
+                        <AppLink
+                            key={ticket.id}
+                            href={`/${ticket.href}`}
                             className={cn(
-                                "py-3 px-2",
+                                "block w-full py-3 px-2",
                                 "transition-all",
                                 isScrolled ?
-                                    "bg-hover-gold" :
-                                    "bg-hover-crimson",
+                                    "hover:bg-[#936c23]/50" :
+                                    "hover:bg-[#42151A]/50",
                             )}
-                            key={ticket.id}
                             onClick={UnActiveTicketDropDownHandler}
                         >
-                            <AppLink href={`/${ticket.href}`}>
-                                {getLocalizedValue(
-                                    ticket.ticketType,
-                                    locale,
-                                )}
-                            </AppLink>
-                        </span>
+                            {getLocalizedValue(
+                                ticket.ticketType,
+                                locale,
+                            )}
+                        </AppLink>
                     ))}
                 </motion.div>
             </AnimatePresenceWrapper>

@@ -13,6 +13,7 @@ import { useEffect, useRef } from 'react';
 import AnimatePresenceWrapper from '@/components/animations/AnimatePresenceWrapper';
 import useClickOutside from '@/hooks/useClickOutside';
 import { getLocalizedValue } from '@/lib/utils/getLocalizedValue';
+import Button from '../ui/Button';
 
 interface ILanguageSwitcherProps {
     className?: string
@@ -51,7 +52,7 @@ function LanguageSwitcher({
                 locale,
                 lang,
             )
-            router.push(newPath)
+            router.push(newPath, { scroll: false })
         }
     }, [])
 
@@ -66,7 +67,7 @@ function LanguageSwitcher({
             newLocale,
         )
         UnActiveLanguageDropDownHandler();
-        router.push(newPath,{scroll:false})
+        router.push(newPath, { scroll: false })
 
     }
 
@@ -120,16 +121,16 @@ function LanguageSwitcher({
                         "top-full",
                         "rounded-b-md",
                         "shadow-lg",
+                        "overflow-hidden",
                         activeLanguageDropDown && "bg-white",
                         activeLanguageDropDown && isScrolled && "text-black",
-
                     )}
                 >
                     {languages.map((lang) => (
-                        <span
+                        <Button
                             className={cn(
                                 "w-full",
-                                "text-center",
+                                "text-center text-black-utility",
                                 "py-3",
                                 "cursor-pointer",
                                 "transition-all",
@@ -140,7 +141,7 @@ function LanguageSwitcher({
                             onClick={() => changeLanguage(lang.code)}
                         >
                             {getLocalizedValue(lang.name, locale)}
-                        </span>
+                        </Button>
                     ))}
                 </motion.div>
             </AnimatePresenceWrapper>

@@ -1,9 +1,14 @@
 import FadeUp from '@/components/animations/FadeUp'
 import { slowTransitionOut, verySlowTransitionOut } from '@/lib/animations/transitions'
 import { cn } from '@/lib/utils/cn'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 
 function AboutCafeMenuSection() {
+
+    const cafeMenuAboutT =
+        useTranslations("cafeMenu.about")
+
     return (
         <div
             className='min-h-screen grid grid-cols-12 lg:gap-15 gap-y-15 py-20'
@@ -39,7 +44,9 @@ function AboutCafeMenuSection() {
                         amount={0.6}
                     >
                         <h3 className='md:text-5xl text-3xl font-bold font-wulkan leading-15'>
-                            A Warm space Inside Loghanteh
+                            {
+                                cafeMenuAboutT("title")
+                            }
                         </h3>
                     </FadeUp>
                     <FadeUp
@@ -48,7 +55,9 @@ function AboutCafeMenuSection() {
                         y={60}
                     >
                         <p className='md:text-base text-sm text-black-light-utility'>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint .
+                            {
+                                cafeMenuAboutT("description")
+                            }
                         </p>
                     </FadeUp>
                 </div>

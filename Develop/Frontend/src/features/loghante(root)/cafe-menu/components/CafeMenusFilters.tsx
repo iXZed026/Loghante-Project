@@ -5,10 +5,14 @@ import React from 'react'
 import { cafeMenusFilters } from '../data/cafe-menus-filters'
 import { cn } from '@/lib/utils/cn'
 import { useSearchParams } from 'next/navigation'
+import { getLocalizedValue } from '@/lib/utils/getLocalizedValue'
+import { useLocale } from 'next-intl'
 
 function CafeMenusFilters() {
 
     const searchParams = useSearchParams()
+
+    const locale = useLocale()
 
     const activeFilter =
         searchParams.get("filter") || cafeMenusFilters[0].slug
@@ -37,7 +41,9 @@ function CafeMenusFilters() {
                                 href={`/cafe-menu?filter=${filter.slug}`}
                                 scroll={false}
                             >
-                                {filter.name}
+                                {
+                                    getLocalizedValue(filter.name,locale)
+                                }
                             </AppLink>
                         </li>
                     ))}

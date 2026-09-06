@@ -30,17 +30,20 @@ function Header() {
     ,
   ] = useActive(false)
 
-function checkBackground() {
-  const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
-  const isCafeMenu = pathname === `/${locale}/cafe-menu`;
-  const isCafeOrHome = isHome || isCafeMenu;
-  
-  if (isCafeOrHome) {
-    return isScrolled ? "bg-crimson" : "bg-transparent";
+  function checkBackground() {
+    const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
+    const isCafeMenu = pathname === `/${locale}/cafe-menu`;
+    const isCafeOrHome = isHome || isCafeMenu;
+    const isLoginOrRegister = pathname.includes(`/${locale}/login`) || pathname.includes(`/${locale}/register`)
+
+    if (isCafeOrHome) {
+      return isScrolled ? "bg-crimson" : "bg-transparent";
+    } else if (isLoginOrRegister) {
+      return "hidden"
+    }
+
+    return "bg-crimson";
   }
-  
-  return "bg-crimson";
-}
   return (
     <header className={cn(
       "h-[80px]",
