@@ -66,7 +66,7 @@ function LanguageSwitcher({
             newLocale,
         )
         UnActiveLanguageDropDownHandler();
-        router.push(newPath)
+        router.push(newPath,{scroll:false})
 
     }
 

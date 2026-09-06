@@ -1,11 +1,12 @@
 "use client";
 import { slowTransitionOut } from "@/lib/animations/transitions";
 import { Children } from "@/types/children";
-import { motion, Transition } from "framer-motion";
+import { motion, Transition, Variants } from "framer-motion";
 
 interface IFadeIn {
   children: Children;
   transition?: Transition;
+  variants?: Variants;
   className?: string
   once?: boolean
 }
@@ -14,6 +15,7 @@ function FadeIn({
   children,
   transition = slowTransitionOut,
   className,
+  variants,
   once = false,
 }: IFadeIn) {
   return (
@@ -30,6 +32,7 @@ function FadeIn({
       }}
       transition={transition}
       className={className}
+      variants={variants}
     >
       {children}
     </motion.div>

@@ -18,21 +18,20 @@ function CafeMenusFilters() {
     return (
         <div>
             <div className='fcc mb-10'>
-                <ul className='fcc w-300 mx-auto text-center'>
+                <ul className='fcc md:w-300 w-full mx-auto text-center'>
                     {cafeMenusFilters.map(filter => (
                         <li
                             key={filter.id}
                             className='w-full py-7'>
                             <AppLink
                                 className={cn(
-                                    "text-lg",
-                                    "px-3 py-2",
-                                    "border-b-4",
-                                    "rounded-md",
-                                    "bg-opacity-crimson",
+                                    "md:text-lg sm:text-sm text-xs",
+                                    "md:px-3 py-2",
+                                    "border-b-2",
+                                    "rounded-sm",
                                     "transition-colors",
                                     activeFilter === filter.slug
-                                        ? "border-[var(--crimson-color)] text-crimson"
+                                        ? "border-[var(--crimson-color)] text-crimson font-bold"
                                         : "border-transparent text-black"
                                 )}
                                 href={`/cafe-menu?filter=${filter.slug}`}

@@ -6,12 +6,16 @@ interface StaggerWrapper {
     children: Children
     variants: Variants
     className?: string
+    once?: boolean
+    amount?: number
 }
 
 function StaggerWrapper({
     children,
     variants,
-    className
+    className,
+    once = false,
+    amount = 0.2,
 }: StaggerWrapper) {
     return (
         <motion.div
@@ -19,6 +23,10 @@ function StaggerWrapper({
             variants={variants}
             initial="hidden"
             whileInView="visible"
+            viewport={{
+                once: once,
+                amount: amount,
+            }}
         >
             {children}
         </motion.div>

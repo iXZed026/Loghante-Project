@@ -1,7 +1,7 @@
 import Container from '@/components/shared/Container'
 import AboutCafeMenuSection from '@/features/loghante(root)/cafe-menu/components/sections/AboutCafeMenuSection'
 import CafeMenuHero from '@/features/loghante(root)/cafe-menu/components/sections/CafeMenuHeroSection'
-import CafeMenus from '@/features/loghante(root)/cafe-menu/components/sections/CafeMenusSection'
+import CafeMenusSections from '@/features/loghante(root)/cafe-menu/components/sections/CafeMenusSection'
 
 function CafeMenu() {
     return (
@@ -9,7 +9,7 @@ function CafeMenu() {
             <CafeMenuHero />
             <Container>
                 <AboutCafeMenuSection />
-                <CafeMenus />
+                <CafeMenusSections />
             </Container>
         </div>
     )

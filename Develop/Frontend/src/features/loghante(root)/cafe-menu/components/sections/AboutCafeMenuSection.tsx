@@ -5,9 +5,11 @@ import React from 'react'
 
 function AboutCafeMenuSection() {
     return (
-        <div className='min-h-screen grid grid-cols-12 lg:gap-15 gap-y-15 py-20'>
-            {/* Image */}
+        <div
+            className='min-h-screen grid grid-cols-12 lg:gap-15 gap-y-15 py-20'
+        >
 
+            {/* Image */}
             <FadeUp
                 once
                 transition={verySlowTransitionOut}
@@ -29,14 +31,14 @@ function AboutCafeMenuSection() {
                     )
                 }
             >
-                <div className='w-130 fcol gap-15'>
+                <div className='lg:w-130 lg:text-start text-center fcol gap-15'>
                     <FadeUp
                         once
                         transition={slowTransitionOut}
                         y={40}
                         amount={0.6}
                     >
-                        <h3 className='text-5xl font-bold font-wulkan'>
+                        <h3 className='md:text-5xl text-3xl font-bold font-wulkan leading-15'>
                             A Warm space Inside Loghanteh
                         </h3>
                     </FadeUp>
@@ -45,7 +47,7 @@ function AboutCafeMenuSection() {
                         transition={slowTransitionOut}
                         y={60}
                     >
-                        <p>
+                        <p className='md:text-base text-sm text-black-light-utility'>
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint .
                         </p>
                     </FadeUp>

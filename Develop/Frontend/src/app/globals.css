@@ -104,6 +104,10 @@ html {
     @apply hover:bg-[var(--gold-hover-color)];
   }
 
+  .text-hover-gold {
+    @apply hover:text-[var(--gold-hover-color)];
+  }
+
   /* Flex */
   .fcc {
     @apply flex justify-center items-center;

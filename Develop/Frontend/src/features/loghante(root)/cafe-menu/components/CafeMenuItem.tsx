@@ -1,6 +1,9 @@
+import FadeIn from '@/components/animations/FadeIn';
 import AppImage from '@/components/ui/AppImage'
 import { cn } from '@/lib/utils/cn'
 import React from 'react'
+import { cafeMenusVariant } from '../../animations/loghante.variants';
+import FadeUp from '@/components/animations/FadeUp';
 
 interface ICafeMenuItem {
     name: string;
@@ -14,11 +17,15 @@ function CafeMenuItem({
     image,
 }: ICafeMenuItem) {
     return (
-        <div className={cn(
-            "lg:col-span-3 md:col-span-6 ",
-            "border border-black-opacity shadow-lg overflow-hidden",
-            "rounded-lg",
-        )}>
+        <FadeUp
+            once={true}
+            variants={cafeMenusVariant}
+            className={cn(
+                "lg:col-span-3 sm:col-span-4  col-span-6 ",
+                "border border-black-opacity shadow-lg overflow-hidden",
+                "rounded-lg",
+            )}
+        >
             <div>
                 {/* Image */}
                 <div className='w-full h-45'>
@@ -43,7 +50,7 @@ function CafeMenuItem({
                     </div>
                 </div>
             </div>
-        </div>
+        </FadeUp >
     )
 }
 

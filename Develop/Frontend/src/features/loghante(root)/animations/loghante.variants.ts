@@ -1,3 +1,4 @@
+import { once } from "events";
 import { Variants } from "framer-motion";
 
 export const MuseumsCardContainerVariant: Variants = {
@@ -21,6 +22,7 @@ export const MuseumCardVariant: Variants = {
 
 }
 
+////
 export const dayOfTheWeeksContainerVariant: Variants = {
     hidden: {},
     visible: {
@@ -38,6 +40,28 @@ export const dayOfTheWeeksVariant: Variants = {
     visible: {
         opacity: 1,
         y: 4,
+    },
+
+}
+
+/////
+export const cafeMenusContainerVariant: Variants = {
+    hidden: {},
+    visible: {
+        transition: {
+            staggerChildren: 0.15,
+        }
+    },
+}
+
+export const cafeMenusVariant: Variants = {
+    hidden: {
+        opacity: 0,
+        y: -40,
+    },
+    visible: {
+        opacity: 1,
+        y: 0,
     },
 
 }

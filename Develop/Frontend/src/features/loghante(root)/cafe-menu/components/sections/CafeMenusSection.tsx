@@ -1,10 +1,11 @@
 "use client"
 
-import React from 'react'
 import CafeMenusFilters from '../CafeMenusFilters'
 import CafeMenuItem from '../CafeMenuItem'
 import { cn } from '@/lib/utils/cn'
 import { useSearchParams } from 'next/navigation'
+import StaggerWrapper from '@/components/animations/StaggerWrapper'
+import { cafeMenusContainerVariant, MuseumCardVariant, MuseumsCardContainerVariant } from '@/features/loghante(root)/animations/loghante.variants'
 
 export interface ICafeMenu {
     id: number;
@@ -14,7 +15,7 @@ export interface ICafeMenu {
     image: string;
 }
 
-function CafeMenus() {
+function CafeMenusSections() {
 
     const searchParams = useSearchParams()
 
@@ -82,7 +83,7 @@ function CafeMenus() {
         <div className='min-h-screen'>
             {/* Tile */}
             <div className='py-10 text-center'>
-                <h5 className='font-wulkan text-5xl font-bold mb-5'>
+                <h5 className='font-wulkan md:text-5xl text-3xl font-bold mb-5'>
                     Explore Our Menu
                 </h5>
             </div>
@@ -91,9 +92,12 @@ function CafeMenus() {
             <CafeMenusFilters />
 
             {/* Menus items */}
-            <div
+            <StaggerWrapper
+                key={activeFilter}
+                variants={cafeMenusContainerVariant}
+                once
                 className={cn(
-                    "grid grid-cols-12 gap-10",
+                    "grid grid-cols-12 lg:gap-10 gap-5",
                 )}
             >
                 {filteredMenus.map(menu => (
@@ -104,9 +108,9 @@ function CafeMenus() {
                         image={menu.image}
                     />
                 ))}
-            </div>
+            </StaggerWrapper>
         </div>
     )
 }
 
-export default CafeMenus
+export default CafeMenusSections
