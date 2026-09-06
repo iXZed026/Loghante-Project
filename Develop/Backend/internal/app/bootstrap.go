@@ -93,10 +93,19 @@ func New() (*App, error) {
 		)
 
 	loginVerificationRepository :=
-		repositories.NewLoginVerificationRepository(db)
-	registerVerificationRepository :=
+		repositories.NewLoginVerificationRepository(
+			db,
+		)
 
-		repositories.NewRegisterVerificationRepository(db)
+	registerVerificationRepository :=
+		repositories.NewRegisterVerificationRepository(
+			db,
+		)
+
+	forgetPasswordVerificationRepository :=
+		repositories.NewForgetPasswordVerificationRepository(
+			db,
+		)
 
 	//////////////
 	// Services
@@ -108,6 +117,7 @@ func New() (*App, error) {
 		jwtService,
 		loginVerificationRepository,
 		registerVerificationRepository,
+		forgetPasswordVerificationRepository,
 	)
 
 	//////////////

@@ -14,11 +14,12 @@ import (
 )
 
 type AuthService struct {
-	userRepository                 *repositories.UserRepository
-	refreshTokenRepository         *repositories.RefreshTokenRepository
-	jwtService                     *appAuth.JWTService
-	loginVerificationRepository    *repositories.LoginVerificationRepository
-	registerVerificationRepository *repositories.RegisterVerificationRepository
+	userRepository                       *repositories.UserRepository
+	refreshTokenRepository               *repositories.RefreshTokenRepository
+	jwtService                           *appAuth.JWTService
+	loginVerificationRepository          *repositories.LoginVerificationRepository
+	registerVerificationRepository       *repositories.RegisterVerificationRepository
+	forgetPasswordVerificationRepository *repositories.ForgetPasswordVerificationRepository
 }
 
 func NewAuthService(
@@ -27,13 +28,15 @@ func NewAuthService(
 	jwtService *appAuth.JWTService,
 	loginVerificationRepository *repositories.LoginVerificationRepository,
 	registerVerificationRepository *repositories.RegisterVerificationRepository,
+	forgetPasswordVerificationRepository *repositories.ForgetPasswordVerificationRepository,
 ) *AuthService {
 	return &AuthService{
-		userRepository:                 userRepository,
-		refreshTokenRepository:         refreshTokenRepository,
-		jwtService:                     jwtService,
-		loginVerificationRepository:    loginVerificationRepository,
-		registerVerificationRepository: registerVerificationRepository,
+		userRepository:                       userRepository,
+		refreshTokenRepository:               refreshTokenRepository,
+		jwtService:                           jwtService,
+		loginVerificationRepository:          loginVerificationRepository,
+		registerVerificationRepository:       registerVerificationRepository,
+		forgetPasswordVerificationRepository: forgetPasswordVerificationRepository,
 	}
 }
 
@@ -348,4 +351,47 @@ func (s *AuthService) Logout(
 	}
 
 	return nil
+}
+
+// Forget Password
+func (s *AuthService) ForgetPassword(
+	ctx context.Context,
+	emailOrPhone string,
+) (*dto.ForgetPasswordResponse, error) {
+	//Find User By Email
+	user, err := s.userRepository.FindByEmailOrPhone(
+		ctx,
+		emailOrPhone,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	//Create Token
+	verificationToken, err := appAuth.GenerateVerificationToken()
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	verification := &models.ForgetPasswordVerification{
+		UserID:    user.UserID,
+		Token:     security.HashToken(verificationToken),
+		ExpiresAt: time.Now().Add(5 * time.Minute),
+		Verified:  false,
+	}
+
+	if err := s.forgetPasswordVerificationRepository.Create(
+		ctx,
+		verification,
+	); err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	return &dto.ForgetPasswordResponse{
+		UserID:            user.UserID,
+		FullName:          user.FullName,
+		Email:             user.Email,
+		PhoneNumber:       user.PhoneNumber,
+		VerificationToken: verificationToken,
+	}, nil
 }

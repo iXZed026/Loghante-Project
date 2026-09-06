@@ -80,6 +80,55 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	)
 }
 
+func (h *AuthHandler) VerifyRegister(c *gin.Context) {
+
+	var req dto.VerifyRegisterRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+
+		h.logger.Error(
+			"failed to bind register verification request",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	user, err := h.authService.VerifyRegister(
+		c.Request.Context(),
+		req.VerificationToken,
+		req.Code,
+	)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to verify register",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	response.Success(
+		c,
+		"user registration verified successfully",
+		user,
+	)
+}
+
 func (h *AuthHandler) Login(c *gin.Context) {
 
 	var req dto.LoginRequest
@@ -287,7 +336,7 @@ func (h *AuthHandler) VerifyLogin(c *gin.Context) {
 	if err := c.ShouldBindJSON(&req); err != nil {
 
 		h.logger.Error(
-			"failed to get verify register request",
+			"failed to get verify login request",
 			"error", err,
 		)
 
@@ -343,14 +392,12 @@ func (h *AuthHandler) VerifyLogin(c *gin.Context) {
 	)
 }
 
-func (h *AuthHandler) VerifyRegister(c *gin.Context) {
-
-	var req dto.VerifyRegisterRequest
+func (h *AuthHandler) ForgetPassword(c *gin.Context) {
+	var req dto.ForgetPasswordRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-
 		h.logger.Error(
-			"failed to bind register verification request",
+			"forget password bad request",
 			"error", err,
 		)
 
@@ -363,16 +410,13 @@ func (h *AuthHandler) VerifyRegister(c *gin.Context) {
 		return
 	}
 
-	user, err := h.authService.VerifyRegister(
+	verification, err := h.authService.ForgetPassword(
 		c.Request.Context(),
-		req.VerificationToken,
-		req.Code,
+		req.EmailOrPhone,
 	)
-
 	if err != nil {
-
 		h.logger.Error(
-			"failed to verify register",
+			"forget password failed",
 			"error", err,
 		)
 
@@ -387,7 +431,7 @@ func (h *AuthHandler) VerifyRegister(c *gin.Context) {
 
 	response.Success(
 		c,
-		"user registration verified successfully",
-		user,
+		"verification code sent successfully",
+		verification,
 	)
 }

@@ -41,6 +41,8 @@ func SetupRoutes(
 		auth.POST("/register/verify", authHandler.VerifyRegister)
 		auth.POST("/refresh", authHandler.Refresh)
 		auth.GET("/logout", authHandler.Logout)
+		auth.POST("/login/forget-password", authHandler.ForgetPassword)
+		auth.POST("/login/forget-password/verify", authHandler.ForgetPassword)
 
 		api.GET(
 			"/profile",
