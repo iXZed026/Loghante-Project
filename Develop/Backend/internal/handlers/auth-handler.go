@@ -392,6 +392,7 @@ func (h *AuthHandler) VerifyLogin(c *gin.Context) {
 	)
 }
 
+// Forget Password
 func (h *AuthHandler) ForgetPassword(c *gin.Context) {
 	var req dto.ForgetPasswordRequest
 
@@ -433,5 +434,51 @@ func (h *AuthHandler) ForgetPassword(c *gin.Context) {
 		c,
 		"verification code sent successfully",
 		verification,
+	)
+}
+
+func (h *AuthHandler) VerifyForgetPassword(c *gin.Context) {
+	var req dto.VerifyForgetPasswordRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Error(
+			"verify forget password bad request",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	verificationData, err := h.authService.VerifyForgetPassword(
+		c.Request.Context(),
+		req.VerificationToken,
+		req.Code,
+	)
+
+	if err != nil {
+		h.logger.Error(
+			"verify forget password failed",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	response.Success(
+		c,
+		"verification successful",
+		verificationData,
 	)
 }

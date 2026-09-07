@@ -375,7 +375,7 @@ func (s *AuthService) ForgetPassword(
 
 	verification := &models.ForgetPasswordVerification{
 		UserID:    user.UserID,
-		Token:     security.HashToken(verificationToken),
+		TokenHash: security.HashToken(verificationToken),
 		ExpiresAt: time.Now().Add(5 * time.Minute),
 		Verified:  false,
 	}
@@ -394,4 +394,50 @@ func (s *AuthService) ForgetPassword(
 		PhoneNumber:       user.PhoneNumber,
 		VerificationToken: verificationToken,
 	}, nil
+}
+
+func (s *AuthService) VerifyForgetPassword(
+	ctx context.Context,
+	verificationToken string,
+	code string,
+) (*dto.VerifyForgetPasswordResponse, error) {
+
+	verification, err :=
+		s.forgetPasswordVerificationRepository.FindValidToken(
+			ctx,
+			security.HashToken(verificationToken),
+		)
+	if err != nil {
+		return nil, err
+	}
+
+	if verification.Verified {
+		return nil, appErrors.ErrUserAlreadyVerified
+	}
+
+	if time.Now().After(verification.ExpiresAt) {
+		return nil, appErrors.ErrVerificationTokenExpired
+	}
+
+	// Temporary OTP
+	// بعداً این قسمت را با OTP واقعی جایگزین می‌کنیم.
+	if code != "123456" {
+		return nil, appErrors.ErrInvalidVerificationCode
+	}
+
+	user, err := s.userRepository.FindByID(
+		ctx,
+		uint(verification.UserID),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.VerifyForgetPasswordResponse{
+		UserID:      user.UserID,
+		FullName:    user.FullName,
+		Email:       user.Email,
+		PhoneNumber: user.PhoneNumber,
+	}, nil
+
 }

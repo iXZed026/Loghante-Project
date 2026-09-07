@@ -44,7 +44,7 @@ func (r *ForgetPasswordVerificationRepository) FindValidToken(
 	err := r.db.
 		WithContext(ctx).
 		Where(
-			"token = ? AND verified = ? AND expiresat > ?",
+			"tokenhash = ? AND verified = ? AND expiresat > ?",
 			token,
 			false,
 			time.Now(),
