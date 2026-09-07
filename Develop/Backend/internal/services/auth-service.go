@@ -358,7 +358,7 @@ func (s *AuthService) ForgetPassword(
 	ctx context.Context,
 	emailOrPhone string,
 ) (*dto.ForgetPasswordResponse, error) {
-	//Find User By Email
+
 	user, err := s.userRepository.FindByEmailOrPhone(
 		ctx,
 		emailOrPhone,
@@ -367,7 +367,6 @@ func (s *AuthService) ForgetPassword(
 		return nil, err
 	}
 
-	//Create Token
 	verificationToken, err := appAuth.GenerateVerificationToken()
 	if err != nil {
 		return nil, appErrors.ErrInternalServer
@@ -419,10 +418,16 @@ func (s *AuthService) VerifyForgetPassword(
 		return nil, appErrors.ErrVerificationTokenExpired
 	}
 
-	// Temporary OTP
-	// بعداً این قسمت را با OTP واقعی جایگزین می‌کنیم.
 	if code != "123456" {
 		return nil, appErrors.ErrInvalidVerificationCode
+	}
+
+	err = s.forgetPasswordVerificationRepository.MarkVerified(
+		ctx,
+		verification,
+	)
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
 	}
 
 	user, err := s.userRepository.FindByID(
@@ -439,5 +444,47 @@ func (s *AuthService) VerifyForgetPassword(
 		Email:       user.Email,
 		PhoneNumber: user.PhoneNumber,
 	}, nil
+}
 
+func (s *AuthService) SetNewPassword(
+	ctx context.Context,
+	verificationToken string,
+	password string,
+	repeatPassword string,
+) (*dto.NewPasswordResponse, error) {
+
+	if password != repeatPassword {
+		return nil, appErrors.ErrPasswordMismatch
+	}
+
+	verification, err :=
+		s.forgetPasswordVerificationRepository.FindVerifiedToken(
+			ctx,
+			security.HashToken(verificationToken),
+		)
+	if err != nil {
+		return nil, err
+	}
+
+	if time.Now().After(verification.ExpiresAt) {
+		return nil, appErrors.ErrVerificationTokenExpired
+	}
+
+	passwordHash, err := security.HashPassword(password)
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	err = s.userRepository.UpdatePassword(
+		ctx,
+		uint(verification.UserID),
+		passwordHash,
+	)
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	return &dto.NewPasswordResponse{
+		UserID: uint(verification.UserID),
+	}, nil
 }

@@ -160,3 +160,21 @@ func (r *UserRepository) FindByID(
 
 	return &user, nil
 }
+
+// Update
+func (r *UserRepository) UpdatePassword(
+	ctx context.Context,
+	userID uint,
+	passwordHash string,
+) error {
+
+	return r.db.
+		WithContext(ctx).
+		Model(&models.User{}).
+		Where("userid = ?", userID).
+		Update(
+			"passwordhash",
+			passwordHash,
+		).
+		Error
+}

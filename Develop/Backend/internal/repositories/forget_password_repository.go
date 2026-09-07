@@ -64,6 +64,35 @@ func (r *ForgetPasswordVerificationRepository) FindValidToken(
 	return &verification, nil
 }
 
+func (r *ForgetPasswordVerificationRepository) FindVerifiedToken(
+	ctx context.Context,
+	token string,
+) (*models.ForgetPasswordVerification, error) {
+
+	var verification models.ForgetPasswordVerification
+
+	err := r.db.
+		WithContext(ctx).
+		Where(
+			"tokenhash = ? AND verified = ?",
+			token,
+			true,
+		).
+		First(&verification).
+		Error
+
+	if err != nil {
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, appErrors.ErrInvalidInput
+		}
+
+		return nil, err
+	}
+
+	return &verification, nil
+}
+
 func (r *ForgetPasswordVerificationRepository) MarkVerified(
 	ctx context.Context,
 	verification *models.ForgetPasswordVerification,

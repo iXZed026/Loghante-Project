@@ -482,3 +482,53 @@ func (h *AuthHandler) VerifyForgetPassword(c *gin.Context) {
 		verificationData,
 	)
 }
+
+func (h *AuthHandler) NewPassword(c *gin.Context) {
+
+	var req dto.NewPasswordRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+
+		h.logger.Error(
+			"new password bad request",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	newPassword, err := h.authService.SetNewPassword(
+		c.Request.Context(),
+		req.VerificationToken,
+		req.Password,
+		req.RepeatPassword,
+	)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to set new password",
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	response.Success(
+		c,
+		"password changed successfully",
+		newPassword,
+	)
+}
