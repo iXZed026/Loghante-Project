@@ -18,10 +18,16 @@ CREATE TABLE ForgetPasswordVerifications (
         ON DELETE CASCADE
 );
 
-SELECT * FROM ForgetPasswordVerifications;
-
 CREATE INDEX IX_ForgetPasswordVerifications_UserId
     ON ForgetPasswordVerifications(UserId);
 
 CREATE INDEX IX_ForgetPasswordVerifications_ExpiresAt
     ON ForgetPasswordVerifications(ExpiresAt);
+
+
+SELECT * FROM ForgetPasswordVerifications;
+
+SELECT * FROM users WHERE userid = 5;
+
+--$2a$10$jQy/4JRm.bgKwRDXVbzixuT9Lm03eFAwb.72YXdFPdMmN8oBq2UHG
+--$2a$10$KtK1fNk9S4h6yb0t6uU/vu/G.LYZXnsBHhOQIow9krN8WEotDEjr.
