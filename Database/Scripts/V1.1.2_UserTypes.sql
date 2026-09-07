@@ -23,3 +23,7 @@ ALTER TABLE Users
 ADD CONSTRAINT FK_Users_UserType
     FOREIGN KEY (UserTypeId)
     REFERENCES UserTypes(UserTypeId);
+
+SELECT * FROM users;
+
+SELECT * FROM loginverifications;
