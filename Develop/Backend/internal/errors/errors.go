@@ -3,7 +3,7 @@ package errors
 import "net/http"
 
 var (
-	//Global Errors
+	// Global Errors
 
 	ErrEmptyValue = &AppError{
 		Code:    http.StatusBadRequest,
@@ -58,5 +58,15 @@ var (
 	ErrInvalidCredentials = &AppError{
 		Code:    http.StatusUnauthorized,
 		Message: "invalid email/phone or password",
+	}
+
+	ErrInvalidPassword = &AppError{
+		Code:    http.StatusBadRequest,
+		Message: "invalid password",
+	}
+
+	ErrUserNotFound = &AppError{
+		Code:    http.StatusNotFound,
+		Message: "user not found",
 	}
 )

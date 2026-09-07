@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"errors"
+	"time"
 
 	appErrors "loghanteh-project/internal/errors"
 	"loghanteh-project/internal/models"
@@ -104,13 +105,14 @@ func (r *UserRepository) FindByEmailOrPhone(
 	result := r.db.
 		WithContext(ctx).
 		Where(
-			"email = ? OR PhoneNumber = ?",
+			"email = ? OR phonenumber = ?",
 			emailOrPhone,
 			emailOrPhone,
 		).
 		First(&user)
 
 	if result.Error != nil {
+
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, appErrors.ErrInvalidCredentials
 		}
@@ -151,8 +153,9 @@ func (r *UserRepository) FindByID(
 		Error
 
 	if err != nil {
+
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, appErrors.ErrInvalidCredentials
+			return nil, appErrors.ErrUserNotFound
 		}
 
 		return nil, err
@@ -161,7 +164,31 @@ func (r *UserRepository) FindByID(
 	return &user, nil
 }
 
-// Update
+func (r *UserRepository) FindByIDWithPassword(
+	ctx context.Context,
+	userID uint,
+) (*models.User, error) {
+
+	var user models.User
+
+	err := r.db.
+		WithContext(ctx).
+		Where("userid = ?", userID).
+		First(&user).
+		Error
+
+	if err != nil {
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, appErrors.ErrUserNotFound
+		}
+
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func (r *UserRepository) UpdatePassword(
 	ctx context.Context,
 	userID uint,
@@ -177,4 +204,56 @@ func (r *UserRepository) UpdatePassword(
 			passwordHash,
 		).
 		Error
+}
+
+func (r *UserRepository) UpdateProfile(
+	ctx context.Context,
+	userID uint,
+	fullName string,
+	email string,
+	phoneNumber string,
+	dob time.Time,
+	passwordHash *string,
+) error {
+
+	updates := map[string]interface{}{
+		"fullname":    fullName,
+		"email":       email,
+		"phonenumber": phoneNumber,
+		"dob":         dob,
+	}
+
+	if passwordHash != nil {
+		updates["passwordhash"] = *passwordHash
+	}
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.User{}).
+		Where("userid = ?", userID).
+		Updates(updates).
+		Error
+
+	if err != nil {
+
+		var pgErr *pgconn.PgError
+
+		if errors.As(err, &pgErr) {
+			if pgErr.Code == "23505" {
+
+				switch pgErr.ConstraintName {
+
+				case "users_email_key":
+					return appErrors.ErrEmailAlreadyExists
+
+				case "users_phonenumber_key":
+					return appErrors.ErrPhoneAlreadyExists
+				}
+			}
+		}
+
+		return err
+	}
+
+	return nil
 }

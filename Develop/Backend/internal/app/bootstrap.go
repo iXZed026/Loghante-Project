@@ -24,7 +24,8 @@ func New() (*App, error) {
 	if err != nil {
 		logger.Error(
 			"Failed to Load env",
-			"err", err,
+			"err",
+			err,
 		)
 
 		return nil, err
@@ -120,12 +121,21 @@ func New() (*App, error) {
 		forgetPasswordVerificationRepository,
 	)
 
+	profileService := services.NewProfileService(
+		userRepo,
+	)
+
 	//////////////
 	// Handlers
 	//////////////
 
 	authHandler := handlers.NewAuthHandler(
 		authService,
+		logger,
+	)
+
+	profileHandler := handlers.NewProfileHandler(
+		profileService,
 		logger,
 	)
 
@@ -139,6 +149,7 @@ func New() (*App, error) {
 		r,
 		logger,
 		authHandler,
+		profileHandler,
 		jwtService,
 	)
 
