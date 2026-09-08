@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import { poppins, rozname, wulkan } from "@/font";
 import Header from "@/features/loghante(root)/components/header/Header";
 import Footer from "@/components/shared/footer/Footer";
+import { ProfileProvider } from "@/contexts/ProfileProvider";
 
 
 export default async function LocaleLayout({
@@ -34,9 +35,11 @@ export default async function LocaleLayout({
         cz-shortcut-listen="true"
       >
         <NextIntlClientProvider messages={messages}>
-          <Header />
-          {children}
-          <Footer />
+          <ProfileProvider>
+            <Header />
+            {children}
+            <Footer />
+          </ProfileProvider>
         </NextIntlClientProvider>
       </body>
     </html>

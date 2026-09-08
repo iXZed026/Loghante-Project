@@ -9,19 +9,32 @@ import TicketDropDown from "./TicketDropDown";
 import Container from "@/components/shared/Container";
 import HamburgerMenu from "./HamburgerMenu";
 import useActive from "@/hooks/useActive";
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from "next-intl";
 import useScroll from "@/hooks/useScroll";
-import { FiShoppingBag } from "react-icons/fi";
+import { FiShoppingBag, FiUser } from "react-icons/fi";
 import { usePathname } from "next/navigation";
-
+import { useProfile } from "@/contexts/ProfileProvider";
+import { getHeaderBackground, getLayoutVisibility } from "@/features/loghante(root)/utils/layout"; 
 
 function Header() {
 
   const t = useTranslations("LoghantehHeader");
   const locale = useLocale()
 
+  const {
+    isAuthenticated,
+    isLoading,
+  } = useProfile()
+
   const isScrolled = useScroll(150);
   const pathname = usePathname()
+
+  const {
+    hideHeader,
+  } = getLayoutVisibility(
+    pathname,
+    locale,
+  )
 
   const [
     activeHumber,
@@ -30,20 +43,6 @@ function Header() {
     ,
   ] = useActive(false)
 
-  function checkBackground() {
-    const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
-    const isCafeMenu = pathname === `/${locale}/cafe-menu`;
-    const isCafeOrHome = isHome || isCafeMenu;
-    const isLoginOrRegister = pathname.includes(`/${locale}/login`) || pathname.includes(`/${locale}/register`)
-
-    if (isCafeOrHome) {
-      return isScrolled ? "bg-crimson" : "bg-transparent";
-    } else if (isLoginOrRegister) {
-      return "hidden"
-    }
-
-    return "bg-crimson";
-  }
   return (
     <header className={cn(
       "h-[80px]",
@@ -52,7 +51,13 @@ function Header() {
       "text-white-utility md:text-md sm:text-sm text-xs",
       "fixed w-full top-0 ",
       "transition-all duration-300 ease-in-out",
-      checkBackground()
+      hideHeader
+        ? "hidden"
+        : getHeaderBackground(
+          pathname,
+          locale,
+          isScrolled
+        )
     )}>
       <Container>
         <div className="grid grid-cols-12">
@@ -69,26 +74,48 @@ function Header() {
               )}
               onClick={activeHumberHandler}
             />
-            {/* Login Button */}
-            <AppLink
-              href="/login"
-            >
-              <Button
-                className={cn(
-                  "md:block hidden",
-                  "px-4 py-2",
-                  "font-semibold",
-                  "border-[1px]",
-                  "hover:bg-white/35",
-                  isScrolled && "text-gold-utility",
-                )}
-              >
-                {
-                  t("login-button")
-                }
-              </Button>
-            </AppLink>
-            {/* Select Language */}
+
+            {!isLoading && (
+              isAuthenticated ? (
+                <AppLink
+                  href="/profile"
+                >
+                  <Button
+                    className={cn(
+                      "md:flex hidden",
+                      "size-10",
+                      "p-0",
+                      "items-center justify-center",
+                      "hover:bg-white/35",
+                      isScrolled && "text-gold-utility",
+                    )}
+                    aria-label="Profile"
+                  >
+                    <FiUser className="size-5" />
+                  </Button>
+                </AppLink>
+              ) : (
+                <AppLink
+                  href="/login"
+                >
+                  <Button
+                    className={cn(
+                      "md:block hidden",
+                      "px-4 py-2",
+                      "font-semibold",
+                      "border-[1px]",
+                      "hover:bg-white/35",
+                      isScrolled && "text-gold-utility",
+                    )}
+                  >
+                    {
+                      t("login-button")
+                    }
+                  </Button>
+                </AppLink>
+              )
+            )}
+
             <LanguageSwitcher isScrolled={isScrolled} />
           </div>
 
@@ -101,15 +128,15 @@ function Header() {
                 height={50}
                 priority={true}
                 src="/images/Loghanteh-logo.svg"
-                alt="loghanteh icon"
+                alt="loghante icon"
                 className="brightness-0 invert text-gold-utility"
               />
             </AppLink>
           </div>
+
           <div className="col-span-4 fec gap-2">
-            {/* Tickets DropDown */}
             <TicketDropDown t={t} isScrolled={isScrolled} />
-            {/* Shop Button */}
+
             <AppLink
               href="/shop"
             >
@@ -135,13 +162,12 @@ function Header() {
         </div>
       </Container>
 
-      {/* HUMBURGER MENU */}
       <HamburgerMenu
         activeHumber={activeHumber}
         UnActiveHumberHandler={UnActiveHumberHandler}
         t={t}
       />
-    </header >
+    </header>
   )
 }
 
