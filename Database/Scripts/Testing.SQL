@@ -15,7 +15,8 @@ SELECT * FROM refreshtoken WHERE userid = 50 AND revoked = FALSE;
 DELETE FROM refreshtoken WHERE userid = 50 AND revoked = FALSE;
 
 SELECT * FROM refreshtoken;
---af23fb72-bfd9-4af6-bd18-3a8e4b2e0aea --> revoked = false
+--97dd5a69e9cdd126fee5d86709f61f68452db1600c3595ce0c55843d167071a8 --> revoked = false;
+--97dd5a69e9cdd126fee5d86709f61f68452db1600c3595ce0c55843d167071a8 --> revoked = true;
 --DELETE FROM refreshtoken;
 
 
