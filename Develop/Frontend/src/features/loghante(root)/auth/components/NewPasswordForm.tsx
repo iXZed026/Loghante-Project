@@ -100,7 +100,7 @@ function NewPasswordForm() {
                 message:
                     "Verification session expired or token not found. Please request a new verification code.",
                 pushUrl:
-                    `/${locale}/login/forgot-password`,
+                    `/login/forgot-password`,
             })
 
         }
@@ -143,7 +143,7 @@ function NewPasswordForm() {
                 message:
                     "Verification session expired or token not found. Please request a new verification code.",
                 pushUrl:
-                    `/${locale}/login/forgot-password`,
+                    `/login/forgot-password`,
             })
 
             return

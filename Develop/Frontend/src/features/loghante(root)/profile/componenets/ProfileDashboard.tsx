@@ -1,24 +1,25 @@
+"use client"
+
 import AppImage from '@/components/ui/AppImage'
 import Button from '@/components/ui/Button'
+import Modal, { IModal } from '@/components/shared/modal/Modal'
 import { cn } from '@/lib/utils/cn'
 import ProfileDashboardLinks from './ProfileDashboardLinks';
 import { IoIosLogOut } from "react-icons/io";
 import { useLocale, useTranslations } from 'next-intl';
 import { openSlideMenu, openSlideMenuFa } from '@/lib/animations/variants';
 import { motion } from "framer-motion";
-import { RefObject, useEffect } from 'react';
+import { RefObject, useState } from 'react';
 import { IoMdClose } from "react-icons/io";
 import { useProfile } from '@/contexts/ProfileProvider';
 import { useRouter } from 'next/navigation';
-import { fetcher } from '@/lib/api/fetcher';
-import { logout } from '@/lib/api/auth/logout';
-import { removeFromLocalStorage } from '@/lib/utils/localStorage';
 
 interface IProfileDashboard {
     isActive: boolean;
     divElem?: RefObject<HTMLDivElement | null>;
     UnActiveDashboardHandler?: () => void
 }
+
 
 function ProfileDashboard({
     isActive,
@@ -33,36 +34,23 @@ function ProfileDashboard({
 
     const {
         profile,
-        isAuthenticated,
-        isLoading,
+        logout,
     } = useProfile()
 
-    // useEffect(() => {
-    //     if (!isLoading && !isAuthenticated) {
-    //         router.back()
-    //     }
-    // }, [isLoading, isAuthenticated, router])
 
-    // if (isLoading || !isAuthenticated) {
-    //     return null
-    // }
 
     async function logoutHandler() {
         try {
-            const response = await logout()
+            await logout()
 
-            if ( response.success) {
-                removeFromLocalStorage("accessToken")
-                router.back()
-            }
         } catch (err) {
             console.log(err)
         }
     }
 
-    console.log("profile", profile)
 
     return (
+
         <motion.div
             variants={
                 locale !== "fa" ?
@@ -99,7 +87,7 @@ function ProfileDashboard({
                             width={80}
                             height={60}
                             src="/images/loghanteh-logo.svg"
-                            alt='loghanteh logo'
+                            alt='loghante logo'
                         />
 
                         <IoMdClose
@@ -126,21 +114,23 @@ function ProfileDashboard({
                 </div>
 
                 <div>
-                    <Button
-                        className={cn(
-                            "w-full",
-                            "px-5",
-                            "text-black-utility font-semibold",
-                            "flex items-center gap-3",
-                            "transition-all duration-300",
-                            "active:pl-1",
-                            "hover:pl-7",
-                        )}
-                        onClick={logoutHandler}
-                    >
-                        <IoIosLogOut className='size-6 text-crimson' />
-                        {dashboardLinksT("logout")}
-                    </Button>
+                    <div>
+                        <Button
+                            className={cn(
+                                "w-full",
+                                "px-5",
+                                "text-black-utility font-semibold",
+                                "flex items-center gap-3",
+                                "transition-all duration-300",
+                                "active:pl-1",
+                                "hover:pl-7",
+                            )}
+                            onClick={logoutHandler}
+                        >
+                            <IoIosLogOut className='size-6 text-crimson' />
+                            {dashboardLinksT("logout")}
+                        </Button>
+                    </div>
                 </div>
 
             </div>
@@ -149,3 +139,4 @@ function ProfileDashboard({
 }
 
 export default ProfileDashboard
+

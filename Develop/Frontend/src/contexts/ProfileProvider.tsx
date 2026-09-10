@@ -9,13 +9,15 @@ import {
 } from "react"
 
 import { fetcher } from "@/lib/api/fetcher"
+import { logout as logoutRequest } from "@/lib/api/auth/logout"
+import { removeFromLocalStorage } from "@/lib/utils/localStorage"
 
 interface Profile {
-  user_Id: number      
-  full_name: string    
+  user_Id: number
+  full_name: string
   email: string
-  phone_number: string 
-  dob: string          
+  phone_number: string
+  dob: string
 }
 
 interface ProfileResponse {
@@ -30,7 +32,7 @@ interface ProfileContextType {
   isLoading: boolean
   getProfile: () => Promise<void>
   setProfile: (profile: Profile | null) => void
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 const ProfileContext = createContext<
@@ -73,8 +75,22 @@ export function ProfileProvider({
     }
   }
 
-  const logout = () => {
-    setProfile(null)
+  const logout = async () => {
+
+    try {
+
+      const response =
+        await logoutRequest()
+
+      if (response.success) {
+        removeFromLocalStorage("accessToken")
+        setProfile(null)
+      }
+
+    } catch {
+      removeFromLocalStorage("accessToken")
+      setProfile(null)
+    }
   }
 
   useEffect(() => {

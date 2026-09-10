@@ -60,6 +60,7 @@ function VerifyForm({
 
     const {
         getProfile,
+        setProfile,
     } = useProfile()
 
 
@@ -144,13 +145,7 @@ function VerifyForm({
 
         if (!verificationToken) {
 
-            setModal({
-                active: true,
-                success: false,
-                message:
-                    "Verification session expired or token not found. Please request a new verification code.",
-                pushUrl: redirectPath,
-            })
+           router.replace(redirectPath)
 
             return
         }
@@ -170,9 +165,6 @@ function VerifyForm({
 
             setSendingTo(email)
 
-            removeFromLocalStorage(
-                emailKey
-            )
         }
 
     }, [
@@ -211,7 +203,7 @@ function VerifyForm({
                 active: true,
                 success: false,
                 message:
-                    "Verification session expired or token not found. Please request a new verification code.",
+                    "Verification session expired or token not found.",
                 pushUrl: redirectPath,
             })
 
@@ -262,7 +254,13 @@ function VerifyForm({
                 )
 
 
-                await getProfile()
+                setProfile({
+                    user_Id: response.data.userId,
+                    full_name: response.data.fullName,
+                    email: response.data.email,
+                    phone_number: response.data.phoneNumber,
+                    dob: "",
+                })
 
 
                 setModal({
@@ -271,6 +269,10 @@ function VerifyForm({
                     message: response.message,
                     pushUrl: "/profile",
                 })
+
+                removeFromLocalStorage(
+                    tokenKey
+                )
 
 
                 clearVerifyValue()

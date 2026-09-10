@@ -87,6 +87,7 @@ function EditProfileForm() {
         setFullNameValue(profile.full_name ?? "")
         setPhoneValue(profile.phone_number ?? "")
         setEmailValue(profile.email ?? "")
+        console.log(profile?.dob)
     }, [
         profile,
         setFullNameValue,

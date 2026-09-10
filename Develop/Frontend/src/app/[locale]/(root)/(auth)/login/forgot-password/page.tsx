@@ -139,7 +139,7 @@ function ForgotPassword() {
                             "rounded-sm"
                         )}
                         type="tel"
-                        maxLength={11}
+                        maxLength={220}
                         inputMode="numeric"
                         value={emailOrPassword}
                         onChange={changeEmailOrPasswordValue}

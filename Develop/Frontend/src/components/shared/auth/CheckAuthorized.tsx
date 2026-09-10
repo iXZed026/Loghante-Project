@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode } from "react"
+import { ReactNode, useEffect } from "react"
 import { useProfile } from "@/contexts/ProfileProvider"
 import { useRouter } from "next/navigation"
 
@@ -19,8 +19,19 @@ function CheckAuthorized({
 
   const router = useRouter()
 
+  useEffect(() => {
+
+    if (!isLoading && !isAuthenticated) {
+      router.push("/")
+    }
+
+  }, [
+    isLoading,
+    isAuthenticated,
+    router,
+  ])
+
   if (isLoading || !isAuthenticated) {
-    router.back()
     return null
   }
 

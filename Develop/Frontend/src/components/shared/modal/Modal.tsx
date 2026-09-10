@@ -8,7 +8,7 @@ import { useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-interface IModal {
+export interface IModal {
     active: boolean;
     message: string;
     success: boolean | "warning";
@@ -43,7 +43,7 @@ function Modal({
                 );
             }
 
-        }, 3000);
+        }, 1500);
 
         return () => {
             clearTimeout(timeout);
