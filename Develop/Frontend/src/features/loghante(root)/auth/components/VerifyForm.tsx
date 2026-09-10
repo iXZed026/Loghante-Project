@@ -24,8 +24,6 @@ import {
     useTranslations
 } from 'next-intl'
 
-import { useRouter } from 'next/navigation'
-
 import React, {
     useEffect,
     useState
@@ -55,11 +53,8 @@ function VerifyForm({
     const locale =
         useLocale()
 
-    const router =
-        useRouter()
 
     const {
-        getProfile,
         setProfile,
     } = useProfile()
 
@@ -127,35 +122,11 @@ function VerifyForm({
 
     /*
     |--------------------------------------------------------------------------
-    | Check Verification Token
+    | Get Verification Email
     |--------------------------------------------------------------------------
     */
 
     useEffect(() => {
-
-        const verificationToken =
-            getLocalStorageItem(tokenKey)
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Token Not Found
-        |--------------------------------------------------------------------------
-        */
-
-        if (!verificationToken) {
-
-           router.replace(redirectPath)
-
-            return
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Get Email
-        |--------------------------------------------------------------------------
-        */
 
         const email =
             getLocalStorageItem(emailKey)
@@ -168,9 +139,7 @@ function VerifyForm({
         }
 
     }, [
-        tokenKey,
         emailKey,
-        redirectPath,
     ])
 
 
@@ -247,7 +216,6 @@ function VerifyForm({
                 }
 
 
-
                 saveToLocalStorage(
                     "accessToken",
                     response.data.accessToken
@@ -269,6 +237,7 @@ function VerifyForm({
                     message: response.message,
                     pushUrl: "/profile",
                 })
+
 
                 removeFromLocalStorage(
                     tokenKey

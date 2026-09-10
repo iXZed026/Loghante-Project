@@ -19,10 +19,7 @@ import {
     useTranslations
 } from 'next-intl'
 
-import { useRouter } from 'next/navigation'
-
 import React, {
-    useEffect,
     useState
 } from 'react'
 
@@ -40,18 +37,11 @@ function NewPasswordForm() {
     const newPasswordT =
         useTranslations("authNewPassword")
 
-
     const locale =
         useLocale()
 
-
-    const router =
-        useRouter()
-
-
     const [isLoading, setIsLoading] =
         useState<boolean>(false)
-
 
     const [modal, setModal] =
         useState<IModalState>({
@@ -61,7 +51,6 @@ function NewPasswordForm() {
             pushUrl: undefined,
         })
 
-
     const [
         password,
         ,
@@ -69,45 +58,12 @@ function NewPasswordForm() {
         clearPasswordValue,
     ] = useInput("")
 
-
     const [
         repeatPassword,
         ,
         changeRepeatPasswordValue,
         clearRepeatPasswordValue,
     ] = useInput("")
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Check Token When Page Opens
-    |--------------------------------------------------------------------------
-    */
-
-    useEffect(() => {
-
-        const verificationToken =
-            getLocalStorageItem(
-                "forgetPasswordVerificationToken"
-            )
-
-
-        if (!verificationToken) {
-
-            setModal({
-                active: true,
-                success: false,
-                message:
-                    "Verification session expired or token not found. Please request a new verification code.",
-                pushUrl:
-                    `/login/forgot-password`,
-            })
-
-        }
-
-    }, [
-        locale
-    ])
 
 
     /*
@@ -122,12 +78,10 @@ function NewPasswordForm() {
 
         e.preventDefault()
 
-
         const verificationToken =
             getLocalStorageItem(
                 "forgetPasswordVerificationToken"
             )
-
 
         /*
         |--------------------------------------------------------------------------
@@ -141,7 +95,7 @@ function NewPasswordForm() {
                 active: true,
                 success: false,
                 message:
-                    "Verification session expired or token not found. Please request a new verification code.",
+                    "Verification session expired or token not found.",
                 pushUrl:
                     `/login/forgot-password`,
             })
@@ -149,9 +103,7 @@ function NewPasswordForm() {
             return
         }
 
-
         setIsLoading(true)
-
 
         try {
 
@@ -164,7 +116,6 @@ function NewPasswordForm() {
                     },
                     locale
                 )
-
 
             /*
             |--------------------------------------------------------------------------
@@ -184,7 +135,6 @@ function NewPasswordForm() {
                 return
             }
 
-
             /*
             |--------------------------------------------------------------------------
             | Password Successfully Changed
@@ -195,16 +145,13 @@ function NewPasswordForm() {
                 "forgetPasswordVerificationToken"
             )
 
-
             removeFromLocalStorage(
                 "forgotPasswordUserId"
             )
 
-
             removeFromLocalStorage(
                 "forgotPasswordEmail"
             )
-
 
             setModal({
                 active: true,
@@ -212,7 +159,6 @@ function NewPasswordForm() {
                 message: response.message,
                 pushUrl: "/login",
             })
-
 
             clearPasswordValue()
             clearRepeatPasswordValue()
@@ -240,7 +186,6 @@ function NewPasswordForm() {
                 }}
             />
 
-
             <div>
 
                 <form
@@ -255,7 +200,6 @@ function NewPasswordForm() {
                         {newPasswordT("title")}
 
                     </div>
-
 
                     {/* New Password */}
 
@@ -273,7 +217,6 @@ function NewPasswordForm() {
 
                         </div>
 
-
                         <Input
                             className={cn(
                                 "w-full",
@@ -288,7 +231,6 @@ function NewPasswordForm() {
                         />
 
                     </div>
-
 
                     {/* Repeat Password */}
 
@@ -306,7 +248,6 @@ function NewPasswordForm() {
 
                         </div>
 
-
                         <Input
                             className={cn(
                                 "w-full",
@@ -321,7 +262,6 @@ function NewPasswordForm() {
                         />
 
                     </div>
-
 
                     {/* Submit */}
 
@@ -353,6 +293,5 @@ function NewPasswordForm() {
         </>
     )
 }
-
 
 export default NewPasswordForm

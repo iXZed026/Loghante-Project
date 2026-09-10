@@ -1,12 +1,16 @@
-import NewPasswordForm from '@/features/loghante(root)/auth/components/NewPasswordForm'
-import React from 'react'
+import CheckVerificationToken from "@/components/shared/auth/CheckVerificationToken" 
+import NewPasswordForm from "@/features/loghante(root)/auth/components/NewPasswordForm"
 
 function NewPassword() {
-  return (
-            <div>
+
+    return (
+        <CheckVerificationToken
+            tokenKey="forgetPasswordVerificationToken"
+            redirectPath="/login/forgot-password"
+        >
             <NewPasswordForm />
-        </div>
-  )
+        </CheckVerificationToken>
+    )
 }
 
 export default NewPassword

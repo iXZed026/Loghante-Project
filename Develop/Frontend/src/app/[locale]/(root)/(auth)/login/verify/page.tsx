@@ -1,11 +1,15 @@
+import CheckVerificationToken from "@/components/shared/auth/CheckVerificationToken"
 import VerifyForm from "@/features/loghante(root)/auth/components/VerifyForm"
 
 
 function Verify() {
     return (
-        <div>
-            <VerifyForm mode={"login"}/>
-        </div>
+        <CheckVerificationToken
+            tokenKey="loginVerificationToken"
+            redirectPath="/login"
+        >
+            <VerifyForm mode="login" />
+        </CheckVerificationToken>
     )
 }
 
