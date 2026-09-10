@@ -3,7 +3,7 @@ import VerifyForm from '@/features/loghante(root)/auth/components/VerifyForm'
 function Verify() {
     return (
         <div>
-            <VerifyForm mode='login' />
+            <VerifyForm mode='forgot-password' />
         </div>
     )
 }

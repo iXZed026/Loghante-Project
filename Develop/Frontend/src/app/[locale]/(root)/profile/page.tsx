@@ -1,18 +1,25 @@
+"use client"
+
 import FadeUp from '@/components/animations/FadeUp';
 import ProfileDashboardActivity from '@/features/loghante(root)/profile/componenets/dashboard/ProfileDashboardActivity';
 import ProfileDiscoverMuseums from '@/features/loghante(root)/profile/componenets/dashboard/ProfileDiscoverMuseums';
 import ProfileNextVisitBox from '@/features/loghante(root)/profile/componenets/dashboard/ProfileNextVisitBox';
-
+import { useProfile } from '@/contexts/ProfileProvider';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 
 function Dashboard() {
 
   const dashboardPageT = useTranslations("profileDashboardPage")
 
+  const {
+    profile,
+  } = useProfile()
+
   return (
     <FadeUp>
       <div className='fcol gap-5'>
-        {/* Dashboard Header */}
         <div className='fcol gap-5'>
           <h2 className='font-medium md:text-4xl text-2xl'>
             {dashboardPageT("title")}
@@ -21,24 +28,22 @@ function Dashboard() {
             className='lg:text-xl text-black-light-utility'
           >
             {dashboardPageT("sub-title-first-section")}
-            <span className='text-crimson'> Danyal Lotfi</span>
+            <span className='text-crimson'> {profile.full_name}</span>
             <span>
               {dashboardPageT("sub-title-second-section")}
             </span>
           </span>
-
         </div>
-        {/* Activity Boxes */}
         <ProfileDashboardActivity
           dashboardPageT={dashboardPageT}
+          profile={profile}
         />
-        {/* Next Visit Boxes */}
         <div>
           <ProfileNextVisitBox
             dashboardPageT={dashboardPageT}
+            profile={profile}
           />
         </div>
-        {/* Discover Museums Desktop */}
         <div className='xl:block hidden'>
           <ProfileDiscoverMuseums
             dashboardPageT={dashboardPageT}

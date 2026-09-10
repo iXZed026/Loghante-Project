@@ -81,17 +81,17 @@ func SetupRoutes(
 			)
 
 			auth.POST(
-				"/login/forget-password",
+				"/login/forgot-password",
 				authHandler.ForgetPassword,
 			)
 
 			auth.POST(
-				"/login/forget-password/verify",
+				"/login/forgot-password/verify",
 				authHandler.VerifyForgetPassword,
 			)
 
 			auth.POST(
-				"/login/forget-password/verify/new-password",
+				"/login/forgot-password/verify/new-password",
 				authHandler.NewPassword,
 			)
 		}
@@ -104,7 +104,7 @@ func SetupRoutes(
 		{
 			profile.GET(
 				"",
-				authHandler.Profile,
+				profileHandler.Profile,
 			)
 
 			profile.PUT(

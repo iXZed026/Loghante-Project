@@ -3,7 +3,6 @@ package handlers
 import (
 	"log/slog"
 	"net/http"
-	"strconv"
 
 	"loghanteh-project/internal/dto"
 	appErrors "loghanteh-project/internal/errors"
@@ -231,59 +230,6 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 		gin.H{
 			"accessToken": accessToken,
 		},
-	)
-}
-
-func (h *AuthHandler) Profile(c *gin.Context) {
-
-	userID, exists := c.Get("user_id")
-
-	if !exists {
-		c.JSON(
-			http.StatusUnauthorized,
-			gin.H{
-				"success": false,
-				"message": "unauthorized",
-			},
-		)
-		return
-	}
-
-	id, err := strconv.ParseUint(
-		userID.(string),
-		10,
-		64,
-	)
-
-	if err != nil {
-		c.JSON(
-			http.StatusUnauthorized,
-			gin.H{
-				"success": false,
-				"message": "invalid user id",
-			},
-		)
-		return
-	}
-
-	user, err := h.authService.GetProfile(
-		c.Request.Context(),
-		uint(id),
-	)
-
-	if err != nil {
-		response.HandleError(
-			c,
-			err,
-			h.logger,
-		)
-		return
-	}
-
-	response.Success(
-		c,
-		"profile fetched successfully",
-		user,
 	)
 }
 

@@ -30,13 +30,6 @@ export function getLocalStorageItem(
         localStorage.getItem(itemName);
 
     if (item === null) {
-
-        if (DEVELOPMENT) {
-            console.warn(
-                `Item "${itemName}" not found in localStorage.`
-            );
-        }
-
         return null;
     }
 

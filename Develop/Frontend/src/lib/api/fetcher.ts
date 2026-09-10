@@ -7,6 +7,18 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const ACCESS_TOKEN_KEY = "accessToken";
 
+const AUTH_ENDPOINTS = [
+  "/auth/login",
+  "/auth/register",
+  "/auth/verify-login",
+  "/auth/verify-register",
+  "/auth/forgot-password",
+  "/auth/verify-forgot-password",
+  "/auth/new-password",
+  "/auth/refresh",
+  "/auth/logout",
+];
+
 interface RefreshResponse {
   data: {
     accessToken: string;
@@ -35,7 +47,6 @@ export async function fetcher<T>(
     {
       ...options,
 
-      // HttpOnly Cookie
       credentials: "include",
 
       headers: {
@@ -54,14 +65,13 @@ export async function fetcher<T>(
     }
   );
 
-  /*
-   * If access token is expired,
-   * try to get a new one using the refresh token.
-   */
+  const isAuthEndpoint =
+    AUTH_ENDPOINTS.includes(endpoint);
+
   if (
     response.status === 401 &&
     !isRetry &&
-    endpoint !== "/auth/refresh"
+    !isAuthEndpoint
   ) {
 
     try {
@@ -71,7 +81,6 @@ export async function fetcher<T>(
         {
           method: "POST",
 
-          // Refresh token is stored in HttpOnly Cookie
           credentials: "include",
 
           headers: {
@@ -96,15 +105,23 @@ export async function fetcher<T>(
       const refreshData =
         await refreshResponse.json() as RefreshResponse;
 
+      if (
+        !refreshData.success ||
+        !refreshData.data?.accessToken
+      ) {
+
+        localStorage.removeItem(
+          ACCESS_TOKEN_KEY
+        );
+
+        throw new Error("Session expired");
+      }
+
       saveToLocalStorage(
         ACCESS_TOKEN_KEY,
         refreshData.data.accessToken
       );
 
-      /*
-       * Retry the original request
-       * with the new access token.
-       */
       return fetcher<T>(
         endpoint,
         options,
@@ -122,13 +139,6 @@ export async function fetcher<T>(
     }
   }
 
-  /*
-   * API errors such as:
-   * 400, 401, 404, 409, 422, 500
-   *
-   * are returned as normal API responses
-   * so the component can use response.message.
-   */
   if (!response.ok) {
 
     let errorData: ApiErrorResponse | null = null;

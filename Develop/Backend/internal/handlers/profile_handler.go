@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"log/slog"
+	"net/http"
 	"strconv"
 
 	"loghanteh-project/internal/dto"
@@ -25,6 +26,59 @@ func NewProfileHandler(
 		profileService: profileService,
 		logger:         logger,
 	}
+}
+
+func (h *ProfileHandler) Profile(c *gin.Context) {
+
+	userID, exists := c.Get("user_id")
+
+	if !exists {
+		c.JSON(
+			http.StatusUnauthorized,
+			gin.H{
+				"success": false,
+				"message": "unauthorized",
+			},
+		)
+		return
+	}
+
+	id, err := strconv.ParseUint(
+		userID.(string),
+		10,
+		64,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusUnauthorized,
+			gin.H{
+				"success": false,
+				"message": "invalid user id",
+			},
+		)
+		return
+	}
+
+	user, err := h.profileService.GetProfile(
+		c.Request.Context(),
+		uint(id),
+	)
+
+	if err != nil {
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+		return
+	}
+
+	response.Success(
+		c,
+		"profile fetched successfully",
+		user,
+	)
 }
 
 func (h *ProfileHandler) EditProfile(

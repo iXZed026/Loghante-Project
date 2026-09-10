@@ -6,6 +6,7 @@ import (
 
 	"loghanteh-project/internal/dto"
 	appErrors "loghanteh-project/internal/errors"
+	"loghanteh-project/internal/models"
 	"loghanteh-project/internal/repositories"
 	"loghanteh-project/internal/security"
 )
@@ -20,6 +21,18 @@ func NewProfileService(
 	return &ProfileService{
 		userRepository: userRepository,
 	}
+}
+
+func (s *ProfileService) GetProfile(
+	ctx context.Context,
+	userID uint,
+) (*models.User, error) {
+	user, err := s.userRepository.FindByID(ctx, userID)
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	return user, nil
 }
 
 func (s *ProfileService) EditProfile(

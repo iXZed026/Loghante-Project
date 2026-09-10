@@ -4,21 +4,38 @@ import Modal from '@/components/shared/modal/Modal'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import useInput from '@/hooks/useInput'
+
 import { verifyLogin } from '@/lib/api/auth/verifyLogin'
 import { verifyRegister } from '@/lib/api/auth/verifyRegister'
+import { verifyForgetPassword } from '@/lib/api/auth/verify-forgot-password'
+
 import { cn } from '@/lib/utils/cn'
+
 import {
     getLocalStorageItem,
     removeFromLocalStorage,
     saveToLocalStorage
 } from '@/lib/utils/localStorage'
-import { useLocale, useTranslations } from 'next-intl'
+
+import { useProfile } from '@/contexts/ProfileProvider'
+
+import {
+    useLocale,
+    useTranslations
+} from 'next-intl'
+
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+
+import React, {
+    useEffect,
+    useState
+} from 'react'
+
 
 interface IVerifyForm {
-    mode: "login" | "register"
+    mode: "login" | "register" | "forgot-password"
 }
+
 
 interface IModalState {
     active: boolean
@@ -26,6 +43,7 @@ interface IModalState {
     message: string
     pushUrl?: string
 }
+
 
 function VerifyForm({
     mode,
@@ -40,14 +58,18 @@ function VerifyForm({
     const router =
         useRouter()
 
+    const {
+        getProfile,
+    } = useProfile()
+
+
     const [isLoading, setIsLoading] =
         useState<boolean>(false)
 
-    const [isCheckingToken, setIsCheckingToken] =
-        useState<boolean>(true)
 
     const [sendingTo, setSendingTo] =
         useState<string>("")
+
 
     const [modal, setModal] =
         useState<IModalState>({
@@ -57,6 +79,7 @@ function VerifyForm({
             pushUrl: undefined,
         })
 
+
     const [
         verify,
         ,
@@ -64,62 +87,106 @@ function VerifyForm({
         clearVerifyValue,
     ] = useInput("")
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | LocalStorage Keys
+    |--------------------------------------------------------------------------
+    */
+
     const tokenKey =
         mode === "login"
             ? "loginVerificationToken"
-            : "registerVerificationToken"
+            : mode === "register"
+                ? "registerVerificationToken"
+                : "forgetPasswordVerificationToken"
+
 
     const emailKey =
         mode === "login"
             ? "loginVerificationEmail"
-            : "registerVerificationEmail"
+            : mode === "register"
+                ? "registerVerificationEmail"
+                : "forgetPasswordVerificationEmail"
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Redirect Path
+    |--------------------------------------------------------------------------
+    */
 
     const redirectPath =
         mode === "login"
             ? `/${locale}/login`
-            : `/${locale}/register`
+            : mode === "register"
+                ? `/${locale}/register`
+                : `/${locale}/login/forgot-password`
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Check Verification Token
+    |--------------------------------------------------------------------------
+    */
 
     useEffect(() => {
 
         const verificationToken =
             getLocalStorageItem(tokenKey)
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Token Not Found
+        |--------------------------------------------------------------------------
+        */
+
         if (!verificationToken) {
 
-            router.replace(
-                redirectPath
-            )
+            setModal({
+                active: true,
+                success: false,
+                message:
+                    "Verification session expired or token not found. Please request a new verification code.",
+                pushUrl: redirectPath,
+            })
 
             return
         }
 
+
         /*
-         * Get email based on mode
-         */
+        |--------------------------------------------------------------------------
+        | Get Email
+        |--------------------------------------------------------------------------
+        */
+
         const email =
             getLocalStorageItem(emailKey)
+
 
         if (email) {
 
             setSendingTo(email)
 
-            /*
-             * Remove email immediately
-             * after getting it from LocalStorage
-             */
             removeFromLocalStorage(
                 emailKey
             )
         }
 
-        setIsCheckingToken(false)
-
     }, [
         tokenKey,
         emailKey,
         redirectPath,
-        router
     ])
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Submit Verify
+    |--------------------------------------------------------------------------
+    */
 
     async function submitVerify(
         e: React.FormEvent<HTMLFormElement>
@@ -127,25 +194,42 @@ function VerifyForm({
 
         e.preventDefault()
 
+
         const verificationToken =
             getLocalStorageItem(tokenKey)
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Token Not Found
+        |--------------------------------------------------------------------------
+        */
+
         if (!verificationToken) {
 
-            router.replace(
-                redirectPath
-            )
+            setModal({
+                active: true,
+                success: false,
+                message:
+                    "Verification session expired or token not found. Please request a new verification code.",
+                pushUrl: redirectPath,
+            })
 
             return
         }
 
+
         setIsLoading(true)
+
 
         try {
 
             /*
-             * Login verification
-             */
+            |--------------------------------------------------------------------------
+            | LOGIN
+            |--------------------------------------------------------------------------
+            */
+
             if (mode === "login") {
 
                 const response =
@@ -156,6 +240,7 @@ function VerifyForm({
                         },
                         locale
                     )
+
 
                 if (!response.success) {
 
@@ -169,14 +254,16 @@ function VerifyForm({
                     return
                 }
 
-                removeFromLocalStorage(
-                    tokenKey
-                )
+
 
                 saveToLocalStorage(
                     "accessToken",
                     response.data.accessToken
                 )
+
+
+                await getProfile()
+
 
                 setModal({
                     active: true,
@@ -185,22 +272,78 @@ function VerifyForm({
                     pushUrl: "/profile",
                 })
 
+
                 clearVerifyValue()
 
                 return
             }
 
+
             /*
-             * Register verification
-             */
+            |--------------------------------------------------------------------------
+            | REGISTER
+            |--------------------------------------------------------------------------
+            */
+
+            if (mode === "register") {
+
+                const response =
+                    await verifyRegister(
+                        {
+                            verificationToken,
+                            code: verify,
+                        },
+                        locale
+                    )
+
+
+                if (!response.success) {
+
+                    setModal({
+                        active: true,
+                        success: false,
+                        message: response.message,
+                        pushUrl: undefined,
+                    })
+
+                    return
+                }
+
+
+                removeFromLocalStorage(
+                    tokenKey
+                )
+
+
+                setModal({
+                    active: true,
+                    success: true,
+                    message: response.message,
+                    pushUrl: "/login",
+                })
+
+
+                clearVerifyValue()
+
+                return
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | FORGOT PASSWORD
+            |--------------------------------------------------------------------------
+            */
+
             const response =
-                await verifyRegister(
+                await verifyForgetPassword(
                     {
                         verificationToken,
                         code: verify,
                     },
                     locale
                 )
+
 
             if (!response.success) {
 
@@ -214,16 +357,37 @@ function VerifyForm({
                 return
             }
 
-            removeFromLocalStorage(
-                tokenKey
+
+            /*
+            |--------------------------------------------------------------------------
+            | IMPORTANT:
+            | DO NOT REMOVE forgetPasswordVerificationToken HERE
+            |--------------------------------------------------------------------------
+            |
+            | NewPasswordForm still needs this token.
+            |
+            */
+
+            saveToLocalStorage(
+                "forgotPasswordUserId",
+                String(response.data.userId)
             )
+
+
+            saveToLocalStorage(
+                "forgotPasswordEmail",
+                response.data.email
+            )
+
 
             setModal({
                 active: true,
                 success: true,
                 message: response.message,
-                pushUrl: "/login",
+                pushUrl:
+                    "/login/forgot-password/verify/new-password",
             })
+
 
             clearVerifyValue()
 
@@ -234,9 +398,6 @@ function VerifyForm({
         }
     }
 
-    if (isCheckingToken) {
-        return null
-    }
 
     return (
         <>
@@ -253,6 +414,7 @@ function VerifyForm({
                 }}
             />
 
+
             <div>
 
                 <form
@@ -262,19 +424,25 @@ function VerifyForm({
                     onSubmit={submitVerify}
                 >
 
-                    {/* Title */}
                     <div className="text-center text-2xl font-semibold">
                         {verifyT("title")}
                     </div>
 
-                    {/* Verification */}
+
                     <div>
 
                         <div className="text-center mb-10">
+
                             <span className="text-black-light-utility">
-                                {verifyT("sent-message") + " " + sendingTo}
+
+                                {verifyT("sent-message")}
+                                {" "}
+                                {sendingTo}
+
                             </span>
+
                         </div>
+
 
                         <Input
                             className={cn(
@@ -292,7 +460,7 @@ function VerifyForm({
 
                     </div>
 
-                    {/* Verify Button */}
+
                     <div>
 
                         <Button
@@ -305,10 +473,12 @@ function VerifyForm({
                                 "hover:opacity-85",
                             )}
                         >
+
                             {isLoading
                                 ? "Loading..."
                                 : verifyT("verify-button")
                             }
+
                         </Button>
 
                     </div>

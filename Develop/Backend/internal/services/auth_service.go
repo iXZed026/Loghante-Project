@@ -326,18 +326,6 @@ func (s *AuthService) RefreshAccessToken(
 	return accessToken, newRefreshToken, nil
 }
 
-func (s *AuthService) GetProfile(
-	ctx context.Context,
-	userID uint,
-) (*models.User, error) {
-	user, err := s.userRepository.FindByID(ctx, userID)
-	if err != nil {
-		return nil, appErrors.ErrInternalServer
-	}
-
-	return user, nil
-}
-
 func (s *AuthService) Logout(
 	ctx context.Context,
 	refreshToken string,

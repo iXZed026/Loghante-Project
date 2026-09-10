@@ -6,8 +6,13 @@ import { IoIosLogOut } from "react-icons/io";
 import { useLocale, useTranslations } from 'next-intl';
 import { openSlideMenu, openSlideMenuFa } from '@/lib/animations/variants';
 import { motion } from "framer-motion";
-import { RefObject } from 'react';
+import { RefObject, useEffect } from 'react';
 import { IoMdClose } from "react-icons/io";
+import { useProfile } from '@/contexts/ProfileProvider';
+import { useRouter } from 'next/navigation';
+import { fetcher } from '@/lib/api/fetcher';
+import { logout } from '@/lib/api/auth/logout';
+import { removeFromLocalStorage } from '@/lib/utils/localStorage';
 
 interface IProfileDashboard {
     isActive: boolean;
@@ -23,6 +28,39 @@ function ProfileDashboard({
 
     const dashboardLinksT = useTranslations("profileDashboard")
     const locale = useLocale()
+
+    const router = useRouter()
+
+    const {
+        profile,
+        isAuthenticated,
+        isLoading,
+    } = useProfile()
+
+    // useEffect(() => {
+    //     if (!isLoading && !isAuthenticated) {
+    //         router.back()
+    //     }
+    // }, [isLoading, isAuthenticated, router])
+
+    // if (isLoading || !isAuthenticated) {
+    //     return null
+    // }
+
+    async function logoutHandler() {
+        try {
+            const response = await logout()
+
+            if ( response.success) {
+                removeFromLocalStorage("accessToken")
+                router.back()
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    console.log("profile", profile)
 
     return (
         <motion.div
@@ -54,8 +92,7 @@ function ProfileDashboard({
                 "min-h-screen",
             )}>
 
-                {/* Profile Dashboard Header */}
-                <div className='fcol gap-3.5 mb-4'>
+                <div className='fcol gap-10'>
 
                     <div className='fbc'>
                         <AppImage
@@ -78,23 +115,17 @@ function ProfileDashboard({
                         />
                     </div>
 
-                    <h1 className='font-bold text-2xl'>
-                        {dashboardLinksT("title")}
-                    </h1>
-
-                    <span className='text-xl font-light'>
-                        Danyal Lotfi
+                    <span className='font-semibold text-lg text-crimson'>
+                        {profile?.full_name.toUpperCase()}
                     </span>
 
-                    {/* Profile Dashboard Page Links */}
-                    <ProfileDashboardLinks 
+                    <ProfileDashboardLinks
                         UnActiveDashboardHandler={UnActiveDashboardHandler}
                     />
 
                 </div>
 
-                {/* Profile Dashboard LogOut */}
-                <div >
+                <div>
                     <Button
                         className={cn(
                             "w-full",
@@ -105,13 +136,14 @@ function ProfileDashboard({
                             "active:pl-1",
                             "hover:pl-7",
                         )}
+                        onClick={logoutHandler}
                     >
                         <IoIosLogOut className='size-6 text-crimson' />
                         {dashboardLinksT("logout")}
                     </Button>
                 </div>
 
-            </div >
+            </div>
         </motion.div>
     )
 }

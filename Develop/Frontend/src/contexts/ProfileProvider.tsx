@@ -11,11 +11,11 @@ import {
 import { fetcher } from "@/lib/api/fetcher"
 
 interface Profile {
-  userId: number
-  fullName: string
+  user_Id: number      
+  full_name: string    
   email: string
-  phoneNumber: string
-  dob: string
+  phone_number: string 
+  dob: string          
 }
 
 interface ProfileResponse {
