@@ -36,6 +36,7 @@ function MuseumsSection() {
       <StaggerWrapper
         className='grid grid-cols-12 gap-10 overflow-hidden'
         variants={MuseumsCardContainerVariant}
+        once
       >
         {museumParts.map(museum => (
           <div className='col-span-4 w-full' key={museum.id}>
