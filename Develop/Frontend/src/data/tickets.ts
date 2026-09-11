@@ -13,8 +13,8 @@ export const tickets: ITicket[] = [
   {
     id: 1,
     ticketType: {
-      en: "Museums",
-      fa: "موزه ها",
+      en: "Museums Tour",
+      fa: "تور موزه ها",
     },
     href: "/museums-tour",
   },
