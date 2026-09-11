@@ -83,7 +83,7 @@ function LanguageSwitcher({
             "relative",
             activeLanguageDropDown && "text-black-utility",
             isScrolled && "text-gold-utility",
-            "z-50"
+            "z-20"
         )}>
             <div className={cn(
                 "flex justify-center items-center",

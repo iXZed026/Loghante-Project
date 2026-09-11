@@ -35,7 +35,7 @@ function SubMenu({
         <AnimatePresenceWrapper isActive={activeSubMenu}>
             <div
                 className={cn(
-                    "absolute top-0 overflow-hidden",
+                    "absolute top-0 overflow-hidden w-full",
                     isFa ? "md:right-full" : "md:left-full"
                 )}
             >
@@ -49,7 +49,7 @@ function SubMenu({
                     animate="visible"
                     exit="exit"
                     className={cn(
-                        "h-[100vh] w-90",
+                        "h-[100vh] sm:w-140 border-2",
                         " bg-white-utility",
                         "border-l-2 border-black/20",
                     )}>
@@ -69,7 +69,7 @@ function SubMenu({
                             )}
                             onClick={UnActiveSubMenuHandler}
                         >
-                            <ArrowIcon direction="left"/>
+                            <ArrowIcon direction="left" />
                             {
                                 t("back-button")
                             }
@@ -83,7 +83,7 @@ function SubMenu({
                                 "w-full",
                                 "block",
                                 "px-7",
-                                "py-5",
+                                "py-6",
                                 "border-b border-b-black/25",
                                 "hover:bg-[var(--white-light-color)]",
                                 "transition-all",

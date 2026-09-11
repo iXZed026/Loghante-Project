@@ -30,7 +30,10 @@ function NavLinks({
     ] = useActive(false)
 
     return (
-        <nav>
+        <nav
+            className="overflow-y-scroll h-[calc(100vh-18vh)]"
+
+        >
             <ul>
                 {navLinks.map((link) => (
                     link.museumParts ? (
@@ -41,7 +44,7 @@ function NavLinks({
                                     "fbc relative",
                                     "md:px-7 px-4",
                                     "",
-                                    "md:py-4 py-3",
+                                    "py-6",
                                     "border-b border-b-black/25",
                                     "hover:bg-[var(--white-light-color)]",
                                     "transition-all",
@@ -70,8 +73,7 @@ function NavLinks({
                                     "w-full",
                                     "block",
                                     "md:px-7 px-4",
-                                    "",
-                                    "md:py-4 py-3",
+                                    "py-6",
                                     "border-b border-b-black/25",
                                     "hover:bg-[var(--white-light-color)]",
                                     "transition-all",

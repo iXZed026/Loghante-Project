@@ -43,7 +43,7 @@ function HamburgerMenu({
                 className={cn(
                     "w-full h-[100vh]",
                     "bg-black/70",
-                    "text-black-utility md:text-md text-sm",
+                    "text-black-utility md:text-md text-lg italic font-semibold",
                     "fixed left-0  top-0",
                     "z-40",
                 )}
@@ -59,13 +59,13 @@ function HamburgerMenu({
                     animate="visible"
                     exit="exit"
                     className={cn(
-                        "w-90 h-[100vh]",
+                        "sm:w-140 w-full h-[100vh]",
                         "fcol gap-3",
                         "bg-white-utility",
                         "fixed top-0",
                         locale === "fa" ? "right-0" : "left-0",
                         "shadow-lg",
-                        "z-50",
+                        "z-100",
                     )}
                     ref={divElem}
                 >
@@ -78,7 +78,7 @@ function HamburgerMenu({
 
                         <Button
                             className={cn(
-                                "flex items-center",
+                                "flex items-center gap-2",
                                 "text-black-utility",
                                 "p-0",
                                 "hover:opacity-utility",
@@ -90,7 +90,7 @@ function HamburgerMenu({
                                 t("close-button")
                             }
                             <IoMdClose className={cn(
-                                "size-5",
+                                "size-6",
                                 "text-crimson"
                             )} />
                         </Button>

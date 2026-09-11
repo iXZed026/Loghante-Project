@@ -99,18 +99,18 @@ export const navLinks: INavLink[] = [
   {
     id: 10,
     name: {
-      en: "Work With Us",
-      fa: "همکاری با ما",
-    },
-    path: "#work-with-us",
-  },
-
-  {
-    id: 11,
-    name: {
       en: "Contact Us",
       fa: "تماس با ما",
     },
     path: "#contact",
   },
+
+  // {
+  //   id: 11,
+  //   name: {
+  //     en: "Work With Us",
+  //     fa: "همکاری با ما",
+  //   },
+  //   path: "#work-with-us",
+  // },
 ];
