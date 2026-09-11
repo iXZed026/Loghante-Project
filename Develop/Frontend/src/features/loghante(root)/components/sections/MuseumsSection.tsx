@@ -12,7 +12,7 @@ function MuseumsSection() {
   const t = useTranslations("LoghantehMuseums")
 
   return (
-    <div id="museums" className='px-20 loghante-section'>
+    <section id="museums" className='px-20 loghante-section'>
       <div className='fcol gap-15 text-center mb-20'>
         <FadeUp
           y={40}
@@ -49,7 +49,7 @@ function MuseumsSection() {
           </div>
         ))}
       </StaggerWrapper>
-    </div >
+    </section >
   )
 }
 
