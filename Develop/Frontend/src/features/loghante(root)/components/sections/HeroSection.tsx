@@ -34,7 +34,7 @@ function HeroSection() {
                             {t("video-title")}
                         </h1>
 
-                        <p className="mt-4 text-md md:text-xl">
+                        <p className="mt-4 text-md md:text-xl scale-y-85">
                             {t("video-description")}
                         </p>
                     </div>

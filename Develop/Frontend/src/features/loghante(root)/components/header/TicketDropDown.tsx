@@ -54,7 +54,7 @@ function TicketDropDown(
                         "hover:bg-[#936c23]" :
                         "hover:bg-[#42151A]",
                     isScrolled && "bg-gold-utility",
-                    activeTicketDripDown && "rounded-none border-b-1",
+                    activeTicketDripDown && "rounded-none border-b-2",
                 )}
                 onClick={toggleTicketDripDownHandler}
             >
