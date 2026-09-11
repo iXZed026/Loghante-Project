@@ -48,6 +48,7 @@ function Header() {
       "h-[80px]",
       "py-3",
       "z-30",
+      "select-none",
       "text-white-utility md:text-md sm:text-sm text-xs",
       "fixed w-full top-0 ",
       "transition-all duration-300 ease-in-out",
