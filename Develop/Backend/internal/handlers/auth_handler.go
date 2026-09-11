@@ -74,7 +74,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 
 	response.Success(
 		c,
-		"verification required",
+		"verification_required",
 		user,
 	)
 }
@@ -123,7 +123,7 @@ func (h *AuthHandler) VerifyRegister(c *gin.Context) {
 
 	response.Success(
 		c,
-		"user registration verified successfully",
+		"user_registration_verified_successfully",
 		user,
 	)
 }
@@ -173,7 +173,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	response.Success(
 		c,
-		"login is successful",
+		"login_is_successful",
 		user,
 	)
 }
@@ -226,7 +226,7 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 
 	response.Success(
 		c,
-		"token refreshed successfully",
+		"token_refreshed_successfully",
 		gin.H{
 			"accessToken": accessToken,
 		},
@@ -270,7 +270,7 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 
 	response.Success(
 		c,
-		"logged out successfully",
+		"logged_out_successfully",
 		nil,
 	)
 }
@@ -333,16 +333,18 @@ func (h *AuthHandler) VerifyLogin(c *gin.Context) {
 
 	response.Success(
 		c,
-		"user login verified successfully",
+		"user_login_verified_successfully",
 		user,
 	)
 }
 
 // Forget Password
 func (h *AuthHandler) ForgetPassword(c *gin.Context) {
+
 	var req dto.ForgetPasswordRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+
 		h.logger.Error(
 			"forget password bad request",
 			"error", err,
@@ -361,7 +363,9 @@ func (h *AuthHandler) ForgetPassword(c *gin.Context) {
 		c.Request.Context(),
 		req.EmailOrPhone,
 	)
+
 	if err != nil {
+
 		h.logger.Error(
 			"forget password failed",
 			"error", err,
@@ -378,15 +382,17 @@ func (h *AuthHandler) ForgetPassword(c *gin.Context) {
 
 	response.Success(
 		c,
-		"verification code sent successfully",
+		"verification_code_sent_successfully",
 		verification,
 	)
 }
 
 func (h *AuthHandler) VerifyForgetPassword(c *gin.Context) {
+
 	var req dto.VerifyForgetPasswordRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+
 		h.logger.Error(
 			"verify forget password bad request",
 			"error", err,
@@ -408,6 +414,7 @@ func (h *AuthHandler) VerifyForgetPassword(c *gin.Context) {
 	)
 
 	if err != nil {
+
 		h.logger.Error(
 			"verify forget password failed",
 			"error", err,
@@ -424,7 +431,7 @@ func (h *AuthHandler) VerifyForgetPassword(c *gin.Context) {
 
 	response.Success(
 		c,
-		"verification successful",
+		"verification_successful",
 		verificationData,
 	)
 }
@@ -474,7 +481,7 @@ func (h *AuthHandler) NewPassword(c *gin.Context) {
 
 	response.Success(
 		c,
-		"password changed successfully",
+		"password_changed_successfully",
 		newPassword,
 	)
 }

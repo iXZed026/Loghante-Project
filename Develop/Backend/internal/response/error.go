@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	appErr "loghanteh-project/internal/errors"
+	appI18n "loghanteh-project/internal/i18n"
 	appValidator "loghanteh-project/internal/validator"
 
 	"github.com/gin-gonic/gin"
@@ -51,11 +52,19 @@ func HandleError(
 
 	if errors.As(err, &e) {
 
+		lang := c.GetHeader("Accept-Language")
+
+		message :=
+			appI18n.TranslateError(
+				e.Key,
+				lang,
+			)
+
 		c.JSON(
 			e.Code,
 			gin.H{
 				"success": false,
-				"message": e.Message,
+				"message": message,
 			},
 		)
 
@@ -63,11 +72,19 @@ func HandleError(
 	}
 
 	// Unknown errors
+	lang := c.GetHeader("Accept-Language")
+
+	message :=
+		appI18n.TranslateError(
+			"internal_server_error",
+			lang,
+		)
+
 	c.JSON(
 		http.StatusInternalServerError,
 		gin.H{
 			"success": false,
-			"message": "internal server error",
+			"message": message,
 		},
 	)
 }

@@ -22,9 +22,13 @@ function EditProfileForm() {
     const editProfileT = useTranslations("profileEdit")
     const locale = useLocale()
 
-    const { profile } = useProfile()
+    const {
+        profile,
+        setProfile,
+    } = useProfile()
 
     const [loading, setLoading] = useState(false)
+
     const [modal, setModal] =
         useState<IModalState>({
             active: false,
@@ -33,11 +37,9 @@ function EditProfileForm() {
             pushUrl: undefined,
         })
 
-
     const [
         fullNameValue,
         setFullNameValue,
-        changeFullNameValue,
     ] = useInput(profile?.full_name ?? "")
 
     const [
@@ -48,21 +50,17 @@ function EditProfileForm() {
     const [
         emailValue,
         setEmailValue,
-        changeEmailValue,
     ] = useInput(profile?.email ?? "")
 
     const [
         currentPasswordValue,
         setCurrentPasswordValue,
-        changeCurrentPasswordValue,
     ] = useInput("")
 
     const [
         newPasswordValue,
         setNewPasswordValue,
-        changeNewPasswordValue,
     ] = useInput("")
-
 
     const [
         dayValue,
@@ -82,50 +80,109 @@ function EditProfileForm() {
     const [isDirty, setIsDirty] = useState(false)
 
     useEffect(() => {
+
         if (!profile) return
 
         setFullNameValue(profile.full_name ?? "")
         setPhoneValue(profile.phone_number ?? "")
         setEmailValue(profile.email ?? "")
-        console.log(profile?.dob)
+
+        if (profile.dob) {
+
+            const [
+                year,
+                month,
+                dayWithTime,
+            ] = profile.dob.split("-")
+
+            const day = dayWithTime.split("T")[0]
+
+            setYearValue(year)
+            setMonthValue(month)
+            setDayValue(day)
+
+        } else {
+
+            setYearValue("")
+            setMonthValue("")
+            setDayValue("")
+
+        }
+
     }, [
         profile,
         setFullNameValue,
         setPhoneValue,
         setEmailValue,
+        setYearValue,
+        setMonthValue,
+        setDayValue,
     ])
 
     const handleSubmit = async (
         e: FormEvent<HTMLFormElement>
     ) => {
-        e.preventDefault();
 
-        if (!isDirty || loading) return;
+        e.preventDefault()
+
+        if (!isDirty || loading) return
 
         try {
-            setLoading(true);
+
+            setLoading(true)
 
             const response = await editProfile(
                 {
                     fullName: fullNameValue,
                     email: emailValue,
                     phoneNumber: phoneValue,
-                    dob: `${yearValue}-${monthValue}-${dayValue}`,
+                    dob:
+                        yearValue &&
+                        monthValue &&
+                        dayValue
+                            ? `${yearValue}-${monthValue}-${dayValue}`
+                            : "",
                     currentPassword: currentPasswordValue,
                     newPassword: newPasswordValue,
                 },
                 locale
-            );
+            )
 
             if (!response.success) {
+
                 setModal({
                     active: true,
                     success: false,
                     message: response.message,
                     pushUrl: undefined,
                 })
+
                 return
             }
+
+            // Update profile context immediately
+            if (profile) {
+
+                setProfile({
+                    ...profile,
+                    full_name: fullNameValue,
+                    email: emailValue,
+                    phone_number: phoneValue,
+                    dob:
+                        yearValue &&
+                        monthValue &&
+                        dayValue
+                            ? `${yearValue}-${monthValue}-${dayValue}`
+                            : null,
+                })
+
+            }
+
+            // Clear password fields after successful update
+            setCurrentPasswordValue("")
+            setNewPasswordValue("")
+
+            setIsDirty(false)
 
             setModal({
                 active: true,
@@ -134,25 +191,28 @@ function EditProfileForm() {
                 pushUrl: undefined,
             })
 
-            
-
         } catch (error) {
-            console.error(error);
+
+            console.error(error)
+
         } finally {
-            setLoading(false);
+
+            setLoading(false)
+
         }
-    };
+    }
 
     const handleChange = (
         setter: React.Dispatch<React.SetStateAction<string>>,
         value: string
     ) => {
+
         setter(value)
         setIsDirty(true)
+
     }
 
     return (
-
         <>
             <Modal
                 active={modal.active}
@@ -166,6 +226,7 @@ function EditProfileForm() {
                     }))
                 }}
             />
+
             <form onSubmit={handleSubmit}>
 
                 <div className="fcol gap-5 lg:w-111 md:w-75 w-full">
@@ -182,7 +243,6 @@ function EditProfileForm() {
                                 "border-b-2 border-black-utility rounded-b-sm"
                             )}
                             maxLength={200}
-                            placeholder="Danyal Lotfi"
                             type="text"
                             value={fullNameValue}
                             onChange={(e) =>
@@ -207,7 +267,6 @@ function EditProfileForm() {
                                 "border-b-2 border-black-utility rounded-b-sm"
                             )}
                             maxLength={11}
-                            placeholder="09044296231"
                             inputMode="numeric"
                             value={phoneValue}
                             onChange={(e) => {
@@ -236,7 +295,6 @@ function EditProfileForm() {
                                 "border-b-2 border-black-utility rounded-b-sm"
                             )}
                             maxLength={250}
-                            placeholder="danyal@gmail.com"
                             type="email"
                             value={emailValue}
                             onChange={(e) =>
@@ -385,7 +443,9 @@ function EditProfileForm() {
                                 "disabled:opacity-50 disabled:cursor-not-allowed"
                             )}
                         >
-                            {loading ? "Loading..." : editProfileT("apply-button")}
+                            {loading
+                                ? "Loading..."
+                                : editProfileT("apply-button")}
                         </Button>
 
                     </div>

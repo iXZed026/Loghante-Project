@@ -49,22 +49,59 @@ func (s *ProfileService) EditProfile(
 		return nil, err
 	}
 
-	dob, err := time.Parse(
-		"2006-01-02",
-		req.DOB,
+	// Check email
+	emailExists, err := s.userRepository.ExistsByEmailExceptUser(
+		ctx,
+		req.Email,
+		userID,
 	)
+
 	if err != nil {
-		return nil, appErrors.ErrInvalidInput
+		return nil, appErrors.ErrInternalServer
+	}
+
+	if emailExists {
+		return nil, appErrors.ErrEmailAlreadyExists
+	}
+
+	// Check phone number
+	phoneExists, err := s.userRepository.ExistsByPhoneExceptUser(
+		ctx,
+		req.PhoneNumber,
+		userID,
+	)
+
+	if err != nil {
+		return nil, appErrors.ErrInternalServer
+	}
+
+	if phoneExists {
+		return nil, appErrors.ErrPhoneAlreadyExists
+	}
+
+	// Parse date of birth
+	var dob *time.Time
+
+	if req.DOB != "" {
+
+		parsedDOB, err := time.Parse(
+			"2006-01-02",
+			req.DOB,
+		)
+
+		if err != nil {
+			return nil, appErrors.ErrInvalidInput
+		}
+
+		dob = &parsedDOB
 	}
 
 	var passwordHash *string
 
-	if req.NewPassword != "" {
+	// Password change
+	if req.CurrentPassword != "" {
 
-		if req.CurrentPassword == "" {
-			return nil, appErrors.ErrInvalidInput
-		}
-
+		// Current password must be correct
 		if !security.CheckPasswordHash(
 			user.PasswordHash,
 			req.CurrentPassword,
@@ -72,9 +109,23 @@ func (s *ProfileService) EditProfile(
 			return nil, appErrors.ErrInvalidPassword
 		}
 
+		// New password is required
+		if req.NewPassword == "" {
+			return nil, appErrors.ErrInvalidInput
+		}
+	}
+
+	if req.NewPassword != "" {
+
+		// Current password is required
+		if req.CurrentPassword == "" {
+			return nil, appErrors.ErrInvalidInput
+		}
+
 		hash, err := security.HashPassword(
 			req.NewPassword,
 		)
+
 		if err != nil {
 			return nil, appErrors.ErrInternalServer
 		}
@@ -82,6 +133,7 @@ func (s *ProfileService) EditProfile(
 		passwordHash = &hash
 	}
 
+	// Update profile
 	err = s.userRepository.UpdateProfile(
 		ctx,
 		userID,
@@ -91,6 +143,7 @@ func (s *ProfileService) EditProfile(
 		dob,
 		passwordHash,
 	)
+
 	if err != nil {
 		return nil, err
 	}
@@ -100,6 +153,6 @@ func (s *ProfileService) EditProfile(
 		FullName:    req.FullName,
 		Email:       req.Email,
 		PhoneNumber: req.PhoneNumber,
-		DOB:         dob,
+		DOB:         *dob,
 	}, nil
 }

@@ -212,7 +212,7 @@ func (r *UserRepository) UpdateProfile(
 	fullName string,
 	email string,
 	phoneNumber string,
-	dob time.Time,
+	dob *time.Time,
 	passwordHash *string,
 ) error {
 
@@ -220,40 +220,70 @@ func (r *UserRepository) UpdateProfile(
 		"fullname":    fullName,
 		"email":       email,
 		"phonenumber": phoneNumber,
-		"dob":         dob,
+	}
+
+	if dob != nil {
+		updates["dob"] = dob
 	}
 
 	if passwordHash != nil {
 		updates["passwordhash"] = *passwordHash
 	}
 
-	err := r.db.
+	return r.db.
 		WithContext(ctx).
 		Model(&models.User{}).
 		Where("userid = ?", userID).
 		Updates(updates).
 		Error
+}
 
-	if err != nil {
+func (r *UserRepository) ExistsByEmailExceptUser(
+	ctx context.Context,
+	email string,
+	userID uint,
+) (bool, error) {
 
-		var pgErr *pgconn.PgError
+	var count int64
 
-		if errors.As(err, &pgErr) {
-			if pgErr.Code == "23505" {
+	result := r.db.
+		WithContext(ctx).
+		Model(&models.User{}).
+		Where(
+			"email = ? AND userid != ?",
+			email,
+			userID,
+		).
+		Count(&count)
 
-				switch pgErr.ConstraintName {
-
-				case "users_email_key":
-					return appErrors.ErrEmailAlreadyExists
-
-				case "users_phonenumber_key":
-					return appErrors.ErrPhoneAlreadyExists
-				}
-			}
-		}
-
-		return err
+	if result.Error != nil {
+		return false, result.Error
 	}
 
-	return nil
+	return count > 0, nil
+}
+
+func (r *UserRepository) ExistsByPhoneExceptUser(
+	ctx context.Context,
+	phoneNumber string,
+	userID uint,
+) (bool, error) {
+
+	var count int64
+
+	result := r.db.
+		WithContext(ctx).
+		Model(&models.User{}).
+		Where(
+			"phonenumber = ? AND userid != ?",
+			phoneNumber,
+			userID,
+		).
+		Count(&count)
+
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	return count > 0, nil
 }

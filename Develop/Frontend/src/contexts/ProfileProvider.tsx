@@ -17,7 +17,7 @@ interface Profile {
   full_name: string
   email: string
   phone_number: string
-  dob: string
+  dob: string | null
 }
 
 interface ProfileResponse {

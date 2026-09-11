@@ -1,15 +1,19 @@
 package errors
 
 type AppError struct {
-	Code    int
-	Message string
-	Err     error
+	Code int
+
+	Key string
+
+	Err error
 }
 
 func (e *AppError) Error() string {
-	return e.Message
+
+	return e.Key
 }
 
 func (e *AppError) Unwrap() error {
+
 	return e.Err
 }

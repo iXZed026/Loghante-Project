@@ -38,4 +38,12 @@ var enMessages = map[string]map[string]string{
 	"Code": {
 		"required": "Code is required.",
 	},
+
+	"CurrentPassword": {
+		"min": "Current password must be at least 8 characters.",
+	},
+
+	"NewPassword": {
+		"min": "New password must be at least 8 characters.",
+	},
 }

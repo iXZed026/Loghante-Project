@@ -18,7 +18,6 @@ function ProfileDashboardLinks({
     const locale = useLocale()
     const pathname = usePathname()
 
-    console.log(pathname)
 
     return (
         <div>

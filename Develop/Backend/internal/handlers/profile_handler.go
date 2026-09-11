@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"fmt"
 	"log/slog"
-	"net/http"
 	"strconv"
 
 	"loghanteh-project/internal/dto"
 	appErrors "loghanteh-project/internal/errors"
+	"loghanteh-project/internal/i18n"
 	"loghanteh-project/internal/response"
 	"loghanteh-project/internal/services"
 
@@ -30,33 +31,62 @@ func NewProfileHandler(
 
 func (h *ProfileHandler) Profile(c *gin.Context) {
 
-	userID, exists := c.Get("user_id")
+	userIDValue, exists := c.Get("user_id")
 
 	if !exists {
-		c.JSON(
-			http.StatusUnauthorized,
-			gin.H{
-				"success": false,
-				"message": "unauthorized",
-			},
+
+		h.logger.Error(
+			"failed to get user id from context",
+			"error", "user_id is missing",
 		)
+
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+
+		return
+	}
+
+	userID, ok := userIDValue.(string)
+
+	if !ok {
+
+		h.logger.Error(
+			"invalid user id in context",
+			"type", fmt.Sprintf("%T", userIDValue),
+		)
+
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+
 		return
 	}
 
 	id, err := strconv.ParseUint(
-		userID.(string),
+		userID,
 		10,
 		64,
 	)
 
 	if err != nil {
-		c.JSON(
-			http.StatusUnauthorized,
-			gin.H{
-				"success": false,
-				"message": "invalid user id",
-			},
+
+		h.logger.Error(
+			"failed to parse user id",
+			"user_id", userID,
+			"error", err,
 		)
+
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+
 		return
 	}
 
@@ -66,17 +96,22 @@ func (h *ProfileHandler) Profile(c *gin.Context) {
 	)
 
 	if err != nil {
+
 		response.HandleError(
 			c,
 			err,
 			h.logger,
 		)
+
 		return
 	}
 
 	response.Success(
 		c,
-		"profile fetched successfully",
+		i18n.TranslateSuccess(
+			"profile_fetched_successfully",
+			c.GetHeader("Accept-Language"),
+		),
 		user,
 	)
 }
@@ -88,22 +123,26 @@ func (h *ProfileHandler) EditProfile(
 	userIDValue, exists := c.Get("user_id")
 
 	if !exists {
+
 		response.HandleError(
 			c,
-			appErrors.ErrInvalidCredentials,
+			appErrors.ErrUnauthorized,
 			h.logger,
 		)
+
 		return
 	}
 
 	userIDString, ok := userIDValue.(string)
 
 	if !ok {
+
 		response.HandleError(
 			c,
-			appErrors.ErrInvalidCredentials,
+			appErrors.ErrUnauthorized,
 			h.logger,
 		)
+
 		return
 	}
 
@@ -114,11 +153,13 @@ func (h *ProfileHandler) EditProfile(
 	)
 
 	if err != nil {
+
 		response.HandleError(
 			c,
-			appErrors.ErrInvalidCredentials,
+			appErrors.ErrUnauthorized,
 			h.logger,
 		)
+
 		return
 	}
 
@@ -136,6 +177,7 @@ func (h *ProfileHandler) EditProfile(
 			err,
 			h.logger,
 		)
+
 		return
 	}
 
@@ -158,12 +200,16 @@ func (h *ProfileHandler) EditProfile(
 			err,
 			h.logger,
 		)
+
 		return
 	}
 
 	response.Success(
 		c,
-		"profile updated successfully",
+		i18n.TranslateSuccess(
+			"profile_updated_successfully",
+			c.GetHeader("Accept-Language"),
+		),
 		profile,
 	)
 }

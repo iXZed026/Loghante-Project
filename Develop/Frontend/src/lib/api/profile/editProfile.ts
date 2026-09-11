@@ -4,7 +4,7 @@ export interface IEditProfileData {
     fullName: string;
     email: string;
     phoneNumber: string;
-    dob: string;
+    dob: string | null;
     currentPassword: string;
     newPassword: string;
 }

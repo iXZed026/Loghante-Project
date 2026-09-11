@@ -6,67 +6,72 @@ var (
 	// Global Errors
 
 	ErrEmptyValue = &AppError{
-		Code:    http.StatusBadRequest,
-		Message: "value must not be empty",
+		Code: http.StatusBadRequest,
+		Key:  "value_must_not_be_empty",
 	}
 
 	ErrInternalServer = &AppError{
-		Code:    http.StatusInternalServerError,
-		Message: "internal server error",
+		Code: http.StatusInternalServerError,
+		Key:  "internal_server_error",
 	}
 
 	ErrInvalidInput = &AppError{
-		Code:    http.StatusBadRequest,
-		Message: "invalid input",
+		Code: http.StatusBadRequest,
+		Key:  "invalid_input",
+	}
+
+	ErrUnauthorized = &AppError{
+		Code: http.StatusUnauthorized,
+		Key:  "unauthorized",
 	}
 
 	ErrUserAlreadyVerified = &AppError{
-		Code:    http.StatusConflict,
-		Message: "user already verified",
+		Code: http.StatusConflict,
+		Key:  "user_already_verified",
 	}
 
 	ErrVerificationTokenExpired = &AppError{
-		Code:    http.StatusGone,
-		Message: "verification token has expired",
+		Code: http.StatusGone,
+		Key:  "verification_token_expired",
 	}
 
 	ErrInvalidVerificationCode = &AppError{
-		Code:    http.StatusBadRequest,
-		Message: "invalid verification code",
+		Code: http.StatusBadRequest,
+		Key:  "invalid_verification_code",
 	}
 
 	ErrPasswordMismatch = &AppError{
-		Code:    http.StatusBadRequest,
-		Message: "passwords do not match",
+		Code: http.StatusBadRequest,
+		Key:  "passwords_do_not_match",
 	}
 
 	ErrTooManyRequests = &AppError{
-		Code:    http.StatusTooManyRequests,
-		Message: "too many requests",
+		Code: http.StatusTooManyRequests,
+		Key:  "too_many_requests",
 	}
 
 	ErrEmailAlreadyExists = &AppError{
-		Code:    http.StatusConflict,
-		Message: "email already exists",
+		Code: http.StatusConflict,
+		Key:  "email_already_exists",
 	}
 
 	ErrPhoneAlreadyExists = &AppError{
-		Code:    http.StatusConflict,
-		Message: "phone number already exists",
+		Code: http.StatusConflict,
+		Key:  "phone_number_already_exists",
 	}
 
 	ErrInvalidCredentials = &AppError{
-		Code:    http.StatusUnauthorized,
-		Message: "invalid email/phone or password",
+		Code: http.StatusUnauthorized,
+		Key:  "invalid_credentials",
 	}
 
 	ErrInvalidPassword = &AppError{
-		Code:    http.StatusBadRequest,
-		Message: "invalid password",
+		Code: http.StatusBadRequest,
+		Key:  "invalid_password",
 	}
 
 	ErrUserNotFound = &AppError{
-		Code:    http.StatusNotFound,
-		Message: "user not found",
+		Code: http.StatusNotFound,
+		Key:  "user_not_found",
 	}
 )

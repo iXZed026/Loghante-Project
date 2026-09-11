@@ -37,4 +37,12 @@ var faMessages = map[string]map[string]string{
 	"Code": {
 		"required": "کد تأیید الزامی است.",
 	},
+
+	"CurrentPassword": {
+		"min": "رمز عبور اصلی باید حداقل ۸ کاراکتر باشد.",
+	},
+
+	"NewPassword": {
+		"min": "رمز عبور جدید باید حداقل ۸ کاراکتر باشد.",
+	},
 }
