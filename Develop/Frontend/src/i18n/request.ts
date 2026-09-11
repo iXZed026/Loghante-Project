@@ -40,9 +40,15 @@ export default getRequestConfig(async ({ requestLocale }) => {
     const LoghantehCinemaAndTheaters = (
         await import(`../messages/${locale}/Loghante/cinema-and-theaters.json`)
     ).default;
+        
+    const LoghantehWSAndStudios = (
+        await import(`../messages/${locale}/Loghante/workshops-and-studios.json`)
+    ).default;
+
     const LoghantehConferenceHall = (
         await import(`../messages/${locale}/Loghante/conference-hall.json`)
     ).default;
+
     const LoghantehVirtualTour = (
         await import(`../messages/${locale}/Loghante/virtual-tour.json`)
     ).default;
@@ -131,6 +137,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             LoghantehShop,
             LoghantehEventsAndCourses,
             LoghantehCinemaAndTheaters,
+            LoghantehWSAndStudios,
             LoghantehConferenceHall,
             LoghantehVirtualTour,
             //Auth

@@ -4,19 +4,18 @@ import { useTranslations } from 'next-intl'
 
 function ConferenceHall() {
 
-    const t = useTranslations("LoghantehCinemaAndTheaters")
+    const t = useTranslations("LoghantehConferenceHall")
     //common.json
     const cmT = useTranslations("common")
 
     return (
-        <section id="cinema-and-theaters" className='loghante-section'>
+        <section id="conference-hall" className='loghante-section'>
             <LoghantehSectionBox
                 sectionName={t("section-name")}
                 title={t("title")}
                 description={t("description")}
                 href='/cinema-and-theaters'
                 textButton={cmT("button.show-more")}
-                reverse={true}
             />
         </section>
     )
