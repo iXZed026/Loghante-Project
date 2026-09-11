@@ -11,6 +11,7 @@ import VirtualTourSection from '@/features/loghante(root)/components/sections/Vi
 import Footer from '@/components/shared/footer/Footer';
 import ConferenceHall from '@/features/loghante(root)/components/sections/ConferenceHall';
 import WorkshopAndStudios from '@/features/loghante(root)/components/sections/WorkshopAndStudios';
+import CafesAndFood from '@/features/loghante(root)/components/sections/CafesAndFood';
 
 
 function Loghante() {
@@ -21,10 +22,11 @@ function Loghante() {
       <Container>
         <AboutMuseums />
         <MuseumsSection />
+        <CafesAndFood />
         <EventsAndCoursesSection />
         <ShopSection />
         <CinemaAndTheaters />
-        <WorkshopAndStudios/>
+        <WorkshopAndStudios />
         <ConferenceHall />
         <VirtualTourSection />
       </Container>
