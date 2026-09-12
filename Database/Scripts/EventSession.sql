@@ -86,11 +86,7 @@ CREATE TABLE EventSession (
 SELECT * FROM EventSession;
 
 
-ALTER TABLE Bookings
-ADD CONSTRAINT FK_Bookings_EventSession
-    FOREIGN KEY (SessionId)
-    REFERENCES EventSession(SessionId)
-    ON DELETE CASCADE;
+
 
 SELECT
     es.SessionId,
@@ -102,3 +98,5 @@ LEFT JOIN Bookings b
     ON es.SessionId = b.SessionId
 WHERE es.SessionId = 10
 GROUP BY es.SessionId, es.Capacity;
+
+SELECT * FROM EventSession;

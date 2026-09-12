@@ -27,3 +27,9 @@ CREATE TABLE Bookings (
     CONSTRAINT CK_Bookings_TotalPrice
         CHECK (TotalPrice >= 0)
 );
+
+ALTER TABLE Bookings
+ADD CONSTRAINT FK_Bookings_EventSession
+    FOREIGN KEY (SessionId)
+    REFERENCES EventSession(SessionId)
+    ON DELETE CASCADE;
