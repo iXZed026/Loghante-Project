@@ -31,8 +31,16 @@ ALTER TABLE EventSession RENAME COLUMN Duration TO DurationM;
 SELECT * FROM events;
 
 SELECT * FROM EventSession;
-
-
+--INSERT INTO EventSession(eventid, startat, durationm, capacity)
+--VALUES (1,'2026-10-12 14:30:00+02' ,90 , 50),
+--       (1,'2026-10-13 14:30:00+02' ,90 , 40),
+--       (1,'2026-10-14 14:30:00+02' ,90 , 60),
+--       (1,'2026-10-15 14:30:00+02' ,90 , 10),
+--       (1,'2026-10-16 14:30:00+02' ,90 , 0),
+--       (1,'2026-10-16 14:30:00+02' ,90 , 50),
+--       (1,'2026-10-16 14:30:00+02' ,90 , 12),
+--       (1,'2026-10-17 14:30:00+02' ,90 , 50),
+--       (1,'2026-10-18 14:30:00+02' ,90 , 50);
 
 
 SELECT column_name, data_type, column_default
