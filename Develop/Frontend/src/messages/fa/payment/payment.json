@@ -1,0 +1,32 @@
+{
+  "ticket-info": {
+    "ticket-date": {
+      "change-button": "عوض کردن"
+    },
+    "rules": {
+      "title": "قوانین پرداخت و بازدید"
+    }
+  },
+  "payment-details": {
+    "title": "جزئیات پرداخت",
+    "ticket-details": {
+      "ticket": "بلیت",
+      "ticket-count": "نفر"
+    },
+    "ticket-vat": {
+      "ticket-vat": "مالیات بلیت"
+    },
+    "payable": "مبلغ قابل پرداخت",
+    "drop-down": {
+      "title": "کد تخفیف دارید؟",
+      "discount-placeholder": "کد تخفیف خود را وارد کنید",
+      "apply-button": "اعمال"
+    },
+    "payment-method": {
+      "title": "روش پرداخت",
+      "saman": "درگاه سامان",
+      "another": "درگاه دیگر"
+    },
+    "payment-button": "پرداخت و دریافت بلیت"
+  }
+}
