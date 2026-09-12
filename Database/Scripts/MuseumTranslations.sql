@@ -17,3 +17,10 @@ CREATE TABLE MuseumTranslations (
         REFERENCES Languages(LanguagesId)
         ON DELETE CASCADE
 );
+
+INSERT INTO MuseumTranslations
+    (MuseumId, LanguagesId, Name, Description)
+VALUES
+    (1, 1, 'موزه کارآفرینان بزرگ ایران', 'توضیحات فارسی موزه'),
+    (1, 2, 'Iranian Great Entrepreneurs Museum', 'Museum description in English'),
+    (1, 3, 'Musée des grands entrepreneurs iraniens', 'Description en français');
