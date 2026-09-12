@@ -13,10 +13,9 @@ type Config struct {
 	RedisPassword    string
 	RedisDB          string
 	Port             string
-	MongoURI         string
+	DatabaseURL      string
 	JwtSecret        string
 	EmailWorkerCount string
-	UploadBasePath   string
 }
 
 func Load() (Config, error) {
@@ -31,10 +30,9 @@ func Load() (Config, error) {
 		RedisPassword:    os.Getenv("REDIS_PASSWORD"),
 		RedisDB:          os.Getenv("REDIS_DB"),
 		Port:             os.Getenv("PORT"),
-		MongoURI:         os.Getenv("MONGO_URI"),
+		DatabaseURL:      os.Getenv("DATABASE_URL"),
 		JwtSecret:        os.Getenv("JWT_SECRET"),
 		EmailWorkerCount: os.Getenv("EMAIL_WORKER_COUNT"),
-		UploadBasePath:   os.Getenv("UPLOAD_BASE_PATH"),
 	}
 
 	if config.RedisHost == "" {
@@ -43,13 +41,11 @@ func Load() (Config, error) {
 		return Config{}, errors.New("RedisPort is required")
 	} else if config.Port == "" {
 		return Config{}, errors.New("Port is required")
-	} else if config.MongoURI == "" {
+	} else if config.DatabaseURL == "" {
 		return Config{}, errors.New("MongoURI is required")
 	} else if config.JwtSecret == "" {
 		return Config{}, errors.New("JWT_SECRET is required")
 	} else if config.EmailWorkerCount == "" {
-		return Config{}, errors.New("EMAIL_WORKER_COUNT is required")
-	} else if config.UploadBasePath == "" {
 		return Config{}, errors.New("EMAIL_WORKER_COUNT is required")
 	}
 

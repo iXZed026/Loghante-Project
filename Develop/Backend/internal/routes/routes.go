@@ -2,71 +2,116 @@ package routes
 
 import (
 	"log/slog"
-	"museum_ticket/internal/auth"
-	"museum_ticket/internal/handlers"
-	"museum_ticket/internal/limiter"
-	"museum_ticket/internal/middleware"
 
+	"loghanteh-project/internal/auth"
+	"loghanteh-project/internal/handlers"
+	"loghanteh-project/internal/middleware"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRoutes(
 	r *gin.Engine,
-	ticketHandler *handlers.TicketHandler,
 	logger *slog.Logger,
 	authHandler *handlers.AuthHandler,
+	profileHandler *handlers.ProfileHandler,
 	jwtService *auth.JWTService,
-	redisLimiter limiter.RateLimiter,
-	uploadHandler *handlers.UploadHandler,
 ) {
 
 	r.Use(
-		middleware.LoggerMiddleware(logger),
-		middleware.RequestIDMiddleware(),
 		middleware.RecoveryMiddleware(logger),
 	)
 
-	r.POST(
-		"/tickets",
-		ticketHandler.CreateTicket, // route joda
-	)
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:3000",
+		},
+		AllowMethods: []string{
+			"GET",
+			"POST",
+			"PUT",
+			"PATCH",
+			"DELETE",
+			"OPTIONS",
+		},
+		AllowHeaders: []string{
+			"Origin",
+			"Content-Type",
+			"Accept",
+			"Authorization",
+		},
+		AllowCredentials: true,
+	}))
 
-	//Setups
-	SetupAuthRoutes(
-		r,
-		authHandler,
-		logger,
-		redisLimiter,
-	)
-
-	SetupUploadRoutes(
-		r,
-		uploadHandler,
-		logger,
-	)
-
-	authMiddleware :=
-		middleware.AuthMiddleware(
-			jwtService,
-		)
-
-	admin :=
-		r.Group("/admin")
-
-	admin.Use(
-		authMiddleware,
-		middleware.RequireRole("admin"),
-	)
-
+	api := r.Group("api")
 	{
 
-		admin.GET(
-			"/museums",
-			func(c *gin.Context) {
+		// Auth
+		auth := api.Group("auth")
+		{
+			auth.POST(
+				"/register",
+				authHandler.Register,
+			)
 
-			},
+			auth.POST(
+				"/login",
+				authHandler.Login,
+			)
+
+			auth.POST(
+				"/login/verify",
+				authHandler.VerifyLogin,
+			)
+
+			auth.POST(
+				"/register/verify",
+				authHandler.VerifyRegister,
+			)
+
+			auth.POST(
+				"/refresh",
+				authHandler.Refresh,
+			)
+
+			auth.GET(
+				"/logout",
+				authHandler.Logout,
+			)
+
+			auth.POST(
+				"/login/forgot-password",
+				authHandler.ForgetPassword,
+			)
+
+			auth.POST(
+				"/login/forgot-password/verify",
+				authHandler.VerifyForgetPassword,
+			)
+
+			auth.POST(
+				"/login/forgot-password/verify/new-password",
+				authHandler.NewPassword,
+			)
+		}
+
+		// Profile
+		profile := api.Group(
+			"/profile",
+			middleware.AuthMiddleware(jwtService),
 		)
+		{
+			profile.GET(
+				"",
+				profileHandler.Profile,
+			)
+
+			profile.PUT(
+				"/edit-profile",
+				profileHandler.EditProfile,
+			)
+		}
 
 	}
-
 }
