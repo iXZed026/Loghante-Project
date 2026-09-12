@@ -18,3 +18,9 @@ CREATE TABLE ArtifactTranslations (
         ON DELETE CASCADE
 );
 
+INSERT INTO ArtifactTranslations
+    (ArtifactId, LanguagesId, Name, Description)
+VALUES
+    (1, 1, 'اثر تاریخی اول', 'توضیحات فارسی اثر'),
+    (1, 2, 'Historical Artifact One', 'Artifact description in English'),
+    (1, 3, 'Objet historique un', 'Description en français');
