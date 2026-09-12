@@ -1,10 +1,7 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import "@/app/globals.css";
-import { poppins, rozname, wulkan } from "@/font";
-import Header from "@/features/loghante(root)/components/header/Header";
-import Footer from "@/components/shared/footer/Footer";
-import { ProfileProvider } from "@/contexts/ProfileProvider";
+import "../globals.css";
+import { poppins, wulkan } from "@/font";
 
 
 export default async function LocaleLayout({
@@ -22,24 +19,19 @@ export default async function LocaleLayout({
 
   const direction = locale === "fa" ? "rtl" : "ltr";
   const font = locale === "fa"
-    ? `${rozname.variable} text-lg font-semibold`
-    : `${poppins.variable} ${wulkan.variable}`
-  // ${ordibehesht.variable}
+    ? "" : `${poppins.variable} ${wulkan.variable}`
+
   return (
     <html
       lang={locale}
       dir={direction}
     >
       <body
-        className={`${font}`}
+        className={font}
         cz-shortcut-listen="true"
       >
         <NextIntlClientProvider messages={messages}>
-          <ProfileProvider>
-            <Header />
-            {children}
-            <Footer />
-          </ProfileProvider>
+          {children}
         </NextIntlClientProvider>
       </body>
     </html>

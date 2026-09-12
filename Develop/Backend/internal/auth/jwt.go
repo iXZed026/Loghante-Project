@@ -12,6 +12,7 @@ type JWTService struct {
 }
 
 func NewJWTService(secret string) *JWTService {
+
 	return &JWTService{
 		secret: secret,
 	}
@@ -19,17 +20,18 @@ func NewJWTService(secret string) *JWTService {
 
 func (j *JWTService) GenerateAccessToken(
 	userID string,
-	// role string,
+	role string,
 ) (string, error) {
 
-	now := time.Now()
-
 	claims := jwt.MapClaims{
+
 		"user_id": userID,
-		// "role":    role,
-		"iat": now.Unix(),
-		"exp": now.Add(15 * time.Minute).Unix(),
-		// "exp": now.Add(15 * time.Minute).Unix(),
+
+		"role": role,
+
+		"exp": time.Now().
+			Add(15 * time.Minute).
+			Unix(),
 	}
 
 	token := jwt.NewWithClaims(
@@ -40,6 +42,7 @@ func (j *JWTService) GenerateAccessToken(
 	return token.SignedString(
 		[]byte(j.secret),
 	)
+
 }
 
 func (j *JWTService) ValidateToken(
@@ -50,8 +53,11 @@ func (j *JWTService) ValidateToken(
 		tokenString,
 		func(token *jwt.Token) (interface{}, error) {
 
-			if token.Method != jwt.SigningMethodHS256 {
-				return nil, errors.New("invalid signing method")
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+
+				return nil, errors.New(
+					"invalid signing method",
+				)
 			}
 
 			return []byte(j.secret), nil
@@ -63,7 +69,10 @@ func (j *JWTService) ValidateToken(
 	}
 
 	if !token.Valid {
-		return nil, errors.New("invalid token")
+
+		return nil, errors.New(
+			"invalid token",
+		)
 	}
 
 	return token, nil

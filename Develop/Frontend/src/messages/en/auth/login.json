@@ -1,8 +1,0 @@
-{
-    "inputs": {
-        "phone-or-email": "Phone Number or Email Address",
-        "password": "Password"
-    },
-    "forgot": "Forgot Password?",
-    "login-button":"Login"
-}

@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"log/slog"
-	appErr "loghanteh-project/internal/errors"
-	"loghanteh-project/internal/limiter"
-	"loghanteh-project/internal/response"
+	appErr "museum_ticket/internal/errors"
+	"museum_ticket/internal/limiter"
+	"museum_ticket/internal/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -49,7 +49,7 @@ func RateLimiter(
 
 			response.HandleError(
 				c,
-				appErr.ErrTooManyRequests,
+				appErr.ErrToManyReguest,
 				logger,
 			)
 

@@ -2,32 +2,37 @@ package app
 
 import (
 	"context"
-	"log"
 	"log/slog"
-
-	"loghanteh-project/internal/auth"
-	"loghanteh-project/internal/config"
-	"loghanteh-project/internal/database"
-	"loghanteh-project/internal/handlers"
-	"loghanteh-project/internal/repositories"
-	"loghanteh-project/internal/routes"
-	"loghanteh-project/internal/services"
+	"museum_ticket/internal/auth"
+	"museum_ticket/internal/config"
+	"museum_ticket/internal/handlers"
+	"museum_ticket/internal/limiter"
+	"museum_ticket/internal/mail"
+	"museum_ticket/internal/queue"
+	"museum_ticket/internal/repositories"
+	"museum_ticket/internal/routes"
+	"museum_ticket/internal/services"
+	"museum_ticket/internal/storage"
+	"museum_ticket/internal/upload"
+	customValidator "museum_ticket/internal/validator"
+	"museum_ticket/internal/worker"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	playground "github.com/go-playground/validator/v10"
 )
 
 func New() (*App, error) {
-
 	logger := slog.Default()
 
 	cfg, err := config.Load()
+
 	if err != nil {
 		logger.Error(
-			"Failed to Load env",
-			"err",
+			"load config error",
+			"error",
 			err,
 		)
-
 		return nil, err
 	}
 
@@ -35,129 +40,228 @@ func New() (*App, error) {
 		context.Background(),
 	)
 
-	db, err := database.Connect(cfg.DatabaseURL)
-	if err != nil {
-		cancel()
+	// --------------------
+	// Database
+	// --------------------
 
-		log.Fatal(
-			"failed to connect database:",
+	if err := config.ConnectDB(cfg); err != nil {
+		logger.Error(
+			"database connection error",
+			"error",
 			err,
 		)
+		return nil, err
 	}
 
-	logger.Info(
-		"PostgreSQL connected successfully!",
-	)
+	db := config.DB.Database("golang_db")
 
-	sqlDB, err := db.DB()
-	if err != nil {
-		cancel()
+	// --------------------
+	// Redis
+	// --------------------
 
-		log.Fatal(
-			"failed to get sql database:",
+	if err := config.ConnectRedis(cfg); err != nil {
+		logger.Error(
+			"redis connection error",
+			"error",
 			err,
 		)
+		return nil, err
 	}
 
-	if err := sqlDB.Ping(); err != nil {
-		cancel()
+	redisClient := config.Redis
 
-		log.Fatal(
-			"database ping failed:",
-			err,
-		)
-	}
-
-	logger.Info(
-		"Database ping successful!",
-	)
-
-	//////////////
-	// JWT
-	//////////////
-
-	jwtService := auth.NewJWTService(
-		cfg.JwtSecret,
-	)
-
-	//////////////
+	// --------------------
 	// Repositories
-	//////////////
+	// --------------------
 
-	userRepo := repositories.NewUserRepository(
-		db,
-	)
+	ticketRepo :=
+		repositories.NewMongoTicketRepository(
+			db,
+			logger,
+		)
+
+	userRepo :=
+		repositories.NewMongoUserRepository(
+			db,
+		)
 
 	refreshTokenRepo :=
-		repositories.NewRefreshTokenRepository(
+		repositories.NewMongoRefreshTokenRepository(
 			db,
 		)
 
-	loginVerificationRepository :=
-		repositories.NewLoginVerificationRepository(
-			db,
+	// --------------------
+	// Queue
+	// --------------------
+
+	redisQueue :=
+		queue.NewRedisQueue(
+			redisClient,
 		)
 
-	registerVerificationRepository :=
-		repositories.NewRegisterVerificationRepository(
-			db,
+	failQueue :=
+		queue.NewFailQueue(
+			redisClient,
 		)
 
-	forgetPasswordVerificationRepository :=
-		repositories.NewForgetPasswordVerificationRepository(
-			db,
+	// --------------------
+	// RedisLimiter
+	// --------------------
+
+	redisLimiter := limiter.NewRedisLimiter(redisClient)
+
+	// --------------------
+	// Storage
+	// --------------------
+
+	localStorage :=
+		storage.NewLocalStorage(
+			cfg.UploadBasePath,
 		)
 
-	//////////////
+	// --------------------
 	// Services
-	//////////////
+	// --------------------
 
-	authService := services.NewAuthService(
-		userRepo,
-		refreshTokenRepo,
-		jwtService,
-		loginVerificationRepository,
-		registerVerificationRepository,
-		forgetPasswordVerificationRepository,
-	)
+	jwtService :=
+		auth.NewJWTService(
+			cfg.JwtSecret,
+		)
 
-	profileService := services.NewProfileService(
-		userRepo,
-	)
+	ticketService :=
+		services.NewTicketService(
+			ticketRepo,
+			redisQueue,
+			logger,
+		)
 
-	//////////////
+	authService :=
+		services.NewAuthService(
+			userRepo,
+			refreshTokenRepo,
+			jwtService,
+		)
+
+	uploadService :=
+		upload.NewService(
+			localStorage,
+		)
+
+	// --------------------
 	// Handlers
-	//////////////
+	// --------------------
 
-	authHandler := handlers.NewAuthHandler(
-		authService,
+	ticketHandler :=
+		handlers.NewTicketHandler(
+			ticketService,
+			logger,
+		)
+
+	authHandler :=
+		handlers.NewAuthHandler(
+			authService,
+		)
+
+	uploadHandler := handlers.NewUploadHandler(
+		uploadService,
 		logger,
 	)
 
-	profileHandler := handlers.NewProfileHandler(
-		profileService,
-		logger,
-	)
+	// --------------------
+	// Mail
+	// --------------------
 
-	//////////////
+	mailer := mail.NewSMTPMailer()
+
+	emailWorker :=
+		worker.NewEmailWorker(
+			redisQueue,
+			failQueue,
+			mailer,
+			logger,
+			cfg.EmailWorkerCount,
+		)
+
+	// --------------------
 	// Router
-	//////////////
+	// --------------------
 
-	r := gin.Default()
+	r := gin.New()
+
+	if v, ok := binding.Validator.Engine().(*playground.Validate); ok {
+
+		if err := customValidator.Register(v); err != nil {
+			return nil, err
+		}
+
+	}
 
 	routes.SetupRoutes(
 		r,
+		ticketHandler,
 		logger,
 		authHandler,
-		profileHandler,
 		jwtService,
+		redisLimiter,
+		uploadHandler,
 	)
 
-	return &App{
-		Config:  cfg,
-		Logger:  logger,
+	app := &App{
+
+		Config: cfg,
+		Logger: logger,
+
 		Context: ctx,
 		Cancel:  cancel,
-		Router:  r,
-	}, nil
+
+		DB:    db,
+		Redis: redisClient,
+
+		// Repositories
+		TicketRepo:       ticketRepo,
+		UserRepo:         userRepo,
+		RefreshTokenRepo: refreshTokenRepo,
+
+		// Queue
+		EmailQueue: redisQueue,
+		FailQueue:  failQueue,
+
+		// Storage
+		LocalStorage: localStorage,
+
+		// Services
+		JWTService:    jwtService,
+		TicketService: ticketService,
+		AuthService:   authService,
+		UploadService: uploadService,
+
+		// Handlers
+		TicketHandler: ticketHandler,
+		AuthHandler:   authHandler,
+		UploadHandler: uploadHandler,
+
+		// Workers
+		EmailWorker: emailWorker,
+
+		// Router
+		Router: r,
+	}
+
+	return app, nil
 }
+
+func (a *App) startWorkers() {
+
+	go a.EmailWorker.Start(a.Context)
+
+	// go a.SMSWorker.Start(a.Context)
+
+	// go a.NotificationWorker.Start(a.Context)
+
+}
+
+// func (a *App) startServer() error {
+// 	return a.Router.Run(
+// 		":" + a.Config.Port,
+// 	)
+// }

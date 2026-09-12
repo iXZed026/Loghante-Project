@@ -1,49 +1,12 @@
 package validator
 
-var enMessages = map[string]map[string]string{
-	//Register
-	"FullName": {
-		"required": "Full name is required.",
-	},
+var enMessages = map[string]string{
 
-	"PhoneNumber": {
-		"required": "Phone number is required.",
-	},
+	"required": "This field is required",
 
-	"Email": {
-		"required": "Email is required.",
-		"email":    "Please enter a valid email address.",
-	},
+	"email": "Invalid email",
 
-	"Password": {
-		"required": "Password is required.",
-		"min":      "Password must be at least 8 characters.",
-	},
+	"gte": "Invalid value",
 
-	"RepeatPassword": {
-		"required": "Repeat password is required.",
-	},
-
-	//Login
-	"EmailOrPhone": {
-		"required": "Email or phone number is required.",
-		"max":      "Email or phone number cannot exceed 254 characters",
-	},
-
-	//VerificationToken
-	"VerificationToken": {
-		"required": "verification token is required.",
-	},
-
-	"Code": {
-		"required": "Code is required.",
-	},
-
-	"CurrentPassword": {
-		"min": "Current password must be at least 8 characters.",
-	},
-
-	"NewPassword": {
-		"min": "New password must be at least 8 characters.",
-	},
+	"price5000": "Price must be multiple of 5000",
 }

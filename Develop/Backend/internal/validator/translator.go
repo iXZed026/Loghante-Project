@@ -1,6 +1,8 @@
 package validator
 
 import (
+	"strings"
+
 	"github.com/go-playground/validator/v10"
 )
 
@@ -8,32 +10,32 @@ func TranslateErrors(
 	err error,
 	lang string,
 ) string {
+	messages := enMessages
 
-	languageMessages, ok := messages[lang]
-
-	if !ok {
-		languageMessages = messages["en"]
+	if lang == "fa" {
+		messages = faMessages
 	}
 
-	validationErrors, ok := err.(validator.ValidationErrors)
+	errors, ok := err.(validator.ValidationErrors)
 
-	if !ok || len(validationErrors) == 0 {
+	if !ok {
 		return err.Error()
 	}
 
-	e := validationErrors[0]
+	var result []string
 
-	fieldMessages, ok := languageMessages[e.Field()]
+	for _, e := range errors {
+		msg, ok := messages[e.Tag()]
+		if ok {
+			result = append(result, msg)
 
-	if !ok {
-		return e.Error()
+			continue
+		}
+
+		result = append(result, e.Error())
+
 	}
 
-	message, ok := fieldMessages[e.Tag()]
+	return strings.Join(result, ", ")
 
-	if !ok {
-		return e.Error()
-	}
-
-	return message
 }

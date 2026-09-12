@@ -12,10 +12,12 @@ function ArrowIcon({ direction }: { direction?: string }) {
 
         const leftArrow = <RiArrowLeftSLine className={cn(
             "size-5",
+            "text-crimson"
         )} />
 
         const rightArrow = <RiArrowRightSLine className={cn(
             "size-5",
+            "text-crimson"
         )} />
 
         if (direction) {

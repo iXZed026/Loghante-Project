@@ -2,35 +2,27 @@
 
 :root {
   --crimson-color: #5c2127;
-  --crimson-hover-color: #630a14;
-  --crimson-opacity-color: #5C212759;
+  --crimson-hover-color: #42151A;
   --black-color: #161616;
   --black-light-color: #525252;
   --white-color: #FFFFFF;
   --white-light-color: rgb(231, 225, 225);
   --gold-color: #d2ae6d;
-  --gold-opacity-color: #D2AE6D59;
-  --gold-hover-color: #936c23;
-}
-
-
-@theme {
-  --font-poppins: var(--font-poppins-local);
-  --font-wulkan: var(--font-wulkan-local);
-  --font-rozname: var(--font-rozname-local);
-  /* --font-ordibehesht: var(--font-ordibehesht-local); */
-}
-
-body {
-  font-family: var(--font-poppins), sans-serif;
-  font-family: var(--font-rozname), sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
-  scrollbar-color: var(--crimson-color) transparent;
 }
 
+@theme {
+  --font-poppins: var(--font-poppins-local);
+  --font-wulkan: var(--font-wulkan-local);
+}
+
+html,
+body {
+  font-family: var(--font-poppins), sans-serif;
+}
 
 @layer utilities {
 
@@ -42,10 +34,6 @@ html {
 
   .bg-hover-crimson {
     @apply hover:bg-[var(--crimson-hover-color)];
-  }
-
-  .bg-opacity-hover-crimson {
-    @apply hover:bg-[var(--crimson-opacity-color)];
   }
 
   .text-crimson {
@@ -60,16 +48,8 @@ html {
     @apply text-[var(--black-color)];
   }
 
-  .border-black-opacity {
-    @apply border-[#0e0e0e59]
-  }
-
-  .text-black-light-utility {
+  .text-black-white-utility {
     @apply text-[var(--black-light-color)];
-  }
-
-  .bg-black-light-utility {
-    @apply bg-[var(--black-light-color)];
   }
 
   .text-white-utility {
@@ -80,41 +60,15 @@ html {
     @apply bg-[var(--white-color)];
   }
 
-  .text-white-light-utility {
+  .text-white-white-utility {
     @apply text-[var(--white-light-color)];
   }
 
-  .text-gold-utility {
-    @apply text-[var(--gold-color)];
-  }
 
-  .bg-gold-utility {
-    @apply bg-[var(--gold-color)];
-  }
-
-  .bg-gold-opacity {
-    @apply bg-[#D2AE6D59]
-  }
-
-  .border-gold-opacity {
-    @apply border-[#D2AE6D59]
-  }
-
-  .bg-hover-gold {
-    @apply hover:bg-[var(--gold-hover-color)];
-  }
-
-  .text-hover-gold {
-    @apply hover:text-[var(--gold-hover-color)];
-  }
 
   /* Flex */
   .fcc {
     @apply flex justify-center items-center;
-  }
-
-  .fbs {
-    @apply flex justify-between items-start;
   }
 
   .fbc {
@@ -136,18 +90,14 @@ html {
   }
 
   .input {
-    @apply outline-none px-4 py-2 w-full tracking-wider;
+    @apply outline-none rounded-lg px-4 py-2 w-full;
   }
 
   .click-scale {
     @apply active:scale-90 duration-150
   }
 
-  .opacity-utility {
+  .opacity-utility{
     @apply opacity-65
-  }
-
-  .gradient-shadow {
-    @apply bg-gradient-to-b from-[#0a0a0a0f] to-[#000000]
   }
 }
