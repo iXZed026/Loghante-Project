@@ -16,6 +16,7 @@ func SetupRoutes(
 	logger *slog.Logger,
 	authHandler *handlers.AuthHandler,
 	profileHandler *handlers.ProfileHandler,
+	ticketHandler *handlers.TicketHandler,
 	jwtService *auth.JWTService,
 ) {
 
@@ -40,6 +41,7 @@ func SetupRoutes(
 			"Content-Type",
 			"Accept",
 			"Authorization",
+			"Accept-Language",
 		},
 		AllowCredentials: true,
 	}))
@@ -47,7 +49,10 @@ func SetupRoutes(
 	api := r.Group("api")
 	{
 
+		//////////////
 		// Auth
+		//////////////
+
 		auth := api.Group("auth")
 		{
 			auth.POST(
@@ -96,7 +101,10 @@ func SetupRoutes(
 			)
 		}
 
+		//////////////
 		// Profile
+		//////////////
+
 		profile := api.Group(
 			"/profile",
 			middleware.AuthMiddleware(jwtService),
@@ -113,5 +121,15 @@ func SetupRoutes(
 			)
 		}
 
+		//////////////
+		// Tickets
+		//////////////
+		SetupTicketsRoutes(
+			api,
+			logger,
+			ticketHandler,
+			jwtService,
+		)
 	}
+
 }

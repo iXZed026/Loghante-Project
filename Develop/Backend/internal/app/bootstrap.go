@@ -23,8 +23,8 @@ func New() (*App, error) {
 	cfg, err := config.Load()
 	if err != nil {
 		logger.Error(
-			"Failed to Load env",
-			"err",
+			"failed to load env",
+			"error",
 			err,
 		)
 
@@ -108,6 +108,21 @@ func New() (*App, error) {
 			db,
 		)
 
+	ticketRepository :=
+		repositories.NewTicketRepository(
+			db,
+		)
+
+	languageRepository :=
+		repositories.NewLanguageRepository(
+			db,
+		)
+
+	bookingRepository :=
+		repositories.NewBookingRepository(
+			db,
+		)
+
 	//////////////
 	// Services
 	//////////////
@@ -125,6 +140,13 @@ func New() (*App, error) {
 		userRepo,
 	)
 
+	ticketService := services.NewTicketService(
+		db,
+		ticketRepository,
+		languageRepository,
+		bookingRepository,
+	)
+
 	//////////////
 	// Handlers
 	//////////////
@@ -139,6 +161,11 @@ func New() (*App, error) {
 		logger,
 	)
 
+	ticketHandler := handlers.NewTicketHandler(
+		ticketService,
+		logger,
+	)
+
 	//////////////
 	// Router
 	//////////////
@@ -150,6 +177,7 @@ func New() (*App, error) {
 		logger,
 		authHandler,
 		profileHandler,
+		ticketHandler,
 		jwtService,
 	)
 

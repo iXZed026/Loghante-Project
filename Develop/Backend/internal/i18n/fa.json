@@ -13,7 +13,9 @@
         "phone_number_already_exists": "این شماره تلفن قبلاً ثبت شده است",
         "invalid_credentials": "ایمیل/شماره تلفن یا رمز عبور نامعتبر است",
         "invalid_password": "رمز عبور نامعتبر است",
-        "user_not_found": "کاربر پیدا نشد"
+        "user_not_found": "کاربر پیدا نشد",
+        "not_found": "منبع موردنظر پیدا نشد",
+        "insufficient_capacity": "ظرفیت کافی برای این تعداد بلیت وجود ندارد"
     },
     "success": {
         "verification_required": "تأیید حساب الزامی است",

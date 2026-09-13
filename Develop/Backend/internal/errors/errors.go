@@ -74,4 +74,14 @@ var (
 		Code: http.StatusNotFound,
 		Key:  "user_not_found",
 	}
+
+	ErrNotFound = &AppError{
+		Code: http.StatusNotFound,
+		Key:  "not_found",
+	}
+
+	ErrInsufficientCapacity = &AppError{
+		Code: http.StatusConflict,
+		Key:  "insufficient_capacity",
+	}
 )
