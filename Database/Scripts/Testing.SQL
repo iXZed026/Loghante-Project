@@ -33,3 +33,19 @@ VALUES (
 
 DELETE FROM users WHERE userid = 52;
 
+SELECT * FROM eventtypes;
+
+UPDATE eventtypes
+SET eventtypename = 'Museum-Tour'
+WHERE eventtypes.eventtypeid =1;
+
+SELECT * FROM events;
+
+SELECT * FROM eventstranslations;
+
+SELECT * FROM eventsession;
+
+--UPDATE eventsession
+--SET price = 300000;
+
+SELECT * FROM users;
