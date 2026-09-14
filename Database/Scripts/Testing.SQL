@@ -116,3 +116,36 @@ LEFT JOIN Bookings b
     ON es.SessionId = b.SessionId
 WHERE es.SessionId = 10
 GROUP BY es.SessionId, es.Capacity;
+
+
+SELECT * FROM events;
+
+SELECT * FROM eventtypes;
+
+SELECT * FROM eventstranslations;
+
+SELECT * FROM eventtypetranslations;
+
+
+INSERT INTO eventtypes (eventtypename)
+VALUES ('Events-And-Courses');
+
+INSERT INTO eventtypetranslations(eventtypeid, languagesid, name)
+VALUES (2 , 1 ,'مراسم ها-و-دوره ها') ,
+       (2,2,'Events-And-Courses');
+
+INSERT INTO events(eventtypeid)
+VALUES (2);
+
+INSERT INTO eventstranslations(eventid, languagesid, name, primarydescription, secondarydescription)
+VALUES (2,1,'دوره های کوتاه مدت',
+        'یک دوره کوتاه مدت', 'دیتای تستی'),
+        (2,2,'Short Courses',
+        'small learning path', 'Test-Data'),
+        (3,1,'روز جهانی شیرکاکاعو', 'روز جهانیه و...' ,
+         'دیتای تستی اینجا میخوره.') ,
+        (3,2 ,'world cacoa milk Day' ,'some discriptions' ,
+         'another discription');
+
+SELECT *FROM events;
+
