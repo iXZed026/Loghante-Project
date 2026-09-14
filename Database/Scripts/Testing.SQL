@@ -49,3 +49,70 @@ SELECT * FROM eventsession;
 --SET price = 300000;
 
 SELECT * FROM users;
+
+INSERT INTO EventSession(eventid, startat, durationm, capacity)
+VALUES (1,'2026-10-12 14:30:00+02' ,90 , 50),
+       (1,'2026-10-13 14:30:00+02' ,90 , 40),
+       (1,'2026-10-14 14:30:00+02' ,90 , 60),
+       (1,'2026-10-15 14:30:00+02' ,90 , 10),
+       (1,'2026-10-16 14:30:00+02' ,90 , 0),
+       (1,'2026-10-16 14:30:00+02' ,90 , 50),
+       (1,'2026-10-16 14:30:00+02' ,90 , 12),
+       (1,'2026-10-17 14:30:00+02' ,90 , 50),
+       (1,'2026-10-18 14:30:00+02' ,90 , 50);
+
+
+INSERT INTO eventsession(eventid, startat, durationm, capacity, price)
+VALUES (1,'2026-09-12 14:30:00+02' ,90 , 50 , 500000),
+       (1,'2026-09-13 14:30:00+02' ,90 , 40 , 500000),
+       (1,'2026-09-14 14:30:00+02' ,90 , 40 , 500000),
+       (1,'2026-09-15 14:30:00+02' ,90 , 0 , 500000),
+       (1,'2026-09-16 14:30:00+02' ,90 , 50 , 500000),
+       (1,'2026-09-17 14:30:00+02' ,90 , 50 , 500000),
+       (1,'2026-09-18 14:30:00+02' ,90 , 50 , 500000),
+       (1,'2026-09-19 14:30:00+02' ,90 , 50 , 500000);
+
+INSERT INTO eventsession(eventid, startat, durationm, capacity, price)
+VALUES (1,'2026-09-12 16:30:00+02' ,90 , 50 , 400000),
+       (1,'2026-09-13 20:30:00+02' ,90 , 40 , 400000),
+       (1,'2026-09-14 08:30:00+02' ,90 , 40 , 400000),
+       (1,'2026-09-15 12:30:00+02' ,90 , 0 , 400000),
+       (1,'2026-09-16 17:00:00+02' ,90 , 50 , 400000),
+       (1,'2026-09-17 11:30:00+02' ,90 , 50 , 400000),
+       (1,'2026-09-18 19:30:00+02' ,90 , 0 , 400000),
+        (1,'2026-09-19 21:30:00+02' ,90 , 50 , 400000),
+        (1,'2026-09-19 18:30:00+02' ,90 , 30 , 400000),
+       (1,'2026-09-20 12:30:00+02' ,90 , 50 , 400000),
+        (1,'2026-09-20 11:00:00+02' ,90 , 0 , 400000);
+
+
+SELECT * FROM events;
+
+SELECT * FROM EventSession;
+
+SELECT * FROM EventSession;
+SELECT column_name, data_type, column_default
+FROM information_schema.columns
+WHERE table_name = 'eventsession'
+ORDER BY ordinal_position;
+
+ALTER TABLE EventSession
+DROP COLUMN durationm;
+
+SELECT * FROM users;
+
+SELECT * FROM EventSession;
+
+
+
+
+SELECT
+    es.SessionId,
+    es.Capacity,
+    COALESCE(SUM(b.Quantity), 0) AS Sold,
+    es.Capacity - COALESCE(SUM(b.Quantity), 0) AS Available
+FROM EventSession es
+LEFT JOIN Bookings b
+    ON es.SessionId = b.SessionId
+WHERE es.SessionId = 10
+GROUP BY es.SessionId, es.Capacity;
