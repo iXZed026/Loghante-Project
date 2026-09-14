@@ -157,3 +157,45 @@ func (s *TicketService) CreateBooking(
 		PurchasedAt: booking.PurchasedAt,
 	}, nil
 }
+
+// events-and-courses
+func (s *TicketService) GetEventAndCourseSessions(
+	ctx context.Context,
+	date time.Time,
+	languageCode string,
+) ([]dto.EventAndCourseSessionResponse, error) {
+
+	languageID, err :=
+		s.languageRepository.GetIDByCode(
+			ctx,
+			languageCode,
+		)
+
+	if err != nil {
+		return nil, err
+	}
+
+	eventTypeID, err :=
+		s.ticketRepository.GetEventTypeIDByName(
+			ctx,
+			"events-and-courses",
+		)
+
+	if err != nil {
+		return nil, err
+	}
+
+	sessions, err :=
+		s.ticketRepository.GetEventAndCourseSessions(
+			ctx,
+			date,
+			eventTypeID,
+			languageID,
+		)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return sessions, nil
+}

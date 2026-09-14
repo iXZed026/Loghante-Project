@@ -118,3 +118,77 @@ func (r *TicketRepository) GetMuseumTourSessions(
 
 	return sessions, nil
 }
+
+// events-and-courses
+func (r *TicketRepository) GetEventAndCourseSessions(
+	ctx context.Context,
+	date time.Time,
+	eventTypeID uint,
+	languageID uint,
+) ([]dto.EventAndCourseSessionResponse, error) {
+
+	startOfDay :=
+		time.Date(
+			date.Year(),
+			date.Month(),
+			date.Day(),
+			0,
+			0,
+			0,
+			0,
+			date.Location(),
+		)
+
+	endOfDay :=
+		startOfDay.AddDate(
+			0,
+			0,
+			1,
+		)
+
+	var sessions []dto.EventAndCourseSessionResponse
+
+	err := r.db.
+		WithContext(ctx).
+		Table("eventsession AS es").
+		Select(`
+			es.sessionid AS "sessionId",
+			es.eventid AS "eventId",
+			ets.name AS "name",
+			ets.primarydescription AS "primaryDescription",
+			ets.secondarydescription AS "secondaryDescription",
+			es.startat AS "startAt",
+			es.durationm AS "durationM",
+			es.capacity AS "capacity",
+			es.price AS "price"
+		`).
+		Joins(`
+			INNER JOIN events AS e
+				ON e.eventid = es.eventid
+		`).
+		Joins(`
+			LEFT JOIN eventstranslations AS ets
+				ON ets.eventid = e.eventid
+				AND ets.languagesid = ?
+		`, languageID).
+		Where(
+			"e.eventtypeid = ?",
+			eventTypeID,
+		).
+		Where(
+			"es.startat >= ? AND es.startat < ?",
+			startOfDay,
+			endOfDay,
+		).
+		Order(
+			"es.startat ASC",
+		).
+		Scan(&sessions).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return sessions, nil
+}

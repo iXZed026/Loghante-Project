@@ -3,10 +3,10 @@ import EventsAndCoursesHeader from '@/features/loghante(root)/tickets/events-and
 
 function EventsAndCourses() {
   return (
-      <div className='py-18 mt-20'>
-        <EventsAndCoursesHeader />
-        <EventsAndCoursesDate/>
-      </div>
+    <div className='py-18 mt-20'>
+      <EventsAndCoursesHeader />
+      <EventsAndCoursesDate />
+    </div>
   )
 }
 

@@ -1,164 +1,119 @@
 "use client"
 
-import AppLink from '@/components/ui/AppLink'
+import { useEffect, useState } from "react"
 import { DayOfTheWeek } from '@/data/days-of-the-week'
 import { formatMonthDay, formatMonthYear } from '@/lib/utils/date'
 import { getLocalizedValue } from '@/lib/utils/getLocalizedValue'
 import { cn } from '@/lib/utils/cn'
 import { useLocale } from 'next-intl'
-import React from 'react'
 import FadeUp from '@/components/animations/FadeUp'
-import { slowTransitionIn, verySlowTransitionOut } from '@/lib/animations/transitions'
 import FadeIn from '@/components/animations/FadeIn'
-
-interface ICalendarEvent {
-    background: string
-    title?: string
-}
-
-const CalendarEvents: ICalendarEvent[] = [
-    {
-        background: "bg-gold-utility",
-        title: "Conference",
-    },
-    {
-        background: "bg-crimson",
-        title: "Workshop",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-black-light-utility",
-        title: "Meeting",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-gold-utility",
-        title: "Seminar",
-    },
-    {
-        background: "bg-crimson",
-        title: "Party",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-black-light-utility",
-        title: "Conference",
-    },
-    {
-        background: "bg-gold-utility",
-        title: "Workshop",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-crimson",
-        title: "Meeting",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-gold-utility",
-        title: "Event",
-    },
-    {
-        background: "bg-crimson",
-        title: "Course",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-black-light-utility",
-        title: "Conference",
-    },
-    {
-        background: "bg-gold-utility",
-        title: "Workshop",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-crimson",
-        title: "Seminar",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-gold-utility",
-        title: "Meeting",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-crimson",
-        title: "Conference",
-    },
-    {
-        background: "bg-black-light-utility",
-        title: "Course",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-gold-utility",
-        title: "Workshop",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-crimson",
-        title: "Event",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-black-light-utility",
-        title: "Meeting",
-    },
-    {
-        background: "bg-gold-utility",
-        title: "Seminar",
-    },
-    {
-        background: "bg-white",
-    },
-    {
-        background: "bg-crimson",
-        title: "Conference",
-    },
-    {
-        background: "bg-white",
-    },
-]
+import {
+    slowTransitionIn,
+} from '@/lib/animations/transitions'
+import {
+    getEventAndCourseSessions,
+    EventAndCourseSessionResponse,
+} from '@/lib/api/ticket/events-and-courses'
 
 function EventsAndCoursesDate() {
 
     const locale = useLocale()
 
-    const today = new Date()
+    const [selectedDate, setSelectedDate] =
+        useState<Date>(new Date())
+
+    const [sessions, setSessions] =
+        useState<EventAndCourseSessionResponse[]>([])
+
+    const [isLoading, setIsLoading] =
+        useState<boolean>(false)
+
+    const [error, setError] =
+        useState<boolean>(false)
+
+
+    useEffect(() => {
+
+        let isMounted = true
+
+        async function fetchSessions() {
+
+            setIsLoading(true)
+            setError(false)
+
+            const year =
+                selectedDate.getFullYear()
+
+            const month =
+                String(
+                    selectedDate.getMonth() + 1
+                ).padStart(2, "0")
+
+            const day =
+                String(
+                    selectedDate.getDate()
+                ).padStart(2, "0")
+
+            const date =
+                `${year}-${month}-${day}`
+
+            try {
+
+                const response =
+                    await getEventAndCourseSessions(
+                        date,
+                        locale
+                    )
+
+                if (!isMounted) return
+
+                if (!response.success) {
+
+                    setSessions([])
+                    setError(true)
+
+                    return
+                }
+
+                setSessions(
+                    response.data ?? []
+                )
+
+            } catch {
+
+                if (!isMounted) return
+
+                setSessions([])
+                setError(true)
+
+            } finally {
+
+                if (isMounted) {
+                    setIsLoading(false)
+                }
+
+            }
+        }
+
+        fetchSessions()
+
+        return () => {
+            isMounted = false
+        }
+
+    }, [selectedDate, locale])
+
 
     const calendarDates = Array.from(
         { length: 35 },
         (_, index) => {
 
-            const date = new Date(today)
+            const date =
+                new Date(selectedDate)
 
             date.setDate(
-                today.getDate() + index - 2
+                selectedDate.getDate() + index - 2
             )
 
             return date
@@ -170,10 +125,11 @@ function EventsAndCoursesDate() {
         { length: 7 },
         (_, index) => {
 
-            const date = new Date(today)
+            const date =
+                new Date(selectedDate)
 
             date.setDate(
-                today.getDate() + index - 2
+                selectedDate.getDate() + index - 2
             )
 
             const dayNumber =
@@ -193,9 +149,10 @@ function EventsAndCoursesDate() {
 
     const monthTitle =
         formatMonthYear(
-            today,
+            selectedDate,
             locale
         )
+
 
     return (
         <div
@@ -206,20 +163,26 @@ function EventsAndCoursesDate() {
         >
 
             <div className="py-10 text-center">
-                <FadeIn
-                    once={true}
-                >
-                    <span className="md:text-4xl text-2xl font-semibold font-wulkan">
+
+                <FadeIn once={true}>
+
+                    <span
+                        className="md:text-4xl text-2xl font-semibold font-wulkan"
+                    >
                         {monthTitle}
                     </span>
+
                 </FadeIn>
 
             </div>
+
+
             <FadeUp
                 once={true}
                 amount={0}
                 transition={slowTransitionIn}
             >
+
                 <div
                     className={cn(
                         "w-full",
@@ -251,17 +214,16 @@ function EventsAndCoursesDate() {
 
                     ))}
 
+
                     {calendarDates.map(
                         (date, index) => {
-
-                            const event =
-                                CalendarEvents[index]
 
                             const isPast =
                                 index < 2
 
-                            const hasEvent =
-                                event.background !== "bg-white"
+                            const isSelected =
+                                date.toDateString() ===
+                                selectedDate.toDateString()
 
                             const formattedDate =
                                 formatMonthDay(
@@ -269,9 +231,19 @@ function EventsAndCoursesDate() {
                                     locale
                                 )
 
-                            const content = (
+                            const hasEvent =
+                                index >= 2 &&
+                                sessions.length > 0 &&
+                                isSelected
 
-                                <div
+
+                            return (
+                                <button
+                                    type="button"
+                                    key={date.toISOString()}
+                                    onClick={() =>
+                                        setSelectedDate(date)
+                                    }
                                     className={cn(
                                         "relative fcol justify-between",
                                         "w-full md:h-35 sm:h-45 h-50",
@@ -279,75 +251,176 @@ function EventsAndCoursesDate() {
                                         "border-r border-b border-black-opacity",
                                         "transition-all",
                                         "col-span-6 sm:col-span-4 md:col-span-1",
-                                        event.background,
                                         isPast &&
                                         "opacity-50",
+                                        isSelected &&
+                                        "ring-2 ring-inset ring-crimson",
                                         hasEvent
-                                            ? "text-white-light-utility"
-                                            : "text-black",
+                                            ? "bg-crimson text-white-light-utility"
+                                            : "bg-white text-black",
+                                        "text-left",
                                     )}
                                 >
-                                    <div className="text-sm opacity-80 font-semibold">
+
+                                    <div
+                                        className="text-sm opacity-80 font-semibold"
+                                    >
                                         {formattedDate}
                                     </div>
 
-                                    {event.title && (
-                                        <div
-                                            className={cn(
-                                                "font-bold",
-                                                "line-clamp-2",
-                                                "break-all",
-                                            )}
-                                            title={event.title}
-                                        >
-                                            {event.title}
+
+                                    {isSelected && isLoading && (
+                                        <div className="font-bold">
+                                            Loading...
                                         </div>
                                     )}
 
-                                </div>
-                            )
 
-                            if (isPast) {
+                                    {isSelected &&
+                                        !isLoading &&
+                                        error && (
+                                            <div className="font-bold">
+                                                Failed to load
+                                            </div>
+                                        )
+                                    }
 
-                                return (
-                                    <React.Fragment
-                                        key={date.toISOString()}
-                                    >
-                                        {content}
-                                    </React.Fragment>
-                                )
-                            }
 
-                            if (!hasEvent) {
+                                    {isSelected &&
+                                        !isLoading &&
+                                        !error &&
+                                        sessions.length > 0 && (
+                                            <div
+                                                className="font-bold line-clamp-2 break-all"
+                                            >
+                                                {sessions.length}{" "}
+                                                {sessions.length === 1
+                                                    ? "event"
+                                                    : "events"}
+                                            </div>
+                                        )
+                                    }
 
-                                return (
-                                    <div
-                                        key={date.toISOString()}
-                                        className="hidden md:block"
-                                    >
-                                        {content}
-                                    </div>
-                                )
-                            }
 
-                            return (
-                                <AppLink
-                                    key={date.toISOString()}
-                                    href={`/events-and-courses/id`}
-                                    className="block col-span-6 sm:col-span-4 md:col-span-1"
-                                >
-                                    {content}
-                                </AppLink>
+                                    {isSelected &&
+                                        !isLoading &&
+                                        !error &&
+                                        sessions.length === 0 && (
+                                            <div
+                                                className="font-bold line-clamp-2"
+                                            >
+                                                No events
+                                            </div>
+                                        )
+                                    }
+
+                                </button>
                             )
                         }
                     )}
 
                 </div>
-            </FadeUp >
 
-        </div >
+            </FadeUp>
+
+
+            {!isLoading &&
+                !error &&
+                sessions.length > 0 && (
+
+                    <div className="mt-10 fcol gap-5">
+
+                        {sessions.map((session) => (
+
+                            <div
+                                key={session.sessionId}
+                                className={cn(
+                                    "border border-black-opacity",
+                                    "rounded-xl",
+                                    "p-5",
+                                )}
+                            >
+
+                                <div className="fbc gap-5">
+
+                                    <div className="fcol gap-2">
+
+                                        <span
+                                            className="font-bold text-lg"
+                                        >
+                                            {session.name}
+                                        </span>
+
+                                        <span
+                                            className="text-black-light-utility"
+                                        >
+                                            {session.primaryDescription}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div className="text-right">
+
+                                        <div>
+                                            {new Date(
+                                                session.startAt
+                                            ).toLocaleTimeString(
+                                                locale === "fa"
+                                                    ? "fa-IR"
+                                                    : "en-GB",
+                                                {
+                                                    hour: "2-digit",
+                                                    minute: "2-digit",
+                                                }
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            {session.durationM} min
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div className="mt-5 flex justify-between">
+
+                                    <span>
+                                        Capacity:{" "}
+                                        {session.capacity}
+                                    </span>
+
+                                    {session.price !== null && (
+                                        <span>
+                                            {session.price}
+                                        </span>
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        ))}
+
+                    </div>
+
+                )
+            }
+
+
+            {!isLoading &&
+                !error &&
+                sessions.length === 0 && (
+                    <div className="mt-10 text-center">
+                        No events or courses available.
+                    </div>
+                )
+            }
+
+        </div>
     )
 }
 
 export default EventsAndCoursesDate
-

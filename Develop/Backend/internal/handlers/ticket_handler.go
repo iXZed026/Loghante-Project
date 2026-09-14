@@ -195,3 +195,87 @@ func (h *TicketHandler) CreateBooking(
 		booking,
 	)
 }
+
+// events-and-courses
+func (h *TicketHandler) GetEventAndCourses(
+	c *gin.Context,
+) {
+
+	dateString := c.Query("date")
+
+	if dateString == "" {
+
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+
+		return
+	}
+
+	date, err := time.Parse(
+		"2006-01-02",
+		dateString,
+	)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to parse events and courses date",
+			"date", dateString,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+
+		return
+	}
+
+	language := c.GetHeader(
+		"Accept-Language",
+	)
+
+	if len(language) >= 2 {
+		language = language[:2]
+	}
+
+	if language == "" {
+		language = "en"
+	}
+
+	sessions, err :=
+		h.ticketService.GetEventAndCourseSessions(
+			c.Request.Context(),
+			date,
+			language,
+		)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to get events and courses sessions",
+			"date", dateString,
+			"language", language,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	response.Success(
+		c,
+		"events_and_courses_sessions_fetched_successfully",
+		sessions,
+	)
+}
