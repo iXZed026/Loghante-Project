@@ -55,7 +55,7 @@ SELECT column_name
 FROM information_schema.columns
 WHERE table_name = 'eventsession';
 
-INSERT INTO EventSession(eventid, startat, durationm, capacity)
+INSERT INTO EventSession(eventid, startat, duration, capacity)
 VALUES (1,'2026-10-12 14:30:00+02' ,90 , 50),
        (1,'2026-10-13 14:30:00+02' ,90 , 40),
        (1,'2026-10-14 14:30:00+02' ,90 , 60),
@@ -67,7 +67,7 @@ VALUES (1,'2026-10-12 14:30:00+02' ,90 , 50),
        (1,'2026-10-18 14:30:00+02' ,90 , 50);
 
 
-INSERT INTO eventsession(eventid, startat, durationm, capacity, price)
+INSERT INTO eventsession(eventid, startat, duration, capacity, price)
 VALUES (1,'2026-09-12 14:30:00+02' ,90 , 50 , 500000),
        (1,'2026-09-13 14:30:00+02' ,90 , 40 , 500000),
        (1,'2026-09-14 14:30:00+02' ,90 , 40 , 500000),
@@ -77,7 +77,7 @@ VALUES (1,'2026-09-12 14:30:00+02' ,90 , 50 , 500000),
        (1,'2026-09-18 14:30:00+02' ,90 , 50 , 500000),
        (1,'2026-09-19 14:30:00+02' ,90 , 50 , 500000);
 
-INSERT INTO eventsession(eventid, startat, durationm, capacity, price)
+INSERT INTO eventsession(eventid, startat, duration, capacity, price)
 VALUES (1,'2026-09-12 16:30:00+02' ,90 , 50 , 400000),
        (1,'2026-09-13 20:30:00+02' ,90 , 40 , 400000),
        (1,'2026-09-14 08:30:00+02' ,90 , 40 , 400000),
@@ -102,25 +102,11 @@ WHERE table_name = 'eventsession'
 ORDER BY ordinal_position;
 
 ALTER TABLE EventSession
-DROP COLUMN durationm;
+DROP COLUMN duration;
 
 SELECT * FROM users;
 
 SELECT * FROM EventSession;
-
-
-
-
-SELECT
-    es.SessionId,
-    es.Capacity,
-    COALESCE(SUM(b.Quantity), 0) AS Sold,
-    es.Capacity - COALESCE(SUM(b.Quantity), 0) AS Available
-FROM EventSession es
-LEFT JOIN Bookings b
-    ON es.SessionId = b.SessionId
-WHERE es.SessionId = 10
-GROUP BY es.SessionId, es.Capacity;
 
 
 SELECT * FROM events;
@@ -141,16 +127,6 @@ VALUES (2 , 1 ,'مراسم ها-و-دوره ها') ,
 
 INSERT INTO events(eventtypeid)
 VALUES (2);
-
-INSERT INTO eventstranslations(eventid, languagesid, name, primarydescription, secondarydescription)
-VALUES (2,1,'دوره های کوتاه مدت',
-        'یک دوره کوتاه مدت', 'دیتای تستی'),
-        (2,2,'Short Courses',
-        'small learning path', 'Test-Data'),
-        (3,1,'روز جهانی شیرکاکاعو', 'روز جهانیه و...' ,
-         'دیتای تستی اینجا میخوره.') ,
-        (3,2 ,'world cacoa milk Day' ,'some discriptions' ,
-         'another discription');
 
 SELECT *FROM events;
 
@@ -171,7 +147,7 @@ SELECT * FROM eventsession;
 
 SELECT * FROM users;
 
-INSERT INTO EventSession(eventid, startat, durationm, capacity)
+INSERT INTO EventSession(eventid, startat, duration, capacity)
 VALUES (1,'2026-10-12 14:30:00+02' ,90 , 50),
        (1,'2026-10-13 14:30:00+02' ,90 , 40),
        (1,'2026-10-14 14:30:00+02' ,90 , 60),
@@ -183,7 +159,7 @@ VALUES (1,'2026-10-12 14:30:00+02' ,90 , 50),
        (1,'2026-10-18 14:30:00+02' ,90 , 50);
 
 
-INSERT INTO eventsession(eventid, startat, durationm, capacity, price)
+INSERT INTO eventsession(eventid, startat, duration, capacity, price)
 VALUES (1,'2026-09-12 14:30:00+02' ,90 , 50 , 500000),
        (1,'2026-09-13 14:30:00+02' ,90 , 40 , 500000),
        (1,'2026-09-14 14:30:00+02' ,90 , 40 , 500000),
@@ -193,7 +169,7 @@ VALUES (1,'2026-09-12 14:30:00+02' ,90 , 50 , 500000),
        (1,'2026-09-18 14:30:00+02' ,90 , 50 , 500000),
        (1,'2026-09-19 14:30:00+02' ,90 , 50 , 500000);
 
-INSERT INTO eventsession(eventid, startat, durationm, capacity, price)
+INSERT INTO eventsession(eventid, startat, duration, capacity, price)
 VALUES (1,'2026-09-12 16:30:00+02' ,90 , 50 , 400000),
        (1,'2026-09-13 20:30:00+02' ,90 , 40 , 400000),
        (1,'2026-09-14 08:30:00+02' ,90 , 40 , 400000),
@@ -218,7 +194,7 @@ WHERE table_name = 'eventsession'
 ORDER BY ordinal_position;
 
 ALTER TABLE EventSession
-DROP COLUMN durationm;
+DROP COLUMN duration;
 
 SELECT * FROM users;
 
@@ -257,16 +233,6 @@ VALUES (2 , 1 ,'مراسم ها-و-دوره ها') ,
 
 INSERT INTO events(eventtypeid)
 VALUES (2);
-
-INSERT INTO eventstranslations(eventid, languagesid, name, primarydescription, secondarydescription)
-VALUES (2,1,'دوره های کوتاه مدت',
-        'یک دوره کوتاه مدت', 'دیتای تستی'),
-        (2,2,'Short Courses',
-        'small learning path', 'Test-Data'),
-        (3,1,'روز جهانی شیرکاکاعو', 'روز جهانیه و...' ,
-         'دیتای تستی اینجا میخوره.') ,
-        (3,2 ,'world cacoa milk Day' ,'some discriptions' ,
-         'another discription');
 
 SELECT *FROM events;
 
