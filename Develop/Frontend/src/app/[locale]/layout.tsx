@@ -5,6 +5,7 @@ import { poppins, rozname, wulkan } from "@/font";
 import Header from "@/features/loghante(root)/components/header/Header";
 import Footer from "@/components/shared/footer/Footer";
 import { ProfileProvider } from "@/contexts/ProfileProvider";
+import { TicketPaymentProvider } from "@/features/loghante(root)/context/TicketPaymentContext";
 
 
 export default async function LocaleLayout({
@@ -36,9 +37,11 @@ export default async function LocaleLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <ProfileProvider>
-            <Header />
-            {children}
-            <Footer />
+            <TicketPaymentProvider>
+              <Header />
+              {children}
+              <Footer />
+            </TicketPaymentProvider>
           </ProfileProvider>
         </NextIntlClientProvider>
       </body>

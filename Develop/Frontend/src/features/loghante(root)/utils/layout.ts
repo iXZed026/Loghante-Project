@@ -9,9 +9,19 @@ export function getLayoutVisibility(
     pathname.includes(`/${locale}/login`) ||
     pathname.includes(`/${locale}/register`);
 
+  const isPayment =
+    pathname === `/${locale}/payment`;
+
   return {
-    hideHeader: isProfile || isLoginOrRegister,
-    hideFooter: isProfile || isLoginOrRegister,
+    hideHeader:
+      isProfile ||
+      isLoginOrRegister ||
+      isPayment,
+
+    hideFooter:
+      isProfile ||
+      isLoginOrRegister ||
+      isPayment,
   };
 }
 
