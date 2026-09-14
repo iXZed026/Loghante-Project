@@ -270,3 +270,7 @@ VALUES (2,1,'دوره های کوتاه مدت',
 
 SELECT *FROM events;
 
+SELECT *
+FROM EventTypeTranslations
+ORDER BY EventTypeId, LanguagesId;
+
