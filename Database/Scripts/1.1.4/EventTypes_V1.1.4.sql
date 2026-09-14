@@ -11,3 +11,5 @@ VALUES
     ('Courses'),
     ('Cinema'),
     ('Theater');
+
+SELECT * FROM eventtypes;
