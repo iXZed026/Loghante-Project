@@ -5,6 +5,7 @@ import (
 
 	"loghanteh-project/internal/auth"
 	"loghanteh-project/internal/handlers"
+	"loghanteh-project/internal/limiter"
 	"loghanteh-project/internal/middleware"
 
 	"github.com/gin-contrib/cors"
@@ -18,8 +19,8 @@ func SetupRoutes(
 	profileHandler *handlers.ProfileHandler,
 	ticketHandler *handlers.TicketHandler,
 	jwtService *auth.JWTService,
+	rateLimiter limiter.RateLimiter,
 ) {
-
 	r.Use(
 		middleware.RecoveryMiddleware(logger),
 	)
@@ -46,90 +47,29 @@ func SetupRoutes(
 		AllowCredentials: true,
 	}))
 
-	api := r.Group("api")
+	api := r.Group("/api")
 	{
-
-		//////////////
-		// Auth
-		//////////////
-
-		auth := api.Group("auth")
-		{
-			auth.POST(
-				"/register",
-				authHandler.Register,
-			)
-
-			auth.POST(
-				"/login",
-				authHandler.Login,
-			)
-
-			auth.POST(
-				"/login/verify",
-				authHandler.VerifyLogin,
-			)
-
-			auth.POST(
-				"/register/verify",
-				authHandler.VerifyRegister,
-			)
-
-			auth.POST(
-				"/refresh",
-				authHandler.Refresh,
-			)
-
-			auth.GET(
-				"/logout",
-				authHandler.Logout,
-			)
-
-			auth.POST(
-				"/login/forgot-password",
-				authHandler.ForgetPassword,
-			)
-
-			auth.POST(
-				"/login/forgot-password/verify",
-				authHandler.VerifyForgetPassword,
-			)
-
-			auth.POST(
-				"/login/forgot-password/verify/new-password",
-				authHandler.NewPassword,
-			)
-		}
-
-		//////////////
-		// Profile
-		//////////////
-
-		profile := api.Group(
-			"/profile",
-			middleware.AuthMiddleware(jwtService),
+		SetupAuthRoutes(
+			api,
+			logger,
+			authHandler,
+			rateLimiter,
 		)
-		{
-			profile.GET(
-				"",
-				profileHandler.Profile,
-			)
 
-			profile.PUT(
-				"/edit-profile",
-				profileHandler.EditProfile,
-			)
-		}
+		SetupProfileRoutes(
+			api,
+			logger,
+			profileHandler,
+			jwtService,
+			rateLimiter,
+		)
 
-		//////////////
-		// Tickets
-		//////////////
 		SetupTicketsRoutes(
 			api,
 			logger,
 			ticketHandler,
 			jwtService,
+			rateLimiter,
 		)
 	}
-
 }

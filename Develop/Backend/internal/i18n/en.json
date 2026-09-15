@@ -1,14 +1,14 @@
 {
     "errors": {
         "value_must_not_be_empty": "Value must not be empty",
-        "internal_server_error": "Internal server error",
+        "internal_server_error": "Something went wrong. Please try again later.",
         "invalid_input": "Invalid input",
         "unauthorized": "Unauthorized",
         "user_already_verified": "User already verified",
         "verification_token_expired": "Verification token has expired",
         "invalid_verification_code": "Invalid verification code",
         "passwords_do_not_match": "Passwords do not match",
-        "too_many_requests": "Too many requests",
+        "too_many_requests": "Too many requests. Please wait a moment and try again.",
         "email_already_exists": "Email already exists",
         "phone_number_already_exists": "Phone number already exists",
         "invalid_credentials": "Invalid email/phone or password",

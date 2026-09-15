@@ -1,7 +1,7 @@
 import Container from '@/components/shared/Container'
-import WorkshopsAndStudiosHeader from '@/features/loghante(root)/worshops-and-studios/componenets/workshops-and-studios-detail/WorkshopsAndStudiosHeader'
+import WorkshopsAndStudiosDetailCompBox from '@/features/loghante(root)/worshops-and-studios/componenets/workshops-and-studios-detail/WorkshopsAndStudiosDetailCompBox'
+import WorkshopsAndStudiosDetailHeader from '@/features/loghante(root)/worshops-and-studios/componenets/workshops-and-studios-detail/WorkshopsAndStudiosDetailHeader'
 import { cn } from '@/lib/utils/cn'
-import React from 'react'
 
 function WorkshopAndStudiosDetail() {
     return (
@@ -11,7 +11,8 @@ function WorkshopAndStudiosDetail() {
                 "fcol gap-10",
                 "mt-20 py-10",
             )}>
-                <WorkshopsAndStudiosHeader />
+                <WorkshopsAndStudiosDetailHeader />
+                <WorkshopsAndStudiosDetailCompBox />
             </div>
         </Container>
     )

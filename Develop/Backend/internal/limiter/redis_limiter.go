@@ -33,7 +33,7 @@ func (r *RedisLimiter) Allow(
 	max int,
 ) (bool, error) {
 
-	redisKey := "rate:login" + key
+	redisKey := "rate:v1:" + key
 
 	count, err := r.client.Incr(
 		ctx,
@@ -45,19 +45,16 @@ func (r *RedisLimiter) Allow(
 	}
 
 	if count == 1 {
-		if err := r.client.Expire(
+		err := r.client.Expire(
 			ctx,
 			redisKey,
 			time.Minute,
-		).Err(); err != nil {
+		).Err()
+
+		if err != nil {
 			return false, err
 		}
 	}
 
-	if count > int64(max) {
-		return false, nil
-	}
-
-	return true, nil
-
+	return count <= int64(max), nil
 }

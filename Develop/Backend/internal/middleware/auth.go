@@ -1,10 +1,11 @@
 package middleware
 
 import (
-	"net/http"
 	"strings"
 
 	appAuth "loghanteh-project/internal/auth"
+	appErrors "loghanteh-project/internal/errors"
+	"loghanteh-project/internal/response"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -19,13 +20,14 @@ func AuthMiddleware(
 		authHeader := c.GetHeader("Authorization")
 
 		if authHeader == "" {
-			c.AbortWithStatusJSON(
-				http.StatusUnauthorized,
-				gin.H{
-					"success": false,
-					"message": "authorization required",
-				},
+			response.HandleError(
+				c,
+				appErrors.ErrUnauthorized,
+				nil,
 			)
+
+			c.Abort()
+
 			return
 		}
 
@@ -36,15 +38,16 @@ func AuthMiddleware(
 		)
 
 		if len(parts) != 2 ||
-			parts[0] != "Bearer" {
+			parts[0] != "Bearer" ||
+			parts[1] == "" {
 
-			c.AbortWithStatusJSON(
-				http.StatusUnauthorized,
-				gin.H{
-					"success": false,
-					"message": "invalid authorization header",
-				},
+			response.HandleError(
+				c,
+				appErrors.ErrUnauthorized,
+				nil,
 			)
+
+			c.Abort()
 
 			return
 		}
@@ -52,14 +55,13 @@ func AuthMiddleware(
 		token, err := jwtService.ValidateToken(parts[1])
 
 		if err != nil {
-
-			c.AbortWithStatusJSON(
-				http.StatusUnauthorized,
-				gin.H{
-					"success": false,
-					"message": "invalid or expired token",
-				},
+			response.HandleError(
+				c,
+				appErrors.ErrUnauthorized,
+				nil,
 			)
+
+			c.Abort()
 
 			return
 		}
@@ -67,36 +69,35 @@ func AuthMiddleware(
 		claims, ok := token.Claims.(jwt.MapClaims)
 
 		if !ok {
-			c.AbortWithStatusJSON(
-				http.StatusUnauthorized,
-				gin.H{
-					"success": false,
-					"message": "invalid token claims",
-				},
+			response.HandleError(
+				c,
+				appErrors.ErrUnauthorized,
+				nil,
 			)
+
+			c.Abort()
 
 			return
 		}
 
 		userID, ok := claims["user_id"].(string)
 
-		if !ok {
-			c.AbortWithStatusJSON(
-				http.StatusUnauthorized,
-				gin.H{
-					"success": false,
-					"message": "invalid user id",
-				},
+		if !ok || userID == "" {
+			response.HandleError(
+				c,
+				appErrors.ErrUnauthorized,
+				nil,
 			)
+
+			c.Abort()
 
 			return
 		}
 
-		c.Set("user_id", userID)
-
-		// if role, ok := claims["role"].(string); ok {
-		// 	c.Set("role", role)
-		// }
+		c.Set(
+			"user_id",
+			userID,
+		)
 
 		c.Next()
 	}

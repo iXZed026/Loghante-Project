@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"log/slog"
+
 	appErr "loghanteh-project/internal/errors"
 	"loghanteh-project/internal/limiter"
 	"loghanteh-project/internal/response"
@@ -10,28 +11,35 @@ import (
 )
 
 func RateLimiter(
-	limiter limiter.RateLimiter,
+	rateLimiter limiter.RateLimiter,
 	max int,
 	logger *slog.Logger,
 ) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ip := c.ClientIP()
+		route := c.FullPath()
+		method := c.Request.Method
 
-		allow, err := limiter.Allow(
+		key := method + ":" + route + ":" + ip
+
+		allowed, err := rateLimiter.Allow(
 			c.Request.Context(),
-			ip,
+			key,
 			max,
 		)
 
 		if err != nil {
 			logger.Error(
 				"rate limiter error",
-				"errror", err,
+				"error", err,
+				"ip", ip,
+				"method", method,
+				"route", route,
 			)
 
 			response.HandleError(
 				c,
-				err,
+				appErr.ErrInternalServer,
 				logger,
 			)
 
@@ -40,11 +48,13 @@ func RateLimiter(
 			return
 		}
 
-		if !allow {
+		if !allowed {
 			logger.Warn(
 				"rate limit exceeded",
-				"ip",
-				ip,
+				"ip", ip,
+				"method", method,
+				"route", route,
+				"max", max,
 			)
 
 			response.HandleError(
@@ -59,6 +69,5 @@ func RateLimiter(
 		}
 
 		c.Next()
-
 	}
 }

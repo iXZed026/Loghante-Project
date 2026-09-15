@@ -1,17 +1,17 @@
 import AppLink from '@/components/ui/AppLink'
 import React from 'react'
 
-function WorkshopsAndStudiosHeader() {
+function WorkshopsAndStudiosDetailHeader() {
   return (
     <div>
 
-      <div className='fcol gap-10'>
+      <div className='fcol gap-15'>
         {/* image */}
         <div className='w-full h-125 bg-crimson rounded-lg'>
 
         </div>
         {/* About WS And Studios */}
-        <div className='text-center fcol gap-10'>
+        <div className='text-center fcol gap-15'>
           <div className=''>
             <span className='font-wulkan lg:text-5xl text-3xl'>
               Chocolate making workshop
@@ -26,7 +26,7 @@ function WorkshopsAndStudiosHeader() {
           <div>
             <AppLink
             href='/'
-              className='py-3 px-5 bg-crimson'
+              className='py-3 px-5 bg-crimson text-white-utility rounded-lg'
             >
               Submit a request
             </AppLink>
@@ -39,4 +39,4 @@ function WorkshopsAndStudiosHeader() {
   )
 }
 
-export default WorkshopsAndStudiosHeader
+export default WorkshopsAndStudiosDetailHeader

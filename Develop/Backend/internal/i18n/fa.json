@@ -1,14 +1,14 @@
 {
     "errors": {
         "value_must_not_be_empty": "مقدار نمی‌تواند خالی باشد",
-        "internal_server_error": "خطای داخلی سرور",
+        "internal_server_error": "مشکلی در سرور رخ داده است. لطفاً بعداً دوباره تلاش کنید.",
         "invalid_input": "ورودی نامعتبر است",
         "unauthorized": "دسترسی غیرمجاز",
         "user_already_verified": "کاربر قبلاً تأیید شده است",
         "verification_token_expired": "توکن تأیید منقضی شده است",
         "invalid_verification_code": "کد تأیید نامعتبر است",
         "passwords_do_not_match": "رمزهای عبور مطابقت ندارند",
-        "too_many_requests": "تعداد درخواست‌ها بیش از حد مجاز است",
+        "too_many_requests": "تعداد درخواست‌ها بیش از حد مجاز است. لطفاً کمی صبر کنید و دوباره تلاش کنید.",
         "email_already_exists": "این ایمیل قبلاً ثبت شده است",
         "phone_number_already_exists": "این شماره تلفن قبلاً ثبت شده است",
         "invalid_credentials": "ایمیل/شماره تلفن یا رمز عبور نامعتبر است",

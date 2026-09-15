@@ -9,6 +9,7 @@ import (
 	"loghanteh-project/internal/config"
 	"loghanteh-project/internal/database"
 	"loghanteh-project/internal/handlers"
+	"loghanteh-project/internal/limiter"
 	"loghanteh-project/internal/repositories"
 	"loghanteh-project/internal/routes"
 	"loghanteh-project/internal/services"
@@ -30,6 +31,20 @@ func New() (*App, error) {
 
 		return nil, err
 	}
+
+	if err := config.ConnectRedis(cfg); err != nil {
+		logger.Error(
+			"failed to connect redis",
+			"error",
+			err,
+		)
+
+		return nil, err
+	}
+
+	logger.Info(
+		"Redis connected successfully!",
+	)
 
 	ctx, cancel := context.WithCancel(
 		context.Background(),
@@ -167,6 +182,14 @@ func New() (*App, error) {
 	)
 
 	//////////////
+	// Rate Limiter
+	//////////////
+
+	rateLimiter := limiter.NewRedisLimiter(
+		config.Redis,
+	)
+
+	//////////////
 	// Router
 	//////////////
 
@@ -179,6 +202,7 @@ func New() (*App, error) {
 		profileHandler,
 		ticketHandler,
 		jwtService,
+		rateLimiter,
 	)
 
 	return &App{
