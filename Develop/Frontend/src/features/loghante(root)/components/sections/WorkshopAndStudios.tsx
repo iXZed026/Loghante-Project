@@ -15,7 +15,7 @@ function WorkshopAndStudios() {
                 title={t("title")}
                 description={t("description")}
                 reverse={true}
-                href='/shop'
+                href='/workshops-and-studios'
                 textButton={cmT("button.show-more")}
             />
         </section>
