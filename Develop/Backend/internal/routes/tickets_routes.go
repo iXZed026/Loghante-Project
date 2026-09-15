@@ -29,6 +29,12 @@ func SetupTicketsRoutes(
 			ticketHandler.GetEventAndCourses,
 		)
 
+		tickets.GET(
+			"/bookings",
+			middleware.AuthMiddleware(jwtService),
+			ticketHandler.GetUserBookings,
+		)
+
 		tickets.POST(
 			"/bookings",
 			middleware.AuthMiddleware(jwtService),

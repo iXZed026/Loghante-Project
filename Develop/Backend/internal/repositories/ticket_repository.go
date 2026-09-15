@@ -80,11 +80,11 @@ func (r *TicketRepository) GetMuseumTourSessions(
 		Select(`
 			es.sessionid AS "sessionId",
 			es.eventid AS "eventId",
+			es.hallid AS "hallId",
 			ets.name AS "name",
-			ets.primarydescription AS "primaryDescription",
-			ets.secondarydescription AS "secondaryDescription",
+			ets.description AS "description",
 			es.startat AS "startAt",
-			es.durationm AS "durationM",
+			es.duration AS "duration",
 			es.capacity AS "capacity",
 			es.price AS "price"
 		`).
@@ -120,6 +120,7 @@ func (r *TicketRepository) GetMuseumTourSessions(
 }
 
 // events-and-courses
+
 func (r *TicketRepository) GetEventAndCourseSessions(
 	ctx context.Context,
 	date time.Time,
@@ -154,11 +155,11 @@ func (r *TicketRepository) GetEventAndCourseSessions(
 		Select(`
 			es.sessionid AS "sessionId",
 			es.eventid AS "eventId",
+			es.hallid AS "hallId",
 			ets.name AS "name",
-			ets.primarydescription AS "primaryDescription",
-			ets.secondarydescription AS "secondaryDescription",
+			ets.description AS "description",
 			es.startat AS "startAt",
-			es.durationm AS "durationM",
+			es.duration AS "duration",
 			es.capacity AS "capacity",
 			es.price AS "price"
 		`).

@@ -5,15 +5,15 @@ import "time"
 // museums-tour
 
 type MuseumTourSessionResponse struct {
-	SessionID            uint      `json:"sessionId"`
-	EventID              uint      `json:"eventId"`
-	Name                 string    `json:"name"`
-	PrimaryDescription   string    `json:"primaryDescription"`
-	SecondaryDescription string    `json:"secondaryDescription"`
-	StartAt              time.Time `json:"startAt"`
-	DurationM            int       `json:"durationM"`
-	Capacity             int       `json:"capacity"`
-	Price                *float64  `json:"price"`
+	SessionID   uint      `json:"sessionId"`
+	EventID     uint      `json:"eventId"`
+	HallID      uint      `json:"hallId"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	StartAt     time.Time `json:"startAt"`
+	Duration    int       `json:"duration"`
+	Capacity    int       `json:"capacity"`
+	Price       *float64  `json:"price"`
 }
 
 type MuseumTourQuery struct {
@@ -23,15 +23,15 @@ type MuseumTourQuery struct {
 // events-and-courses
 
 type EventAndCourseSessionResponse struct {
-	SessionID            uint      `json:"sessionId"`
-	EventID              uint      `json:"eventId"`
-	Name                 string    `json:"name"`
-	PrimaryDescription   string    `json:"primaryDescription"`
-	SecondaryDescription string    `json:"secondaryDescription"`
-	StartAt              time.Time `json:"startAt"`
-	DurationM            int       `json:"durationM"`
-	Capacity             int       `json:"capacity"`
-	Price                *float64  `json:"price"`
+	SessionID   uint      `json:"sessionId"`
+	EventID     uint      `json:"eventId"`
+	HallID      uint      `json:"hallId"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	StartAt     time.Time `json:"startAt"`
+	Duration    int       `json:"duration"`
+	Capacity    int       `json:"capacity"`
+	Price       *float64  `json:"price"`
 }
 
 type EventAndCourseQuery struct {

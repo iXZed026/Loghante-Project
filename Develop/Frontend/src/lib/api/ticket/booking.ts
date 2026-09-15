@@ -33,3 +33,38 @@ export async function createBooking(
         locale,
     );
 }
+
+
+export interface UserBookingResponse {
+    bookingId: number;
+    eventTypeId: number;
+    eventTypeName: string;
+    eventId: number;
+    sessionId: number;
+    name: string;
+    description: string;
+    startAt: string;
+    duration: number;
+    quantity: number;
+    totalPrice: string;
+    purchasedAt: string;
+}
+
+export interface UserBookingsResponse {
+    data: UserBookingResponse[];
+    message: string;
+    success: boolean;
+}
+
+export async function getUserBookings(
+    locale: string,
+): Promise<UserBookingsResponse> {
+
+    return fetcher<UserBookingsResponse>(
+        "/tickets/bookings",
+        {
+            method: "GET",
+        },
+        locale,
+    );
+}

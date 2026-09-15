@@ -1,22 +1,410 @@
 import TicketStatus from '../ui/TicketStatus'
+import { cn } from '@/lib/utils/cn'
+import { FaRegCalendarAlt } from 'react-icons/fa'
+import { FaRegClock } from 'react-icons/fa6'
+import { IoTicketOutline } from 'react-icons/io5'
+import { useLocale, useTranslations } from 'next-intl'
+import {
+    formatMonthDay,
+    formatTime,
+} from '@/lib/utils/date'
 
-function TicketBox() {
+interface ITicketBox {
+    eventTypeName: string
+    name: string
+    startAt: string
+    duration: number
+    quantity: number
+}
+
+function TicketBox({
+    eventTypeName,
+    name,
+    startAt,
+    duration,
+    quantity,
+}: ITicketBox) {
+
+    const locale = useLocale()
+
+    const ticketBoxT = useTranslations(
+        "profileTicketPurchased.ticket-box",
+    )
+
+    const common = useTranslations("common")
+
+    function getTicketStatus(
+        startAt: string,
+        duration: number
+    ): "upcoming" | "progress" | "past" {
+
+        const now =
+            new Date()
+
+        const start =
+            new Date(startAt)
+
+        const end =
+            new Date(
+                start.getTime() +
+                duration * 60 * 1000
+            )
+
+        if (now < start) {
+            return "upcoming"
+        }
+
+        if (
+            now >= start &&
+            now < end
+        ) {
+            return "progress"
+        }
+
+        return "past"
+    }
+
+    const status =
+        getTicketStatus(
+            startAt,
+            duration
+        )
+
+    const startDate =
+        new Date(startAt)
+
+    const date =
+        formatMonthDay(
+            startDate,
+            locale
+        )
+
+    const time =
+        formatTime(
+            startDate,
+            locale
+        )
+
     return (
-        <div className='grid grid-cols-12 border-2 border-black/20 py-5 lg:px-10 px-5 rounded-lg'>
-            <div className='lg:col-span-6 md:col-span-8 col-span-7 flex lg:items-center lg:flex-row flex-col lg:gap-10 gap-y-3'>
-                {/* Ticket Name */}
-                <span className='lg:text-lg col-span-6'>
-                    Loghanteh Museum Tour
-                </span>
-                {/* Ticket Date */}
-                <span className='text-sm text-black-light-utility'>
-                    26 August 2026
-                </span>
+        <div
+            className={cn(
+                "relative",
+                "w-full",
+                "min-h-70",
+                "grid grid-cols-12",
+                "overflow-hidden",
+                "rounded-2xl",
+                "border border-black-opacity",
+                "bg-white",
+                "shadow-lg",
+                "transition-all duration-300",
+                "hover:-translate-y-1",
+                "hover:shadow-xl",
+            )}
+        >
+
+            {/* Left Crimson Section */}
+            <div
+                className={cn(
+                    "relative",
+                    "lg:col-span-4 md:col-span-5 col-span-12",
+                    "min-h-55 md:min-h-full",
+                    "p-7 md:p-8",
+                    "flex flex-col justify-between",
+                    "bg-crimson",
+                    "text-white",
+                    "overflow-hidden",
+                )}
+            >
+
+                {/* Decorative Circle */}
+                <div
+                    className={cn(
+                        "absolute",
+                        "-top-15",
+                        "-right-15",
+                        "size-35",
+                        "rounded-full",
+                        "border-20",
+                        "border-white/10",
+                    )}
+                />
+
+                <div
+                    className={cn(
+                        "absolute",
+                        "-bottom-20",
+                        "-left-15",
+                        "size-40",
+                        "rounded-full",
+                        "border-25",
+                        "border-white/5",
+                    )}
+                />
+
+                {/* Ticket Icon */}
+                <div className="relative z-10">
+
+                    <div
+                        className={cn(
+                            "fcc",
+                            "size-12",
+                            "rounded-xl",
+                            "bg-white/10",
+                            "border border-white/15",
+                        )}
+                    >
+                        <IoTicketOutline className="size-6" />
+                    </div>
+
+                </div>
+
+                {/* Event Info */}
+                <div className="relative z-10 mt-8">
+
+                    <span
+                        className={cn(
+                            "block",
+                            "mb-2",
+                            "text-xs",
+                            "uppercase",
+                            "tracking-[0.2em]",
+                            "text-white/60",
+                        )}
+                    >
+                        {eventTypeName}
+                    </span>
+
+                    <h3
+                        className={cn(
+                            "font-semibold",
+                            "text-xl md:text-2xl",
+                            "leading-8",
+                            "line-clamp-2",
+                        )}
+                    >
+                        {name}
+                    </h3>
+
+                </div>
+
             </div>
-            <div className='lg:col-span-6 md:col-span-4 col-span-5 fec'>
-                {/* Ticket Status */}
-                <TicketStatus status={"upcoming"} />
+
+            {/* Right Content */}
+            <div
+                className={cn(
+                    "lg:col-span-8 md:col-span-7 col-span-12",
+                    "p-6 md:p-8",
+                    "flex flex-col justify-between",
+                )}
+            >
+
+                {/* Header */}
+                <div className="fbc gap-5">
+
+                    <div>
+
+                        <span
+                            className={cn(
+                                "block",
+                                "text-xs",
+                                "text-black-light-utility",
+                                "mb-2",
+                            )}
+                        >
+                            {ticketBoxT("status")}
+                        </span>
+
+                        <TicketStatus
+                            status={status}
+                        />
+
+                    </div>
+
+                    {/* Quantity */}
+                    <div
+                        className={cn(
+                            "fcc",
+                            "gap-2",
+                            "shrink-0",
+                            "rounded-lg",
+                            "px-3 py-2",
+                            "bg-[var(--crimson-opacity-color)]",
+                            "text-crimson",
+                        )}
+                    >
+                        <IoTicketOutline className="size-4" />
+
+                        <span className="text-sm font-semibold">
+                            {quantity}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                {/* Date & Time */}
+                <div
+                    className={cn(
+                        "grid",
+                        "grid-cols-1 sm:grid-cols-2",
+                        "gap-4",
+                        "my-8",
+                    )}
+                >
+
+                    {/* Date */}
+                    <div
+                        className={cn(
+                            "flex items-center gap-4",
+                            "rounded-xl",
+                            "border border-black-opacity",
+                            "p-4",
+                        )}
+                    >
+
+                        <div
+                            className={cn(
+                                "fcc",
+                                "size-10",
+                                "shrink-0",
+                                "rounded-lg",
+                                "bg-[var(--crimson-opacity-color)]",
+                                "text-crimson",
+                            )}
+                        >
+                            <FaRegCalendarAlt />
+                        </div>
+
+                        <div>
+
+                            <span
+                                className={cn(
+                                    "block",
+                                    "text-xs",
+                                    "text-black-light-utility",
+                                    "mb-1",
+                                )}
+                            >
+                                {ticketBoxT("date")}
+                            </span>
+
+                            <span className="text-sm font-semibold">
+                                {date}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {/* Time */}
+                    <div
+                        className={cn(
+                            "flex items-center gap-4",
+                            "rounded-xl",
+                            "border border-black-opacity",
+                            "p-4",
+                        )}
+                    >
+
+                        <div
+                            className={cn(
+                                "fcc",
+                                "size-10",
+                                "shrink-0",
+                                "rounded-lg",
+                                "bg-[var(--crimson-opacity-color)]",
+                                "text-crimson",
+                            )}
+                        >
+                            <FaRegClock />
+                        </div>
+
+                        <div>
+
+                            <span
+                                className={cn(
+                                    "block",
+                                    "text-xs",
+                                    "text-black-light-utility",
+                                    "mb-1",
+                                )}
+                            >
+                                {ticketBoxT("time")}
+                            </span>
+
+                            <span className="text-sm font-semibold">
+                                {time}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {/* Bottom */}
+                <div
+                    className={cn(
+                        "flex",
+                        "items-center",
+                        "justify-between",
+                        "gap-5",
+                        "pt-5",
+                        "border-t border-black-opacity",
+                    )}
+                >
+
+                    {/* Duration */}
+                    <div>
+
+                        <span
+                            className={cn(
+                                "block",
+                                "text-xs",
+                                "text-black-light-utility",
+                                "mb-1",
+                            )}
+                        >
+                            {ticketBoxT("duration")}
+                        </span>
+
+                        <span className="font-semibold">
+                            {duration} {common("minutes")}
+                        </span>
+
+                    </div>
+
+                    {/* Tickets */}
+                    <div className="text-right">
+
+                        <span
+                            className={cn(
+                                "block",
+                                "text-xs",
+                                "text-black-light-utility",
+                                "mb-1",
+                            )}
+                        >
+                            {ticketBoxT("Tickets")}
+                        </span>
+
+                        <span
+                            className={cn(
+                                "text-lg",
+                                "font-bold",
+                                "text-crimson",
+                            )}
+                        >
+                            × {quantity}
+                        </span>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
     )
 }

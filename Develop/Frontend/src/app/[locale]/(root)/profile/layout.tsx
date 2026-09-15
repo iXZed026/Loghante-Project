@@ -37,7 +37,7 @@ function ProfileLayout({
         <CheckAuthorized>
             <div className='flex'>
                 {/* Profile Dashbord */}
-                <div className='md:block hidden'>
+                <div className='xl:block hidden'>
                     <ProfileDashboard isActive={activeDashboard} />
                 </div>
                 <div className='md:hidden block'>

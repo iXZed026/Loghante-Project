@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils/cn'
+import { useTranslations } from 'next-intl'
 
 interface ITicketStatus {
     status: "upcoming" | "progress" | "past"
@@ -6,29 +7,90 @@ interface ITicketStatus {
 
 function TicketStatus({
     status,
-}: ITicketStatus) { 
+}: ITicketStatus) {
 
-    function checkTicketStatus(): string {
+    const ticketStatusT = useTranslations(
+        "profileTicketPurchased.ticket-status",
+    )
+
+    function getStatusColor(): string {
+
         if (status === "upcoming") {
-            return "text-gold-utility"
-        } else if ((status === "progress")) {
-            return "text-[#527A8A]"
-        } else if ((status === "past")) {
-            return "text-crimson"
+            return cn(
+                "text-gold-utility",
+                "border-gold-utility/30",
+                "bg-gold-utility/10",
+            )
         }
+
+        if (status === "progress") {
+            return cn(
+                "text-[#527A8A]",
+                "border-[#527A8A]/30",
+                "bg-[#527A8A]/10",
+            )
+        }
+
+        if (status === "past") {
+            return cn(
+                "text-crimson",
+                "border-crimson/30",
+                "bg-crimson/10",
+            )
+        }
+
+        return ""
+    }
+
+    function getStatusText(): string {
+
+        if (status === "upcoming") {
+            return ticketStatusT("upcoming")
+        }
+
+        if (status === "progress") {
+            return ticketStatusT("progress")
+        }
+
+        if (status === "past") {
+            return ticketStatusT("past")
+        }
+
         return ""
     }
 
     return (
-        <span className={cn(
-            "lg:text-sm text-xs font-semibold",
-            "text-center",
-            "lg:px-3 px-2 py-2",
-            "border-2",
-            " rounded-lg ",
-            checkTicketStatus(),
-        )}>
-            Upcoming Tickets
+        <span
+            className={cn(
+                "fcc",
+                "gap-2",
+                "px-3",
+                "py-2",
+                "rounded-full",
+                "border",
+                "text-xs",
+                "font-semibold",
+                "whitespace-nowrap",
+                getStatusColor(),
+            )}
+        >
+
+            {/* Status Dot */}
+            <span
+                className={cn(
+                    "size-1.5",
+                    "rounded-full",
+                    status === "upcoming" &&
+                    "bg-gold-utility",
+                    status === "progress" &&
+                    "bg-[#527A8A]",
+                    status === "past" &&
+                    "bg-crimson",
+                )}
+            />
+
+            {getStatusText()}
+
         </span>
     )
 }

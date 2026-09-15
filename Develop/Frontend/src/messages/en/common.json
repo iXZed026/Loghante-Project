@@ -3,5 +3,6 @@
         "show-more": "Show More"
     },
     "price-type":" Toman",
-    "price-label":"T"
+    "price-label":"T",
+    "minutes":"minutes"
 }

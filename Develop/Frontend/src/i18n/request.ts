@@ -94,6 +94,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/profile/edit-profile-page.json`)
     ).default;
 
+    const profileTicketPurchased = (
+        await import(`../messages/${locale}/profile/ticket-purchased.json`)
+    ).default;
+
     //Museums Tour
     const museumsTour = (
         await import(`../messages/${locale}/museums-tour/museums-tour.json`)
@@ -152,6 +156,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             profileDashboard,
             profileDashboardPage,
             profileEdit,
+            profileTicketPurchased,
             //Museums Tour
             museumsTour,
             //Payment

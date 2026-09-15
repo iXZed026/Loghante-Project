@@ -2,34 +2,25 @@
  * Formats a date based on the given locale.
  *
  * en:
- * Returns day and month.
- * Example: "October 5"
+ * Example: October 5, 2026
  *
  * fa:
- * Returns day and month using the Persian calendar.
- * Example: "۵ مهر"
+ * Returns date using the Persian calendar.
+ * Example: ۱۳ مهر ۱۴۰۵
  */
 export function formatMonthDay(
     date: Date,
     locale: string
 ): string {
 
-    if (locale === "fa") {
-
-        return new Intl.DateTimeFormat(
-            "fa-IR-u-ca-persian",
-            {
-                day: "numeric",
-                month: "long",
-            }
-        ).format(date)
-    }
-
     return new Intl.DateTimeFormat(
-        "en-US",
+        locale === "fa"
+            ? "fa-IR-u-ca-persian"
+            : "en-US",
         {
             day: "numeric",
             month: "long",
+            year: "numeric",
         }
     ).format(date)
 }
@@ -39,11 +30,10 @@ export function formatMonthDay(
  * Formats the month and year based on the given locale.
  *
  * en:
- * Example: "October 2026"
+ * Example: October 2026
  *
  * fa:
- * Returns month and year using the Persian calendar.
- * Example: "مهر ۱۴۰۵"
+ * Example: مهر ۱۴۰۵
  */
 export function formatMonthYear(
     date: Date,
@@ -57,6 +47,33 @@ export function formatMonthYear(
         {
             month: "long",
             year: "numeric",
+        }
+    ).format(date)
+}
+
+
+/**
+ * Formats time based on the given locale.
+ *
+ * en:
+ * Example: 12:40 PM
+ *
+ * fa:
+ * Example: ۱۲:۴۰
+ */
+export function formatTime(
+    date: Date,
+    locale: string
+): string {
+
+    return new Intl.DateTimeFormat(
+        locale === "fa"
+            ? "fa-IR"
+            : "en-US",
+        {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: locale !== "fa",
         }
     ).format(date)
 }

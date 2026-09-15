@@ -279,3 +279,94 @@ func (h *TicketHandler) GetEventAndCourses(
 		sessions,
 	)
 }
+
+func (h *TicketHandler) GetUserBookings(
+	c *gin.Context,
+) {
+
+	userIDValue, exists := c.Get("user_id")
+
+	if !exists {
+
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+
+		return
+	}
+
+	userIDString, ok := userIDValue.(string)
+
+	if !ok {
+
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+
+		return
+	}
+
+	userID64, err := strconv.ParseUint(
+		userIDString,
+		10,
+		64,
+	)
+
+	if err != nil {
+
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+
+		return
+	}
+
+	language := c.GetHeader(
+		"Accept-Language",
+	)
+
+	if len(language) >= 2 {
+		language = language[:2]
+	}
+
+	if language == "" {
+		language = "en"
+	}
+
+	bookings, err :=
+		h.ticketService.GetUserBookings(
+			c.Request.Context(),
+			uint(userID64),
+			language,
+		)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to get user bookings",
+			"userID", userID64,
+			"language", language,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	response.Success(
+		c,
+		"user_bookings_fetched_successfully",
+		bookings,
+	)
+}

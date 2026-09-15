@@ -22,9 +22,8 @@ import React, {
 } from "react";
 
 import {
-    useTicketPayment
-}
-    from "@/features/loghante(root)/context/TicketPaymentContext";
+    useTicketPayment,
+} from "@/features/loghante(root)/context/TicketPaymentContext";
 
 interface MuseumsTourTicketBoxProps {
     ticket: MuseumTourSessionResponse;
@@ -54,6 +53,12 @@ function MuseumsTourTicketBox({
         setTicketCount,
     ] = useState<number>(0);
 
+    /*
+     * Check whether the ticket has already started.
+     */
+    const isInProgress =
+        new Date(ticket.startAt) <= new Date();
+
     const increaseHandler = () => {
 
         setTicketCount((prev) => {
@@ -82,7 +87,10 @@ function MuseumsTourTicketBox({
 
     const bookTicketHandler = () => {
 
-        if (ticketCount < 1) {
+        if (
+            ticketCount < 1 ||
+            isInProgress
+        ) {
             return;
         }
 
@@ -119,10 +127,16 @@ function MuseumsTourTicketBox({
                 "border-[1px] border-black-opacity",
                 "rounded-xl",
                 "shadow-xl",
+
+                isInProgress && [
+                    "bg-[var(--white-light-color)]",
+                    "justify-center",
+                ],
+
                 ticket.capacity === 0 && [
                     "bg-[var(--white-light-color)]",
                     "justify-center",
-                ]
+                ],
             )}
         >
 
@@ -136,150 +150,194 @@ function MuseumsTourTicketBox({
             </div>
 
             {/* Remaining Capacity */}
-            <div
-                className={cn(
-                    ticket.capacity === 0 && "hidden"
-                )}
-            >
+            {!isInProgress && (
 
-                <span className="text-lg font-semibold">
-                    {ticketBoxT("capacity")}{" "}
-                    {ticket.capacity}
-                </span>
+                <div
+                    className={cn(
+                        ticket.capacity === 0 &&
+                        "hidden"
+                    )}
+                >
 
-            </div>
-
-            {/* Ticket Quantity */}
-            <div
-                className={cn(
-                    "select-none",
-                    ticket.capacity === 0 ? "hidden" : "fbc",
-
-                )}
-            >
-
-                <div className="font-semibold">
-
-                    <span>
-                        {ticketBoxT("ticket-count")}
+                    <span className="text-lg font-semibold">
+                        {ticketBoxT("capacity")}{" "}
+                        {ticket.capacity}
                     </span>
 
                 </div>
 
+            )}
+
+            {/* Ticket Quantity */}
+            {!isInProgress && (
+
                 <div
-                    className="fcc gap-2">
+                    className={cn(
+                        "select-none",
+                        ticket.capacity === 0
+                            ? "hidden"
+                            : "fbc",
+                    )}
+                >
 
-                    <div
-                        className={cn(
-                            "fcc",
-                            "bg-gray-600/30",
-                            "rounded-4xl",
-                            "font-bold",
-
-                        )}
-                    >
-
-                        <span
-                            className={cn(
-                                "text-xl",
-                                "cursor-pointer",
-                                "click-scale",
-                                "px-3 py-1",
-
-                                ticketCount >=
-                                ticket.capacity &&
-                                "opacity-40 cursor-not-allowed"
-                            )}
-                            onClick={
-                                increaseHandler
-                            }
-                        >
-                            +
-                        </span>
+                    <div className="font-semibold">
 
                         <span>
-                            |
-                        </span>
-
-                        <span
-                            className={cn(
-                                "text-xl",
-                                "cursor-pointer",
-                                "click-scale",
-                                "px-3 py-1",
-
-                                ticketCount <= 0 &&
-                                "opacity-40 cursor-not-allowed"
+                            {ticketBoxT(
+                                "ticket-count"
                             )}
-                            onClick={
-                                decreaseHandler
-                            }
-                        >
-                            -
                         </span>
 
                     </div>
 
-                    <div
-                        className={cn(
-                            "bg-gray-600/30",
-                            "px-2 py-1",
-                            "rounded-4xl",
-                            "font-bold"
-                        )}
-                    >
-                        <span>
-                            {ticketCount}
-                        </span>
+                    <div className="fcc gap-2">
+
+                        <div
+                            className={cn(
+                                "fcc",
+                                "bg-gray-600/30",
+                                "rounded-4xl",
+                                "font-bold",
+                            )}
+                        >
+
+                            <span
+                                className={cn(
+                                    "text-xl",
+                                    "cursor-pointer",
+                                    "click-scale",
+                                    "px-3 py-1",
+
+                                    ticketCount >=
+                                    ticket.capacity &&
+                                    "opacity-40 cursor-not-allowed"
+                                )}
+                                onClick={
+                                    increaseHandler
+                                }
+                            >
+                                +
+                            </span>
+
+                            <span>
+                                |
+                            </span>
+
+                            <span
+                                className={cn(
+                                    "text-xl",
+                                    "cursor-pointer",
+                                    "click-scale",
+                                    "px-3 py-1",
+
+                                    ticketCount <= 0 &&
+                                    "opacity-40 cursor-not-allowed"
+                                )}
+                                onClick={
+                                    decreaseHandler
+                                }
+                            >
+                                -
+                            </span>
+
+                        </div>
+
+                        <div
+                            className={cn(
+                                "bg-gray-600/30",
+                                "px-2 py-1",
+                                "rounded-4xl",
+                                "font-bold"
+                            )}
+                        >
+                            <span>
+                                {ticketCount}
+                            </span>
+                        </div>
+
                     </div>
 
                 </div>
 
-            </div>
+            )}
+
+            {/* In Progress */}
+            {isInProgress && (
+
+                <div className="fcc">
+
+                    <span
+                        className="
+                            text-lg
+                            font-semibold
+                            text-[#527A8A]
+                        "
+                    >
+                        In Progress
+                    </span>
+
+                </div>
+
+            )}
+
             {/* Capacity Completed */}
-            <span
-                className={cn(
-                    "text-lg font-semibold text-crimson",
-                    ticket.capacity > 0 ? "hidden" : "text-center",
-                )}
-            >
-                Capacity completed.
-            </span>
+            {!isInProgress && (
 
-            {/* Book Button */}
-            <div
-                className={cn(
-                    "gap-2",
-                    ticket.capacity === 0 ? "hidden" : "fcc",
-                )}
-            >
-
-                <Button
-                    type="button"
-                    disabled={
-                        ticketCount === 0
-                    }
-                    onClick={
-                        bookTicketHandler
-                    }
+                <span
                     className={cn(
+                        "text-lg",
                         "font-semibold",
-                        "px-3 py-2",
-                        "bg-crimson",
-                        "hover:bg-[var(--crimson-hover-color)]",
-
-                        ticketCount === 0 &&
-                        "opacity-50 cursor-not-allowed"
+                        "text-crimson",
+                        ticket.capacity > 0
+                            ? "hidden"
+                            : "text-center",
                     )}
                 >
-                    {
-                        ticketBoxT(
-                            "book-button"
-                        )
-                    }
-                </Button>
+                    Capacity completed.
+                </span>
 
-            </div>
+            )}
+
+            {/* Book Button */}
+            {!isInProgress && (
+
+                <div
+                    className={cn(
+                        "gap-2",
+                        ticket.capacity === 0
+                            ? "hidden"
+                            : "fcc",
+                    )}
+                >
+
+                    <Button
+                        type="button"
+                        disabled={
+                            ticketCount === 0
+                        }
+                        onClick={
+                            bookTicketHandler
+                        }
+                        className={cn(
+                            "font-semibold",
+                            "px-3 py-2",
+                            "bg-crimson",
+                            "hover:bg-[var(--crimson-hover-color)]",
+
+                            ticketCount === 0 &&
+                            "opacity-50 cursor-not-allowed"
+                        )}
+                    >
+                        {
+                            ticketBoxT(
+                                "book-button"
+                            )
+                        }
+                    </Button>
+
+                </div>
+
+            )}
 
         </div>
     );
