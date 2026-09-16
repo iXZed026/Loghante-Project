@@ -40,7 +40,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
     const LoghantehCinemaAndTheaters = (
         await import(`../messages/${locale}/Loghante/cinema-and-theaters.json`)
     ).default;
-        
+
     const LoghantehWSAndStudios = (
         await import(`../messages/${locale}/Loghante/workshops-and-studios.json`)
     ).default;
@@ -128,6 +128,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/cafe-menu/cafe-menu.json`)
     ).default;
 
+    //Workshops And Studios
+    const workshopsAndStudios = (
+        await import(`../messages/${locale}/workshops-and-studios/workshops-and-studios.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -169,6 +174,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
             eventsAndCoursesDetails,
             //Cafe Menu
             cafeMenu,
+            //Workshops And Studios
+            workshopsAndStudios
         },
     };
 });

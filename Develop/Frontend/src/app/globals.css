@@ -80,6 +80,10 @@ html {
     @apply bg-[var(--white-color)];
   }
 
+  .bg-white-light-utility {
+    @apply bg-[var(--white-light-color)];
+  }
+
   .text-white-light-utility {
     @apply text-[var(--white-light-color)];
   }
