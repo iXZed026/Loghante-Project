@@ -13,3 +13,8 @@ VALUES
     ('Theater');
 
 SELECT * FROM eventtypes;
+
+SELECT * FROM users;
+
+
+SELECT * FROM usertypes;
