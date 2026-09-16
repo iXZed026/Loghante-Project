@@ -12,7 +12,13 @@ function WorkshopAndStudiosDetail() {
                 "mt-20 py-10",
             )}>
                 <WorkshopsAndStudiosDetailHeader />
-                <WorkshopsAndStudiosDetailCompBox />
+                <WorkshopsAndStudiosDetailCompBox 
+                />
+                <WorkshopsAndStudiosDetailCompBox 
+                    reverse={false}
+                />
+                <WorkshopsAndStudiosDetailCompBox 
+                />
             </div>
         </Container>
     )
