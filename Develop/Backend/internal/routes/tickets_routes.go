@@ -22,27 +22,49 @@ func SetupTicketsRoutes(
 	{
 		tickets.GET(
 			"/museum-tour",
-			middleware.RateLimiter(rateLimiter, 60, logger),
+			middleware.RateLimiter(
+				rateLimiter,
+				60,
+				logger,
+			),
 			ticketHandler.GetMuseumTour,
 		)
 
 		tickets.GET(
 			"/events-and-courses",
-			middleware.RateLimiter(rateLimiter, 60, logger),
+			middleware.RateLimiter(
+				rateLimiter,
+				60,
+				logger,
+			),
 			ticketHandler.GetEventAndCourses,
 		)
 
 		tickets.GET(
 			"/bookings",
-			middleware.AuthMiddleware(jwtService),
-			middleware.RateLimiter(rateLimiter, 60, logger),
+			middleware.AuthMiddleware(
+				jwtService,
+				logger,
+			),
+			middleware.RateLimiter(
+				rateLimiter,
+				60,
+				logger,
+			),
 			ticketHandler.GetUserBookings,
 		)
 
 		tickets.POST(
 			"/bookings",
-			middleware.AuthMiddleware(jwtService),
-			middleware.RateLimiter(rateLimiter, 10, logger),
+			middleware.AuthMiddleware(
+				jwtService,
+				logger,
+			),
+			middleware.RateLimiter(
+				rateLimiter,
+				10,
+				logger,
+			),
 			ticketHandler.CreateBooking,
 		)
 	}

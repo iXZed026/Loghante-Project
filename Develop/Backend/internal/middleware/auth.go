@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log/slog"
 	"strings"
 
 	appAuth "loghanteh-project/internal/auth"
@@ -13,6 +14,7 @@ import (
 
 func AuthMiddleware(
 	jwtService *appAuth.JWTService,
+	logger *slog.Logger,
 ) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
@@ -20,10 +22,11 @@ func AuthMiddleware(
 		authHeader := c.GetHeader("Authorization")
 
 		if authHeader == "" {
+
 			response.HandleError(
 				c,
 				appErrors.ErrUnauthorized,
-				nil,
+				logger,
 			)
 
 			c.Abort()
@@ -44,7 +47,7 @@ func AuthMiddleware(
 			response.HandleError(
 				c,
 				appErrors.ErrUnauthorized,
-				nil,
+				logger,
 			)
 
 			c.Abort()
@@ -55,10 +58,11 @@ func AuthMiddleware(
 		token, err := jwtService.ValidateToken(parts[1])
 
 		if err != nil {
+
 			response.HandleError(
 				c,
 				appErrors.ErrUnauthorized,
-				nil,
+				logger,
 			)
 
 			c.Abort()
@@ -69,10 +73,11 @@ func AuthMiddleware(
 		claims, ok := token.Claims.(jwt.MapClaims)
 
 		if !ok {
+
 			response.HandleError(
 				c,
 				appErrors.ErrUnauthorized,
-				nil,
+				logger,
 			)
 
 			c.Abort()
@@ -83,10 +88,11 @@ func AuthMiddleware(
 		userID, ok := claims["user_id"].(string)
 
 		if !ok || userID == "" {
+
 			response.HandleError(
 				c,
 				appErrors.ErrUnauthorized,
-				nil,
+				logger,
 			)
 
 			c.Abort()

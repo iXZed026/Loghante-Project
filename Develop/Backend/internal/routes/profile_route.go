@@ -20,18 +20,29 @@ func SetupProfileRoutes(
 ) {
 	profile := api.Group(
 		"/profile",
-		middleware.AuthMiddleware(jwtService),
+		middleware.AuthMiddleware(
+			jwtService,
+			logger,
+		),
 	)
 	{
 		profile.GET(
 			"",
-			middleware.RateLimiter(rateLimiter, 3, logger),
+			middleware.RateLimiter(
+				rateLimiter,
+				60,
+				logger,
+			),
 			profileHandler.Profile,
 		)
 
 		profile.PUT(
 			"/edit-profile",
-			middleware.RateLimiter(rateLimiter, 3, logger),
+			middleware.RateLimiter(
+				rateLimiter,
+				3,
+				logger,
+			),
 			profileHandler.EditProfile,
 		)
 	}
