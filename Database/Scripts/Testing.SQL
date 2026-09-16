@@ -240,3 +240,5 @@ SELECT *
 FROM EventTypeTranslations
 ORDER BY EventTypeId, LanguagesId;
 
+SELECT * FROM users;
+
