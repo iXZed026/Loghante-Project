@@ -7,7 +7,7 @@ import MuseumsTourTickets from '@/features/loghante(root)/tickets/museums-tour/c
 function MuseumsTour() {
   return (
     <Container>
-      <div className='xl:px-36 py-18 mt-20'>
+      <div className='xl:px-36 py-30'>
         {/* Museums Tout Header */}
         <div className='mb-15'>
           <MuseumsTourHeaderBox />

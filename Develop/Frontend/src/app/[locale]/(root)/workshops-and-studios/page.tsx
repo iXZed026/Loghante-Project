@@ -1,3 +1,5 @@
+"use client"
+
 import FadeUp from '@/components/animations/FadeUp'
 import Container from '@/components/shared/Container'
 import WorkShopAndStudiosBox from '@/features/loghante(root)/worshops-and-studios/componenets/WorkShopAndStudiosBox'
@@ -5,11 +7,16 @@ import { workshopAndStudios } from '@/features/loghante(root)/worshops-and-studi
 import { slowTransitionOut } from '@/lib/animations/transitions'
 import { cn } from '@/lib/utils/cn'
 import { useTranslations } from 'next-intl'
+import { useEffect } from 'react'
 
 function WorkshopsAndStudios() {
 
     const wsAndStdsT =
         useTranslations("workshopsAndStudios")
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
 
     return (
         <Container>

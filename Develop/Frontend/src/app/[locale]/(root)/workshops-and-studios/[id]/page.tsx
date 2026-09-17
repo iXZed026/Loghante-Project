@@ -1,10 +1,10 @@
 import Container from '@/components/shared/Container'
 import WorkshopsAndStudiosDetailCompBox from '@/features/loghante(root)/worshops-and-studios/componenets/workshops-and-studios-detail/WorkshopsAndStudiosDetailCompBox'
-import WorkshopsAndStudiosDetailForm from '@/features/loghante(root)/worshops-and-studios/componenets/workshops-and-studios-detail/WorkshopsAndStudiosDetailForm'
 import WorkshopsAndStudiosDetailHeader from '@/features/loghante(root)/worshops-and-studios/componenets/workshops-and-studios-detail/WorkshopsAndStudiosDetailHeader'
 import { workshopAndStudios } from '@/features/loghante(root)/worshops-and-studios/data/workshop-and-studios'
 import { notFound } from 'next/navigation'
 import { cn } from '@/lib/utils/cn'
+import CostomerRequestForm from '@/features/loghante(root)/worshops-and-studios/componenets/workshops-and-studios-detail/CostomerRequestForm'
 
 interface IWorkshopAndStudiosDetail {
     params: Promise<{
@@ -17,6 +17,7 @@ async function WorkshopAndStudiosDetail({
 }: IWorkshopAndStudiosDetail) {
 
     const { id } = await params
+
 
     const workshopId = Number(id)
 
@@ -35,6 +36,7 @@ async function WorkshopAndStudiosDetail({
                     "min-h-screen",
                     "fcol gap-10",
                     "mt-20 py-10",
+                    "scroll-mt-30"
                 )}
             >
 
@@ -50,7 +52,10 @@ async function WorkshopAndStudiosDetail({
                     />
                 ))}
 
-                <WorkshopsAndStudiosDetailForm />
+                <CostomerRequestForm
+                    Translation={"workshopsAndStudios.page.inputs"}
+                    URLHash='workshops-and-studios-form'
+                />
 
             </div>
         </Container>

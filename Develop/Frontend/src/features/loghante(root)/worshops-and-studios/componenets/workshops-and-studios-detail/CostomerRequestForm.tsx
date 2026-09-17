@@ -4,42 +4,47 @@ import Input from '@/components/ui/Input'
 import useInput from '@/hooks/useInput'
 import useRemoveHashOnExit from '@/hooks/useRemoveHashOnExit'
 import { cn } from '@/lib/utils/cn'
-import { useTranslations } from 'next-intl'
-import React from 'react'
+import { TranslationFunction } from '@/types/translations'
+import { useTranslations } from 'next-intl';
 
-function WorkshopsAndStudiosDetailForm() {
+interface ICostomerRequestForm {
+    Translation: string
+    URLHash: string
+}
 
-    const wsAndStdsInputsT =
-        useTranslations("workshopsAndStudios.page.inputs");
+function CostomerRequestForm({
+    Translation,
+    URLHash,
+}: ICostomerRequestForm) {
 
-    useRemoveHashOnExit(
-        "workshops-and-studios-form"
-    );
+    const T = useTranslations(Translation)
+
+    useRemoveHashOnExit(URLHash)
 
     // Full Name
     const [
         fullName,
         ,
         changeFullName,
-    ] = useInput("");
+    ] = useInput("")
 
     // Phone Or Email
     const [
         phoneOrEmail,
         ,
         changePhoneOrEmail,
-    ] = useInput("");
+    ] = useInput("")
 
     // Company Name
     const [
         companyName,
         ,
         changeCompanyName,
-    ] = useInput("");
+    ] = useInput("")
 
     return (
         <form
-            id="workshops-and-studios-form"
+            id={URLHash}
             className={cn(
                 "fcol gap-y-10",
                 "scroll-mt-[120px]",
@@ -49,7 +54,7 @@ function WorkshopsAndStudiosDetailForm() {
 
             <div>
                 <span className="font-bold text-xl">
-                    {wsAndStdsInputsT("title")}
+                    {T("title")}
                 </span>
             </div>
 
@@ -70,7 +75,7 @@ function WorkshopsAndStudiosDetailForm() {
                     )}
                 >
                     <span className="text-sm font-semibold text-black-light-utility">
-                        {wsAndStdsInputsT("full-name")}:
+                        {T("full-name")}:
                     </span>
 
                     <Input
@@ -102,7 +107,7 @@ function WorkshopsAndStudiosDetailForm() {
                     )}
                 >
                     <span className="text-sm font-semibold text-black-light-utility">
-                        {wsAndStdsInputsT("email-or-phone")}:
+                        {T("email-or-phone")}:
                     </span>
 
                     <Input
@@ -134,7 +139,7 @@ function WorkshopsAndStudiosDetailForm() {
                     )}
                 >
                     <span className="text-sm font-semibold text-black-light-utility">
-                        {wsAndStdsInputsT("company-name")}:
+                        {T("company-name")}:
                     </span>
 
                     <Input
@@ -158,7 +163,7 @@ function WorkshopsAndStudiosDetailForm() {
             </div>
 
         </form>
-    );
+    )
 }
 
-export default WorkshopsAndStudiosDetailForm;
+export default CostomerRequestForm
