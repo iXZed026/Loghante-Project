@@ -8,7 +8,8 @@
             "title":"Please fill in your information:",
             "full-name":"Full Name",
             "email-or-phone":"Email Or Phone",
-            "company-name":"Company Name"
+            "company-name":"Company Name",
+            "description":"Description"
         }
     }
 }

@@ -35,7 +35,7 @@ async function WorkshopAndStudiosDetail({
                 className={cn(
                     "min-h-screen",
                     "fcol gap-10",
-                    "mt-20 py-10",
+                    "py-30",
                     "scroll-mt-30"
                 )}
             >

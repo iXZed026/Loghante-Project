@@ -42,6 +42,13 @@ function CostomerRequestForm({
         changeCompanyName,
     ] = useInput("")
 
+    // Description
+    const [
+        description,
+        ,
+        changeDescription,
+    ] = useInput("")
+
     return (
         <form
             id={URLHash}
@@ -60,7 +67,7 @@ function CostomerRequestForm({
 
             <div
                 className={cn(
-                    "grid grid-cols-12 gap-5 md:px-10"
+                    "grid grid-cols-12 gap-5 gap-y-10 md:px-10"
                 )}
             >
 
@@ -156,6 +163,34 @@ function CostomerRequestForm({
                             "transition-colors",
                             "rounded-xs",
                             "h-15"
+                        )}
+                    />
+                </div>
+
+                {/* Desription */}
+                <div
+                    className={cn(
+                        "py-2 px-3",
+                        "lg:col-span-6",
+                        "col-span-12",
+                        "fcol md:gap-y-3 gap-y-1"
+                    )}
+                >
+                    <span className="text-sm font-semibold text-black-light-utility">
+                        {T("description")}:
+                    </span>
+
+                    <textarea
+                        value={description}
+                        onChange={changeDescription}
+                        maxLength={500}
+                        className={cn(
+                            "resize-none",
+                            "border-3",
+                            "border-[var(--black-light-color)]",
+                            "transition-colors",
+                            "rounded-xs",
+                            "h-35"
                         )}
                     />
                 </div>
