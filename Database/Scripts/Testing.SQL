@@ -242,3 +242,4 @@ ORDER BY EventTypeId, LanguagesId;
 
 SELECT * FROM users;
 
+SELECT * FROM customerrequests;
