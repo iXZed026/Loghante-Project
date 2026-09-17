@@ -1,67 +1,60 @@
-import FadeUp from '@/components/animations/FadeUp'
 import Container from '@/components/shared/Container'
-import WorkShopAndStudiosBox from '@/features/loghante(root)/worshops-and-studios/componenets/WorkShopAndStudiosBox'
+import WorkshopsAndStudiosDetailCompBox from '@/features/loghante(root)/worshops-and-studios/componenets/workshops-and-studios-detail/WorkshopsAndStudiosDetailCompBox'
+import WorkshopsAndStudiosDetailForm from '@/features/loghante(root)/worshops-and-studios/componenets/workshops-and-studios-detail/WorkshopsAndStudiosDetailForm'
+import WorkshopsAndStudiosDetailHeader from '@/features/loghante(root)/worshops-and-studios/componenets/workshops-and-studios-detail/WorkshopsAndStudiosDetailHeader'
 import { workshopAndStudios } from '@/features/loghante(root)/worshops-and-studios/data/workshop-and-studios'
-import { slowTransitionOut } from '@/lib/animations/transitions'
+import { notFound } from 'next/navigation'
 import { cn } from '@/lib/utils/cn'
-import { useTranslations } from 'next-intl'
 
-function WorkshopsAndStudios() {
+interface IWorkshopAndStudiosDetail {
+    params: Promise<{
+        id: string
+    }>
+}
 
-    const wsAndStdsT =
-        useTranslations("workshopsAndStudios")
+async function WorkshopAndStudiosDetail({
+    params,
+}: IWorkshopAndStudiosDetail) {
+
+    const { id } = await params
+
+    const workshopId = Number(id)
+
+    const workshop = workshopAndStudios.find(
+        (item) => item.id === workshopId
+    )
+
+    if (!workshop) {
+        notFound()
+    }
 
     return (
         <Container>
             <div
                 className={cn(
-                    "mt-20 py-20",
                     "min-h-screen",
-                    "lg:px-30",
+                    "fcol gap-10",
+                    "mt-20 py-10",
                 )}
             >
 
-                {/* Header */}
-                <div className='fcol gap-10 text-center mb-20'>
-                    <FadeUp
-                        transition={slowTransitionOut}
-                        y={40}
-                        amount={0.6}
-                        once
-                    >
-                        <h2 className='font-wulkan font-bold md:text-5xl text-3xl text-crimson'>
-                            {wsAndStdsT("title")}
-                        </h2>
-                    </FadeUp>
+                <WorkshopsAndStudiosDetailHeader
+                    workshop={workshop}
+                />
 
-                    <FadeUp
-                        transition={slowTransitionOut}
-                        y={60}
-                        once
-                    >
-                        <h6 className='md:text-lg text-sm font-medium lg:w-165 mx-auto text-black-light-utility'>
-                            {wsAndStdsT("description")}
-                        </h6>
-                    </FadeUp>
-                </div>
+                {workshop.closeUps.map((closeUp, index) => (
+                    <WorkshopsAndStudiosDetailCompBox
+                        key={`${workshop.id}-${index}`}
+                        closeUp={closeUp}
+                        reverse={index % 2 === 0}
+                    />
+                ))}
 
-                {/* Boxes */}
-                <div
-                    className={cn(
-                        "grid grid-cols-12 gap-5"
-                    )}
-                >
-                    {workshopAndStudios.map((workshop) => (
-                        <WorkShopAndStudiosBox
-                            key={workshop.id}
-                            workshop={workshop}
-                        />
-                    ))}
-                </div>
+                <WorkshopsAndStudiosDetailForm />
 
             </div>
         </Container>
     )
 }
 
-export default WorkshopsAndStudios
+export default WorkshopAndStudiosDetail

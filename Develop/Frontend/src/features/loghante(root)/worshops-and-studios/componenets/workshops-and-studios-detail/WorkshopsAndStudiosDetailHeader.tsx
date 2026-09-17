@@ -2,7 +2,7 @@ import AppLink from '@/components/ui/AppLink'
 import { WorkshopAndStudio } from '../../data/workshop-and-studios'
 import { getLocalizedValue } from '@/lib/utils/getLocalizedValue'
 import { useLocale, useTranslations } from 'next-intl'
-import React from 'react'
+import { cn } from '@/lib/utils/cn'
 
 interface IWorkshopsAndStudiosDetailHeader {
     workshop: WorkshopAndStudio
@@ -56,18 +56,33 @@ function WorkshopsAndStudiosDetailHeader({
                         </p>
                     </div>
 
-                    <div className='fcol items-center gap-5'>
+                    <div className='fcc gap-5'>
 
                         <AppLink
-                            href='/'
-                            className='py-4 px-13 bg-crimson text-white-utility rounded-lg'
+                            href={`workshops-and-studios/${workshop.id}#workshops-and-studios-form`}
+                            className={cn(
+                                "click-scale",
+                                "py-4 px-13",
+                                "bg-crimson",
+                                "text-white-utility",
+                                "rounded-lg",
+                                "hover:bg-[var(--crimson-opacity-color)]"
+                            )}
                         >
                             {wsAndStdsPageT("submit-button")}
                         </AppLink>
 
                         <a
                             href="tel:02165555555"
-                            className="text-crimson font-semibold text-lg py-3 px-5 rounded-lg"
+                            className={cn(
+                                "text-crimson",
+                                "font-semibold",
+                                "text-sm",
+                                "py-4 px-5",
+                                "rounded-sm",
+                                "bg-opacity-hover-crimson",
+                                "transition-colors"
+                            )}
                         >
                             {wsAndStdsPageT("contact")}
                             021-6555555
