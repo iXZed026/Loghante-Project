@@ -9,7 +9,8 @@
             "full-name": "نام و نام خانوادگی",
             "email-or-phone": "ایمیل یا شماره تلفن",
             "company-name": "نام شرکت",
-            "description":"توضیحات"
+            "description":"توضیحات",
+            "submit-button": "ارسال درخواست"
         }
     }
 }

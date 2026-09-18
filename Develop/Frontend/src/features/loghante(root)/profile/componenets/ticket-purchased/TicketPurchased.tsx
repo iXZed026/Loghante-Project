@@ -5,7 +5,6 @@ import TicketBox from '@/features/loghante(root)/profile/componenets/ticket-purc
 import {
     getUserBookings,
     UserBookingResponse,
-
 } from '@/lib/api/ticket/booking'
 
 import { useLocale, useTranslations } from 'next-intl'
@@ -14,6 +13,7 @@ import { useEffect, useState } from 'react'
 function TicketPurchased() {
 
     const locale = useLocale()
+
     const ticketPurchasedT = useTranslations(
         "profileTicketPurchased",
     )
@@ -42,7 +42,7 @@ function TicketPurchased() {
                     )
 
                 setBookings(
-                    response.data
+                    response.data ?? []
                 )
 
             } catch (error) {
@@ -86,19 +86,29 @@ function TicketPurchased() {
                 {/* Tickets */}
                 <div className='fcol gap-5 xl:px-20'>
 
-                    {bookings.map(
-                        (ticket) => (
+                    {bookings.length > 0 ? (
 
-                            <TicketBox
-                                key={ticket.bookingId}
-                                eventTypeName={ticket.eventTypeName}
-                                name={ticket.name}
-                                startAt={ticket.startAt}
-                                duration={ticket.duration}
-                                quantity={ticket.quantity}
-                            />
+                        bookings.map(
+                            (ticket) => (
 
+                                <TicketBox
+                                    key={ticket.bookingId}
+                                    eventTypeName={ticket.eventTypeName}
+                                    name={ticket.name}
+                                    startAt={ticket.startAt}
+                                    duration={ticket.duration}
+                                    quantity={ticket.quantity}
+                                />
+
+                            )
                         )
+
+                    ) : (
+
+                        <p className='text-center'>
+                            You don't have any tickets at the moment.
+                        </p>
+
                     )}
 
                 </div>
@@ -110,3 +120,4 @@ function TicketPurchased() {
 }
 
 export default TicketPurchased
+

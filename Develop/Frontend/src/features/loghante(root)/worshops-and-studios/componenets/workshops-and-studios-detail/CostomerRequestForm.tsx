@@ -39,24 +39,28 @@ function CostomerRequestForm({
         fullName,
         ,
         changeFullName,
+        clearFullName,
     ] = useInput("");
 
     const [
         phoneOrEmail,
         ,
         changePhoneOrEmail,
+        clearPhoneOrEmail,
     ] = useInput("");
 
     const [
         companyName,
         ,
         changeCompanyName,
+        clearCompanyName,
     ] = useInput("");
 
     const [
         description,
         ,
         changeDescription,
+        clearDescription,
     ] = useInput("");
 
     const [
@@ -104,9 +108,13 @@ function CostomerRequestForm({
                     pushUrl: undefined,
                 });
 
-
                 return;
             }
+
+            clearFullName();
+            clearPhoneOrEmail();
+            clearCompanyName();
+            clearDescription();
 
             setModal({
                 active: true,
@@ -295,6 +303,7 @@ function CostomerRequestForm({
                             className={cn(
                                 "resize-none",
                                 "border-3",
+                                "p-4",
                                 "border-[var(--black-light-color)]",
                                 "transition-colors",
                                 "rounded-xs",
@@ -327,7 +336,7 @@ function CostomerRequestForm({
                         >
                             {isLoading
                                 ? "Loading..."
-                                : "Submit Request"
+                                :  <span>{T("submit-button")}</span>
                             }
                         </Button>
                     </div>
