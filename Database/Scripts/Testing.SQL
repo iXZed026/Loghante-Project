@@ -240,6 +240,12 @@ SELECT *
 FROM EventTypeTranslations
 ORDER BY EventTypeId, LanguagesId;
 
+SELECT * FROM eventsession;
+
+SELECT * FROM halls;
+
+SELECT * FROM bookingseats;
+
 SELECT * FROM users;
 
 SELECT * FROM customerrequests;
