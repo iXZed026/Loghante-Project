@@ -3,11 +3,11 @@ package dto
 import "time"
 
 type ProfileResponse struct {
-	UserID      uint      `json:"userId"`
-	FullName    string    `json:"fullName"`
-	Email       string    `json:"email"`
-	PhoneNumber string    `json:"phoneNumber"`
-	DOB         time.Time `json:"dob"`
+	UserID      uint       `json:"userId"`
+	FullName    string     `json:"fullName"`
+	Email       string     `json:"email"`
+	PhoneNumber string     `json:"phoneNumber"`
+	DOB         *time.Time `json:"dob"`
 }
 
 type EditProfileRequest struct {
@@ -20,9 +20,9 @@ type EditProfileRequest struct {
 }
 
 type EditProfileResponse struct {
-	UserID      uint      `json:"userId"`
-	FullName    string    `json:"fullName"`
-	Email       string    `json:"email"`
-	PhoneNumber string    `json:"phoneNumber"`
-	DOB         time.Time `json:"dob"`
+	UserID      uint       `json:"userId"`
+	FullName    string     `json:"fullName"`
+	Email       string     `json:"email"`
+	PhoneNumber string     `json:"phoneNumber"`
+	DOB         *time.Time `json:"dob"`
 }

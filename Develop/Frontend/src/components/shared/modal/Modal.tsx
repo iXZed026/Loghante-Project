@@ -79,6 +79,8 @@ function Modal({
                     "min-w-113 py-4 px-4",
                     "text-center font-semibold",
                     "fixed left-1/2 -translate-x-1/2",
+                    "top-5",
+                    "z-100",
                     "border-[1px]",
                     "rounded-md",
 

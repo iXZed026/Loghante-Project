@@ -18,9 +18,11 @@ func SetupRoutes(
 	authHandler *handlers.AuthHandler,
 	profileHandler *handlers.ProfileHandler,
 	ticketHandler *handlers.TicketHandler,
+	customerRequestHandler *handlers.CustomerRequestHandler,
 	jwtService *auth.JWTService,
 	rateLimiter limiter.RateLimiter,
 ) {
+
 	r.Use(
 		middleware.RecoveryMiddleware(logger),
 	)
@@ -69,6 +71,13 @@ func SetupRoutes(
 			logger,
 			ticketHandler,
 			jwtService,
+			rateLimiter,
+		)
+
+		SetupCustomerRequestRoutes(
+			api,
+			logger,
+			customerRequestHandler,
 			rateLimiter,
 		)
 	}

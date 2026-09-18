@@ -28,6 +28,7 @@
         "verification_successful": "تأیید با موفقیت انجام شد",
         "password_changed_successfully": "رمز عبور با موفقیت تغییر کرد",
         "profile_fetched_successfully": "پروفایل با موفقیت دریافت شد",
-        "profile_updated_successfully": "پروفایل با موفقیت به‌روزرسانی شد"
+        "profile_updated_successfully": "پروفایل با موفقیت به‌روزرسانی شد",
+        "customer_request_created_successfully": "درخواست مشتری با موفقیت ثبت شد"
     }
 }

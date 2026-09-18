@@ -153,6 +153,6 @@ func (s *ProfileService) EditProfile(
 		FullName:    req.FullName,
 		Email:       req.Email,
 		PhoneNumber: req.PhoneNumber,
-		DOB:         *dob,
+		DOB:         dob,
 	}, nil
 }

@@ -138,6 +138,11 @@ func New() (*App, error) {
 			db,
 		)
 
+	customerRequestRepository :=
+		repositories.NewCustomerRequestRepository(
+			db,
+		)
+
 	//////////////
 	// Services
 	//////////////
@@ -162,6 +167,11 @@ func New() (*App, error) {
 		bookingRepository,
 	)
 
+	customerRequestService :=
+		services.NewCustomerRequestService(
+			customerRequestRepository,
+		)
+
 	//////////////
 	// Handlers
 	//////////////
@@ -180,6 +190,12 @@ func New() (*App, error) {
 		ticketService,
 		logger,
 	)
+
+	customerRequestHandler :=
+		handlers.NewCustomerRequestHandler(
+			customerRequestService,
+			logger,
+		)
 
 	//////////////
 	// Rate Limiter
@@ -201,6 +217,7 @@ func New() (*App, error) {
 		authHandler,
 		profileHandler,
 		ticketHandler,
+		customerRequestHandler,
 		jwtService,
 		rateLimiter,
 	)

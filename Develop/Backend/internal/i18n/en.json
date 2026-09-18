@@ -28,6 +28,7 @@
         "verification_successful": "Verification successful",
         "password_changed_successfully": "Password changed successfully",
         "profile_fetched_successfully": "Profile fetched successfully",
-        "profile_updated_successfully": "Profile updated successfully"
+        "profile_updated_successfully": "Profile updated successfully",
+        "customer_request_created_successfully": "Customer request created successfully"
     }
 }
