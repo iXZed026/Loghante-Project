@@ -16,7 +16,7 @@ function ConferenceHallHeader() {
 
                 </div>
             </div>
-            {/* Image */}
+            {/* Content */}
             <div className='fcol gap-y-20 lg:text-start text-center w-full'>
                 <div>
                     <h3 className='font-wulkan md:text-5xl text-3xl font-bold'>
