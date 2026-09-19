@@ -249,3 +249,5 @@ SELECT * FROM bookingseats;
 SELECT * FROM users;
 
 SELECT * FROM customerrequests;
+
+SELECT * FROM halls;
