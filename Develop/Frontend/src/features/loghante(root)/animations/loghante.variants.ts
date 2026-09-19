@@ -88,3 +88,25 @@ export const cafeMenusVariant: Variants = {
 
 }
 
+////
+export const conferenceHallContainerVariant: Variants = {
+    hidden: {},
+    visible: {
+        transition: {
+            staggerChildren: 0.15,
+        }
+    },
+}
+
+export const conferenceHallVariant: Variants = {
+    hidden: {
+        opacity: 0,
+        y: -40,
+    },
+    visible: {
+        opacity: 1,
+        y: 0,
+    },
+
+}
+

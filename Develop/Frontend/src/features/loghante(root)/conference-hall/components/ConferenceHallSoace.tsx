@@ -1,4 +1,8 @@
+import { cn } from '@/lib/utils/cn'
 import React from 'react'
+import ConferenceHallSpaceBox from './ConferenceHallSpaceBox'
+import StaggerWrapper from '@/components/animations/StaggerWrapper'
+import { conferenceHallContainerVariant } from '../../animations/loghante.variants'
 
 function ConferenceHallSoace() {
     return (
@@ -13,9 +17,20 @@ function ConferenceHallSoace() {
                 </span>
             </div>
             {/* Conference Hall Space Boxes */}
-            <div>
+            <StaggerWrapper
+                key={1}
+                variants={conferenceHallContainerVariant}
+                once
+                className={cn(
+                    "grid grid-cols-12 lg:gap-10 gap-3 mb-15",
+                )}
+            >
                 
-            </div>
+                <ConferenceHallSpaceBox/>
+                <ConferenceHallSpaceBox/>
+                <ConferenceHallSpaceBox/>
+                <ConferenceHallSpaceBox/>
+            </StaggerWrapper>
         </div>
     )
 }
