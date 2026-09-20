@@ -204,7 +204,7 @@ function CostomerRequestForm({
                             className={cn(
                                 "border-b-3",
                                 "border-l border-r border-t",
-                                "border-b-[var(--black-light-color)]",
+                                "border-b-[var(--black-color)]",
                                 "border-r-[var(--white-light-color)]",
                                 "border-t-[var(--white-light-color)]",
                                 "border-l-[var(--white-light-color)]",
@@ -237,7 +237,7 @@ function CostomerRequestForm({
                             className={cn(
                                 "border-b-3",
                                 "border-l border-r border-t",
-                                "border-b-[var(--black-light-color)]",
+                                "border-b-[var(--black-color)]",
                                 "border-r-[var(--white-light-color)]",
                                 "border-t-[var(--white-light-color)]",
                                 "border-l-[var(--white-light-color)]",
@@ -270,7 +270,7 @@ function CostomerRequestForm({
                             className={cn(
                                 "border-b-3",
                                 "border-l border-r border-t",
-                                "border-b-[var(--black-light-color)]",
+                                "border-b-[var(--black-color)]",
                                 "border-r-[var(--white-light-color)]",
                                 "border-t-[var(--white-light-color)]",
                                 "border-l-[var(--white-light-color)]",
@@ -300,13 +300,14 @@ function CostomerRequestForm({
                             value={description}
                             onChange={changeDescription}
                             maxLength={500}
+                            placeholder={T("optional")}
                             className={cn(
                                 "resize-none",
-                                "border-3",
+                                "border-2",
                                 "p-4",
-                                "border-[var(--black-light-color)]",
+                                "border-b-[var(--black-color)]",
                                 "transition-colors",
-                                "rounded-xs",
+                                "rounded-lg",
                                 "h-35"
                             )}
                         />

@@ -8,6 +8,7 @@
             "title": "Please fill in your information:",
             "full-name": "Full Name",
             "email-or-phone": "Email Or Phone",
+            "optional":"Optional",
             "company-name": "Company Name",
             "description": "Description",
             "submit-button": "Submit Request"

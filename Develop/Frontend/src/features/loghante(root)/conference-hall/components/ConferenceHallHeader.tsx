@@ -2,9 +2,14 @@ import FadeIn from '@/components/animations/FadeIn'
 import FadeUp from '@/components/animations/FadeUp'
 import { slowTransitionOut, verySlowTransitionOut } from '@/lib/animations/transitions'
 import { cn } from '@/lib/utils/cn'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 
 function ConferenceHallHeader() {
+
+    const conferenceHallHeaderT =
+        useTranslations("conferenceHall.header")
+
     return (
         <div
             className={cn(
@@ -14,17 +19,16 @@ function ConferenceHallHeader() {
             {/* Image */}
             <div className='w-full fcc'>
                 <FadeIn
-                className='w-full'
+                    className='w-full'
                     transition={verySlowTransitionOut}
                     once
                 >
                     <div
                         className='bg-crimson rounded-lg lg:w-100 w-full h-100'
-                    >
-
-                    </div>
+                    />
                 </FadeIn>
             </div>
+
             {/* Content */}
             <div className='fcol gap-y-20 lg:text-start text-center w-full'>
                 <div>
@@ -34,10 +38,11 @@ function ConferenceHallHeader() {
                         once
                     >
                         <h3 className='font-wulkan md:text-5xl text-3xl font-bold'>
-                            Conference Halls
+                            {conferenceHallHeaderT("title")}
                         </h3>
                     </FadeUp>
                 </div>
+
                 <div>
                     <FadeUp
                         transition={slowTransitionOut}
@@ -45,7 +50,7 @@ function ConferenceHallHeader() {
                         once
                     >
                         <p className='text-black-light-utility'>
-                            Loghanteh Complex, with its diverse spaces and advanced equipment, is ready to host your events, conferences, and ceremonies.
+                             {conferenceHallHeaderT("description")}
                         </p>
                     </FadeUp>
                 </div>
