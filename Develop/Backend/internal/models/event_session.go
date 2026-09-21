@@ -17,6 +17,7 @@ type EventSession struct {
 	Price    *decimal.Decimal `gorm:"column:price;type:numeric(12,2)"`
 
 	Event Event `gorm:"foreignKey:EventID"`
+	Hall  Hall  `gorm:"foreignKey:HallID"`
 }
 
 func (EventSession) TableName() string {

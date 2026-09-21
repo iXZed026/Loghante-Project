@@ -6,6 +6,7 @@ type Event struct {
 
 	EventType EventType      `gorm:"foreignKey:EventTypeID"`
 	Sessions  []EventSession `gorm:"foreignKey:EventID"`
+	Images    []EventImage   `gorm:"foreignKey:EventID"`
 }
 
 func (Event) TableName() string {

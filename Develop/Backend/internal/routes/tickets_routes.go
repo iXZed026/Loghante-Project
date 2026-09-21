@@ -31,13 +31,23 @@ func SetupTicketsRoutes(
 		)
 
 		tickets.GET(
-			"/events-and-courses",
+			"/events",
 			middleware.RateLimiter(
 				rateLimiter,
 				60,
 				logger,
 			),
-			ticketHandler.GetEventAndCourses,
+			ticketHandler.GetEvent,
+		)
+
+		tickets.GET(
+			"/courses",
+			middleware.RateLimiter(
+				rateLimiter,
+				60,
+				logger,
+			),
+			ticketHandler.GetEvent,
 		)
 
 		tickets.GET(

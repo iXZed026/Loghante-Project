@@ -1,37 +1,61 @@
 "use client"
 
 import { useEffect } from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import {
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from "next/navigation"
 import { useLocale } from "next-intl"
 import { EventsAndCoursesTabs } from "../data/events-and-courses-tabs"
 import { getLocalizedValue } from "@/lib/utils/getLocalizedValue"
 import Button from "@/components/ui/Button"
 import { cn } from "@/lib/utils/cn"
 
-function EventAndCpursesTab() {
+function EventAndCoursesTab() {
     const locale = useLocale()
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
 
-    const activeTab = searchParams.get("type")
+    const type = searchParams.get("type")
 
     useEffect(() => {
-        if (!activeTab) {
-            const params = new URLSearchParams(searchParams.toString())
-
-            params.set("type", "events")
-
-            router.replace(`${pathname}?${params.toString()}`)
+        if (
+            type === "events" ||
+            type === "courses"
+        ) {
+            return
         }
-    }, [activeTab, pathname, router, searchParams])
 
-    function handleTabChange(type: string) {
-        const params = new URLSearchParams(searchParams.toString())
+        const params = new URLSearchParams(
+            searchParams.toString()
+        )
 
-        params.set("type", type)
+        params.set("type", "events")
 
-        router.push(`${pathname}?${params.toString()}`)
+        router.replace(
+            `${pathname}?${params.toString()}`
+        )
+    }, [
+        type,
+        pathname,
+        router,
+        searchParams,
+    ])
+
+    function handleTabChange(
+        selectedType: "events" | "courses"
+    ) {
+        const params = new URLSearchParams(
+            searchParams.toString()
+        )
+
+        params.set("type", selectedType)
+
+        router.push(
+            `${pathname}?${params.toString()}`
+        )
     }
 
     return (
@@ -47,14 +71,18 @@ function EventAndCpursesTab() {
                 )}
             >
                 {EventsAndCoursesTabs.map((tab) => {
-                    const tabType = tab.name.en.toLowerCase()
-                    const isActive = activeTab === tabType
+                    const isActive =
+                        type === tab.type
 
                     return (
                         <Button
                             key={tab.id}
                             type="button"
-                            onClick={() => handleTabChange(tabType)}
+                            onClick={() =>
+                                handleTabChange(
+                                    tab.type
+                                )
+                            }
                             className={cn(
                                 "w-full",
                                 "rounded-none",
@@ -68,7 +96,10 @@ function EventAndCpursesTab() {
                             )}
                         >
                             <span>
-                                {getLocalizedValue(tab.name, locale)}
+                                {getLocalizedValue(
+                                    tab.name,
+                                    locale
+                                )}
                             </span>
                         </Button>
                     )
@@ -78,4 +109,4 @@ function EventAndCpursesTab() {
     )
 }
 
-export default EventAndCpursesTab
+export default EventAndCoursesTab

@@ -158,13 +158,13 @@ func (s *TicketService) CreateBooking(
 	}, nil
 }
 
-// events-and-courses
+// events
 
-func (s *TicketService) GetEventAndCourseSessions(
+func (s *TicketService) GetEventSessions(
 	ctx context.Context,
 	date time.Time,
 	languageCode string,
-) ([]dto.EventAndCourseSessionResponse, error) {
+) ([]dto.EventResponse, error) {
 
 	languageID, err :=
 		s.languageRepository.GetIDByCode(
@@ -179,15 +179,15 @@ func (s *TicketService) GetEventAndCourseSessions(
 	eventTypeID, err :=
 		s.ticketRepository.GetEventTypeIDByName(
 			ctx,
-			"events-and-courses",
+			"events",
 		)
 
 	if err != nil {
 		return nil, err
 	}
 
-	sessions, err :=
-		s.ticketRepository.GetEventAndCourseSessions(
+	events, err :=
+		s.ticketRepository.GetEventSessions(
 			ctx,
 			date,
 			eventTypeID,
@@ -198,7 +198,7 @@ func (s *TicketService) GetEventAndCourseSessions(
 		return nil, err
 	}
 
-	return sessions, nil
+	return events, nil
 }
 
 func (s *TicketService) GetUserBookings(
