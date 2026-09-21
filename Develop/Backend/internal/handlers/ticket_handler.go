@@ -280,6 +280,7 @@ func (h *TicketHandler) GetEventAndCourses(
 	)
 }
 
+// User Ticket
 func (h *TicketHandler) GetUserBookings(
 	c *gin.Context,
 ) {
