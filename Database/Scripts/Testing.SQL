@@ -264,3 +264,28 @@ SELECT * FROM eventtypes;
 SELECT * FROM eventsession;
 
 SELECT * FROM eventstranslations;
+
+SELECT * FROM halls;
+
+SELECT * FROM halltranslations;
+
+INSERT INTO eventsession (eventid, hallid, startat, duration, capacity, price)
+VALUES
+        (2,1,'2026-09-12 16:30:00+02',50,20,0) ,
+        (2,1,'2026-09-13 16:30:00+02',50,20,500000 ),
+        (2,1,'2026-09-12 16:30:00+02',50,20,0),
+        (2,1,'2026-10-12 16:30:00+02',50,20,0),
+        (2,1,'2026-10-14 16:30:00+02',50,20,500000),
+        (2,1,'2026-10-13 16:30:00+02',50,20,500000);
+
+
+INSERT INTO eventsession (eventid, hallid, startat, duration, capacity, price)
+VALUES
+        (3,1,'2026-09-12 16:30:00+02',120,50,700000) ,
+        (3,1,'2026-09-13 16:30:00+02',120,50,500000 ),
+        (3,1,'2026-09-12 16:30:00+02',120,50,700000),
+        (3,1,'2026-10-12 16:30:00+02',120,50,700000),
+        (3,1,'2026-10-14 16:30:00+02',120,50,500000),
+        (3,1,'2026-10-13 16:30:00+02',120,50,500000);
+
+SELECT * FROM eventsession WHERE eventid = 3;
