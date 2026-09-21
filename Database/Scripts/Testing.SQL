@@ -251,3 +251,16 @@ SELECT * FROM users;
 SELECT * FROM customerrequests;
 
 SELECT * FROM halls;
+
+SELECT
+    bookingid
+FROM bookings;
+
+
+SELECT * FROM bookings;
+
+SELECT * FROM eventtypes;
+
+SELECT * FROM eventsession;
+
+SELECT * FROM eventstranslations;
