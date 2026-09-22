@@ -10,8 +10,6 @@ SELECT * FROM refreshtoken WHERE revoked = false;
 SELECT * FROM refreshtoken WHERE refreshtokenid::TEXT = 'd94605ef-b7a6-46a3-a494-0b01c07bb31f';
 SELECT * FROM users;
 
-
-
 SELECT * FROM refreshtoken WHERE userid = 50 AND revoked = FALSE;
 DELETE FROM refreshtoken WHERE userid = 50 AND revoked = FALSE;
 
