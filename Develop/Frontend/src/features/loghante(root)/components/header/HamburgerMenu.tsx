@@ -1,135 +1,208 @@
-import AnimatePresenceWrapper from '@/components/animations/AnimatePresenceWrapper'
-import { cn } from '@/lib/utils/cn'
+"use client";
+
+import AnimatePresenceWrapper from "@/components/animations/AnimatePresenceWrapper";
+import Button from "@/components/ui/Button";
 import { motion } from "framer-motion";
-import { openSlideMenu, openSlideMenuFa } from '@/lib/animations/variants';
-import useClickOutside from '@/hooks/useClickOutside';
-import { useRef } from 'react';
-import NavLinks from './NavLinks';
+import {
+    openSlideMenu,
+    openSlideMenuFa,
+} from "@/lib/animations/variants";
+import useClickOutside from "@/hooks/useClickOutside";
+import { useRef } from "react";
+import NavLinks from "./NavLinks";
 import { IoMdClose } from "react-icons/io";
-import Button from '@/components/ui/Button';
-import { TranslationFunction } from '@/types/translations';
-import { useLocale } from 'next-intl';
-import TicketDropDown from './TicketDropDown';
-import LanguageSwitcher from '@/components/shared/LanguageSwitcher';
-import AppLink from '@/components/ui/AppLink';
+import { cn } from "@/lib/utils/cn";
+import { TranslationFunction } from "@/types/translations";
+import { useLocale } from "next-intl";
+import TicketDropDown from "./TicketDropDown";
+import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
+import AppLink from "@/components/ui/AppLink";
+import { FiUser } from "react-icons/fi";
 
 interface IHamburgerMenuProps {
-    activeHumber: boolean
-    UnActiveHumberHandler: () => void
+    activeHumber: boolean;
+    UnActiveHumberHandler: () => void;
     t: TranslationFunction;
-
+    isAuthenticated: boolean;
+    isLoading: boolean;
 }
 
 function HamburgerMenu({
     activeHumber,
     UnActiveHumberHandler,
-    t
+    t,
+    isAuthenticated,
+    isLoading,
 }: IHamburgerMenuProps) {
 
-    const divElem =
-        useRef<HTMLDivElement | null>(null)
+    const divElem = useRef<HTMLDivElement | null>(null);
+
+    const locale = useLocale();
 
     useClickOutside(
         divElem,
         UnActiveHumberHandler
-    )
-
-    const locale = useLocale()
+    );
 
     return (
         <AnimatePresenceWrapper isActive={activeHumber}>
-            {/* BLACK BACKGROUND */}
+
+            {/* BACKDROP */}
             <div
                 className={cn(
-                    "w-full h-[100vh]",
+                    "fixed inset-0 z-40",
+                    "w-full h-screen",
                     "bg-black/70",
-                    "text-black-utility md:text-md text-lg italic font-semibold",
-                    "fixed left-0  top-0",
-                    "z-40",
+                    "text-black-utility",
+                    "md:text-md text-lg",
+                    "italic font-semibold",
                 )}
             >
-                {/* SLIDEBAR(HUMBURGER MENu) */}
+
+                {/* SIDEBAR */}
                 <motion.div
                     variants={
-                        locale !== "fa" ?
-                            openSlideMenu :
-                            openSlideMenuFa
+                        locale !== "fa"
+                            ? openSlideMenu
+                            : openSlideMenuFa
                     }
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className={cn(
-                        "sm:w-140 w-full h-[100vh]",
-                        "fcol gap-3",
-                        "bg-white-utility",
-                        "fixed top-0",
-                        locale === "fa" ? "right-0" : "left-0",
-                        "shadow-lg",
-                        "z-100",
-                    )}
                     ref={divElem}
-                >
-                    <div className={cn(
-                        "gap-1",
-                        "py-4 md:px-7 px-4 mb-5",
-                        "border-b-2 border-[var(--crimson-color)]",
-                    )}
-                    >
+                    className={cn(
+                        "fixed top-0 z-50",
+                        "h-screen",
+                        "sm:w-140 w-full",
+                        "bg-white-utility",
+                        "shadow-lg",
 
+                        locale === "fa"
+                            ? "right-0"
+                            : "left-0",
+
+
+                        "flex flex-col",
+                    )}
+                >
+
+                    {/* HEADER */}
+                    <div
+                        className={cn(
+                            "shrink-0",
+                            "py-4 md:px-7 px-4",
+                            "mb-2",
+                            "border-b-2 border-[var(--crimson-color)]",
+                        )}
+                    >
                         <Button
                             className={cn(
                                 "flex items-center gap-2",
-                                "text-black-utility",
                                 "p-0",
-                                "hover:opacity-utility",
+                                "text-black-utility",
                                 "hover:opacity-50",
                             )}
                             onClick={UnActiveHumberHandler}
                         >
-                            {
-                                t("close-button")
-                            }
-                            <IoMdClose className={cn(
-                                "size-6",
-                                "text-crimson"
-                            )} />
+                            {t("close-button")}
+
+                            <IoMdClose
+                                className="size-6 text-crimson"
+                            />
                         </Button>
                     </div>
-                    {/* Links */}
-                    <div>
+
+                    {/* NAV LINKS */}
+
+                    <div className="flex-1 min-h-0 overflow-y-auto">
                         <NavLinks
-                            UnActiveHumberHandler={UnActiveHumberHandler}
+                            UnActiveHumberHandler={
+                                UnActiveHumberHandler
+                            }
                             t={t}
                         />
                     </div>
-                    {/* Buttons(Mobile) */}
-                    <div className='gap-3 fcol md:px-7 px-4'>
-                        {/* <LanguageSwitcher /> */}
-                        {/* <TicketDropDown /> */}
-                        {/* <AppLink
-                            href="/login"   
-                        >
-                            <Button
-                                className={cn(
-                                    "w-full",
-                                    "px-4 py-3",
-                                    "font-semibold",
-                                    "border-[1px]",
-                                    "text-black-utility",
-                                    "hover:bg-white/35",
-                                )}
-                            >
-                                {
-                                    t("login-button")
-                                }
-                            </Button>
-                        </AppLink> */}
-                    </div>
-                </motion.div>
 
+                    {/* BOTTOM ACTIONS */}
+
+                    <div
+                        className={cn(
+                            "shrink-0",
+                            "md:hidden flex flex-col gap-3",
+                            "md:px-7 px-4",
+                            "py-4",
+                            "border-t-2",
+                            "border-[var(--crimson-color)]",
+                            "bg-white-utility",
+                            "not-italic md:text-lg text-base z-100",
+                        )}
+                    >
+
+                        {/* LANGUAGE */}
+                        <LanguageSwitcher
+                            isScrolled={false}
+                            className="w-full"
+                        />
+
+                        {/* TICKETS */}
+                        <TicketDropDown
+                            t={t}
+                            isScrolled={false}
+                            className="w-full"
+                        />
+
+                        {/* LOGIN / PROFILE */}
+                        {!isLoading && (
+                            isAuthenticated ? (
+                                <AppLink
+                                    href="/profile"
+                                    onClick={UnActiveHumberHandler}
+                                    className="w-full"
+                                >
+                                    <Button
+                                        className={cn(
+                                            "w-full",
+                                            "px-4 md:py-3 py-2",
+                                            "flex items-center justify-center gap-2",
+                                            "font-semibold",
+                                            "border",
+                                            "text-black-utility",
+                                            "hover:bg-black/5",
+                                        )}
+                                    >
+                                        <FiUser className="size-5" />
+                                        Profile
+                                    </Button>
+                                </AppLink>
+                            ) : (
+                                <AppLink
+                                    href="/login"
+                                    onClick={UnActiveHumberHandler}
+                                    className="w-full"
+                                >
+                                    <Button
+                                        className={cn(
+                                            "w-full",
+                                            "px-4 py-3",
+                                            "font-semibold",
+                                            "border",
+                                            "text-black-utility",
+                                            "hover:bg-black/5",
+                                        )}
+                                    >
+                                        {t("login-button")}
+                                    </Button>
+                                </AppLink>
+                            )
+                        )}
+
+                    </div>
+
+                </motion.div>
             </div>
-        </AnimatePresenceWrapper >
-    )
+
+        </AnimatePresenceWrapper>
+    );
 }
 
-export default HamburgerMenu
+export default HamburgerMenu;

@@ -1,4 +1,5 @@
 "use client"
+
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import AppImage from "@/components/ui/AppImage";
 import AppLink from "@/components/ui/AppLink";
@@ -14,56 +15,63 @@ import useScroll from "@/hooks/useScroll";
 import { FiShoppingBag, FiUser } from "react-icons/fi";
 import { usePathname } from "next/navigation";
 import { useProfile } from "@/contexts/ProfileProvider";
-import { getHeaderBackground, getLayoutVisibility } from "@/features/loghante(root)/utils/layout"; 
+import {
+  getHeaderBackground,
+  getLayoutVisibility,
+} from "@/features/loghante(root)/utils/layout";
 
 function Header() {
 
   const t = useTranslations("LoghantehHeader");
-  const locale = useLocale()
+  const locale = useLocale();
+  const pathname = usePathname();
 
   const {
     isAuthenticated,
     isLoading,
-  } = useProfile()
+  } = useProfile();
 
   const isScrolled = useScroll(150);
-  const pathname = usePathname()
 
   const {
     hideHeader,
   } = getLayoutVisibility(
     pathname,
     locale,
-  )
+  );
 
   const [
     activeHumber,
     activeHumberHandler,
     UnActiveHumberHandler,
-    ,
-  ] = useActive(false)
+  ] = useActive(false);
 
   return (
-    <header className={cn(
-      "h-[80px]",
-      "py-3",
-      "z-30",
-      "select-none",
-      "text-white-utility md:text-md sm:text-sm text-xs",
-      "fixed w-full top-0 ",
-      "transition-all duration-300 ease-in-out",
-      hideHeader
-        ? "hidden"
-        : getHeaderBackground(
-          pathname,
-          locale,
-          isScrolled
-        )
-    )}>
+    <header
+      className={cn(
+        "fixed top-0 z-30",
+        "w-full h-[80px]",
+        "py-3",
+        "select-none",
+        "text-white-utility",
+        "text-xs sm:text-sm md:text-md",
+        "transition-all duration-300 ease-in-out",
+        hideHeader
+          ? "hidden"
+          : getHeaderBackground(
+            pathname,
+            locale,
+            isScrolled
+          )
+      )}
+    >
       <Container>
         <div className="grid grid-cols-12">
 
-          <div className="flex items-center col-span-4 gap-2">
+          {/* LEFT */}
+          <div className="col-span-4 flex items-center gap-2">
+
+            {/* Hamburger */}
             <IoIosMenu
               className={cn(
                 "size-11",
@@ -76,16 +84,14 @@ function Header() {
               onClick={activeHumberHandler}
             />
 
+            {/* Desktop Auth */}
             {!isLoading && (
               isAuthenticated ? (
-                <AppLink
-                  href="/profile"
-                >
+                <AppLink href="/profile">
                   <Button
                     className={cn(
-                      "md:flex hidden",
-                      "size-10",
-                      "p-0",
+                      "hidden md:flex",
+                      "size-10 p-0",
                       "items-center justify-center",
                       "hover:bg-white/35",
                       isScrolled && "text-gold-utility",
@@ -96,38 +102,41 @@ function Header() {
                   </Button>
                 </AppLink>
               ) : (
-                <AppLink
-                  href="/login"
-                >
+                <AppLink href="/login">
                   <Button
                     className={cn(
-                      "md:block hidden",
+                      "hidden md:block",
                       "px-4 py-2",
                       "font-semibold",
-                      "border-[1px]",
+                      "border",
                       "hover:bg-white/35",
                       isScrolled && "text-gold-utility",
                     )}
                   >
-                    {
-                      t("login-button")
-                    }
+                    {t("login-button")}
                   </Button>
                 </AppLink>
               )
             )}
 
-            <LanguageSwitcher isScrolled={isScrolled} />
+            {/* Desktop Language */}
+            <div className="hidden md:block">
+              <div className="hidden md:block">
+                <LanguageSwitcher
+                  isScrolled={isScrolled}
+                  className="w-20"
+                />
+              </div>
+            </div>
           </div>
 
+          {/* LOGO */}
           <div className="col-span-4 fcc">
-            <AppLink
-              href="/"
-            >
+            <AppLink href="/">
               <AppImage
                 width={70}
                 height={50}
-                priority={true}
+                priority
                 src="/images/Loghanteh-logo.svg"
                 alt="loghante icon"
                 className="brightness-0 invert text-gold-utility"
@@ -135,41 +144,52 @@ function Header() {
             </AppLink>
           </div>
 
+          {/* RIGHT */}
           <div className="col-span-4 fec gap-2">
-            <TicketDropDown t={t} isScrolled={isScrolled} />
 
-            <AppLink
-              href="/shop"
-            >
+            {/* Desktop Tickets */}
+            <div className="hidden md:block">
+              <TicketDropDown
+                t={t}
+                isScrolled={isScrolled}
+                className="w-40"
+              />
+            </div>
+
+            {/* Shop - visible everywhere */}
+            <AppLink href="/shop">
               <Button
                 className={cn(
-                  "md:w-25 w-22",
-                  "md:py-3 py-2 md:px-0  fcc gap-2",
+                  "w-22 md:w-25",
+                  "fcc gap-2",
+                  "py-2 md:py-3",
                   "md:font-semibold",
                   "bg-crimson",
-                  isScrolled ?
-                    "hover:bg-[#936c23]" :
-                    "hover:bg-[#42151A]",
+                  isScrolled
+                    ? "hover:bg-[#936c23]"
+                    : "hover:bg-[#42151A]",
                   isScrolled && "bg-gold-utility",
                 )}
               >
-                <FiShoppingBag className={cn(
-                  "size-4",
-                )} />
+                <FiShoppingBag className="size-4" />
                 Shop
               </Button>
             </AppLink>
+
           </div>
         </div>
       </Container>
 
+      {/* Hamburger */}
       <HamburgerMenu
         activeHumber={activeHumber}
         UnActiveHumberHandler={UnActiveHumberHandler}
         t={t}
+        isAuthenticated={isAuthenticated}
+        isLoading={isLoading}
       />
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;

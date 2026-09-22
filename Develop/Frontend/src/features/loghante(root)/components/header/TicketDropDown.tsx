@@ -17,64 +17,110 @@ import { TranslationFunction } from "@/types/translations";
 
 interface ITicketDropDown {
     t?: TranslationFunction;
-    isScrolled?: Boolean
+    isScrolled?: boolean;
+    className?: string;
 }
 
-function TicketDropDown(
-    {
-        t,
-        isScrolled,
-    }
-        : ITicketDropDown
-) {
+function TicketDropDown({
+    t,
+    isScrolled = false,
+    className,
+}: ITicketDropDown) {
+
     const [
-        activeTicketDripDown,
+        activeTicketDropDown,
         ,
         UnActiveTicketDropDownHandler,
-        toggleTicketDripDownHandler,
+        toggleTicketDropDownHandler,
     ] = useActive(false);
 
     const locale = useLocale();
 
-    const dropDownRef = useRef<HTMLDivElement | null>(null);
+    const dropDownRef =
+        useRef<HTMLDivElement | null>(null);
 
-    useClickOutside(dropDownRef, UnActiveTicketDropDownHandler);
+    useClickOutside(
+        dropDownRef,
+        UnActiveTicketDropDownHandler
+    );
+
+    const buttonClass = cn(
+        "md:py-3 py-2",
+        "flex items-center justify-center gap-2",
+        "md:font-semibold",
+
+        "bg-crimson",
+
+        isScrolled
+            ? "hover:bg-[#936c23]"
+            : "hover:bg-[#42151A]",
+
+        isScrolled &&
+        "bg-gold-utility",
+
+        activeTicketDropDown &&
+        "rounded-none border-b-2",
+    );
 
     return (
         <div
-            className="relative" ref={dropDownRef}
+            ref={dropDownRef}
+            className={cn(
+                "relative",
+                className,
+            )}
         >
+
+            {/* BUTTON */}
             <Button
                 className={cn(
-                    "md:w-40 w-full",
-                    "py-3 flex justify-center items-center gap-2 ",
-                    "md:font-semibold",
-                    "bg-crimson",
-                    isScrolled ?
-                        "hover:bg-[#936c23]" :
-                        "hover:bg-[#42151A]",
-                    isScrolled && "bg-gold-utility",
-                    activeTicketDripDown && "rounded-none border-b-2",
+                    "w-full",
+                    "text-white-utility",
+                    buttonClass,
                 )}
-                onClick={toggleTicketDripDownHandler}
+                onClick={
+                    toggleTicketDropDownHandler
+                }
             >
                 {t?.("ticket-button") ?? "Tickets"}
-                <IoIosArrowDown className={cn(
-                    "size-3 transition-transform duration-300",
-                    activeTicketDripDown && "rotate-180"
-                )} />
+
+                <IoIosArrowDown
+                    className={cn(
+                        "size-3",
+                        "transition-transform duration-300",
+                        activeTicketDropDown &&
+                        "rotate-180",
+                    )}
+                />
             </Button>
 
-            <AnimatePresenceWrapper isActive={activeTicketDripDown}>
+            {/* DROPDOWN */}
+            <AnimatePresenceWrapper
+                isActive={activeTicketDropDown}
+            >
                 <motion.div
                     variants={dropdownVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
                     className={cn(
-                        "absolute w-full bg-crimson text-center fcol overflow-hidden",
-                        activeTicketDripDown && "rounded-b-md",
-                        isScrolled && "bg-gold-utility",
+                        "absolute",
+                        "w-full",
+                        "overflow-hidden",
+                        "bg-crimson",
+                        "text-center",
+                        "text-white-utility",
+                        "fcol z-90",
+
+                        "bottom-full",
+                        "rounded-t-md",
+                        "md:bottom-auto",
+                        "md:top-full",
+                        "md:rounded-t-none",
+                        "md:rounded-b-md",
+
+                        isScrolled &&
+                        "bg-gold-utility",
                     )}
                 >
                     {tickets.map((ticket) => (
@@ -82,13 +128,18 @@ function TicketDropDown(
                             key={ticket.id}
                             href={`/${ticket.href}`}
                             className={cn(
-                                "block w-full py-3 px-2",
+                                "block w-full",
+                                "px-2 py-3",
+                                "text-white-utility",
                                 "transition-all",
-                                isScrolled ?
-                                    "hover:bg-[#936c23]/50" :
-                                    "hover:bg-[#42151A]/50",
+
+                                isScrolled
+                                    ? "hover:bg-[#936c23]/50"
+                                    : "hover:bg-[#42151A]/50",
                             )}
-                            onClick={UnActiveTicketDropDownHandler}
+                            onClick={
+                                UnActiveTicketDropDownHandler
+                            }
                         >
                             {getLocalizedValue(
                                 ticket.ticketType,
@@ -98,6 +149,7 @@ function TicketDropDown(
                     ))}
                 </motion.div>
             </AnimatePresenceWrapper>
+
         </div>
     );
 }
