@@ -47,7 +47,7 @@ export const navLinks: INavLink[] = [
       en: "Events & Courses",
       fa: "رویداد ها و دوره ها",
     },
-    path: "#events",
+    path: "#events-and-courses",
   },
 
   {
@@ -75,7 +75,7 @@ export const navLinks: INavLink[] = [
       en: "Cafe Menus",
       fa: "منو کافه ها",
     },
-    path: "#cafe_menus",
+    path: "#cafes-and-foods",
   },
 
   {
@@ -102,7 +102,7 @@ export const navLinks: INavLink[] = [
       en: "Contact Us",
       fa: "تماس با ما",
     },
-    path: "#contact",
+    path: "#footer",
   },
 
   // {

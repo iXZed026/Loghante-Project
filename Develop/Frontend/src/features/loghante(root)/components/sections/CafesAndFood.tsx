@@ -12,7 +12,7 @@ import CafesAndFoodsBox from '../CafesAndFoodsBox'
 
 function CafesAndFood() {
     return (
-        <section id="cafes-and-studios" className='loghante-section'>
+        <section id="cafes-and-foods" className='loghante-section'>
             <div className='fcol gap-15 text-center mb-20'>
                 <FadeUp
                     y={40}

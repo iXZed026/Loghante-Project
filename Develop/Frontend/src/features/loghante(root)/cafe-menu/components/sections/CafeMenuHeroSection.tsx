@@ -9,7 +9,7 @@ function CafeMenuHero() {
         useTranslations("cafeMenu.hero")
 
     return (
-        <section id="hero" className='relative h-screen select-none'>
+        <section id="cafe-menus" className='relative h-screen select-none'>
             {/* Video */}
             <video
                 autoPlay

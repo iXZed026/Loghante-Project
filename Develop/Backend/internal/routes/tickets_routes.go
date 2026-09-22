@@ -20,6 +20,7 @@ func SetupTicketsRoutes(
 ) {
 	tickets := api.Group("/tickets")
 	{
+		//Meuseum Tour
 		tickets.GET(
 			"/museum-tour",
 			middleware.RateLimiter(
@@ -30,6 +31,7 @@ func SetupTicketsRoutes(
 			ticketHandler.GetMuseumTour,
 		)
 
+		//Events
 		tickets.GET(
 			"/events",
 			middleware.RateLimiter(
@@ -41,15 +43,27 @@ func SetupTicketsRoutes(
 		)
 
 		tickets.GET(
+			"/events/sessions/:sessionId",
+			ticketHandler.GetEventSessionDetail,
+		)
+
+		//Courses
+		tickets.GET(
 			"/courses",
 			middleware.RateLimiter(
 				rateLimiter,
 				60,
 				logger,
 			),
-			ticketHandler.GetEvent,
+			ticketHandler.GetCourses,
 		)
 
+		tickets.GET(
+			"/courses/sessions/:sessionId",
+			ticketHandler.GetCourseSessionDetail,
+		)
+
+		//Bookings
 		tickets.GET(
 			"/bookings",
 			middleware.AuthMiddleware(

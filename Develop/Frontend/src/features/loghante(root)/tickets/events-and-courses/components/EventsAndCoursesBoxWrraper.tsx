@@ -4,13 +4,12 @@ import {
     eventsAndCoursesContainerVariant,
 } from '@/features/loghante(root)/animations/loghante.variants'
 import { cn } from '@/lib/utils/cn'
-import {
-    EventAndCourse,
-} from '@/lib/api/ticket/events-and-courses'
-import EventAndCoursesBox from './EventAndCoursesBox'
 
-interface IEventsAndCoursesBoxWrraper {
-    data: EventAndCourse[]
+import EventAndCoursesBox from './EventAndCoursesBox'
+import { EventSession } from '@/lib/api/ticket/events-and-courses'
+
+interface EventsAndCoursesBoxWrraperProps {
+    data: EventSession[]
     isLoading: boolean
     error: boolean
 }
@@ -19,37 +18,37 @@ function EventsAndCoursesBoxWrraper({
     data,
     isLoading,
     error,
-}: IEventsAndCoursesBoxWrraper) {
+}: EventsAndCoursesBoxWrraperProps) {
 
     if (isLoading) {
         return (
-            <div className="text-center py-10">
-                Loading...
-            </div>
+            <Container>
+                <div className="fcc lg:px-45 min-h-[30vh]">
+                    Loading...
+                </div>
+            </Container>
+        )
+    }
+
+    if (data.length === 0) {
+        return (
+            <Container>
+                <div className="fcc lg:px-45 min-h-[30vh]">
+                    <span className="text-lg">
+                        No events were found for this month.
+                    </span>
+                </div>
+            </Container>
         )
     }
 
     if (error) {
         return (
-            <div className="text-center py-10">
-                Failed to load events.
-            </div>
-        )
-    }
-
-    const sessions = data.flatMap(
-        (event) =>
-            event.sessions.map((session) => ({
-                event,
-                session,
-            }))
-    )
-
-    if (sessions.length === 0) {
-        return (
-            <div className="text-center py-10">
-                No events or courses available.
-            </div>
+            <Container>
+                <div className="text-center">
+                    Failed to load events.
+                </div>
+            </Container>
         )
     }
 
@@ -57,23 +56,20 @@ function EventsAndCoursesBoxWrraper({
         <Container>
             <StaggerWrapper
                 className={cn(
-                    "grid grid-cols-12 gap-5 lg:px-45",
+                    "grid grid-cols-12 gap-5 lg:px-45 min-h-[50vh]",
                 )}
                 variants={
                     eventsAndCoursesContainerVariant
                 }
-                amount={0.3}
+                amount={0.2}
                 once
             >
-                {sessions.map(
-                    ({ event, session }) => (
-                        <EventAndCoursesBox
-                            key={session.sessionId}
-                            event={event}
-                            session={session}
-                        />
-                    )
-                )}
+                {data.map((event) => (
+                    <EventAndCoursesBox
+                        key={event.sessionId}
+                        event={event}
+                    />
+                ))}
             </StaggerWrapper>
         </Container>
     )

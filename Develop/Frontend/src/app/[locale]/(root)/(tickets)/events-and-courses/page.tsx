@@ -1,17 +1,11 @@
-import EventAndCoursesTab from '@/features/loghante(root)/tickets/events-and-courses/components/EventAndCoursesTab'
-import EventsAndCoursesDate from '@/features/loghante(root)/tickets/events-and-courses/components/EventsAndCoursesDate'
-import EventsAndCoursesHeader from '@/features/loghante(root)/tickets/events-and-courses/components/EventsAndCoursesHeader'
+import EventsAndCoursesContent from "@/features/loghante(root)/tickets/events-and-courses/components/EventsAndCoursesContent"
 
-function EventsAndCourses() {
+function EventsAndCoursesPage() {
     return (
-        <div className='py-18 mt-20'>
-            <EventsAndCoursesHeader />
-
-            <EventAndCoursesTab />
-
-            <EventsAndCoursesDate />
+        <div className="py-18 mt-20">
+            <EventsAndCoursesContent />
         </div>
     )
 }
 
-export default EventsAndCourses
+export default EventsAndCoursesPage

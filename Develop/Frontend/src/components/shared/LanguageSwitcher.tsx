@@ -1,19 +1,27 @@
 "use client"
-import { languages } from '@/data/languages';
-import useActive from '@/hooks/useActive';
-import { cn } from '@/lib/utils/cn';
+
+import { languages } from '@/data/languages'
+import useActive from '@/hooks/useActive'
+import { cn } from '@/lib/utils/cn'
 import { useLocale } from 'next-intl'
-import { usePathname, useRouter } from 'next/navigation'
-import { motion } from "framer-motion";
-import { dropdownVariants } from '@/lib/animations/variants';
-import { IoMdArrowDropdown } from "react-icons/io";
-import { GrLanguage } from 'react-icons/gr';
-import { getLocalStorageItem, saveToLocalStorage } from '@/lib/utils/localStorage';
-import { useEffect, useRef } from 'react';
-import AnimatePresenceWrapper from '@/components/animations/AnimatePresenceWrapper';
-import useClickOutside from '@/hooks/useClickOutside';
-import { getLocalizedValue } from '@/lib/utils/getLocalizedValue';
-import Button from '../ui/Button';
+import {
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from 'next/navigation'
+import { motion } from "framer-motion"
+import { dropdownVariants } from '@/lib/animations/variants'
+import { IoMdArrowDropdown } from "react-icons/io"
+import { GrLanguage } from 'react-icons/gr'
+import {
+    getLocalStorageItem,
+    saveToLocalStorage,
+} from '@/lib/utils/localStorage'
+import { useEffect, useRef } from 'react'
+import AnimatePresenceWrapper from '@/components/animations/AnimatePresenceWrapper'
+import useClickOutside from '@/hooks/useClickOutside'
+import { getLocalizedValue } from '@/lib/utils/getLocalizedValue'
+import Button from '../ui/Button'
 
 interface ILanguageSwitcherProps {
     className?: string
@@ -25,7 +33,7 @@ function LanguageSwitcher({
     isScrolled,
 }: ILanguageSwitcherProps) {
 
-    //custom hooks
+    // Custom hooks
     const [
         activeLanguageDropDown,
         activeLanguageDropDownHandler,
@@ -33,42 +41,80 @@ function LanguageSwitcher({
         toggleLanguageDropDownHandler,
     ] = useActive(false)
 
-    //next hooks
-    const pathname = usePathname();
-    const router = useRouter();
+    // Next hooks
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const router = useRouter()
 
-    //refs
+    // Refs
     const dropDownRef =
         useRef<HTMLDivElement | null>(null)
 
-    //geting language
-    const locale = useLocale();
-
+    // Locale
+    const locale = useLocale()
 
     useEffect(() => {
-        const lang = getLocalStorageItem("lang")
-        if (lang) {
-            const newPath = pathname.replace(
-                locale,
-                lang,
+        const lang =
+            getLocalStorageItem("lang")
+
+        if (
+            lang &&
+            lang !== locale
+        ) {
+            const newPath =
+                pathname.replace(
+                    `/${locale}`,
+                    `/${lang}`,
+                )
+
+            const queryString =
+                searchParams.toString()
+
+            const finalPath =
+                queryString
+                    ? `${newPath}?${queryString}`
+                    : newPath
+
+            router.push(
+                finalPath,
+                {
+                    scroll: false,
+                }
             )
-            router.push(newPath, { scroll: false })
         }
     }, [])
 
     function changeLanguage(
         languageCode: string
     ): void {
-        const newLocale = languageCode;
-        saveToLocalStorage("lang", newLocale)
 
-        const newPath = pathname.replace(
-            locale,
-            newLocale,
+        saveToLocalStorage(
+            "lang",
+            languageCode
         )
-        UnActiveLanguageDropDownHandler();
-        router.push(newPath, { scroll: false })
 
+        const newPath =
+            pathname.replace(
+                `/${locale}`,
+                `/${languageCode}`,
+            )
+
+        const queryString =
+            searchParams.toString()
+
+        const finalPath =
+            queryString
+                ? `${newPath}?${queryString}`
+                : newPath
+
+        UnActiveLanguageDropDownHandler()
+
+        router.push(
+            finalPath,
+            {
+                scroll: false,
+            }
+        )
     }
 
     useClickOutside(
@@ -77,38 +123,58 @@ function LanguageSwitcher({
     )
 
     return (
-        <div className={cn(
-            "md:w-20 w-full",
-            "flex flex-col justify-center ",
-            "relative",
-            activeLanguageDropDown && "text-black-utility",
-            isScrolled && "text-gold-utility",
-            "z-20"
-        )}>
-            <div className={cn(
-                "flex justify-center items-center",
-                "py-2 gap-1",
-                "font-semibold",
-                "cursor-pointer",
-                "rounded-t-sm",
-                "transition-all",
-                "hover:bg-white/25",
-                "click-scale",
-                activeLanguageDropDown && "bg-white hover:bg-white",
-                activeLanguageDropDown && isScrolled && "text-black",
-                className
+        <div
+            className={cn(
+                "md:w-20 w-full",
+                "flex flex-col justify-center",
+                "relative",
+                activeLanguageDropDown &&
+                    "text-black-utility",
+                isScrolled &&
+                    "text-gold-utility",
+                "z-20"
             )}
+        >
+            <div
+                className={cn(
+                    "flex justify-center items-center",
+                    "py-2 gap-1",
+                    "font-semibold",
+                    "cursor-pointer",
+                    "rounded-t-sm",
+                    "transition-all",
+                    "hover:bg-white/25",
+                    "click-scale",
+                    activeLanguageDropDown &&
+                        "bg-white hover:bg-white",
+                    activeLanguageDropDown &&
+                        isScrolled &&
+                        "text-black",
+                    className
+                )}
                 ref={dropDownRef}
-                onClick={toggleLanguageDropDownHandler}
+                onClick={
+                    toggleLanguageDropDownHandler
+                }
             >
                 <GrLanguage />
+
                 {locale.toUpperCase()}
-                <IoMdArrowDropdown className={cn(
-                    "transition-transform duration-300",
-                    activeLanguageDropDown && "rotate-180"
-                )} />
+
+                <IoMdArrowDropdown
+                    className={cn(
+                        "transition-transform duration-300",
+                        activeLanguageDropDown &&
+                            "rotate-180"
+                    )}
+                />
             </div>
-            <AnimatePresenceWrapper isActive={activeLanguageDropDown}>
+
+            <AnimatePresenceWrapper
+                isActive={
+                    activeLanguageDropDown
+                }
+            >
                 <motion.div
                     variants={dropdownVariants}
                     initial="hidden"
@@ -122,8 +188,11 @@ function LanguageSwitcher({
                         "rounded-b-md",
                         "shadow-lg",
                         "overflow-hidden",
-                        activeLanguageDropDown && "bg-white",
-                        activeLanguageDropDown && isScrolled && "text-black",
+                        activeLanguageDropDown &&
+                            "bg-white",
+                        activeLanguageDropDown &&
+                            isScrolled &&
+                            "text-black",
                     )}
                 >
                     {languages.map((lang) => (
@@ -138,9 +207,16 @@ function LanguageSwitcher({
                                 "click-scale",
                             )}
                             key={lang.id}
-                            onClick={() => changeLanguage(lang.code)}
+                            onClick={() =>
+                                changeLanguage(
+                                    lang.code
+                                )
+                            }
                         >
-                            {getLocalizedValue(lang.name, locale)}
+                            {getLocalizedValue(
+                                lang.name,
+                                locale
+                            )}
                         </Button>
                     ))}
                 </motion.div>

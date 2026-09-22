@@ -9,54 +9,96 @@ export interface EventImage {
     displayOrder: number
 }
 
-export interface EventSeat {
-    seatId: number
-    rowLabel: string
-    seatNumber: number
-    isBooked: boolean
-}
-
-export interface EventHall {
-    hallId: number
-    name: string
-    description: string
-}
-
 export interface EventSession {
     sessionId: number
     eventId: number
-    hall: EventHall
-    startAt: string
-    duration: number
-    capacity: number
-    price: number | null
-    seats: EventSeat[]
-}
-
-export interface EventAndCourse {
-    eventId: number
     name: string
-    description: string
     images: EventImage[]
-    sessions: EventSession[]
+    startAt: string
+    price: number
 }
 
 export interface EventAndCourseResponse {
-    data: EventAndCourse[]
+    data: EventSession[]
     message: string
     success: boolean
 }
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL
 
 export async function getEventsAndCourses(
     type: EventAndCourseType,
     date: string,
     locale: string,
 ): Promise<EventAndCourseResponse> {
-    return fetcher<EventAndCourseResponse>(
-        `/tickets/${type}?date=${encodeURIComponent(date)}`,
+
+    const response = await fetch(
+        `${BASE_URL}/tickets/${type}?date=${encodeURIComponent(date)}`,
         {
             method: "GET",
-        },
-        locale,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept-Language": locale,
+            },
+        }
     )
+
+    if (!response.ok) {
+        throw new Error(
+            "Failed to fetch events and courses"
+        )
+    }
+
+    return response.json()
+}
+
+
+//Details ([id])
+export interface EventAndCourseSessionDetail {
+    sessionId: number
+    eventId: number
+    hallId: number
+    name: string
+    description: string
+    images: EventImage[]
+    startAt: string
+    duration: number
+    price: number
+}
+
+export interface EventAndCourseSessionDetailResponse {
+    data: EventAndCourseSessionDetail
+    message: string
+    success: boolean
+}
+
+export async function getEventAndCourseSessionDetail(
+    type: EventAndCourseType,
+    sessionId: string,
+    locale: string,
+): Promise<EventAndCourseSessionDetailResponse> {
+
+    const endpoint =
+        type === "courses"
+            ? `/tickets/courses/sessions/${encodeURIComponent(sessionId)}`
+            : `/tickets/events/sessions/${encodeURIComponent(sessionId)}`
+
+    const response = await fetch(
+        `${BASE_URL}${endpoint}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept-Language": locale,
+            },
+        }
+    )
+
+    if (!response.ok) {
+        throw new Error(
+            "Failed to fetch session details"
+        )
+    }
+
+    return response.json()
 }

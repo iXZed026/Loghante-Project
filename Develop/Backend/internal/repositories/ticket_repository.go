@@ -126,7 +126,39 @@ func (r *TicketRepository) GetEventSessions(
 	date time.Time,
 	eventTypeID uint,
 	languageID uint,
-) ([]dto.EventResponse, error) {
+) ([]dto.EventSessionListResponse, error) {
+
+	return r.getEventSessionsByType(
+		ctx,
+		date,
+		eventTypeID,
+		languageID,
+	)
+}
+
+// courses
+
+func (r *TicketRepository) GetCourseSessions(
+	ctx context.Context,
+	date time.Time,
+	eventTypeID uint,
+	languageID uint,
+) ([]dto.EventSessionListResponse, error) {
+
+	return r.getEventSessionsByType(
+		ctx,
+		date,
+		eventTypeID,
+		languageID,
+	)
+}
+
+func (r *TicketRepository) getEventSessionsByType(
+	ctx context.Context,
+	date time.Time,
+	eventTypeID uint,
+	languageID uint,
+) ([]dto.EventSessionListResponse, error) {
 
 	startOfMonth :=
 		time.Date(
@@ -147,44 +179,35 @@ func (r *TicketRepository) GetEventSessions(
 			0,
 		)
 
-	type eventRow struct {
-		EventID     uint   `gorm:"column:eventId"`
-		Name        string `gorm:"column:name"`
-		Description string `gorm:"column:description"`
-
+	type eventSessionRow struct {
 		SessionID uint      `gorm:"column:sessionId"`
-		HallID    uint      `gorm:"column:hallId"`
+		EventID   uint      `gorm:"column:eventId"`
+		Name      string    `gorm:"column:name"`
 		StartAt   time.Time `gorm:"column:startAt"`
-		Duration  int       `gorm:"column:duration"`
-		Capacity  int       `gorm:"column:capacity"`
 		Price     *float64  `gorm:"column:price"`
 	}
 
-	var rows []eventRow
+	var rows []eventSessionRow
 
 	err := r.db.
 		WithContext(ctx).
-		Table("events AS e").
+		Table("eventsession AS es").
 		Select(`
-			e.eventid AS "eventId",
-			COALESCE(ets.name, '') AS "name",
-			COALESCE(ets.description, '') AS "description",
 			es.sessionid AS "sessionId",
-			es.hallid AS "hallId",
+			es.eventid AS "eventId",
+			COALESCE(ets.name, '') AS "name",
 			es.startat AS "startAt",
-			es.duration AS "duration",
-			es.capacity AS "capacity",
 			es.price AS "price"
+		`).
+		Joins(`
+			INNER JOIN events AS e
+				ON e.eventid = es.eventid
 		`).
 		Joins(`
 			LEFT JOIN eventstranslations AS ets
 				ON ets.eventid = e.eventid
 				AND ets.languagesid = ?
 		`, languageID).
-		Joins(`
-			INNER JOIN eventsession AS es
-				ON es.eventid = e.eventid
-		`).
 		Where(
 			"e.eventtypeid = ?",
 			eventTypeID,
@@ -195,7 +218,7 @@ func (r *TicketRepository) GetEventSessions(
 			startOfNextMonth,
 		).
 		Order(
-			"e.eventid ASC, es.startat ASC",
+			"es.startat ASC",
 		).
 		Scan(&rows).
 		Error
@@ -205,33 +228,33 @@ func (r *TicketRepository) GetEventSessions(
 	}
 
 	if len(rows) == 0 {
-		return []dto.EventResponse{}, nil
+		return []dto.EventSessionListResponse{}, nil
 	}
 
-	eventIDs := make([]uint, 0)
-	sessionIDs := make([]uint, 0)
-	hallIDs := make([]uint, 0)
+	eventIDs := make(
+		[]uint,
+		0,
+		len(rows),
+	)
 
-	eventIDSet := make(map[uint]struct{})
-	sessionIDSet := make(map[uint]struct{})
-	hallIDSet := make(map[uint]struct{})
+	eventIDSet := make(
+		map[uint]struct{},
+		len(rows),
+	)
 
 	for _, row := range rows {
 
-		if _, exists := eventIDSet[row.EventID]; !exists {
-			eventIDSet[row.EventID] = struct{}{}
-			eventIDs = append(eventIDs, row.EventID)
+		if _, exists :=
+			eventIDSet[row.EventID]; exists {
+			continue
 		}
 
-		if _, exists := sessionIDSet[row.SessionID]; !exists {
-			sessionIDSet[row.SessionID] = struct{}{}
-			sessionIDs = append(sessionIDs, row.SessionID)
-		}
+		eventIDSet[row.EventID] = struct{}{}
 
-		if _, exists := hallIDSet[row.HallID]; !exists {
-			hallIDSet[row.HallID] = struct{}{}
-			hallIDs = append(hallIDs, row.HallID)
-		}
+		eventIDs = append(
+			eventIDs,
+			row.EventID,
+		)
 	}
 
 	type imageRow struct {
@@ -264,95 +287,9 @@ func (r *TicketRepository) GetEventSessions(
 		return nil, err
 	}
 
-	type hallRow struct {
-		HallID      uint   `gorm:"column:hallId"`
-		Name        string `gorm:"column:name"`
-		Description string `gorm:"column:description"`
-	}
-
-	var hallRows []hallRow
-
-	err = r.db.
-		WithContext(ctx).
-		Table("halltranslations AS ht").
-		Select(`
-			ht.hallid AS "hallId",
-			ht.name AS "name",
-			ht.description AS "description"
-		`).
-		Where(
-			"ht.hallid IN ?",
-			hallIDs,
-		).
-		Where(
-			"ht.languagesid = ?",
-			languageID,
-		).
-		Scan(&hallRows).
-		Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	type seatRow struct {
-		SeatID     uint   `gorm:"column:seatId"`
-		HallID     uint   `gorm:"column:hallId"`
-		RowLabel   string `gorm:"column:rowLabel"`
-		SeatNumber int    `gorm:"column:seatNumber"`
-	}
-
-	var seatRows []seatRow
-
-	err = r.db.
-		WithContext(ctx).
-		Table("seats").
-		Select(`
-			seatid AS "seatId",
-			hallid AS "hallId",
-			rowlabel AS "rowLabel",
-			seatnumber AS "seatNumber"
-		`).
-		Where(
-			"hallid IN ?",
-			hallIDs,
-		).
-		Order(
-			"hallid ASC, rowlabel ASC, seatnumber ASC",
-		).
-		Scan(&seatRows).
-		Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	type bookingSeatRow struct {
-		SessionID uint `gorm:"column:sessionId"`
-		SeatID    uint `gorm:"column:seatId"`
-	}
-
-	var bookingSeatRows []bookingSeatRow
-
-	err = r.db.
-		WithContext(ctx).
-		Table("bookingseats").
-		Select(`
-			sessionid AS "sessionId",
-			seatid AS "seatId"
-		`).
-		Where(
-			"sessionid IN ?",
-			sessionIDs,
-		).
-		Scan(&bookingSeatRows).
-		Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	imageMap := make(map[uint][]dto.EventImageResponse)
+	imageMap := make(
+		map[uint][]dto.EventImageResponse,
+	)
 
 	for _, image := range imageRows {
 
@@ -366,127 +303,168 @@ func (r *TicketRepository) GetEventSessions(
 			)
 	}
 
-	hallMap := make(map[uint]dto.EventHallResponse)
-
-	for _, hall := range hallRows {
-
-		hallMap[hall.HallID] =
-			dto.EventHallResponse{
-				HallID:      hall.HallID,
-				Name:        hall.Name,
-				Description: hall.Description,
-			}
-	}
-
-	bookedSeatMap := make(map[uint]map[uint]bool)
-
-	for _, bookingSeat := range bookingSeatRows {
-
-		if bookedSeatMap[bookingSeat.SessionID] == nil {
-			bookedSeatMap[bookingSeat.SessionID] =
-				make(map[uint]bool)
-		}
-
-		bookedSeatMap[bookingSeat.SessionID][bookingSeat.SeatID] = true
-	}
-
-	seatsByHall := make(map[uint][]seatRow)
-
-	for _, seat := range seatRows {
-
-		seatsByHall[seat.HallID] =
-			append(
-				seatsByHall[seat.HallID],
-				seat,
-			)
-	}
-
-	eventMap := make(map[uint]*dto.EventResponse)
-	eventOrder := make([]uint, 0)
+	sessions := make(
+		[]dto.EventSessionListResponse,
+		0,
+		len(rows),
+	)
 
 	for _, row := range rows {
 
-		event, exists := eventMap[row.EventID]
+		images := imageMap[row.EventID]
 
-		if !exists {
-
-			event = &dto.EventResponse{
-				EventID:     row.EventID,
-				Name:        row.Name,
-				Description: row.Description,
-				Images:      imageMap[row.EventID],
-				Sessions:    []dto.EventSessionResponse{},
-			}
-
-			eventMap[row.EventID] = event
-			eventOrder = append(
-				eventOrder,
-				row.EventID,
-			)
+		if images == nil {
+			images =
+				[]dto.EventImageResponse{}
 		}
 
-		seats := make(
-			[]dto.EventSeatResponse,
-			0,
-			len(seatsByHall[row.HallID]),
-		)
-
-		for _, seat := range seatsByHall[row.HallID] {
-
-			isBooked := false
-
-			if sessionBookedSeats, exists :=
-				bookedSeatMap[row.SessionID]; exists {
-				isBooked =
-					sessionBookedSeats[seat.SeatID]
-			}
-
-			seats = append(
-				seats,
-				dto.EventSeatResponse{
-					SeatID:     seat.SeatID,
-					RowLabel:   seat.RowLabel,
-					SeatNumber: seat.SeatNumber,
-					IsBooked:   isBooked,
-				},
-			)
-		}
-
-		hall, exists := hallMap[row.HallID]
-
-		if !exists {
-			hall = dto.EventHallResponse{
-				HallID: row.HallID,
-			}
-		}
-
-		event.Sessions = append(
-			event.Sessions,
-			dto.EventSessionResponse{
+		sessions = append(
+			sessions,
+			dto.EventSessionListResponse{
 				SessionID: row.SessionID,
 				EventID:   row.EventID,
-				Hall:      hall,
+				Name:      row.Name,
+				Images:    images,
 				StartAt:   row.StartAt,
-				Duration:  row.Duration,
-				Capacity:  row.Capacity,
 				Price:     row.Price,
-				Seats:     seats,
 			},
 		)
 	}
 
-	events := make(
-		[]dto.EventResponse,
+	return sessions, nil
+}
+
+func (r *TicketRepository) GetEventSessionDetail(
+	ctx context.Context,
+	sessionID uint,
+	eventTypeID uint,
+	languageID uint,
+) (*dto.EventSessionDetailResponse, error) {
+	return r.getEventSessionDetail(
+		ctx,
+		sessionID,
+		eventTypeID,
+		languageID,
+	)
+}
+
+func (r *TicketRepository) GetCourseSessionDetail(
+	ctx context.Context,
+	sessionID uint,
+	eventTypeID uint,
+	languageID uint,
+) (*dto.EventSessionDetailResponse, error) {
+	return r.getEventSessionDetail(
+		ctx,
+		sessionID,
+		eventTypeID,
+		languageID,
+	)
+}
+
+func (r *TicketRepository) getEventSessionDetail(
+	ctx context.Context,
+	sessionID uint,
+	eventTypeID uint,
+	languageID uint,
+) (*dto.EventSessionDetailResponse, error) {
+
+	type sessionRow struct {
+		SessionID   uint      `gorm:"column:sessionId"`
+		EventID     uint      `gorm:"column:eventId"`
+		HallID      uint      `gorm:"column:hallId"`
+		Name        string    `gorm:"column:name"`
+		Description string    `gorm:"column:description"`
+		StartAt     time.Time `gorm:"column:startAt"`
+		Duration    int       `gorm:"column:duration"`
+		Price       *float64  `gorm:"column:price"`
+	}
+
+	var row sessionRow
+
+	err := r.db.
+		WithContext(ctx).
+		Table("eventsession AS es").
+		Select(`
+			es.sessionid AS "sessionId",
+			es.eventid AS "eventId",
+			es.hallid AS "hallId",
+			COALESCE(ets.name, '') AS "name",
+			COALESCE(ets.description, '') AS "description",
+			es.startat AS "startAt",
+			es.duration AS "duration",
+			es.price AS "price"
+		`).
+		Joins(`
+			INNER JOIN events AS e
+				ON e.eventid = es.eventid
+		`).
+		Joins(`
+			LEFT JOIN eventstranslations AS ets
+				ON ets.eventid = e.eventid
+				AND ets.languagesid = ?
+		`, languageID).
+		Where("es.sessionid = ?", sessionID).
+		Where("e.eventtypeid = ?", eventTypeID).
+		Scan(&row).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	if row.SessionID == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	type imageRow struct {
+		ImageURL     string `gorm:"column:imageUrl"`
+		DisplayOrder int    `gorm:"column:displayOrder"`
+	}
+
+	var imageRows []imageRow
+
+	err = r.db.
+		WithContext(ctx).
+		Table("eventimages").
+		Select(`
+			imageurl AS "imageUrl",
+			displayorder AS "displayOrder"
+		`).
+		Where("eventid = ?", row.EventID).
+		Order("displayorder ASC").
+		Scan(&imageRows).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	images := make(
+		[]dto.EventImageResponse,
 		0,
-		len(eventOrder),
+		len(imageRows),
 	)
 
-	for _, eventID := range eventOrder {
-		events = append(
-			events,
-			*eventMap[eventID],
+	for _, image := range imageRows {
+		images = append(
+			images,
+			dto.EventImageResponse{
+				ImageURL:     image.ImageURL,
+				DisplayOrder: image.DisplayOrder,
+			},
 		)
 	}
 
-	return events, nil
+	return &dto.EventSessionDetailResponse{
+		SessionID:   row.SessionID,
+		EventID:     row.EventID,
+		HallID:      row.HallID,
+		Name:        row.Name,
+		Description: row.Description,
+		Images:      images,
+		StartAt:     row.StartAt,
+		Duration:    row.Duration,
+		Price:       row.Price,
+	}, nil
 }

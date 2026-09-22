@@ -197,7 +197,6 @@ func (h *TicketHandler) CreateBooking(
 }
 
 // events
-// events
 
 func (h *TicketHandler) GetEvent(
 	c *gin.Context,
@@ -250,7 +249,7 @@ func (h *TicketHandler) GetEvent(
 		language = "en"
 	}
 
-	events, err :=
+	sessions, err :=
 		h.ticketService.GetEventSessions(
 			c.Request.Context(),
 			date,
@@ -260,7 +259,7 @@ func (h *TicketHandler) GetEvent(
 	if err != nil {
 
 		h.logger.Error(
-			"failed to get events",
+			"failed to get event sessions",
 			"date", dateString,
 			"language", language,
 			"error", err,
@@ -277,12 +276,98 @@ func (h *TicketHandler) GetEvent(
 
 	response.Success(
 		c,
-		"events_fetched_successfully",
-		events,
+		"event sessions fetched successfully",
+		sessions,
+	)
+}
+
+// courses
+
+func (h *TicketHandler) GetCourses(
+	c *gin.Context,
+) {
+
+	dateString := c.Query("date")
+
+	if dateString == "" {
+
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+
+		return
+	}
+
+	date, err := time.Parse(
+		"2006-01-02",
+		dateString,
+	)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to parse courses date",
+			"date", dateString,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+
+		return
+	}
+
+	language := c.GetHeader(
+		"Accept-Language",
+	)
+
+	if len(language) >= 2 {
+		language = language[:2]
+	}
+
+	if language == "" {
+		language = "en"
+	}
+
+	sessions, err :=
+		h.ticketService.GetCourseSessions(
+			c.Request.Context(),
+			date,
+			language,
+		)
+
+	if err != nil {
+
+		h.logger.Error(
+			"failed to get course sessions",
+			"date", dateString,
+			"language", language,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+
+		return
+	}
+
+	response.Success(
+		c,
+		"course sessions fetched successfully",
+		sessions,
 	)
 }
 
 // User Ticket
+
 func (h *TicketHandler) GetUserBookings(
 	c *gin.Context,
 ) {
@@ -371,5 +456,109 @@ func (h *TicketHandler) GetUserBookings(
 		c,
 		"user_bookings_fetched_successfully",
 		bookings,
+	)
+}
+
+func (h *TicketHandler) GetEventSessionDetail(c *gin.Context) {
+
+	sessionID, err := strconv.ParseUint(
+		c.Param("sessionId"),
+		10,
+		32,
+	)
+	if err != nil {
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+		return
+	}
+
+	language := c.GetHeader("Accept-Language")
+
+	if len(language) >= 2 {
+		language = language[:2]
+	}
+
+	if language == "" {
+		language = "en"
+	}
+
+	session, err :=
+		h.ticketService.GetEventSessionDetail(
+			c.Request.Context(),
+			uint(sessionID),
+			language,
+		)
+
+	if err != nil {
+		h.logger.Error(
+			"failed to get event session detail",
+			"sessionId", sessionID,
+			"language", language,
+			"error", err,
+		)
+
+		response.HandleError(c, err, h.logger)
+		return
+	}
+
+	response.Success(
+		c,
+		"event session fetched successfully",
+		session,
+	)
+}
+
+func (h *TicketHandler) GetCourseSessionDetail(c *gin.Context) {
+
+	sessionID, err := strconv.ParseUint(
+		c.Param("sessionId"),
+		10,
+		32,
+	)
+	if err != nil {
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+		return
+	}
+
+	language := c.GetHeader("Accept-Language")
+
+	if len(language) >= 2 {
+		language = language[:2]
+	}
+
+	if language == "" {
+		language = "en"
+	}
+
+	session, err :=
+		h.ticketService.GetCourseSessionDetail(
+			c.Request.Context(),
+			uint(sessionID),
+			language,
+		)
+
+	if err != nil {
+		h.logger.Error(
+			"failed to get course session detail",
+			"sessionId", sessionID,
+			"language", language,
+			"error", err,
+		)
+
+		response.HandleError(c, err, h.logger)
+		return
+	}
+
+	response.Success(
+		c,
+		"course session fetched successfully",
+		session,
 	)
 }

@@ -68,6 +68,7 @@ function NavLinks({
                     ) : (
                         <li key={link.id}>
                             <AppLink
+                            scroll={true}
                                 href={link.path}
                                 className={cn(
                                     "w-full",

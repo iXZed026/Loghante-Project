@@ -28,7 +28,7 @@ function Footer() {
     }
 
     return (
-        <footer className={cn(
+        <footer id="footer" className={cn(
             "bg-crimson",
             "text-white-utility"
         )}>
