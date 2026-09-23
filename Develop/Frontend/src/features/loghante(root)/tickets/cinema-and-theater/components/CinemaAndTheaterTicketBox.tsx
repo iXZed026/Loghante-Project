@@ -1,19 +1,18 @@
 "use client"
 
 import AppImage from "@/components/ui/AppImage"
+import AppLink from "@/components/ui/AppLink"
 import { cn } from "@/lib/utils/cn"
 import { getLocalizedValue } from "@/lib/utils/getLocalizedValue"
 import { useLocale } from "next-intl"
-
+import { useEffect, useState } from "react"
 import {
     FaRegClock,
     FaTicket,
 } from "react-icons/fa6"
-
 import {
     MdOutlineEventSeat,
 } from "react-icons/md"
-
 import type { CinemaAndTheaterTicket } from "./data/cinema-and-theater"
 
 interface CinemaAndTheaterTicketBoxProps {
@@ -26,6 +25,19 @@ function CinemaAndTheaterTicketBox({
 
     const locale = useLocale()
 
+    const [currentTime, setCurrentTime] = useState<Date | null>(null)
+
+    useEffect(() => {
+        const updateTime = () => {
+            setCurrentTime(new Date())
+        }
+
+        updateTime()
+
+        const interval = setInterval(updateTime, 60_000)
+
+        return () => clearInterval(interval)
+    }, [])
 
     const ticketName = getLocalizedValue(
         ticket.name,
@@ -48,6 +60,47 @@ function CinemaAndTheaterTicketBox({
     const isCinema =
         ticket.type === "cinema"
 
+    /*
+     * Calculate ticket status
+     */
+
+    const isInProgress = (() => {
+        if (!currentTime || isFull) {
+            return false
+        }
+
+        const [hours, minutes] = ticket.startAt
+            .split(":")
+            .map(Number)
+
+        const startTime = new Date(currentTime)
+
+        startTime.setHours(hours, minutes, 0, 0)
+
+        const endTime = new Date(
+            startTime.getTime() +
+            ticket.duration * 60 * 1000
+        )
+
+        return (
+            currentTime >= startTime &&
+            currentTime < endTime
+        )
+    })()
+
+    const isUnavailable =
+        isFull || isInProgress
+
+    /*
+     * Button content
+     */
+
+    const buttonContent = isFull
+        ? "Sold Out"
+        : isInProgress
+            ? "In Progress"
+            : "Book a Ticket"
+
     return (
         <div
             className={cn(
@@ -61,6 +114,12 @@ function CinemaAndTheaterTicketBox({
                 "shadow-lg",
                 "transition-all duration-500",
                 "hover:shadow-2xl",
+
+                isInProgress &&
+                "border-crimson/40",
+
+                isFull &&
+                "opacity-90",
             )}
         >
 
@@ -94,14 +153,16 @@ function CinemaAndTheaterTicketBox({
                         />
 
                         <div
-                            className="
-                                absolute
-                                inset-0
-                                bg-gradient-to-t
-                                from-black/85
-                                via-black/20
-                                to-transparent
-                            "
+                            className={cn(
+                                "absolute",
+                                "inset-0",
+                                "bg-gradient-to-t",
+                                "from-black/85",
+                                "via-black/20",
+                                "to-transparent",
+                                isInProgress &&
+                                "from-crimson/80",
+                            )}
                         />
                     </>
                 ) : (
@@ -133,11 +194,11 @@ function CinemaAndTheaterTicketBox({
                         "absolute",
                         "left-4 top-4",
                         "rounded-full",
+                        "border border-white/20",
                         "px-4 py-1.5",
                         "text-xs",
                         "font-bold",
                         "backdrop-blur-md",
-                        "border border-white/20",
                         isCinema
                             ? [
                                 "bg-crimson/90",
@@ -180,15 +241,54 @@ function CinemaAndTheaterTicketBox({
                     </span>
                 </div>
 
+                {/* In Progress Badge */}
+
+                {isInProgress && (
+                    <div
+                        className="
+                            absolute
+                            bottom-5
+                            left-5
+                            flex
+                            items-center
+                            gap-2
+                            rounded-full
+                            border border-white/20
+                            bg-black/60
+                            px-4
+                            py-2
+                            text-xs
+                            font-bold
+                            text-white
+                            backdrop-blur-md
+                        "
+                    >
+                        <span
+                            className="
+                                size-2
+                                animate-pulse
+                                rounded-full
+                                bg-white
+                            "
+                        />
+
+                        <span>
+                            In Progress
+                        </span>
+                    </div>
+                )}
+
                 {/* Name */}
 
                 <div
-                    className="
-                        absolute
-                        bottom-5
-                        left-5
-                        right-5
-                    "
+                    className={cn(
+                        "absolute",
+                        "left-5",
+                        "right-5",
+                        isInProgress
+                            ? "bottom-14"
+                            : "bottom-5",
+                    )}
                 >
                     <h3
                         className="
@@ -215,6 +315,7 @@ function CinemaAndTheaterTicketBox({
                             </span>
                         )}
                 </div>
+
             </div>
 
             {/* Information */}
@@ -238,13 +339,15 @@ function CinemaAndTheaterTicketBox({
                     "
                 >
                     <div
-                        className="
-                            fcc
-                            size-10
-                            rounded-full
-                            bg-[var(--white-light-color)]
-                            text-crimson
-                        "
+                        className={cn(
+                            "fcc",
+                            "size-10",
+                            "rounded-full",
+                            "bg-[var(--white-light-color)]",
+                            isFull
+                                ? "text-black-light-utility"
+                                : "text-crimson",
+                        )}
                     >
                         <MdOutlineEventSeat
                             className="size-5"
@@ -296,7 +399,37 @@ function CinemaAndTheaterTicketBox({
                             <FaTicket className="size-3.5" />
 
                             <span>
-                                Capacity Full
+                                Sold Out
+                            </span>
+                        </div>
+
+                    ) : isInProgress ? (
+
+                        <div
+                            className="
+                                flex
+                                items-center
+                                gap-2
+                                rounded-full
+                                bg-crimson/10
+                                px-4
+                                py-2
+                                text-sm
+                                font-semibold
+                                text-crimson
+                            "
+                        >
+                            <span
+                                className="
+                                    size-2
+                                    animate-pulse
+                                    rounded-full
+                                    bg-crimson
+                                "
+                            />
+
+                            <span>
+                                In Progress
                             </span>
                         </div>
 
@@ -313,7 +446,7 @@ function CinemaAndTheaterTicketBox({
                                 text-[#8A671E]
                             "
                         >
-                            Few seats left
+                            Only {ticket.remainingCapacity} left
                         </div>
 
                     ) : (
@@ -337,6 +470,70 @@ function CinemaAndTheaterTicketBox({
                 </div>
 
             </div>
+
+            {/* Book Ticket */}
+
+            <div className="px-6 pb-6">
+
+                <AppLink
+                    href="#"
+                    aria-disabled={isUnavailable}
+                    className={cn(
+                        "flex",
+                        "w-full",
+                        "items-center",
+                        "justify-center",
+                        "gap-2",
+                        "rounded-xl",
+                        "px-5 py-3",
+                        "font-semibold",
+                        "transition-all duration-300",
+
+                        isUnavailable
+                            ? [
+                                "cursor-not-allowed",
+                                "bg-black/10",
+                                "text-black/40",
+                                "pointer-events-none",
+                            ]
+                            : [
+                                "bg-crimson",
+                                "text-white",
+                                "hover:bg-[var(--crimson-opacity-color)]",
+                                "click-scale",
+                            ],
+                    )}
+                >
+                    {isInProgress ? (
+                        <>
+                            <span
+                                className="
+                                    size-2
+                                    animate-pulse
+                                    rounded-full
+                                    bg-current
+                                "
+                            />
+
+                            {buttonContent}
+                        </>
+                    ) : isFull ? (
+                        <>
+                            <FaTicket className="size-3.5" />
+
+                            {buttonContent}
+                        </>
+                    ) : (
+                        <>
+                            <FaTicket className="size-3.5" />
+
+                            {buttonContent}
+                        </>
+                    )}
+                </AppLink>
+
+            </div>
+
         </div>
     )
 }
