@@ -194,7 +194,7 @@ const mockTickets: CinemaAndTheaterTicket[] = [
         startAt: "22:30",
         duration: 100,
         remainingCapacity: 3,
-    },
+    }
 ]
 
 export function getCinemaAndTheaterTickets(
