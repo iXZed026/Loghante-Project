@@ -54,13 +54,20 @@ function TicketHeaderBox({
             "overflow-hidden",
           )}
         >
-          <AppImage
+          <div
+            // src={image}
+            // alt={imageAlt}
+            // width={400}
+            // height={400}
+            className="w-full h-full object-cover"
+          />
+          {/* <AppImage
             src={image}
             alt={imageAlt}
             width={400}
             height={400}
             className="w-full h-full object-cover"
-          />
+          /> */}
         </div>
       </FadeIn>
 

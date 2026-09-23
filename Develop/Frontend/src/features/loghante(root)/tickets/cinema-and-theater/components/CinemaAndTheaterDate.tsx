@@ -1,0 +1,111 @@
+"use client"
+
+import StaggerWrapper from "@/components/animations/StaggerWrapper"
+
+import {
+    dayOfTheWeeksContainerVariant,
+} from "@/features/loghante(root)/animations/loghante.variants"
+import DayOfWeekBox from "@/features/loghante(root)/components/DayOfWeekBox"
+
+import {
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from "next/navigation"
+
+
+interface CinemaAndTheaterDateProps {
+    selectedDate: string
+}
+
+function CinemaAndTheaterDate({
+    selectedDate,
+}: CinemaAndTheaterDateProps) {
+
+    const router = useRouter()
+
+    const pathname =
+        usePathname()
+
+    const searchParams =
+        useSearchParams()
+
+    function handleDateChange(
+        date: Date
+    ) {
+
+        const year =
+            date.getFullYear()
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0")
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, "0")
+
+        const formattedDate =
+            `${year}-${month}-${day}`
+
+        const params =
+            new URLSearchParams(
+                searchParams.toString()
+            )
+
+        params.set(
+            "date",
+            formattedDate
+        )
+
+        router.replace(
+            `${pathname}?${params.toString()}`,
+            {
+                scroll: false,
+            }
+        )
+    }
+
+    const date =
+        new Date(
+            `${selectedDate}T00:00:00`
+        )
+
+    return (
+        <div className="w-full">
+
+            <div className="w-full overflow-y-hidden overflow-x-auto xl:overflow-x-visible">
+
+                <StaggerWrapper
+                    once
+                    variants={
+                        dayOfTheWeeksContainerVariant
+                    }
+                    className="
+                        grid
+                        grid-cols-7
+                        gap-5
+                        min-w-[1000px]
+                        xl:min-w-0
+                        py-2
+                    "
+                >
+
+                    <DayOfWeekBox
+                        selectedDate={date}
+                        onDateChange={
+                            handleDateChange
+                        }
+                    />
+
+                </StaggerWrapper>
+
+            </div>
+
+        </div>
+    )
+}
+
+export default CinemaAndTheaterDate
