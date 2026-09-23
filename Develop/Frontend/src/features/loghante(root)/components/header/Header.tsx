@@ -131,6 +131,7 @@ function Header() {
           </div>
 
           {/* LOGO */}
+          {/* LOGO */}
           <div className="col-span-4 fcc">
             <AppLink href="/">
               <AppImage
@@ -139,11 +140,14 @@ function Header() {
                 priority
                 src="/images/Loghanteh-logo.svg"
                 alt="loghante icon"
-                className="brightness-0 invert text-gold-utility"
+                className={cn(
+                  "w-[55px] h-auto",
+                  "md:w-[70px]",
+                  "brightness-0 invert",
+                )}
               />
             </AppLink>
           </div>
-
           {/* RIGHT */}
           <div className="col-span-4 fec gap-2">
 

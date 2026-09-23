@@ -222,7 +222,6 @@ function NewPasswordForm() {
                                 "w-full",
                                 "border-b-3 border-[#525252]",
                                 "rounded-sm",
-                                "italic"
                             )}
                             type="password"
                             maxLength={16}
@@ -253,7 +252,6 @@ function NewPasswordForm() {
                                 "w-full",
                                 "border-b-3 border-[#525252]",
                                 "rounded-sm",
-                                "italic"
                             )}
                             type="password"
                             maxLength={16}

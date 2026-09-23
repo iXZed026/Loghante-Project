@@ -55,7 +55,7 @@ function HamburgerMenu({
                     "bg-black/70",
                     "text-black-utility",
                     "md:text-md text-lg",
-                    "italic font-semibold",
+                    // "italic font-semibold",
                 )}
             >
 
