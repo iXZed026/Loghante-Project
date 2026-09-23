@@ -12,20 +12,20 @@ import { cn } from "@/lib/utils/cn";
 import { useLocale } from "next-intl";
 import { formatMonthDay } from "@/lib/utils/date";
 
-interface MuseumsTourDayOfWeekBoxProps {
+interface DayOfWeekBoxProps {
   selectedDate: Date;
   onDateChange: (date: Date) => void;
 }
 
-function MuseumsTourDayOfWeekBox({
+function DayOfWeekBox({
   selectedDate,
   onDateChange,
-}: MuseumsTourDayOfWeekBoxProps) {
+}: DayOfWeekBoxProps) {
 
   const locale = useLocale();
 
   const today = new Date();
-    // const today = new Date("2026-10-12T00:00:00");
+  // const today = new Date("2026-10-12T00:00:00");
 
 
   function getDateByOffset(
@@ -142,4 +142,4 @@ function MuseumsTourDayOfWeekBox({
   );
 }
 
-export default MuseumsTourDayOfWeekBox;
+export default DayOfWeekBox;

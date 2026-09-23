@@ -5,7 +5,7 @@ import React, {
     useState,
 } from "react";
 
-import MuseumsTourDayOfWeekBox from "./MuseumsTourDayOfWeekBox";
+import DayOfWeekBox from "./DayOfWeekBox";
 import MuseumsTourTicketBox from "./MuseumsTourTicketBox";
 
 import StaggerWrapper from "@/components/animations/StaggerWrapper";
@@ -137,7 +137,7 @@ function MuseumsTourTickets() {
                     }
                     className="grid grid-cols-7 gap-5 min-w-[1000px] xl:min-w-0 py-2"
                 >
-                    <MuseumsTourDayOfWeekBox
+                    <DayOfWeekBox
                         selectedDate={selectedDate}
                         onDateChange={setSelectedDate}
                     />
