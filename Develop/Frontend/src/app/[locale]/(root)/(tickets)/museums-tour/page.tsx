@@ -18,12 +18,8 @@ function MuseumsTour() {
           <TicketHeaderBox
             title={t("title")}
             description={t("description")}
-            image="/images/..."
-            imageAlt={
-              locale === "fa"
-                ? "..."
-                : "image not found"
-            }
+            image="/images/loghanteh-cafe.jpg"
+            imageAlt={"image not found"}
           />
         </div>
 

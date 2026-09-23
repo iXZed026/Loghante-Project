@@ -4,7 +4,7 @@ import AppImage from "@/components/ui/AppImage"
 import AppLink from "@/components/ui/AppLink"
 import { cn } from "@/lib/utils/cn"
 import { getLocalizedValue } from "@/lib/utils/getLocalizedValue"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import {
     FaRegClock,
@@ -25,7 +25,12 @@ function CinemaAndTheaterTicketBox({
 
     const locale = useLocale()
 
-    const [currentTime, setCurrentTime] = useState<Date | null>(null)
+    const ticketBoxT = useTranslations(
+        "cinemaAndTheater.ticket-box"
+    )
+
+    const [currentTime, setCurrentTime] =
+        useState<Date | null>(null)
 
     useEffect(() => {
         const updateTime = () => {
@@ -34,7 +39,10 @@ function CinemaAndTheaterTicketBox({
 
         updateTime()
 
-        const interval = setInterval(updateTime, 60_000)
+        const interval = setInterval(
+            updateTime,
+            60_000
+        )
 
         return () => clearInterval(interval)
     }, [])
@@ -45,7 +53,10 @@ function CinemaAndTheaterTicketBox({
     )
 
     const ticketGenre = ticket.genre
-        ? getLocalizedValue(ticket.genre, locale)
+        ? getLocalizedValue(
+            ticket.genre,
+            locale
+        )
         : null
 
     const formattedTime = ticket.startAt
@@ -65,17 +76,25 @@ function CinemaAndTheaterTicketBox({
      */
 
     const isInProgress = (() => {
+
         if (!currentTime || isFull) {
             return false
         }
 
-        const [hours, minutes] = ticket.startAt
-            .split(":")
-            .map(Number)
+        const [hours, minutes] =
+            ticket.startAt
+                .split(":")
+                .map(Number)
 
-        const startTime = new Date(currentTime)
+        const startTime =
+            new Date(currentTime)
 
-        startTime.setHours(hours, minutes, 0, 0)
+        startTime.setHours(
+            hours,
+            minutes,
+            0,
+            0
+        )
 
         const endTime = new Date(
             startTime.getTime() +
@@ -86,6 +105,7 @@ function CinemaAndTheaterTicketBox({
             currentTime >= startTime &&
             currentTime < endTime
         )
+
     })()
 
     const isUnavailable =
@@ -96,10 +116,10 @@ function CinemaAndTheaterTicketBox({
      */
 
     const buttonContent = isFull
-        ? "Sold Out"
+        ? ticketBoxT("sold-out")
         : isInProgress
-            ? "In Progress"
-            : "Book a Ticket"
+            ? ticketBoxT("in-progress")
+            : ticketBoxT("book-button")
 
     return (
         <div
@@ -182,7 +202,9 @@ function CinemaAndTheaterTicketBox({
                                 text-white/50
                             "
                         >
-                            Image not available
+                            {ticketBoxT(
+                                "image-not-available"
+                            )}
                         </span>
                     </div>
                 )}
@@ -199,6 +221,7 @@ function CinemaAndTheaterTicketBox({
                         "text-xs",
                         "font-bold",
                         "backdrop-blur-md",
+
                         isCinema
                             ? [
                                 "bg-crimson/90",
@@ -211,8 +234,8 @@ function CinemaAndTheaterTicketBox({
                     )}
                 >
                     {isCinema
-                        ? "Cinema"
-                        : "Theater"}
+                        ? ticketBoxT("cinema")
+                        : ticketBoxT("theater")}
                 </div>
 
                 {/* Time */}
@@ -234,7 +257,9 @@ function CinemaAndTheaterTicketBox({
                         backdrop-blur-md
                     "
                 >
-                    <FaRegClock className="size-3.5" />
+                    <FaRegClock
+                        className="size-3.5"
+                    />
 
                     <span>
                         {formattedTime}
@@ -273,7 +298,9 @@ function CinemaAndTheaterTicketBox({
                         />
 
                         <span>
-                            In Progress
+                            {ticketBoxT(
+                                "in-progress"
+                            )}
                         </span>
                     </div>
                 )}
@@ -362,13 +389,13 @@ function CinemaAndTheaterTicketBox({
                                 text-black-light-utility
                             "
                         >
-                            Remaining
+                            {ticketBoxT(
+                                "capacity"
+                            )}
                         </span>
 
                         <span
-                            className="
-                                font-bold
-                            "
+                            className="font-bold"
                         >
                             {ticket.remainingCapacity}
                         </span>
@@ -396,10 +423,14 @@ function CinemaAndTheaterTicketBox({
                                 text-crimson
                             "
                         >
-                            <FaTicket className="size-3.5" />
+                            <FaTicket
+                                className="size-3.5"
+                            />
 
                             <span>
-                                Sold Out
+                                {ticketBoxT(
+                                    "sold-out"
+                                )}
                             </span>
                         </div>
 
@@ -429,7 +460,9 @@ function CinemaAndTheaterTicketBox({
                             />
 
                             <span>
-                                In Progress
+                                {ticketBoxT(
+                                    "in-progress"
+                                )}
                             </span>
                         </div>
 
@@ -446,7 +479,13 @@ function CinemaAndTheaterTicketBox({
                                 text-[#8A671E]
                             "
                         >
-                            Only {ticket.remainingCapacity} left
+                            {ticketBoxT(
+                                "few-seats",
+                                {
+                                    count:
+                                        ticket.remainingCapacity
+                                }
+                            )}
                         </div>
 
                     ) : (
@@ -462,7 +501,9 @@ function CinemaAndTheaterTicketBox({
                                 text-crimson
                             "
                         >
-                            Available
+                            {ticketBoxT(
+                                "available"
+                            )}
                         </div>
 
                     )}
@@ -504,6 +545,7 @@ function CinemaAndTheaterTicketBox({
                             ],
                     )}
                 >
+
                     {isInProgress ? (
                         <>
                             <span
@@ -517,19 +559,16 @@ function CinemaAndTheaterTicketBox({
 
                             {buttonContent}
                         </>
-                    ) : isFull ? (
-                        <>
-                            <FaTicket className="size-3.5" />
-
-                            {buttonContent}
-                        </>
                     ) : (
                         <>
-                            <FaTicket className="size-3.5" />
+                            <FaTicket
+                                className="size-3.5"
+                            />
 
                             {buttonContent}
                         </>
                     )}
+
                 </AppLink>
 
             </div>

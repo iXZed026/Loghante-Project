@@ -18,7 +18,7 @@ async function CinemaAndTheaterPage({
     const params = await searchParams
 
     const t = await getTranslations(
-        "museumsTour.header"
+        "cinemaAndTheater.header"
     )
 
     return (

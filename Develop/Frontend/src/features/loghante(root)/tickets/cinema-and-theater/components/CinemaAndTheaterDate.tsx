@@ -6,6 +6,7 @@ import {
     dayOfTheWeeksContainerVariant,
 } from "@/features/loghante(root)/animations/loghante.variants"
 import DayOfWeekBox from "@/features/loghante(root)/components/DayOfWeekBox"
+import { useTranslations } from "next-intl"
 
 import {
     usePathname,
@@ -23,6 +24,9 @@ function CinemaAndTheaterDate({
 }: CinemaAndTheaterDateProps) {
 
     const router = useRouter()
+
+    const DOWeeksT =
+        useTranslations("cinemaAndTheater.day-of-the-weeks")
 
     const pathname =
         usePathname()
@@ -77,7 +81,11 @@ function CinemaAndTheaterDate({
         <div className="w-full">
 
             <div className="w-full overflow-y-hidden overflow-x-auto xl:overflow-x-visible">
-
+                <div className="py-5">
+                    <span className="text-lg font-semibold">
+                        {DOWeeksT("title")}
+                    </span>
+                </div>
                 <StaggerWrapper
                     once
                     variants={
