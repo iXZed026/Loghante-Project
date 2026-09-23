@@ -5,7 +5,7 @@ import React, {
     useState,
 } from "react";
 
-import DayOfWeekBox from "./DayOfWeekBox";
+import DayOfWeekBox from "../../../../components/DayOfWeekBox";
 import MuseumsTourTicketBox from "./MuseumsTourTicketBox";
 
 import StaggerWrapper from "@/components/animations/StaggerWrapper";

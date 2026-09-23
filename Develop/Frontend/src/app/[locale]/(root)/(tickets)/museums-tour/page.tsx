@@ -1,22 +1,38 @@
-import Container from '@/components/shared/Container'
-import MuseumsTourHeaderBox from '@/features/loghante(root)/tickets/museums-tour/components/MuseumsTourHeaderBox'
-import MuseumsTourTickets from '@/features/loghante(root)/tickets/museums-tour/components/tickets/MuseumsTourTickets'
-
-
+import Container from "@/components/shared/Container";
+import TicketHeaderBox from "@/features/loghante(root)/components/TicketHeaderBox";
+import MuseumsTourTickets from "@/features/loghante(root)/tickets/museums-tour/components/tickets/MuseumsTourTickets";
+import { getLocalizedValue } from "@/lib/utils/getLocalizedValue";
+import { useLocale, useTranslations } from "next-intl";
 
 function MuseumsTour() {
+
+  const t = useTranslations("museumsTour.header");
+  const locale = useLocale();
+
   return (
     <Container>
-      <div className='xl:px-36 py-30'>
-        {/* Museums Tout Header */}
-        <div className='mb-15'>
-          <MuseumsTourHeaderBox />
+      <div className="xl:px-36 py-30">
+
+        {/* Header */}
+        <div className="mb-15">
+          <TicketHeaderBox
+            title={t("title")}
+            description={t("description")}
+            image="/images/..."
+            imageAlt={
+              locale === "fa"
+                ? "..."
+                : "image not found"
+            }
+          />
         </div>
-        {/* Museums Tour Tickets */}
+
+        {/* Tickets */}
         <MuseumsTourTickets />
+
       </div>
     </Container>
-  )
+  );
 }
 
-export default MuseumsTour
+export default MuseumsTour;
