@@ -1,12 +1,12 @@
+"use client";
+
 import React from "react";
 
-import {
-    cn,
-} from "@/lib/utils/cn";
+import { cn } from "@/lib/utils/cn";
 
-import type {
-    SelectedSeat,
-} from "./SeatsWrapper";
+
+import type { SelectedSeat } from "./SeatsWrapper";
+import Button from "@/components/ui/Button";
 
 interface SelectedSeatsProps {
     seats: SelectedSeat[];
@@ -15,6 +15,10 @@ interface SelectedSeatsProps {
 function SelectedSeats({
     seats,
 }: SelectedSeatsProps) {
+    const handleContinue = () => {
+        // TODO:
+        // Navigate to /payment
+    };
 
     if (seats.length === 0) {
         return (
@@ -28,13 +32,8 @@ function SelectedSeats({
                     "text-center",
                 )}
             >
-                <p
-                    className="
-                        text-sm
-                        text-black-light-utility
-                    "
-                >
-                    No seat has been selected yet.
+                <p className="text-sm text-black-light-utility">
+                    No seats selected yet.
                 </p>
             </div>
         );
@@ -49,43 +48,23 @@ function SelectedSeats({
     return (
         <div
             className={cn(
-                "min-h-[40vh] rounded-2xl",
+                "rounded-2xl",
                 "border",
                 "border-black-opacity",
                 "bg-white",
                 "p-6",
             )}
         >
-
             {/* Header */}
-            <div
-                className="
-                    fbc
-                    gap-4
-                    mb-5
-                "
-            >
-
+            <div className="fbc mb-5 gap-4">
                 <div className="fcol gap-1">
-
-                    <h2
-                        className="
-                            text-lg
-                            font-bold
-                        "
-                    >
-                        Selected seats
+                    <h2 className="text-lg font-bold">
+                        Selected Seats
                     </h2>
 
-                    <span
-                        className="
-                            text-xs
-                            text-black-light-utility
-                        "
-                    >
-                        {seats.length} Seats
+                    <span className="text-xs text-black-light-utility">
+                        {seats.length} seats
                     </span>
-
                 </div>
 
                 <div
@@ -100,91 +79,87 @@ function SelectedSeats({
                 >
                     {seats.length}
                 </div>
-
             </div>
 
-            {/* Rows */}
-            <div
-                className="
-                    fcol
-                    gap-3
-                "
-            >
-
-                {
-                    Object.entries(
-                        groupedSeats
-                    ).map(
-                        ([row, rowSeats]) => (
-
-                            <div
-                                key={row}
+            {/* Seats */}
+            <div className="fcol gap-3">
+                {Object.entries(
+                    groupedSeats
+                ).map(
+                    ([row, rowSeats]) => (
+                        <div
+                            key={row}
+                            className="
+                                flex
+                                items-center
+                                gap-3
+                            "
+                        >
+                            <span
                                 className="
-                                    flex
-                                    items-center
-                                    gap-3
+                                    w-14
+                                    shrink-0
+                                    text-xs
+                                    font-semibold
+                                    text-black-light-utility
                                 "
                             >
+                                Row {row}
+                            </span>
 
-                                {/* Row */}
-                                <span
-                                    className="
-                                        w-14
-                                        shrink-0
-                                        text-xs
-                                        font-semibold
-                                        text-black-light-utility
-                                    "
-                                >
-                                    Row {row}
-                                </span>
-
-                                {/* Seats */}
-                                <div
-                                    className="
-                                        flex
-                                        flex-wrap
-                                        gap-2
-                                    "
-                                >
-
-                                    {
-                                        rowSeats?.map(
-                                            (seat) => (
-                                                <span
-                                                    key={
-                                                        seat.seatNum
-                                                    }
-                                                    className="
-                                                        fcc
-                                                        min-w-9
-                                                        h-9
-                                                        rounded-lg
-                                                        bg-[var(--crimson-opacity-color)]
-                                                        px-2
-                                                        text-sm
-                                                        font-semibold
-                                                        text-crimson
-                                                    "
-                                                >
-                                                    {
-                                                        seat.seatNum
-                                                    }
-                                                </span>
-                                            )
-                                        )
-                                    }
-
-                                </div>
-
+                            <div
+                                className="
+                                    flex
+                                    flex-wrap
+                                    gap-2
+                                "
+                            >
+                                {rowSeats?.map(
+                                    (seat) => (
+                                        <span
+                                            key={
+                                                seat.seatNum
+                                            }
+                                            className="
+                                                fcc
+                                                h-9
+                                                min-w-9
+                                                rounded-lg
+                                                bg-[var(--crimson-opacity-color)]
+                                                px-2
+                                                text-sm
+                                                font-semibold
+                                                text-crimson
+                                            "
+                                        >
+                                            {
+                                                seat.seatNum
+                                            }
+                                        </span>
+                                    )
+                                )}
                             </div>
-
-                        )
+                        </div>
                     )
-                }
-
+                )}
             </div>
 
+            {/* Continue */}
+            <div className="mt-6">
+                <Button
+                    onClick={
+                        handleContinue
+                    }
+                    className="
+                        w-full
+                        bg-crimson
+                        hover:bg-[var(--crimson-opacity-color)]
+                        hover:text-crimson
+                    "
+                >
+                    Continue to Payment
+                </Button>
+            </div>
         </div>
     );
 }

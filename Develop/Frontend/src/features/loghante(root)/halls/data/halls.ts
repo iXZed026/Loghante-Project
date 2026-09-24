@@ -128,4 +128,59 @@ export const halls: IHallsData[] = [
             { seatNum: 81, row: 12 },
         ],
     },
+
+    {
+        id: 2,
+
+        hallName: {
+            en: "Qasr Museum",
+            fa: "موزه قصر",
+        },
+
+        seats: [
+            // Row 1 - 4 seats
+            { seatNum: 1, row: 1 },
+            { seatNum: 2, row: 1 },
+            { seatNum: 3, row: 1 },
+            { seatNum: 4, row: 1 },
+
+            // Row 2 - 5 seats
+            { seatNum: 5, row: 2 },
+            { seatNum: 6, row: 2 },
+            { seatNum: 7, row: 2 },
+            { seatNum: 8, row: 2 },
+            { seatNum: 9, row: 2 },
+
+            // Row 3 - 3 seats
+            { seatNum: 10, row: 3 },
+            { seatNum: 11, row: 3 },
+            { seatNum: 12, row: 3 },
+
+            // Row 4 - 6 seats
+            { seatNum: 13, row: 4 },
+            { seatNum: 14, row: 4 },
+            { seatNum: 15, row: 4 },
+            { seatNum: 16, row: 4 },
+            { seatNum: 17, row: 4 },
+            { seatNum: 18, row: 4 },
+
+            // Row 5 - 4 seats
+            { seatNum: 19, row: 5 },
+            { seatNum: 20, row: 5 },
+            { seatNum: 21, row: 5 },
+            { seatNum: 22, row: 5 },
+
+            // Row 6 - 5 seats
+            { seatNum: 23, row: 6 },
+            { seatNum: 24, row: 6 },
+            { seatNum: 25, row: 6 },
+            { seatNum: 26, row: 6 },
+            { seatNum: 27, row: 6 },
+
+            // Row 7 - 3 seats
+            { seatNum: 28, row: 7 },
+            { seatNum: 29, row: 7 },
+            { seatNum: 30, row: 7 },
+        ],
+    },
 ];

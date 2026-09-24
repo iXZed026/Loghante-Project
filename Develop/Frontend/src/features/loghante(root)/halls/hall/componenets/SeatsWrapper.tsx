@@ -1,8 +1,13 @@
 "use client";
 
 import React from "react";
+
 import SeatsBox from "./SeatsBox";
-import { halls } from "../../data/halls";
+
+export interface HallSeat {
+    seatNum: number;
+    row: number;
+}
 
 export interface SelectedSeat {
     seatNum: number;
@@ -10,19 +15,20 @@ export interface SelectedSeat {
 }
 
 interface SeatsWrapperProps {
+    seats: HallSeat[];
     selectedSeats: SelectedSeat[];
-    onToggleSeat: (seat: SelectedSeat) => void;
+    onToggleSeat: (
+        seat: SelectedSeat
+    ) => void;
 }
 
 function SeatsWrapper({
+    seats,
     selectedSeats,
     onToggleSeat,
 }: SeatsWrapperProps) {
-
-    const hall = halls[0];
-
     const rows = Object.groupBy(
-        hall.seats,
+        seats,
         (seat) => seat.row
     );
 
@@ -37,10 +43,8 @@ function SeatsWrapper({
 
     return (
         <div className="fcol gap-4">
-
             {Object.entries(rows).map(
-                ([row, seats]) => (
-
+                ([row, rowSeats]) => (
                     <div
                         key={row}
                         className="
@@ -50,7 +54,6 @@ function SeatsWrapper({
                             gap-3
                         "
                     >
-
                         {/* Row Number */}
                         <div
                             className="
@@ -75,7 +78,7 @@ function SeatsWrapper({
                                 gap-3
                             "
                         >
-                            {seats?.map(
+                            {rowSeats?.map(
                                 (seat) => (
                                     <SeatsBox
                                         key={
@@ -84,11 +87,9 @@ function SeatsWrapper({
                                         seatNum={
                                             seat.seatNum
                                         }
-                                        selected={
-                                            isSeatSelected(
-                                                seat.seatNum
-                                            )
-                                        }
+                                        selected={isSeatSelected(
+                                            seat.seatNum
+                                        )}
                                         onClick={() =>
                                             onToggleSeat(
                                                 seat
@@ -98,11 +99,9 @@ function SeatsWrapper({
                                 )
                             )}
                         </div>
-
                     </div>
                 )
             )}
-
         </div>
     );
 }

@@ -1,8 +1,6 @@
 import React from "react";
 
-import {
-    cn,
-} from "@/lib/utils/cn";
+import { cn } from "@/lib/utils/cn";
 
 interface SeatsBoxProps {
     seatNum: number;
@@ -15,7 +13,6 @@ function SeatsBox({
     selected,
     onClick,
 }: SeatsBoxProps) {
-
     return (
         <button
             type="button"
@@ -34,22 +31,20 @@ function SeatsBox({
 
                 selected
                     ? [
-                        "bg-crimson",
-                        "border-crimson",
-                        "text-white",
-                        "scale-105",
-                        "shadow-md",
-                    ]
+                          "bg-crimson",
+                          "border-crimson",
+                          "text-white",
+                          "scale-105",
+                          "shadow-md",
+                      ]
                     : [
-                        "bg-white",
-                        "hover:bg-[var(--crimson-opacity-color)]",
-                        "hover:border-crimson",
-                    ],
+                          "bg-white",
+                          "hover:bg-[var(--crimson-opacity-color)]",
+                          "hover:border-crimson",
+                      ],
             )}
         >
-            <span>
-                {seatNum}
-            </span>
+            {seatNum}
         </button>
     );
 }
