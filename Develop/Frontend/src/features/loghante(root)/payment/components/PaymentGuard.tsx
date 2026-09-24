@@ -10,7 +10,7 @@ import {
 } from "next/navigation";
 
 import {
-    useTicketPayment
+    useTicketPayment,
 } from "../../context/TicketPaymentContext";
 
 interface PaymentGuardProps {

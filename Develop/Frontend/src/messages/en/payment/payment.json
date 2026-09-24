@@ -1,10 +1,17 @@
 {
     "ticket-info": {
-        "ticket-date":{
-            "change-button":"Change"
+        "ticket": "Ticket",
+        "tickets": "tickets",
+        "location": "Tehran - Shahid Ghodousi",
+        "ticket-date": {
+            "change-button": "Change"
+        },
+        "hall": {
+            "title": "Hall",
+            "seats": "Selected seats"
         },
         "rules": {
-            "title": "Payment and tour rules"
+            "title": "Ticket Rules"
         }
     },
     "payment-details": {

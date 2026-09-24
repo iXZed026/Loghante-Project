@@ -7,12 +7,29 @@ import {
     useState,
 } from "react";
 
-import {
-    MuseumTourSessionResponse,
-} from "@/lib/api/ticket/museum-tour";
+export type TicketPaymentType =
+    | "museum-tour"
+    | "events-and-courses"
+    | "cinema-and-theater";
 
-interface TicketPaymentData {
-    ticket: MuseumTourSessionResponse;
+export interface TicketPaymentData {
+    type: TicketPaymentType;
+
+    ticket: {
+        sessionId: number;
+        eventId: number;
+        name: string;
+        startAt: string;
+        durationM: number;
+        capacity: number;
+        price: number | null;
+    };
+
+    hall?: {
+        hallName: string;
+        seatsNumbs: number[];
+    };
+
     quantity: number;
 }
 
@@ -42,7 +59,26 @@ export function TicketPaymentProvider({
     const [
         paymentData,
         setPaymentData,
-    ] = useState<TicketPaymentData | null>(null);
+    ] = useState<TicketPaymentData | null>({
+        type: "cinema-and-theater",
+
+        ticket: {
+            sessionId: 25,
+            eventId: 8,
+            name: "Shadows of Tehran",
+            startAt: "2026-09-24T18:30:00",
+            durationM: 120,
+            capacity: 100,
+            price: 250000,
+        },
+
+        hall: {
+            hallName: "Loghanteh Grand Hall",
+            seatsNumbs: [12, 13],
+        },
+
+        quantity: 2,
+    });
 
     const clearPaymentData = () => {
         setPaymentData(null);

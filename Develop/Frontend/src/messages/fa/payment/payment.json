@@ -1,10 +1,17 @@
 {
   "ticket-info": {
+    "ticket": "بلیت",
+    "tickets": "بلیت",
+    "location": "تهران - شهید قدوسی",
     "ticket-date": {
-      "change-button": "عوض کردن"
+      "change-button": "تغییر"
+    },
+    "hall": {
+      "title": "محل برگزاری",
+      "seats": "صندلی‌های انتخاب‌شده"
     },
     "rules": {
-      "title": "قوانین پرداخت و بازدید"
+      "title": "قوانین بلیت"
     }
   },
   "payment-details": {
