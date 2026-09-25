@@ -6,6 +6,7 @@ import Header from "@/features/loghante(root)/components/header/Header";
 import Footer from "@/components/shared/footer/Footer";
 import { ProfileProvider } from "@/contexts/ProfileProvider";
 import { TicketPaymentProvider } from "@/features/loghante(root)/context/TicketPaymentContext";
+import { HallProvider } from "@/features/loghante(root)/halls/context/HallProvider";
 
 
 export default async function LocaleLayout({
@@ -39,7 +40,9 @@ export default async function LocaleLayout({
           <ProfileProvider>
             <TicketPaymentProvider>
               <Header />
-              {children}
+              <HallProvider>
+                {children}
+              </HallProvider>
               <Footer />
             </TicketPaymentProvider>
           </ProfileProvider>

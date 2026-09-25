@@ -75,7 +75,6 @@ async function EventsAndCoursesDetailsPage({
     }
 
     const event = response.data
-    console.log(event)
 
     return (
         <Container>

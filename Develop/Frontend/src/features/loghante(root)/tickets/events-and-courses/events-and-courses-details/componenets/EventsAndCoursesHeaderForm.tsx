@@ -22,6 +22,8 @@ import {
     MdOutlineDateRange,
     MdOutlinePriceChange,
 } from 'react-icons/md'
+import { useRouter } from 'next/navigation'
+import { useHall } from '@/features/loghante(root)/halls/context/HallProvider'
 
 interface EventsAndCoursesHeaderFormProps {
     event: EventAndCourseSessionDetail
@@ -32,6 +34,10 @@ function EventsAndCoursesHeaderForm({
 }: EventsAndCoursesHeaderFormProps) {
 
     const locale = useLocale()
+    const router = useRouter()
+
+    const { setHallData } =
+        useHall()
 
     const commonT =
         useTranslations("common")
@@ -60,7 +66,25 @@ function EventsAndCoursesHeaderForm({
         e: React.FormEvent<HTMLFormElement>
     ): void {
         e.preventDefault()
+
+        console.log(event)
+
+        setHallData({
+            eventData: {
+                title: event.name,
+                description: event.description,
+                startAt: event.startAt,
+                // imageURL: event.images[0].imageUrl,
+                imageURL: "/images/loghanteh-cafe.jpg",
+                price:event.price
+            }
+        })
+
+        router.push(`/${locale}/hall/${event.hallId}`)
+
     }
+
+
 
     const startAt =
         new Date(event.startAt)
@@ -268,22 +292,22 @@ function EventsAndCoursesHeaderForm({
 
                 {/* Book */}
 
-                {event.price !== 0 &&(
-                    <div className="w-full">
-                        <Button
-                            className={cn(
-                                "w-full",
-                                "py-3 px-3",
-                                "bg-crimson",
-                                "font-bold",
-                            )}
-                        >
-                            {eventsAndCoursesHeaderT(
-                                "details.book-button"
-                            )}
-                        </Button>
-                    </div>
-                )}
+                {/* {event.price !== 0 &&( */}
+                <div className="w-full">
+                    <Button
+                        className={cn(
+                            "w-full",
+                            "py-3 px-3",
+                            "bg-crimson",
+                            "font-bold",
+                        )}
+                    >
+                        {eventsAndCoursesHeaderT(
+                            "details.book-button"
+                        )}
+                    </Button>
+                </div>
+                {/* )} */}
 
             </form>
         </FadeIn>

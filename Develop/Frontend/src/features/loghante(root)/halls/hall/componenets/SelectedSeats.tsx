@@ -2,11 +2,12 @@
 
 import React from "react";
 
+import Button from "@/components/ui/Button";
+
 import { cn } from "@/lib/utils/cn";
 
-
 import type { SelectedSeat } from "./SeatsWrapper";
-import Button from "@/components/ui/Button";
+import { useHall } from "../../context/HallProvider";
 
 interface SelectedSeatsProps {
     seats: SelectedSeat[];
@@ -15,6 +16,10 @@ interface SelectedSeatsProps {
 function SelectedSeats({
     seats,
 }: SelectedSeatsProps) {
+
+    const event =
+        useHall().hallData?.eventData
+
     const handleContinue = () => {
         // TODO:
         // Navigate to /payment
@@ -55,7 +60,6 @@ function SelectedSeats({
                 "p-6",
             )}
         >
-            {/* Header */}
             <div className="fbc mb-5 gap-4">
                 <div className="fcol gap-1">
                     <h2 className="text-lg font-bold">
@@ -63,7 +67,7 @@ function SelectedSeats({
                     </h2>
 
                     <span className="text-xs text-black-light-utility">
-                        {seats.length} seats
+                        {seats.length} seats x {event?.price} Toman
                     </span>
                 </div>
 
@@ -81,46 +85,46 @@ function SelectedSeats({
                 </div>
             </div>
 
-            {/* Seats */}
-            <div className="fcol gap-3">
-                {Object.entries(
-                    groupedSeats
-                ).map(
-                    ([row, rowSeats]) => (
-                        <div
-                            key={row}
-                            className="
+            <div className="fcol justify-between min-h-[30vh]">
+                <div className="fcol gap-3">
+                    {Object.entries(
+                        groupedSeats
+                    ).map(
+                        ([row, rowSeats]) => (
+                            <div
+                                key={row}
+                                className="
                                 flex
                                 items-center
                                 gap-3
                             "
-                        >
-                            <span
-                                className="
+                            >
+                                <span
+                                    className="
                                     w-14
                                     shrink-0
                                     text-xs
                                     font-semibold
                                     text-black-light-utility
                                 "
-                            >
-                                Row {row}
-                            </span>
+                                >
+                                    Row {row}
+                                </span>
 
-                            <div
-                                className="
+                                <div
+                                    className="
                                     flex
                                     flex-wrap
                                     gap-2
                                 "
-                            >
-                                {rowSeats?.map(
-                                    (seat) => (
-                                        <span
-                                            key={
-                                                seat.seatNum
-                                            }
-                                            className="
+                                >
+                                    {rowSeats?.map(
+                                        (seat) => (
+                                            <span
+                                                key={
+                                                    seat.seatNum
+                                                }
+                                                className="
                                                 fcc
                                                 h-9
                                                 min-w-9
@@ -131,36 +135,50 @@ function SelectedSeats({
                                                 font-semibold
                                                 text-crimson
                                             "
-                                        >
-                                            {
-                                                seat.seatNum
-                                            }
-                                        </span>
-                                    )
-                                )}
+                                            >
+                                                {
+                                                    seat.seatNum
+                                                }
+                                            </span>
+                                        )
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    )
-                )}
-            </div>
+                        )
+                    )}
+                </div>
 
-            {/* Continue */}
-            <div className="mt-6">
-                <Button
-                    onClick={
-                        handleContinue
-                    }
-                    className="
+                <div className="mt-6">
+                    <Button
+                        onClick={
+                            handleContinue
+                        }
+                        className="
+                        text-sm
                         w-full
+                        font-semibold
                         bg-crimson
                         hover:bg-[var(--crimson-opacity-color)]
                         hover:text-crimson
+                        py-3
+                        fbc
                     "
-                >
-                    Continue to Payment
-                </Button>
+                    >
+                        Continue to Payment
+                        {event?.price === 0 || null ? (
+                            <span className="text-gold utility font-semibold">
+                                Free
+                            </span>
+                        ) : (
+                            <span className="fcol gap-y-1 items-center">
+                                {(Number(event?.price)) * seats.length}
+                                <span>Toman</span>
+                            </span>
+                        )}
+                    </Button>
+                </div>
             </div>
-        </div>
+        </div >
     );
 }
 

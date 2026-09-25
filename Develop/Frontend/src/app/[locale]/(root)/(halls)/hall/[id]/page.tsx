@@ -1,174 +1,67 @@
 "use client";
 
-import React, {
-    useEffect,
-    useState,
-} from "react";
+import React from "react";
 
 import {
     useParams,
     useRouter,
 } from "next/navigation";
 
-import SeatsWrapper, {
-    HallSeat,
-    SelectedSeat,
-} from "@/features/loghante(root)/halls/hall/componenets/SeatsWrapper";
-
-import SelectedSeats from "@/features/loghante(root)/halls/hall/componenets/SelectedSeats";
+import HallHeader from "@/features/loghante(root)/halls/hall/componenets/HallHeader";
+import HallContent from "@/features/loghante(root)/halls/hall/componenets/HallContent";
 
 import HallGuard from "@/features/loghante(root)/halls/componenets/HallGuard";
 
+
 import {
-    HallProvider,
-    useHall,
-} from "@/features/loghante(root)/halls/context/HallProvider";
-
-import { halls } from "@/features/loghante(root)/halls/data/halls";
-
-interface HallContentProps {
-    seats: HallSeat[];
-}
-
-function HallContent({
-    seats,
-}: HallContentProps) {
-    const [
-        selectedSeats,
-        setSelectedSeats,
-    ] = useState<SelectedSeat[]>([]);
-
-    const toggleSeat = (
-        seat: SelectedSeat
-    ) => {
-        setSelectedSeats(
-            (currentSeats) => {
-                const isSelected =
-                    currentSeats.some(
-                        (selectedSeat) =>
-                            selectedSeat.seatNum ===
-                            seat.seatNum
-                    );
-
-                if (isSelected) {
-                    return currentSeats.filter(
-                        (selectedSeat) =>
-                            selectedSeat.seatNum !==
-                            seat.seatNum
-                    );
-                }
-
-                return [
-                    ...currentSeats,
-                    seat,
-                ];
-            }
-        );
-    };
-
-    return (
-        <div className="min-h-screen py-30">
-            <div className="mx-auto w-full max-w-7xl px-5">
-                <div className="grid grid-cols-12 gap-10">
-                    <div className="col-span-12 lg:col-span-8">
-                        <SeatsWrapper
-                            seats={seats}
-                            selectedSeats={
-                                selectedSeats
-                            }
-                            onToggleSeat={
-                                toggleSeat
-                            }
-                        />
-                    </div>
-
-                    <div className="col-span-12 lg:col-span-4">
-                        <SelectedSeats
-                            seats={
-                                selectedSeats
-                            }
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}
+    halls,
+} from "@/features/loghante(root)/halls/data/halls";
+import HallTicketDetails from "@/features/loghante(root)/halls/hall/componenets/HallTicketDetails";
 
 function HallPage() {
-    const params = useParams();
-    const router = useRouter();
+    const params =
+        useParams();
 
-    const { setHallData } =
-        useHall();
+    const router =
+        useRouter();
 
-    const [hall, setHall] =
-        useState<(typeof halls)[number] | null>(
-            null
-        );
+    const hallId =
+        Number(params.id);
 
-    useEffect(() => {
-        const hallId = Number(
-            params.id
-        );
-
-        if (Number.isNaN(hallId)) {
-            router.back();
-            return;
-        }
-
-        const foundHall = halls.find(
+    const hall =
+        halls.find(
             (item) =>
                 item.id === hallId
         );
 
-        if (!foundHall) {
-            router.back();
-            return;
-        }
-
-        setHall(foundHall);
-
-        // فقط اطلاعات مربوط به Hall
-        // داخل Context قرار می‌گیرد.
-        // seats از Context استفاده نمی‌کند.
-        setHallData({
-            hallId: foundHall.id,
-
-            boxData: {
-                title:
-                    foundHall.hallName.en,
-
-                description: "",
-
-                imageURL: "",
-            },
-        });
-    }, [
-        params.id,
-        router,
-        setHallData,
-    ]);
-
     if (!hall) {
+        router.back();
         return null;
     }
 
     return (
-        <HallGuard ready={hall !== null}>
-            <HallContent
-                seats={hall.seats}
-            />
+        <HallGuard>
+
+            <div className="min-h-screen py-30">
+
+                <div className="mx-auto w-full max-w-7xl px-5 fcol gap-y-15">
+
+                    <HallHeader />
+
+                    <HallTicketDetails />
+
+                    <HallContent
+                        seats={
+                            hall.seats
+                        }
+                    />
+
+                </div>
+
+            </div>
+
         </HallGuard>
     );
 }
 
-function HallPageWithProvider() {
-    return (
-        <HallProvider>
-            <HallPage />
-        </HallProvider>
-    );
-}
-
-export default HallPageWithProvider;
+export default HallPage;

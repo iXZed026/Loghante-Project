@@ -5,40 +5,47 @@ import {
     useEffect,
 } from "react";
 
-import { useRouter } from "next/navigation";
+import {
+    useParams,
+    useRouter,
+} from "next/navigation";
 
-import { useHall } from "../context/HallProvider";
+import {
+    useHall,
+} from "../context/HallProvider";
 
 interface HallGuardProps {
     children: ReactNode;
-    ready: boolean;
 }
 
 function HallGuard({
     children,
-    ready,
 }: HallGuardProps) {
-    const router = useRouter();
 
-    const { hallData } =
-        useHall();
+    const router =
+        useRouter();
+
+    const params =
+        useParams();
+
+    const {
+        hallData,
+    } = useHall();
+
+    const locale =
+        params.locale as string;
 
     useEffect(() => {
-        if (
-            ready &&
-            !hallData
-        ) {
-            router.back();
+
+        if (!hallData) {
+            router.replace(`/${locale}`);
         }
+
     }, [
-        ready,
         hallData,
+        locale,
         router,
     ]);
-
-    if (!ready) {
-        return null;
-    }
 
     if (!hallData) {
         return null;

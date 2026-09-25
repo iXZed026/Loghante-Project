@@ -28,7 +28,7 @@ function SeatsWrapper({
     onToggleSeat,
 }: SeatsWrapperProps) {
     const rows = Object.groupBy(
-        seats,
+        seats ?? [],
         (seat) => seat.row
     );
 
