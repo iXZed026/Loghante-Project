@@ -81,6 +81,8 @@ function EventsAndCoursesContent() {
                     return
                 }
 
+                console.log(response.data)
+
                 setData(
                     response.data ?? []
                 )

@@ -19,6 +19,7 @@ type Booking struct {
 
 	User    User         `gorm:"foreignKey:UserID"`
 	Session EventSession `gorm:"foreignKey:SessionID"`
+	Seats   []BookingSeat `gorm:"foreignKey:BookingID"`
 }
 
 func (Booking) TableName() string {

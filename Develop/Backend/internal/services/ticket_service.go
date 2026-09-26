@@ -13,6 +13,11 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	CinemaEventTypeID  uint = 4
+	TheaterEventTypeID uint = 5
+)
+
 type TicketService struct {
 	db                 *gorm.DB
 	ticketRepository   *repositories.TicketRepository
@@ -34,46 +39,309 @@ func NewTicketService(
 	}
 }
 
+// --------------------------------------------------
+// Museum
+// --------------------------------------------------
+
 func (s *TicketService) GetMuseumTourSessions(
 	ctx context.Context,
 	date time.Time,
 	languageCode string,
 ) ([]dto.MuseumTourSessionResponse, error) {
 
-	languageID, err :=
-		s.languageRepository.GetIDByCode(
-			ctx,
-			languageCode,
-		)
-
+	languageID, err := s.languageRepository.GetIDByCode(
+		ctx,
+		languageCode,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	eventTypeID, err :=
-		s.ticketRepository.GetEventTypeIDByName(
-			ctx,
-			"museum-tour",
-		)
-
+	eventTypeID, err := s.ticketRepository.GetEventTypeIDByName(
+		ctx,
+		"museum-tour",
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	sessions, err :=
-		s.ticketRepository.GetMuseumTourSessions(
-			ctx,
-			date,
-			eventTypeID,
-			languageID,
-		)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return sessions, nil
+	return s.ticketRepository.GetMuseumTourSessions(
+		ctx,
+		date,
+		eventTypeID,
+		languageID,
+	)
 }
+
+// --------------------------------------------------
+// Events
+// --------------------------------------------------
+
+func (s *TicketService) GetEventSessions(
+	ctx context.Context,
+	date time.Time,
+	languageCode string,
+) ([]dto.EventSessionListResponse, error) {
+
+	return s.getSessionsByType(
+		ctx,
+		date,
+		languageCode,
+		"events",
+		s.ticketRepository.GetEventSessions,
+	)
+}
+
+// --------------------------------------------------
+// Courses
+// --------------------------------------------------
+
+func (s *TicketService) GetCourseSessions(
+	ctx context.Context,
+	date time.Time,
+	languageCode string,
+) ([]dto.EventSessionListResponse, error) {
+
+	return s.getSessionsByType(
+		ctx,
+		date,
+		languageCode,
+		"courses",
+		s.ticketRepository.GetCourseSessions,
+	)
+}
+
+// --------------------------------------------------
+// Cinema
+// --------------------------------------------------
+
+func (s *TicketService) GetCinemaSessions(
+	ctx context.Context,
+	date time.Time,
+	languageCode string,
+) ([]dto.EventSessionListResponse, error) {
+
+	languageID, err := s.languageRepository.GetIDByCode(
+		ctx,
+		languageCode,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.ticketRepository.GetCinemaSessions(
+		ctx,
+		date,
+		CinemaEventTypeID,
+		languageID,
+	)
+}
+
+// --------------------------------------------------
+// Theater
+// --------------------------------------------------
+
+func (s *TicketService) GetTheaterSessions(
+	ctx context.Context,
+	date time.Time,
+	languageCode string,
+) ([]dto.EventSessionListResponse, error) {
+
+	languageID, err := s.languageRepository.GetIDByCode(
+		ctx,
+		languageCode,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.ticketRepository.GetTheaterSessions(
+		ctx,
+		date,
+		TheaterEventTypeID,
+		languageID,
+	)
+}
+
+// --------------------------------------------------
+// Generic session list helper
+// --------------------------------------------------
+
+type sessionListFunc func(
+	context.Context,
+	time.Time,
+	uint,
+	uint,
+) ([]dto.EventSessionListResponse, error)
+
+func (s *TicketService) getSessionsByType(
+	ctx context.Context,
+	date time.Time,
+	languageCode string,
+	eventTypeName string,
+	getSessions sessionListFunc,
+) ([]dto.EventSessionListResponse, error) {
+
+	languageID, err := s.languageRepository.GetIDByCode(
+		ctx,
+		languageCode,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	eventTypeID, err := s.ticketRepository.GetEventTypeIDByName(
+		ctx,
+		eventTypeName,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return getSessions(
+		ctx,
+		date,
+		eventTypeID,
+		languageID,
+	)
+}
+
+// --------------------------------------------------
+// Event detail
+// --------------------------------------------------
+
+func (s *TicketService) GetEventSessionDetail(
+	ctx context.Context,
+	sessionID uint,
+	languageCode string,
+) (*dto.EventSessionDetailResponse, error) {
+
+	return s.getEventDetail(
+		ctx,
+		sessionID,
+		languageCode,
+		"events",
+		s.ticketRepository.GetEventSessionDetail,
+	)
+}
+
+// --------------------------------------------------
+// Course detail
+// --------------------------------------------------
+
+func (s *TicketService) GetCourseSessionDetail(
+	ctx context.Context,
+	sessionID uint,
+	languageCode string,
+) (*dto.EventSessionDetailResponse, error) {
+
+	return s.getEventDetail(
+		ctx,
+		sessionID,
+		languageCode,
+		"courses",
+		s.ticketRepository.GetCourseSessionDetail,
+	)
+}
+
+// --------------------------------------------------
+// Generic event detail helper
+// --------------------------------------------------
+
+type sessionDetailFunc func(
+	context.Context,
+	uint,
+	uint,
+	uint,
+) (*dto.EventSessionDetailResponse, error)
+
+func (s *TicketService) getEventDetail(
+	ctx context.Context,
+	sessionID uint,
+	languageCode string,
+	eventTypeName string,
+	getDetail sessionDetailFunc,
+) (*dto.EventSessionDetailResponse, error) {
+
+	languageID, err := s.languageRepository.GetIDByCode(
+		ctx,
+		languageCode,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	eventTypeID, err := s.ticketRepository.GetEventTypeIDByName(
+		ctx,
+		eventTypeName,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return getDetail(
+		ctx,
+		sessionID,
+		eventTypeID,
+		languageID,
+	)
+}
+
+// --------------------------------------------------
+// Cinema detail
+// --------------------------------------------------
+
+func (s *TicketService) GetCinemaSessionDetail(
+	ctx context.Context,
+	sessionID uint,
+	languageCode string,
+) (*dto.CinemaSessionDetailResponse, error) {
+
+	languageID, err := s.languageRepository.GetIDByCode(
+		ctx,
+		languageCode,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.ticketRepository.GetCinemaSessionDetail(
+		ctx,
+		sessionID,
+		CinemaEventTypeID,
+		languageID,
+	)
+}
+
+// --------------------------------------------------
+// Theater detail
+// --------------------------------------------------
+
+func (s *TicketService) GetTheaterSessionDetail(
+	ctx context.Context,
+	sessionID uint,
+	languageCode string,
+) (*dto.TheaterSessionDetailResponse, error) {
+
+	languageID, err := s.languageRepository.GetIDByCode(
+		ctx,
+		languageCode,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.ticketRepository.GetTheaterSessionDetail(
+		ctx,
+		sessionID,
+		TheaterEventTypeID,
+		languageID,
+	)
+}
+
+// --------------------------------------------------
+// Booking
+// --------------------------------------------------
 
 func (s *TicketService) CreateBooking(
 	ctx context.Context,
@@ -81,16 +349,38 @@ func (s *TicketService) CreateBooking(
 	req dto.CreateBookingRequest,
 ) (*dto.CreateBookingResponse, error) {
 
+	if len(req.SeatIDs) == 0 {
+		return nil, appErrors.ErrInvalidInput
+	}
+
+	// جلوگیری از ارسال seat تکراری
+	seatSet := make(map[uint]struct{}, len(req.SeatIDs))
+
+	for _, seatID := range req.SeatIDs {
+
+		if seatID == 0 {
+			return nil, appErrors.ErrInvalidInput
+		}
+
+		if _, exists := seatSet[seatID]; exists {
+			return nil, appErrors.ErrInvalidInput
+		}
+
+		seatSet[seatID] = struct{}{}
+	}
+
+	quantity := len(req.SeatIDs)
+
 	var booking models.Booking
 
 	err := s.db.Transaction(func(tx *gorm.DB) error {
 
-		session, err :=
-			s.bookingRepository.GetSessionForBooking(
-				tx,
-				ctx,
-				req.SessionID,
-			)
+		// قفل session برای جلوگیری از booking همزمان
+		session, err := s.bookingRepository.GetSessionForBooking(
+			tx,
+			ctx,
+			req.SessionID,
+		)
 
 		if err != nil {
 
@@ -101,44 +391,75 @@ func (s *TicketService) CreateBooking(
 			return err
 		}
 
-		if req.Quantity > session.Capacity {
+		// بررسی ظرفیت
+		if quantity > session.Capacity {
 			return appErrors.ErrInsufficientCapacity
 		}
 
+		// بررسی اینکه تمام صندلی‌ها متعلق به سالن همین session باشند
+		valid, err := s.bookingRepository.ValidateSeatsForSession(
+			tx,
+			ctx,
+			req.SessionID,
+			req.SeatIDs,
+		)
+
+		if err != nil {
+			return err
+		}
+
+		if !valid {
+			return appErrors.ErrInvalidInput
+		}
+
+		// محاسبه قیمت
 		var totalPrice decimal.Decimal
 
 		if session.Price != nil {
-			totalPrice =
-				session.Price.Mul(
-					decimal.NewFromInt(
-						int64(req.Quantity),
-					),
-				)
+			totalPrice = session.Price.Mul(
+				decimal.NewFromInt(
+					int64(quantity),
+				),
+			)
 		}
 
 		booking = models.Booking{
 			UserID:     userID,
 			SessionID:  req.SessionID,
-			Quantity:   req.Quantity,
+			Quantity:   quantity,
 			TotalPrice: totalPrice,
 		}
 
-		if err :=
-			s.bookingRepository.Create(
-				tx,
-				ctx,
-				&booking,
-			); err != nil {
+		// ایجاد booking
+		if err := s.bookingRepository.Create(
+			tx,
+			ctx,
+			&booking,
+		); err != nil {
 			return err
 		}
 
-		if err :=
-			s.bookingRepository.DecreaseSessionCapacity(
-				tx,
-				ctx,
-				req.SessionID,
-				req.Quantity,
-			); err != nil {
+		// ذخیره صندلی‌های انتخاب‌شده
+		//
+		// UNIQUE(sessionid, seatid)
+		// در دیتابیس جلوی رزرو همزمان یک صندلی را می‌گیرد.
+		if err := s.bookingRepository.CreateBookingSeats(
+			tx,
+			ctx,
+			booking.BookingID,
+			req.SessionID,
+			req.SeatIDs,
+		); err != nil {
+			return err
+		}
+
+		// کاهش ظرفیت
+		if err := s.bookingRepository.DecreaseSessionCapacity(
+			tx,
+			ctx,
+			req.SessionID,
+			quantity,
+		); err != nil {
 			return err
 		}
 
@@ -153,96 +474,15 @@ func (s *TicketService) CreateBooking(
 		BookingID:   booking.BookingID,
 		SessionID:   booking.SessionID,
 		Quantity:    booking.Quantity,
+		SeatIDs:     req.SeatIDs,
 		TotalPrice:  booking.TotalPrice,
 		PurchasedAt: booking.PurchasedAt,
 	}, nil
 }
 
-// events
-
-func (s *TicketService) GetEventSessions(
-	ctx context.Context,
-	date time.Time,
-	languageCode string,
-) ([]dto.EventSessionListResponse, error) {
-
-	languageID, err :=
-		s.languageRepository.GetIDByCode(
-			ctx,
-			languageCode,
-		)
-
-	if err != nil {
-		return nil, err
-	}
-
-	eventTypeID, err :=
-		s.ticketRepository.GetEventTypeIDByName(
-			ctx,
-			"events",
-		)
-
-	if err != nil {
-		return nil, err
-	}
-
-	sessions, err :=
-		s.ticketRepository.GetEventSessions(
-			ctx,
-			date,
-			eventTypeID,
-			languageID,
-		)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return sessions, nil
-}
-
-// courses
-
-func (s *TicketService) GetCourseSessions(
-	ctx context.Context,
-	date time.Time,
-	languageCode string,
-) ([]dto.EventSessionListResponse, error) {
-
-	languageID, err :=
-		s.languageRepository.GetIDByCode(
-			ctx,
-			languageCode,
-		)
-
-	if err != nil {
-		return nil, err
-	}
-
-	eventTypeID, err :=
-		s.ticketRepository.GetEventTypeIDByName(
-			ctx,
-			"courses",
-		)
-
-	if err != nil {
-		return nil, err
-	}
-
-	sessions, err :=
-		s.ticketRepository.GetCourseSessions(
-			ctx,
-			date,
-			eventTypeID,
-			languageID,
-		)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return sessions, nil
-}
+// --------------------------------------------------
+// User bookings
+// --------------------------------------------------
 
 func (s *TicketService) GetUserBookings(
 	ctx context.Context,
@@ -250,102 +490,17 @@ func (s *TicketService) GetUserBookings(
 	languageCode string,
 ) ([]dto.UserBookingResponse, error) {
 
-	languageID, err :=
-		s.languageRepository.GetIDByCode(
-			ctx,
-			languageCode,
-		)
-
+	languageID, err := s.languageRepository.GetIDByCode(
+		ctx,
+		languageCode,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	bookings, err :=
-		s.bookingRepository.GetUserBookings(
-			ctx,
-			userID,
-			languageID,
-		)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return bookings, nil
-}
-
-func (s *TicketService) GetEventSessionDetail(
-	ctx context.Context,
-	sessionID uint,
-	languageCode string,
-) (*dto.EventSessionDetailResponse, error) {
-
-	languageID, err :=
-		s.languageRepository.GetIDByCode(
-			ctx,
-			languageCode,
-		)
-	if err != nil {
-		return nil, err
-	}
-
-	eventTypeID, err :=
-		s.ticketRepository.GetEventTypeIDByName(
-			ctx,
-			"events",
-		)
-	if err != nil {
-		return nil, err
-	}
-
-	session, err :=
-		s.ticketRepository.GetEventSessionDetail(
-			ctx,
-			sessionID,
-			eventTypeID,
-			languageID,
-		)
-	if err != nil {
-		return nil, err
-	}
-
-	return session, nil
-}
-
-func (s *TicketService) GetCourseSessionDetail(
-	ctx context.Context,
-	sessionID uint,
-	languageCode string,
-) (*dto.EventSessionDetailResponse, error) {
-
-	languageID, err :=
-		s.languageRepository.GetIDByCode(
-			ctx,
-			languageCode,
-		)
-	if err != nil {
-		return nil, err
-	}
-
-	eventTypeID, err :=
-		s.ticketRepository.GetEventTypeIDByName(
-			ctx,
-			"courses",
-		)
-	if err != nil {
-		return nil, err
-	}
-
-	session, err :=
-		s.ticketRepository.GetCourseSessionDetail(
-			ctx,
-			sessionID,
-			eventTypeID,
-			languageID,
-		)
-	if err != nil {
-		return nil, err
-	}
-
-	return session, nil
+	return s.bookingRepository.GetUserBookings(
+		ctx,
+		userID,
+		languageID,
+	)
 }

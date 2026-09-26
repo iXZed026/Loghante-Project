@@ -14,16 +14,23 @@ import {
     MdOutlineEventSeat,
 } from "react-icons/md"
 import type { CinemaAndTheaterTicket } from "./data/cinema-and-theater"
+import Button from "@/components/ui/Button"
+import { useHall } from "@/features/loghante(root)/halls/context/HallProvider"
+import { useRouter } from "next/navigation"
 
 interface CinemaAndTheaterTicketBoxProps {
-    ticket: CinemaAndTheaterTicket
+    event: CinemaAndTheaterTicket
 }
 
 function CinemaAndTheaterTicketBox({
-    ticket,
+    event,
 }: CinemaAndTheaterTicketBoxProps) {
 
     const locale = useLocale()
+    const router = useRouter()
+
+    const { setHallData }
+        = useHall()
 
     const ticketBoxT = useTranslations(
         "cinemaAndTheater.ticket-box"
@@ -48,31 +55,31 @@ function CinemaAndTheaterTicketBox({
     }, [])
 
     const ticketName = getLocalizedValue(
-        ticket.name,
+        event.name,
         locale
     )
 
-    const ticketGenre = ticket.genre
+    const eventGenre = event.genre
         ? getLocalizedValue(
-            ticket.genre,
+            event.genre,
             locale
         )
         : null
 
-    const formattedTime = ticket.startAt
+    const formattedTime = event.startAt
 
     const isFull =
-        ticket.remainingCapacity <= 0
+        event.remainingCapacity <= 0
 
     const isLowCapacity =
-        ticket.remainingCapacity > 0 &&
-        ticket.remainingCapacity <= 10
+        event.remainingCapacity > 0 &&
+        event.remainingCapacity <= 10
 
     const isCinema =
-        ticket.type === "cinema"
+        event.type === "cinema"
 
     /*
-     * Calculate ticket status
+     * Calculate event status
      */
 
     const isInProgress = (() => {
@@ -82,7 +89,7 @@ function CinemaAndTheaterTicketBox({
         }
 
         const [hours, minutes] =
-            ticket.startAt
+            event.startAt
                 .split(":")
                 .map(Number)
 
@@ -98,7 +105,7 @@ function CinemaAndTheaterTicketBox({
 
         const endTime = new Date(
             startTime.getTime() +
-            ticket.duration * 60 * 1000
+            event.duration * 60 * 1000
         )
 
         return (
@@ -120,6 +127,24 @@ function CinemaAndTheaterTicketBox({
         : isInProgress
             ? ticketBoxT("in-progress")
             : ticketBoxT("book-button")
+
+    //Booking Cinema and Theater
+    function booingHandler() {
+        console.log(event)
+
+        setHallData({
+            eventData: {
+                title: event.name.en,
+                description: "slm dadash",
+                startAt: event.startAt,
+                // imageURL: event.images[0].imageUrl,
+                imageURL: "/images/loghanteh-cafe.jpg",
+                price: "200000"
+            }
+        })
+
+        router.push(`/${locale}/hall/1`)
+    }
 
     return (
         <div
@@ -155,10 +180,10 @@ function CinemaAndTheaterTicketBox({
                 "
             >
 
-                {ticket.imageUrl ? (
+                {event.imageUrl ? (
                     <>
                         <AppImage
-                            src={ticket.imageUrl}
+                            src={event.imageUrl}
                             alt={ticketName}
                             width={900}
                             height={550}
@@ -329,7 +354,7 @@ function CinemaAndTheaterTicketBox({
                     </h3>
 
                     {isCinema &&
-                        ticketGenre && (
+                        eventGenre && (
                             <span
                                 className="
                                     mt-1
@@ -338,7 +363,7 @@ function CinemaAndTheaterTicketBox({
                                     text-white/75
                                 "
                             >
-                                {ticketGenre}
+                                {eventGenre}
                             </span>
                         )}
                 </div>
@@ -397,7 +422,7 @@ function CinemaAndTheaterTicketBox({
                         <span
                             className="font-bold"
                         >
-                            {ticket.remainingCapacity}
+                            {event.remainingCapacity}
                         </span>
 
                     </div>
@@ -483,7 +508,7 @@ function CinemaAndTheaterTicketBox({
                                 "few-seats",
                                 {
                                     count:
-                                        ticket.remainingCapacity
+                                        event.remainingCapacity
                                 }
                             )}
                         </div>
@@ -516,8 +541,7 @@ function CinemaAndTheaterTicketBox({
 
             <div className="px-6 pb-6">
 
-                <AppLink
-                    href="#"
+                <Button
                     aria-disabled={isUnavailable}
                     className={cn(
                         "flex",
@@ -544,6 +568,9 @@ function CinemaAndTheaterTicketBox({
                                 "click-scale",
                             ],
                     )}
+
+                    onClick={booingHandler}
+
                 >
 
                     {isInProgress ? (
@@ -569,7 +596,7 @@ function CinemaAndTheaterTicketBox({
                         </>
                     )}
 
-                </AppLink>
+                </Button>
 
             </div>
 

@@ -6,17 +6,21 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+
+// Booking
+
 type CreateBookingRequest struct {
-	SessionID uint `json:"sessionId" binding:"required"`
-	Quantity  int  `json:"quantity" binding:"required,min=1"`
+	SessionID uint   `json:"sessionId" binding:"required"`
+	SeatIDs   []uint `json:"seatIds" binding:"required,min=1"`
 }
 
 type CreateBookingResponse struct {
-	BookingID   uint            `json:"bookingId"`
-	SessionID   uint            `json:"sessionId"`
-	Quantity    int             `json:"quantity"`
-	TotalPrice  decimal.Decimal `json:"totalPrice"`
-	PurchasedAt time.Time       `json:"purchasedAt"`
+	BookingID   uint        `json:"bookingId"`
+	SessionID   uint        `json:"sessionId"`
+	Quantity    int         `json:"quantity"`
+	SeatIDs     []uint      `json:"seatIds"`
+	TotalPrice  interface{} `json:"totalPrice"`
+	PurchasedAt time.Time   `json:"purchasedAt"`
 }
 
 type UserBookingResponse struct {
@@ -33,3 +37,4 @@ type UserBookingResponse struct {
 	TotalPrice    decimal.Decimal `json:"totalPrice"`
 	PurchasedAt   time.Time       `json:"purchasedAt"`
 }
+

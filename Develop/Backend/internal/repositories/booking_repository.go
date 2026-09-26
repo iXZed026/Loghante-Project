@@ -32,10 +32,15 @@ func (r *BookingRepository) GetSessionForBooking(
 
 	err := tx.
 		WithContext(ctx).
-		Clauses(clause.Locking{
-			Strength: "UPDATE",
-		}).
-		Where("sessionid = ?", sessionID).
+		Clauses(
+			clause.Locking{
+				Strength: "UPDATE",
+			},
+		).
+		Where(
+			"sessionid = ?",
+			sessionID,
+		).
 		First(&session).
 		Error
 
@@ -44,29 +49,6 @@ func (r *BookingRepository) GetSessionForBooking(
 	}
 
 	return &session, nil
-}
-
-func (r *BookingRepository) GetBookedQuantity(
-	tx *gorm.DB,
-	ctx context.Context,
-	sessionID uint,
-) (int, error) {
-
-	var quantity int
-
-	err := tx.
-		WithContext(ctx).
-		Model(&models.Booking{}).
-		Where("sessionid = ?", sessionID).
-		Select("COALESCE(SUM(quantity), 0)").
-		Scan(&quantity).
-		Error
-
-	if err != nil {
-		return 0, err
-	}
-
-	return quantity, nil
 }
 
 func (r *BookingRepository) Create(
@@ -81,6 +63,84 @@ func (r *BookingRepository) Create(
 		Error
 }
 
+// --------------------------------------------------
+// Seat validation
+// --------------------------------------------------
+
+func (r *BookingRepository) ValidateSeatsForSession(
+	tx *gorm.DB,
+	ctx context.Context,
+	sessionID uint,
+	seatIDs []uint,
+) (bool, error) {
+
+	var count int64
+
+	err := tx.
+		WithContext(ctx).
+		Table("seats AS s").
+		Joins(`
+			INNER JOIN eventsession AS es
+				ON es.hallid = s.hallid
+		`).
+		Where(
+			"es.sessionid = ?",
+			sessionID,
+		).
+		Where(
+			"s.seatid IN ?",
+			seatIDs,
+		).
+		Count(&count).
+		Error
+
+	if err != nil {
+		return false, err
+	}
+
+	return count == int64(len(seatIDs)), nil
+}
+
+// --------------------------------------------------
+// Booking seats
+// --------------------------------------------------
+
+func (r *BookingRepository) CreateBookingSeats(
+	tx *gorm.DB,
+	ctx context.Context,
+	bookingID uint,
+	sessionID uint,
+	seatIDs []uint,
+) error {
+
+	bookingSeats := make(
+		[]models.BookingSeat,
+		0,
+		len(seatIDs),
+	)
+
+	for _, seatID := range seatIDs {
+
+		bookingSeats = append(
+			bookingSeats,
+			models.BookingSeat{
+				BookingID: bookingID,
+				SessionID: sessionID,
+				SeatID:    seatID,
+			},
+		)
+	}
+
+	return tx.
+		WithContext(ctx).
+		Create(&bookingSeats).
+		Error
+}
+
+// --------------------------------------------------
+// Capacity
+// --------------------------------------------------
+
 func (r *BookingRepository) DecreaseSessionCapacity(
 	tx *gorm.DB,
 	ctx context.Context,
@@ -88,7 +148,7 @@ func (r *BookingRepository) DecreaseSessionCapacity(
 	quantity int,
 ) error {
 
-	return tx.
+	result := tx.
 		WithContext(ctx).
 		Model(&models.EventSession{}).
 		Where(
@@ -98,10 +158,26 @@ func (r *BookingRepository) DecreaseSessionCapacity(
 		).
 		UpdateColumn(
 			"capacity",
-			gorm.Expr("capacity - ?", quantity),
-		).
-		Error
+			gorm.Expr(
+				"capacity - ?",
+				quantity,
+			),
+		)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return gorm.ErrInvalidData
+	}
+
+	return nil
 }
+
+// --------------------------------------------------
+// User bookings
+// --------------------------------------------------
 
 func (r *BookingRepository) GetUserBookings(
 	ctx context.Context,

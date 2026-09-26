@@ -34,7 +34,7 @@ async function CinemaAndTheaterTicketsWrapper({
                     {tickets.map((ticket) => (
                         <CinemaAndTheaterTicketBox
                             key={ticket.id}
-                            ticket={ticket}
+                            event={ticket}
                         />
                     ))}
                 </StaggerWrapper>

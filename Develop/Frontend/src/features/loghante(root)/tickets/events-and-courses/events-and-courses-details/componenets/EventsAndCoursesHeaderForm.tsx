@@ -67,7 +67,6 @@ function EventsAndCoursesHeaderForm({
     ): void {
         e.preventDefault()
 
-        console.log(event)
 
         setHallData({
             eventData: {
