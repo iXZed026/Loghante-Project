@@ -1,50 +1,50 @@
-import CinemaAndTheaterDate from './CinemaAndTheaterDate'
-import CinemaAndTheaterTab from './CinemaAndTheaterTab'
-import CinemaAndTheaterTicketsWrapper from './CinemaAndTheaterTicketsWrapper'
+import { getLocale } from "next-intl/server";
+
+import CinemaAndTheaterDate from "./CinemaAndTheaterDate";
+import CinemaAndTheaterTab from "./CinemaAndTheaterTab";
+import CinemaAndTheaterTicketsWrapper from "./CinemaAndTheaterTicketsWrapper";
 
 interface CinemaAndTheaterContentProps {
-    typeParam?: string
-    dateParam?: string
+    typeParam?: string;
+    dateParam?: string;
 }
 
-function CinemaAndTheaterContent({
+async function CinemaAndTheaterContent({
     typeParam,
     dateParam,
 }: CinemaAndTheaterContentProps) {
 
+    const locale =
+        await getLocale();
+
     const type =
         typeParam === "theater"
             ? "theater"
-            : "cinema"
+            : "cinema";
 
     const date =
         dateParam ??
-        new Date().toISOString().slice(0, 10)
+        new Date()
+            .toISOString()
+            .slice(0, 10);
 
     return (
         <div className="fcol gap-8">
-
-            {/* Cinema / Theater */}
-
             <CinemaAndTheaterTab
                 type={type}
             />
-
-            {/* Days */}
 
             <CinemaAndTheaterDate
                 selectedDate={date}
             />
 
-            {/* Tickets */}
-
             <CinemaAndTheaterTicketsWrapper
                 type={type}
                 date={date}
+                locale={locale}
             />
-
         </div>
-    )
+    );
 }
 
-export default CinemaAndTheaterContent
+export default CinemaAndTheaterContent;

@@ -2,7 +2,9 @@ package dto
 
 import "time"
 
+// --------------------------------------------------
 // Museum Tour
+// --------------------------------------------------
 
 type MuseumTourSessionResponse struct {
 	SessionID   uint      `json:"sessionId"`
@@ -20,7 +22,9 @@ type MuseumTourQuery struct {
 	Date string `form:"date" binding:"required"`
 }
 
-// Events / Courses / Cinema / Theater
+// --------------------------------------------------
+// Events / Courses
+// --------------------------------------------------
 
 type EventSessionListResponse struct {
 	SessionID uint `json:"sessionId"`
@@ -46,15 +50,68 @@ type CourseQuery struct {
 	Date string `form:"date" binding:"required"`
 }
 
+// --------------------------------------------------
+// Cinema
+// --------------------------------------------------
+
 type CinemaQuery struct {
 	Date string `form:"date" binding:"required"`
 }
+
+type CinemaSessionListResponse struct {
+	SessionID     uint                  `json:"sessionId"`
+	EventID       uint                  `json:"eventId"`
+	HallID        uint                  `json:"hallId"`
+	Name          string                `json:"name"`
+	Description   string                `json:"description"`
+	Images        []EventImageResponse  `json:"images"`
+	StartAt       time.Time             `json:"startAt"`
+	Duration      int                   `json:"duration"`
+	Price         *float64              `json:"price"`
+	CinemaDetails *CinemaDetailResponse `json:"cinemaDetails"`
+}
+
+type CinemaDetailResponse struct {
+	EventID      uint     `json:"eventId"`
+	ReleaseYear  *int     `json:"releaseYear"`
+	Director     *string  `json:"director"`
+	Country      *string  `json:"country"`
+	FilmDuration *int     `json:"filmDuration"`
+	Genre        *string  `json:"genre"`
+	IMDBScore    *float64 `json:"imdbScore"`
+}
+
+// --------------------------------------------------
+// Theater
+// --------------------------------------------------
 
 type TheaterQuery struct {
 	Date string `form:"date" binding:"required"`
 }
 
+type TheaterSessionListResponse struct {
+	SessionID      uint                   `json:"sessionId"`
+	EventID        uint                   `json:"eventId"`
+	HallID         uint                   `json:"hallId"`
+	Name           string                 `json:"name"`
+	Description    string                 `json:"description"`
+	Images         []EventImageResponse   `json:"images"`
+	StartAt        time.Time              `json:"startAt"`
+	Duration       int                    `json:"duration"`
+	Price          *float64               `json:"price"`
+	TheaterDetails *TheaterDetailResponse `json:"theaterDetails"`
+}
+
+type TheaterDetailResponse struct {
+	EventID  uint   `json:"eventId"`
+	Director string `json:"director"`
+	Writer   string `json:"writer"`
+	Duration int    `json:"duration"`
+}
+
+// --------------------------------------------------
 // Event detail
+// --------------------------------------------------
 
 type EventSessionDetailResponse struct {
 	SessionID   uint                 `json:"sessionId"`
@@ -67,51 +124,3 @@ type EventSessionDetailResponse struct {
 	Duration    int                  `json:"duration"`
 	Price       *float64             `json:"price"`
 }
-
-// Cinema
-
-type CinemaDetailResponse struct {
-    EventID      uint     `json:"eventId"`
-    ReleaseYear  *int     `json:"releaseYear"`
-    Director     string   `json:"director"`
-    Country      string   `json:"country"`
-    FilmDuration int      `json:"filmDuration"`
-    Genre        string   `json:"genre"`
-    IMBDScore    *float64 `json:"imbdScore"`
-}
-
-type CinemaSessionDetailResponse struct {
-	SessionID      uint                  `json:"sessionId"`
-	EventID        uint                  `json:"eventId"`
-	HallID         uint                  `json:"hallId"`
-	Name           string                `json:"name"`
-	Description    string                `json:"description"`
-	Images         []EventImageResponse  `json:"images"`
-	StartAt        time.Time             `json:"startAt"`
-	Duration       int                   `json:"duration"`
-	Price          *float64              `json:"price"`
-	CinemaDetails  *CinemaDetailResponse `json:"cinemaDetails"`
-}
-
-// Theater
-
-type TheaterDetailResponse struct {
-	EventID  uint   `json:"eventId"`
-	Director string `json:"director"`
-	Writer   string `json:"writer"`
-	Duration int    `json:"duration"`
-}
-
-type TheaterSessionDetailResponse struct {
-	SessionID       uint                   `json:"sessionId"`
-	EventID         uint                   `json:"eventId"`
-	HallID          uint                   `json:"hallId"`
-	Name            string                 `json:"name"`
-	Description     string                 `json:"description"`
-	Images          []EventImageResponse   `json:"images"`
-	StartAt         time.Time              `json:"startAt"`
-	Duration        int                    `json:"duration"`
-	Price           *float64               `json:"price"`
-	TheaterDetails  *TheaterDetailResponse `json:"theaterDetails"`
-}
-

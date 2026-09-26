@@ -26,11 +26,19 @@ export interface TheaterDetails {
 }
 
 export interface HallEventData {
+    sessionId: number;
+    eventId: number;
+    hallId: number;
+
     title: string;
     description: string;
-    startAt: number | string
+
+    startAt: number | string;
+
     imageURL: string;
+
     price?: number | string;
+
     cinemaDetails?: CinemaDetails;
     theaterDetails?: TheaterDetails;
 }
@@ -69,34 +77,9 @@ export function HallProvider({
         setHallData,
     ] = useState<HallData | null>(null);
 
-    // {
-    //     eventData: {
-    //         title: "Casablanca",
-
-    //         description:
-    //             "Casablanca is a 1942 romantic drama film directed by Michael Curtiz. The film follows an American expatriate who must choose between his love for a woman and helping her and her husband escape from Casablanca.",
-
-    //         startAt: "Modnday ,August 18",
-
-    //         imageURL:
-    //             "/images/loghanteh-cafe.jpg",
-
-    //         price: 250000,
-
-    //         cinemaDetails: {
-    //             eventId: 1,
-    //             releaseYear: 1942,
-    //             director: "Michael Curtiz",
-    //             country: "United States",
-    //             filmDuration: 102,
-    //             genre: "Romance, Drama",
-    //             imdbScore: 8.5,
-    //         },
-    //     },
-    // }
-
-    const [isReady] =
-        useState(true);
+    const [
+        isReady,
+    ] = useState(true);
 
     const clearHallData = () => {
         setHallData(null);
@@ -117,6 +100,7 @@ export function HallProvider({
 }
 
 export function useHall() {
+
     const context =
         useContext(HallContext);
 

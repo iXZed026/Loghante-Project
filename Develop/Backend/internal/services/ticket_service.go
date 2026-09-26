@@ -119,7 +119,7 @@ func (s *TicketService) GetCinemaSessions(
 	ctx context.Context,
 	date time.Time,
 	languageCode string,
-) ([]dto.EventSessionListResponse, error) {
+) ([]dto.CinemaSessionListResponse, error) {
 
 	languageID, err := s.languageRepository.GetIDByCode(
 		ctx,
@@ -145,7 +145,7 @@ func (s *TicketService) GetTheaterSessions(
 	ctx context.Context,
 	date time.Time,
 	languageCode string,
-) ([]dto.EventSessionListResponse, error) {
+) ([]dto.TheaterSessionListResponse, error) {
 
 	languageID, err := s.languageRepository.GetIDByCode(
 		ctx,
@@ -288,58 +288,6 @@ func (s *TicketService) getEventDetail(
 }
 
 // --------------------------------------------------
-// Cinema detail
-// --------------------------------------------------
-
-func (s *TicketService) GetCinemaSessionDetail(
-	ctx context.Context,
-	sessionID uint,
-	languageCode string,
-) (*dto.CinemaSessionDetailResponse, error) {
-
-	languageID, err := s.languageRepository.GetIDByCode(
-		ctx,
-		languageCode,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return s.ticketRepository.GetCinemaSessionDetail(
-		ctx,
-		sessionID,
-		CinemaEventTypeID,
-		languageID,
-	)
-}
-
-// --------------------------------------------------
-// Theater detail
-// --------------------------------------------------
-
-func (s *TicketService) GetTheaterSessionDetail(
-	ctx context.Context,
-	sessionID uint,
-	languageCode string,
-) (*dto.TheaterSessionDetailResponse, error) {
-
-	languageID, err := s.languageRepository.GetIDByCode(
-		ctx,
-		languageCode,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return s.ticketRepository.GetTheaterSessionDetail(
-		ctx,
-		sessionID,
-		TheaterEventTypeID,
-		languageID,
-	)
-}
-
-// --------------------------------------------------
 // Booking
 // --------------------------------------------------
 
@@ -353,7 +301,6 @@ func (s *TicketService) CreateBooking(
 		return nil, appErrors.ErrInvalidInput
 	}
 
-	// جلوگیری از ارسال seat تکراری
 	seatSet := make(map[uint]struct{}, len(req.SeatIDs))
 
 	for _, seatID := range req.SeatIDs {
@@ -375,7 +322,6 @@ func (s *TicketService) CreateBooking(
 
 	err := s.db.Transaction(func(tx *gorm.DB) error {
 
-		// قفل session برای جلوگیری از booking همزمان
 		session, err := s.bookingRepository.GetSessionForBooking(
 			tx,
 			ctx,
@@ -391,12 +337,10 @@ func (s *TicketService) CreateBooking(
 			return err
 		}
 
-		// بررسی ظرفیت
 		if quantity > session.Capacity {
 			return appErrors.ErrInsufficientCapacity
 		}
 
-		// بررسی اینکه تمام صندلی‌ها متعلق به سالن همین session باشند
 		valid, err := s.bookingRepository.ValidateSeatsForSession(
 			tx,
 			ctx,
@@ -412,7 +356,6 @@ func (s *TicketService) CreateBooking(
 			return appErrors.ErrInvalidInput
 		}
 
-		// محاسبه قیمت
 		var totalPrice decimal.Decimal
 
 		if session.Price != nil {
@@ -430,7 +373,6 @@ func (s *TicketService) CreateBooking(
 			TotalPrice: totalPrice,
 		}
 
-		// ایجاد booking
 		if err := s.bookingRepository.Create(
 			tx,
 			ctx,
@@ -439,10 +381,6 @@ func (s *TicketService) CreateBooking(
 			return err
 		}
 
-		// ذخیره صندلی‌های انتخاب‌شده
-		//
-		// UNIQUE(sessionid, seatid)
-		// در دیتابیس جلوی رزرو همزمان یک صندلی را می‌گیرد.
 		if err := s.bookingRepository.CreateBookingSeats(
 			tx,
 			ctx,
@@ -453,7 +391,6 @@ func (s *TicketService) CreateBooking(
 			return err
 		}
 
-		// کاهش ظرفیت
 		if err := s.bookingRepository.DecreaseSessionCapacity(
 			tx,
 			ctx,

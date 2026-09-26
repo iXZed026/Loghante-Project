@@ -6,7 +6,6 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-
 // Booking
 
 type CreateBookingRequest struct {
@@ -37,4 +36,3 @@ type UserBookingResponse struct {
 	TotalPrice    decimal.Decimal `json:"totalPrice"`
 	PurchasedAt   time.Time       `json:"purchasedAt"`
 }
-

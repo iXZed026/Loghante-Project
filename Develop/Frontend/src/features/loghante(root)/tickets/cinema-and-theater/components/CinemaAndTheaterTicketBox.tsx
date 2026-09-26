@@ -1,170 +1,264 @@
-"use client"
+"use client";
 
-import AppImage from "@/components/ui/AppImage"
-import AppLink from "@/components/ui/AppLink"
-import { cn } from "@/lib/utils/cn"
-import { getLocalizedValue } from "@/lib/utils/getLocalizedValue"
-import { useLocale, useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
+import {
+    useEffect,
+    useState,
+} from "react";
+
+import {
+    useLocale,
+    useTranslations,
+} from "next-intl";
+
+import {
+    useRouter,
+} from "next/navigation";
+
 import {
     FaRegClock,
     FaTicket,
-} from "react-icons/fa6"
+} from "react-icons/fa6";
+
 import {
     MdOutlineEventSeat,
-} from "react-icons/md"
-import type { CinemaAndTheaterTicket } from "./data/cinema-and-theater"
-import Button from "@/components/ui/Button"
-import { useHall } from "@/features/loghante(root)/halls/context/HallProvider"
-import { useRouter } from "next/navigation"
+} from "react-icons/md";
+
+import AppImage from "@/components/ui/AppImage";
+
+import Button from "@/components/ui/Button";
+
+import {
+    cn,
+} from "@/lib/utils/cn";
+
+import {
+    useHall,
+} from "@/features/loghante(root)/halls/context/HallProvider";
+
+import type {
+    CinemaAndTheaterSession,
+} from "@/lib/api/ticket/cinema-and-theater";
 
 interface CinemaAndTheaterTicketBoxProps {
-    event: CinemaAndTheaterTicket
+    event: CinemaAndTheaterSession;
 }
 
 function CinemaAndTheaterTicketBox({
     event,
 }: CinemaAndTheaterTicketBoxProps) {
 
-    const locale = useLocale()
-    const router = useRouter()
+    const locale =
+        useLocale();
 
-    const { setHallData }
-        = useHall()
+    const router =
+        useRouter();
 
-    const ticketBoxT = useTranslations(
-        "cinemaAndTheater.ticket-box"
-    )
+    const {
+        setHallData,
+    } = useHall();
 
-    const [currentTime, setCurrentTime] =
-        useState<Date | null>(null)
+    const ticketBoxT =
+        useTranslations(
+            "cinemaAndTheater.ticket-box"
+        );
+
+    const [
+        currentTime,
+        setCurrentTime,
+    ] = useState<Date | null>(null);
 
     useEffect(() => {
+
         const updateTime = () => {
-            setCurrentTime(new Date())
-        }
+            setCurrentTime(
+                new Date()
+            );
+        };
 
-        updateTime()
+        updateTime();
 
-        const interval = setInterval(
-            updateTime,
-            60_000
-        )
+        const interval =
+            setInterval(
+                updateTime,
+                60_000
+            );
 
-        return () => clearInterval(interval)
-    }, [])
+        return () =>
+            clearInterval(interval);
 
-    const ticketName = getLocalizedValue(
-        event.name,
-        locale
-    )
-
-    const eventGenre = event.genre
-        ? getLocalizedValue(
-            event.genre,
-            locale
-        )
-        : null
-
-    const formattedTime = event.startAt
-
-    const isFull =
-        event.remainingCapacity <= 0
-
-    const isLowCapacity =
-        event.remainingCapacity > 0 &&
-        event.remainingCapacity <= 10
+    }, []);
 
     const isCinema =
-        event.type === "cinema"
+        Boolean(
+            event.cinemaDetails
+        );
+
+    const imageURL =
+        event.images?.[0]?.imageUrl ||
+        "/images/loghanteh-cafe.jpg";
 
     /*
-     * Calculate event status
+     * Start date & time
      */
 
-    const isInProgress = (() => {
+    const startAt =
+        new Date(event.startAt);
 
-        if (!currentTime || isFull) {
-            return false
-        }
+    const formattedTime =
+        startAt.toLocaleTimeString(
+            locale === "fa"
+                ? "fa-IR"
+                : "en-US",
+            {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: locale !== "fa",
+            }
+        );
 
-        const [hours, minutes] =
-            event.startAt
-                .split(":")
-                .map(Number)
+    /*
+     * Event status
+     */
 
-        const startTime =
-            new Date(currentTime)
+    const isInProgress =
+        (() => {
 
-        startTime.setHours(
-            hours,
-            minutes,
-            0,
-            0
-        )
+            if (!currentTime) {
+                return false;
+            }
 
-        const endTime = new Date(
-            startTime.getTime() +
-            event.duration * 60 * 1000
-        )
+            const endAt =
+                new Date(
+                    startAt.getTime() +
+                    event.duration *
+                    60 *
+                    1000
+                );
 
-        return (
-            currentTime >= startTime &&
-            currentTime < endTime
-        )
+            return (
+                currentTime >= startAt &&
+                currentTime < endAt
+            );
 
-    })()
+        })();
 
     const isUnavailable =
-        isFull || isInProgress
+        isInProgress;
 
     /*
      * Button content
      */
 
-    const buttonContent = isFull
-        ? ticketBoxT("sold-out")
-        : isInProgress
+    const buttonContent =
+        isInProgress
             ? ticketBoxT("in-progress")
-            : ticketBoxT("book-button")
+            : ticketBoxT("book-button");
 
-    //Booking Cinema and Theater
-    function booingHandler() {
-        console.log(event)
+    /*
+     * Booking
+     */
+
+    function bookingHandler() {
 
         setHallData({
             eventData: {
-                title: event.name.en,
-                description: "slm dadash",
-                startAt: event.startAt,
-                // imageURL: event.images[0].imageUrl,
-                imageURL: "/images/loghanteh-cafe.jpg",
-                price: "200000"
-            }
-        })
+                sessionId:
+                    event.sessionId,
 
-        router.push(`/${locale}/hall/1`)
+                eventId:
+                    event.eventId,
+
+                hallId:
+                    event.hallId,
+
+                title:
+                    event.name,
+
+                description:
+                    event.description,
+
+                startAt:
+                    event.startAt,
+
+                imageURL,
+
+                price:
+                    event.price ?? undefined,
+
+                cinemaDetails:
+                    event.cinemaDetails
+                        ? {
+                            eventId:
+                                event.cinemaDetails.eventId,
+
+                            releaseYear:
+                                event.cinemaDetails.releaseYear ??
+                                "",
+
+                            director:
+                                event.cinemaDetails.director,
+
+                            country:
+                                event.cinemaDetails.country,
+
+                            filmDuration:
+                                event.cinemaDetails.filmDuration,
+
+                            genre:
+                                event.cinemaDetails.genre,
+
+                            imdbScore:
+                                event.cinemaDetails.imdbScore ??
+                                0,
+                        }
+                        : undefined,
+
+                theaterDetails:
+                    event.theaterDetails
+                        ? {
+                            eventId:
+                                event.theaterDetails.eventId,
+
+                            director:
+                                event.theaterDetails.director,
+
+                            writer:
+                                event.theaterDetails.writer,
+
+                            duration:
+                                event.theaterDetails.duration,
+
+                            releaseYear:
+                                "",
+                        }
+                        : undefined,
+            },
+        });
+
+        router.push(
+            `/${locale}/hall/${event.hallId}`
+        );
     }
 
     return (
         <div
             className={cn(
-                "md:col-span-6 col-span-12",
+                "md:col-span-6",
+                "col-span-12",
                 "group",
                 "relative",
                 "overflow-hidden",
                 "rounded-2xl",
-                "border border-black-opacity",
+                "border",
+                "border-black-opacity",
                 "bg-white",
                 "shadow-lg",
-                "transition-all duration-500",
+                "transition-all",
+                "duration-500",
                 "hover:shadow-2xl",
 
                 isInProgress &&
                 "border-crimson/40",
-
-                isFull &&
-                "opacity-90",
             )}
         >
 
@@ -180,69 +274,47 @@ function CinemaAndTheaterTicketBox({
                 "
             >
 
-                {event.imageUrl ? (
-                    <>
-                        <AppImage
-                            src={event.imageUrl}
-                            alt={ticketName}
-                            width={900}
-                            height={550}
-                            className="
-                                h-full
-                                w-full
-                                object-cover
-                                transition-transform
-                                duration-700
-                                group-hover:scale-105
-                            "
-                        />
+                <AppImage
+                    src={imageURL}
+                    alt={event.name}
+                    width={900}
+                    height={550}
+                    className="
+                        h-full
+                        w-full
+                        object-cover
+                        transition-transform
+                        duration-700
+                        group-hover:scale-105
+                    "
+                />
 
-                        <div
-                            className={cn(
-                                "absolute",
-                                "inset-0",
-                                "bg-gradient-to-t",
-                                "from-black/85",
-                                "via-black/20",
-                                "to-transparent",
-                                isInProgress &&
-                                "from-crimson/80",
-                            )}
-                        />
-                    </>
-                ) : (
-                    <div
-                        className="
-                            flex
-                            h-full
-                            w-full
-                            items-center
-                            justify-center
-                            bg-[var(--black-light-color)]
-                        "
-                    >
-                        <span
-                            className="
-                                text-sm
-                                text-white/50
-                            "
-                        >
-                            {ticketBoxT(
-                                "image-not-available"
-                            )}
-                        </span>
-                    </div>
-                )}
+                <div
+                    className={cn(
+                        "absolute",
+                        "inset-0",
+                        "bg-gradient-to-t",
+                        "from-black/85",
+                        "via-black/20",
+                        "to-transparent",
+
+                        isInProgress &&
+                        "from-crimson/80",
+                    )}
+                />
 
                 {/* Type */}
 
                 <div
                     className={cn(
                         "absolute",
-                        "left-4 top-4",
+                        "left-4",
+                        "top-4",
                         "rounded-full",
-                        "border border-white/20",
-                        "px-4 py-1.5",
+                        "border",
+                        "border-white/20",
+                        "px-4",
+                        "py-1.5",
                         "text-xs",
                         "font-bold",
                         "backdrop-blur-md",
@@ -255,7 +327,7 @@ function CinemaAndTheaterTicketBox({
                             : [
                                 "bg-gold-utility/90",
                                 "text-black",
-                            ]
+                            ],
                     )}
                 >
                     {isCinema
@@ -268,7 +340,8 @@ function CinemaAndTheaterTicketBox({
                 <div
                     className="
                         absolute
-                        right-4 top-4
+                        right-4
+                        top-4
                         flex
                         items-center
                         gap-2
@@ -291,7 +364,7 @@ function CinemaAndTheaterTicketBox({
                     </span>
                 </div>
 
-                {/* In Progress Badge */}
+                {/* In Progress */}
 
                 {isInProgress && (
                     <div
@@ -303,7 +376,8 @@ function CinemaAndTheaterTicketBox({
                             items-center
                             gap-2
                             rounded-full
-                            border border-white/20
+                            border
+                            border-white/20
                             bg-black/60
                             px-4
                             py-2
@@ -350,11 +424,12 @@ function CinemaAndTheaterTicketBox({
                             drop-shadow-lg
                         "
                     >
-                        {ticketName}
+                        {event.name}
                     </h3>
 
                     {isCinema &&
-                        eventGenre && (
+                        event.cinemaDetails
+                            ?.genre && (
                             <span
                                 className="
                                     mt-1
@@ -363,7 +438,11 @@ function CinemaAndTheaterTicketBox({
                                     text-white/75
                                 "
                             >
-                                {eventGenre}
+                                {
+                                    event
+                                        .cinemaDetails
+                                        .genre
+                                }
                             </span>
                         )}
                 </div>
@@ -381,7 +460,7 @@ function CinemaAndTheaterTicketBox({
                 "
             >
 
-                {/* Capacity */}
+                {/* Duration */}
 
                 <div
                     className="
@@ -391,15 +470,13 @@ function CinemaAndTheaterTicketBox({
                     "
                 >
                     <div
-                        className={cn(
-                            "fcc",
-                            "size-10",
-                            "rounded-full",
-                            "bg-[var(--white-light-color)]",
-                            isFull
-                                ? "text-black-light-utility"
-                                : "text-crimson",
-                        )}
+                        className="
+                            fcc
+                            size-10
+                            rounded-full
+                            bg-[var(--white-light-color)]
+                            text-crimson
+                        "
                     >
                         <MdOutlineEventSeat
                             className="size-5"
@@ -414,125 +491,73 @@ function CinemaAndTheaterTicketBox({
                                 text-black-light-utility
                             "
                         >
-                            {ticketBoxT(
-                                "capacity"
-                            )}
+                            Duration
                         </span>
 
-                        <span
-                            className="font-bold"
-                        >
-                            {event.remainingCapacity}
+                        <span className="font-bold">
+                            {event.duration} min
                         </span>
 
                     </div>
                 </div>
 
-                {/* Capacity Status */}
+                {/* Time */}
 
-                <div>
+                <div
+                    className="
+                        flex
+                        items-center
+                        gap-3
+                    "
+                >
+                    <div
+                        className="
+                            fcc
+                            size-10
+                            rounded-full
+                            bg-[var(--white-light-color)]
+                            text-crimson
+                        "
+                    >
+                        <FaRegClock
+                            className="size-5"
+                        />
+                    </div>
 
-                    {isFull ? (
+                    <div className="fcol">
 
-                        <div
+                        <span
                             className="
-                                flex
-                                items-center
-                                gap-2
-                                rounded-full
-                                bg-black/5
-                                px-4
-                                py-2
-                                text-sm
-                                font-semibold
-                                text-crimson
+                                text-xs
+                                text-black-light-utility
                             "
                         >
-                            <FaTicket
-                                className="size-3.5"
-                            />
+                            Time
+                        </span>
 
-                            <span>
-                                {ticketBoxT(
-                                    "sold-out"
-                                )}
-                            </span>
-                        </div>
+                        <span className="font-bold">
+                            {formattedTime}
+                        </span>
 
-                    ) : isInProgress ? (
+                    </div>
+                </div>
 
-                        <div
-                            className="
-                                flex
-                                items-center
-                                gap-2
-                                rounded-full
-                                bg-crimson/10
-                                px-4
-                                py-2
-                                text-sm
-                                font-semibold
-                                text-crimson
-                            "
-                        >
-                            <span
-                                className="
-                                    size-2
-                                    animate-pulse
-                                    rounded-full
-                                    bg-crimson
-                                "
-                            />
+                {/* Price */}
 
-                            <span>
-                                {ticketBoxT(
-                                    "in-progress"
-                                )}
-                            </span>
-                        </div>
-
-                    ) : isLowCapacity ? (
-
-                        <div
-                            className="
-                                rounded-full
-                                bg-gold-utility/20
-                                px-4
-                                py-2
-                                text-sm
-                                font-semibold
-                                text-[#8A671E]
-                            "
-                        >
-                            {ticketBoxT(
-                                "few-seats",
-                                {
-                                    count:
-                                        event.remainingCapacity
-                                }
-                            )}
-                        </div>
-
-                    ) : (
-
-                        <div
-                            className="
-                                rounded-full
-                                bg-crimson/10
-                                px-4
-                                py-2
-                                text-sm
-                                font-semibold
-                                text-crimson
-                            "
-                        >
-                            {ticketBoxT(
-                                "available"
-                            )}
-                        </div>
-
-                    )}
-
+                <div
+                    className="
+                        rounded-full
+                        bg-crimson/10
+                        px-4
+                        py-2
+                        text-sm
+                        font-semibold
+                        text-crimson
+                    "
+                >
+                    {event.price !== null
+                        ? `${event.price.toLocaleString()} تومان`
+                        : "Free"}
                 </div>
 
             </div>
@@ -542,7 +567,8 @@ function CinemaAndTheaterTicketBox({
             <div className="px-6 pb-6">
 
                 <Button
-                    aria-disabled={isUnavailable}
+                    type="button"
+                    disabled={isUnavailable}
                     className={cn(
                         "flex",
                         "w-full",
@@ -550,16 +576,17 @@ function CinemaAndTheaterTicketBox({
                         "justify-center",
                         "gap-2",
                         "rounded-xl",
-                        "px-5 py-3",
+                        "px-5",
+                        "py-3",
                         "font-semibold",
-                        "transition-all duration-300",
+                        "transition-all",
+                        "duration-300",
 
                         isUnavailable
                             ? [
                                 "cursor-not-allowed",
                                 "bg-black/10",
                                 "text-black/40",
-                                "pointer-events-none",
                             ]
                             : [
                                 "bg-crimson",
@@ -568,9 +595,9 @@ function CinemaAndTheaterTicketBox({
                                 "click-scale",
                             ],
                     )}
-
-                    onClick={booingHandler}
-
+                    onClick={
+                        bookingHandler
+                    }
                 >
 
                     {isInProgress ? (
@@ -601,7 +628,7 @@ function CinemaAndTheaterTicketBox({
             </div>
 
         </div>
-    )
+    );
 }
 
-export default CinemaAndTheaterTicketBox
+export default CinemaAndTheaterTicketBox;

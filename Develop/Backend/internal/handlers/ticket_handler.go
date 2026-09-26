@@ -29,7 +29,7 @@ func NewTicketHandler(
 }
 
 // --------------------------------------------------
-// Language
+// Language Helper
 // --------------------------------------------------
 
 func getLanguage(c *gin.Context) string {
@@ -47,10 +47,12 @@ func getLanguage(c *gin.Context) string {
 }
 
 // --------------------------------------------------
-// Cinema
+// Museum Tour
 // --------------------------------------------------
 
-func (h *TicketHandler) GetCinema(c *gin.Context) {
+func (h *TicketHandler) GetMuseumTour(
+	c *gin.Context,
+) {
 	dateString := c.Query("date")
 
 	if dateString == "" {
@@ -68,6 +70,12 @@ func (h *TicketHandler) GetCinema(c *gin.Context) {
 	)
 
 	if err != nil {
+		h.logger.Error(
+			"failed to parse museum tour date",
+			"date", dateString,
+			"error", err,
+		)
+
 		response.HandleError(
 			c,
 			appErrors.ErrInvalidInput,
@@ -76,16 +84,19 @@ func (h *TicketHandler) GetCinema(c *gin.Context) {
 		return
 	}
 
-	sessions, err := h.ticketService.GetCinemaSessions(
+	language := getLanguage(c)
+
+	sessions, err := h.ticketService.GetMuseumTourSessions(
 		c.Request.Context(),
 		date,
-		getLanguage(c),
+		language,
 	)
 
 	if err != nil {
 		h.logger.Error(
-			"failed to get cinema sessions",
+			"failed to get museum tour sessions",
 			"date", dateString,
+			"language", language,
 			"error", err,
 		)
 
@@ -94,7 +105,311 @@ func (h *TicketHandler) GetCinema(c *gin.Context) {
 			err,
 			h.logger,
 		)
+		return
+	}
 
+	response.Success(
+		c,
+		"museum tour sessions fetched successfully",
+		sessions,
+	)
+}
+
+// --------------------------------------------------
+// Events
+// --------------------------------------------------
+
+func (h *TicketHandler) GetEvent(
+	c *gin.Context,
+) {
+	dateString := c.Query("date")
+
+	if dateString == "" {
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+		return
+	}
+
+	date, err := time.Parse(
+		"2006-01-02",
+		dateString,
+	)
+
+	if err != nil {
+		h.logger.Error(
+			"failed to parse events date",
+			"date", dateString,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+		return
+	}
+
+	language := getLanguage(c)
+
+	sessions, err := h.ticketService.GetEventSessions(
+		c.Request.Context(),
+		date,
+		language,
+	)
+
+	if err != nil {
+		h.logger.Error(
+			"failed to get event sessions",
+			"date", dateString,
+			"language", language,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+		return
+	}
+
+	response.Success(
+		c,
+		"event sessions fetched successfully",
+		sessions,
+	)
+}
+
+func (h *TicketHandler) GetEventSessionDetail(
+	c *gin.Context,
+) {
+	sessionID, err := strconv.ParseUint(
+		c.Param("sessionId"),
+		10,
+		32,
+	)
+
+	if err != nil {
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+		return
+	}
+
+	language := getLanguage(c)
+
+	session, err := h.ticketService.GetEventSessionDetail(
+		c.Request.Context(),
+		uint(sessionID),
+		language,
+	)
+
+	if err != nil {
+		h.logger.Error(
+			"failed to get event session detail",
+			"sessionId", sessionID,
+			"language", language,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+		return
+	}
+
+	response.Success(
+		c,
+		"event session fetched successfully",
+		session,
+	)
+}
+
+// --------------------------------------------------
+// Courses
+// --------------------------------------------------
+
+func (h *TicketHandler) GetCourses(
+	c *gin.Context,
+) {
+	dateString := c.Query("date")
+
+	if dateString == "" {
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+		return
+	}
+
+	date, err := time.Parse(
+		"2006-01-02",
+		dateString,
+	)
+
+	if err != nil {
+		h.logger.Error(
+			"failed to parse courses date",
+			"date", dateString,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+		return
+	}
+
+	language := getLanguage(c)
+
+	sessions, err := h.ticketService.GetCourseSessions(
+		c.Request.Context(),
+		date,
+		language,
+	)
+
+	if err != nil {
+		h.logger.Error(
+			"failed to get course sessions",
+			"date", dateString,
+			"language", language,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+		return
+	}
+
+	response.Success(
+		c,
+		"course sessions fetched successfully",
+		sessions,
+	)
+}
+
+func (h *TicketHandler) GetCourseSessionDetail(
+	c *gin.Context,
+) {
+	sessionID, err := strconv.ParseUint(
+		c.Param("sessionId"),
+		10,
+		32,
+	)
+
+	if err != nil {
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+		return
+	}
+
+	language := getLanguage(c)
+
+	session, err := h.ticketService.GetCourseSessionDetail(
+		c.Request.Context(),
+		uint(sessionID),
+		language,
+	)
+
+	if err != nil {
+		h.logger.Error(
+			"failed to get course session detail",
+			"sessionId", sessionID,
+			"language", language,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+		return
+	}
+
+	response.Success(
+		c,
+		"course session fetched successfully",
+		session,
+	)
+}
+
+// --------------------------------------------------
+// Cinema
+// --------------------------------------------------
+
+func (h *TicketHandler) GetCinema(
+	c *gin.Context,
+) {
+	dateString := c.Query("date")
+
+	if dateString == "" {
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+		return
+	}
+
+	date, err := time.Parse(
+		"2006-01-02",
+		dateString,
+	)
+
+	if err != nil {
+		h.logger.Error(
+			"failed to parse cinema date",
+			"date", dateString,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			appErrors.ErrInvalidInput,
+			h.logger,
+		)
+		return
+	}
+
+	language := getLanguage(c)
+
+	sessions, err := h.ticketService.GetCinemaSessions(
+		c.Request.Context(),
+		date,
+		language,
+	)
+
+	if err != nil {
+		h.logger.Error(
+			"failed to get cinema sessions",
+			"date", dateString,
+			"language", language,
+			"error", err,
+		)
+
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
 		return
 	}
 
@@ -105,56 +420,13 @@ func (h *TicketHandler) GetCinema(c *gin.Context) {
 	)
 }
 
-func (h *TicketHandler) GetCinemaSessionDetail(c *gin.Context) {
-	sessionID, err := strconv.ParseUint(
-		c.Param("sessionId"),
-		10,
-		32,
-	)
-
-	if err != nil {
-		response.HandleError(
-			c,
-			appErrors.ErrInvalidInput,
-			h.logger,
-		)
-		return
-	}
-
-	session, err := h.ticketService.GetCinemaSessionDetail(
-		c.Request.Context(),
-		uint(sessionID),
-		getLanguage(c),
-	)
-
-	if err != nil {
-		h.logger.Error(
-			"failed to get cinema session detail",
-			"sessionId", sessionID,
-			"error", err,
-		)
-
-		response.HandleError(
-			c,
-			err,
-			h.logger,
-		)
-
-		return
-	}
-
-	response.Success(
-		c,
-		"cinema session fetched successfully",
-		session,
-	)
-}
-
 // --------------------------------------------------
 // Theater
 // --------------------------------------------------
 
-func (h *TicketHandler) GetTheater(c *gin.Context) {
+func (h *TicketHandler) GetTheater(
+	c *gin.Context,
+) {
 	dateString := c.Query("date")
 
 	if dateString == "" {
@@ -172,6 +444,12 @@ func (h *TicketHandler) GetTheater(c *gin.Context) {
 	)
 
 	if err != nil {
+		h.logger.Error(
+			"failed to parse theater date",
+			"date", dateString,
+			"error", err,
+		)
+
 		response.HandleError(
 			c,
 			appErrors.ErrInvalidInput,
@@ -180,16 +458,19 @@ func (h *TicketHandler) GetTheater(c *gin.Context) {
 		return
 	}
 
+	language := getLanguage(c)
+
 	sessions, err := h.ticketService.GetTheaterSessions(
 		c.Request.Context(),
 		date,
-		getLanguage(c),
+		language,
 	)
 
 	if err != nil {
 		h.logger.Error(
 			"failed to get theater sessions",
 			"date", dateString,
+			"language", language,
 			"error", err,
 		)
 
@@ -198,7 +479,6 @@ func (h *TicketHandler) GetTheater(c *gin.Context) {
 			err,
 			h.logger,
 		)
-
 		return
 	}
 
@@ -209,14 +489,16 @@ func (h *TicketHandler) GetTheater(c *gin.Context) {
 	)
 }
 
-func (h *TicketHandler) GetTheaterSessionDetail(c *gin.Context) {
-	sessionID, err := strconv.ParseUint(
-		c.Param("sessionId"),
-		10,
-		32,
-	)
+// --------------------------------------------------
+// Booking
+// --------------------------------------------------
 
-	if err != nil {
+func (h *TicketHandler) CreateBooking(
+	c *gin.Context,
+) {
+	var req dto.CreateBookingRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
 		response.HandleError(
 			c,
 			appErrors.ErrInvalidInput,
@@ -225,16 +507,122 @@ func (h *TicketHandler) GetTheaterSessionDetail(c *gin.Context) {
 		return
 	}
 
-	session, err := h.ticketService.GetTheaterSessionDetail(
+	userIDValue, exists := c.Get("user_id")
+
+	if !exists {
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+		return
+	}
+
+	userIDString, ok := userIDValue.(string)
+
+	if !ok {
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+		return
+	}
+
+	userID64, err := strconv.ParseUint(
+		userIDString,
+		10,
+		64,
+	)
+
+	if err != nil {
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+		return
+	}
+
+	booking, err := h.ticketService.CreateBooking(
 		c.Request.Context(),
-		uint(sessionID),
-		getLanguage(c),
+		uint(userID64),
+		req,
+	)
+
+	if err != nil {
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
+		return
+	}
+
+	response.Success(
+		c,
+		"booking_created_successfully",
+		booking,
+	)
+}
+
+// --------------------------------------------------
+// User Bookings
+// --------------------------------------------------
+
+func (h *TicketHandler) GetUserBookings(
+	c *gin.Context,
+) {
+	userIDValue, exists := c.Get("user_id")
+
+	if !exists {
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+		return
+	}
+
+	userIDString, ok := userIDValue.(string)
+
+	if !ok {
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+		return
+	}
+
+	userID64, err := strconv.ParseUint(
+		userIDString,
+		10,
+		64,
+	)
+
+	if err != nil {
+		response.HandleError(
+			c,
+			appErrors.ErrUnauthorized,
+			h.logger,
+		)
+		return
+	}
+
+	language := getLanguage(c)
+
+	bookings, err := h.ticketService.GetUserBookings(
+		c.Request.Context(),
+		uint(userID64),
+		language,
 	)
 
 	if err != nil {
 		h.logger.Error(
-			"failed to get theater session detail",
-			"sessionId", sessionID,
+			"failed to get user bookings",
+			"userID", userID64,
+			"language", language,
 			"error", err,
 		)
 
@@ -243,13 +631,12 @@ func (h *TicketHandler) GetTheaterSessionDetail(c *gin.Context) {
 			err,
 			h.logger,
 		)
-
 		return
 	}
 
 	response.Success(
 		c,
-		"theater session fetched successfully",
-		session,
+		"user_bookings_fetched_successfully",
+		bookings,
 	)
 }
