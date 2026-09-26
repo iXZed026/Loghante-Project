@@ -287,3 +287,13 @@ VALUES
         (3,1,'2026-10-13 16:30:00+02',120,50,500000);
 
 SELECT * FROM eventsession WHERE eventid = 3;
+
+SELECT * FROM events;
+
+SELECT * FROM eventstranslations;
+
+SELECT * FROM eventsession;
+
+SELECT * FROM eventtypetranslations;
+
+SELECT * FROM eventtypes;
