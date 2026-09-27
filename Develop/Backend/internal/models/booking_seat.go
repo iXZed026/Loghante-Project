@@ -1,9 +1,11 @@
 package models
 
 type BookingSeat struct {
-	BookingID uint `gorm:"column:bookingid;primaryKey"`
-	SessionID uint `gorm:"column:sessionid;primaryKey"`
-	SeatID    uint `gorm:"column:seatid;primaryKey"`
+	BookingSeatID uint `gorm:"column:bookingseatid;primaryKey"`
+
+	BookingID uint `gorm:"column:bookingid;not null"`
+	SessionID uint `gorm:"column:sessionid;not null"`
+	SeatID    uint `gorm:"column:seatid;not null"`
 
 	Booking Booking      `gorm:"foreignKey:BookingID"`
 	Session EventSession `gorm:"foreignKey:SessionID"`

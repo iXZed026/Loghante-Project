@@ -124,3 +124,19 @@ type EventSessionDetailResponse struct {
 	Duration    int                  `json:"duration"`
 	Price       *float64             `json:"price"`
 }
+
+// --------------------------------------------------
+// Booking Seats
+// --------------------------------------------------
+
+type SessionSeatResponse struct {
+	SeatID     uint   `json:"seatId"`
+	RowLabel   string `json:"rowLabel"`
+	SeatNumber int    `json:"seatNumber"`
+	Status     string `json:"status"`
+}
+
+type CreateSeatBookingRequest struct {
+	SessionID uint   `json:"sessionId" binding:"required"`
+	SeatIDs   []uint `json:"seatIds" binding:"required,min=1"`
+}

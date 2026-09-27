@@ -15,7 +15,15 @@
         "invalid_password": "رمز عبور نامعتبر است",
         "user_not_found": "کاربر پیدا نشد",
         "not_found": "منبع موردنظر پیدا نشد",
-        "insufficient_capacity": "ظرفیت کافی برای این تعداد بلیت وجود ندارد"
+        "insufficient_capacity": "ظرفیت کافی برای این تعداد بلیت وجود ندارد",
+        "customer_request_created_successfully": "درخواست مشتری با موفقیت ثبت شد",
+        "session_seats_fetched_successfully": "صندلی‌های جلسه با موفقیت دریافت شدند",
+        "booking_created_successfully": "رزرو با موفقیت ایجاد شد",
+        "user_bookings_fetched_successfully": "رزروهای کاربر با موفقیت دریافت شدند",
+        "no_resources_provided": "هیچ منبعی برای رزرو ارسال نشده است",
+        "duplicate_resources_provided": "صندلی تکراری در درخواست وجود دارد",
+        "resource_not_found": "یک یا چند صندلی موردنظر پیدا نشد",
+        "resource_already_reserved": "یک یا چند صندلی قبلاً رزرو شده است"
     },
     "success": {
         "verification_required": "تأیید حساب الزامی است",

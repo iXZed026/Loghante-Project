@@ -640,3 +640,61 @@ func (h *TicketHandler) GetUserBookings(
 		bookings,
 	)
 }
+
+// --------------------------------------------------
+// Seats
+// --------------------------------------------------
+
+func (h *TicketHandler) GetSessionSeats(c *gin.Context) {
+	sessionID, err := strconv.ParseUint(c.Param("sessionId"), 10, 64)
+	if err != nil || sessionID == 0 {
+		response.HandleError(c, appErrors.ErrInvalidInput, h.logger)
+		return
+	}
+
+	seats, err := h.ticketService.GetSessionSeats(
+		c.Request.Context(),
+		uint(sessionID),
+	)
+	if err != nil {
+		response.HandleError(c, err, h.logger)
+		return
+	}
+
+	response.Success(
+		c,
+		"session_seats_fetched_successfully",
+		seats,
+	)
+}
+
+func (h *TicketHandler) CreateSeatBooking(c *gin.Context) {
+	var req dto.CreateSeatBookingRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.HandleError(c, appErrors.ErrInvalidInput, h.logger)
+		return
+	}
+
+	userID, err := strconv.ParseUint(c.GetString("user_id"), 10, 64)
+	if err != nil || userID == 0 {
+		response.HandleError(c, appErrors.ErrUnauthorized, h.logger)
+		return
+	}
+
+	booking, err := h.ticketService.CreateSeatBooking(
+		c.Request.Context(),
+		uint(userID),
+		req,
+	)
+	if err != nil {
+		response.HandleError(c, err, h.logger)
+		return
+	}
+
+	response.Success(
+		c,
+		"booking_created_successfully",
+		booking,
+	)
+}

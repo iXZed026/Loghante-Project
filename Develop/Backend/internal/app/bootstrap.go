@@ -11,6 +11,7 @@ import (
 	"loghanteh-project/internal/handlers"
 	"loghanteh-project/internal/limiter"
 	"loghanteh-project/internal/repositories"
+	"loghanteh-project/internal/reservation"
 	"loghanteh-project/internal/routes"
 	"loghanteh-project/internal/services"
 
@@ -160,11 +161,19 @@ func New() (*App, error) {
 		userRepo,
 	)
 
-	ticketService := services.NewTicketService(
+	reservationService := reservation.NewService(
 		db,
+		bookingRepository,
+	)
+
+	seatResourceProvider := reservation.NewSeatResourceProvider()
+
+	ticketService := services.NewTicketService(
 		ticketRepository,
 		languageRepository,
 		bookingRepository,
+		reservationService,
+		seatResourceProvider,
 	)
 
 	customerRequestService :=

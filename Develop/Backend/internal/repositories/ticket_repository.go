@@ -782,3 +782,71 @@ func (r *TicketRepository) getEventImagesMap(
 
 	return imageMap, nil
 }
+
+func (r *TicketRepository) GetSessionSeats(
+	ctx context.Context,
+	sessionID uint,
+) ([]dto.SessionSeatResponse, error) {
+
+	type seatRow struct {
+		SeatID     *uint   `gorm:"column:seatId"`
+		RowLabel   *string `gorm:"column:rowLabel"`
+		SeatNumber *int    `gorm:"column:seatNumber"`
+		Status     *string `gorm:"column:status"`
+	}
+
+	var rows []seatRow
+
+	err := r.db.
+		WithContext(ctx).
+		Table("eventsession AS es").
+		Select(`
+			s.seatid AS "seatId",
+			s.rowlabel AS "rowLabel",
+			s.seatnumber AS "seatNumber",
+			CASE
+				WHEN s.seatid IS NULL THEN NULL
+				WHEN EXISTS (
+					SELECT 1
+					FROM bookingseats AS bs
+					WHERE bs.sessionid = es.sessionid
+						AND bs.seatid = s.seatid
+				)
+				THEN 'reserved'
+				ELSE 'available'
+			END AS "status"
+		`).
+		Joins(`
+			LEFT JOIN seats AS s
+				ON s.hallid = es.hallid
+		`).
+		Where("es.sessionid = ?", sessionID).
+		Order("s.rowlabel ASC, s.seatnumber ASC").
+		Scan(&rows).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(rows) == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	seats := make([]dto.SessionSeatResponse, 0, len(rows))
+
+	for _, row := range rows {
+		if row.SeatID == nil {
+			return []dto.SessionSeatResponse{}, nil
+		}
+
+		seats = append(seats, dto.SessionSeatResponse{
+			SeatID:     *row.SeatID,
+			RowLabel:   *row.RowLabel,
+			SeatNumber: *row.SeatNumber,
+			Status:     *row.Status,
+		})
+	}
+
+	return seats, nil
+}

@@ -5,12 +5,8 @@ import (
 	"time"
 
 	"loghanteh-project/internal/dto"
-	appErrors "loghanteh-project/internal/errors"
-	"loghanteh-project/internal/models"
 	"loghanteh-project/internal/repositories"
-
-	"github.com/shopspring/decimal"
-	"gorm.io/gorm"
+	"loghanteh-project/internal/reservation"
 )
 
 const (
@@ -19,23 +15,26 @@ const (
 )
 
 type TicketService struct {
-	db                 *gorm.DB
-	ticketRepository   *repositories.TicketRepository
-	languageRepository *repositories.LanguageRepository
-	bookingRepository  *repositories.BookingRepository
+	ticketRepository     *repositories.TicketRepository
+	languageRepository   *repositories.LanguageRepository
+	bookingRepository    *repositories.BookingRepository
+	reservationService   *reservation.Service
+	seatResourceProvider reservation.ResourceProvider
 }
 
 func NewTicketService(
-	db *gorm.DB,
 	ticketRepository *repositories.TicketRepository,
 	languageRepository *repositories.LanguageRepository,
 	bookingRepository *repositories.BookingRepository,
+	reservationService *reservation.Service,
+	seatResourceProvider reservation.ResourceProvider,
 ) *TicketService {
 	return &TicketService{
-		db:                 db,
-		ticketRepository:   ticketRepository,
-		languageRepository: languageRepository,
-		bookingRepository:  bookingRepository,
+		ticketRepository:     ticketRepository,
+		languageRepository:   languageRepository,
+		bookingRepository:    bookingRepository,
+		reservationService:   reservationService,
+		seatResourceProvider: seatResourceProvider,
 	}
 }
 
@@ -297,112 +296,14 @@ func (s *TicketService) CreateBooking(
 	req dto.CreateBookingRequest,
 ) (*dto.CreateBookingResponse, error) {
 
-	if len(req.SeatIDs) == 0 {
-		return nil, appErrors.ErrInvalidInput
-	}
-
-	seatSet := make(map[uint]struct{}, len(req.SeatIDs))
-
-	for _, seatID := range req.SeatIDs {
-
-		if seatID == 0 {
-			return nil, appErrors.ErrInvalidInput
-		}
-
-		if _, exists := seatSet[seatID]; exists {
-			return nil, appErrors.ErrInvalidInput
-		}
-
-		seatSet[seatID] = struct{}{}
-	}
-
-	quantity := len(req.SeatIDs)
-
-	var booking models.Booking
-
-	err := s.db.Transaction(func(tx *gorm.DB) error {
-
-		session, err := s.bookingRepository.GetSessionForBooking(
-			tx,
-			ctx,
-			req.SessionID,
-		)
-
-		if err != nil {
-
-			if err == gorm.ErrRecordNotFound {
-				return appErrors.ErrNotFound
-			}
-
-			return err
-		}
-
-		if quantity > session.Capacity {
-			return appErrors.ErrInsufficientCapacity
-		}
-
-		valid, err := s.bookingRepository.ValidateSeatsForSession(
-			tx,
-			ctx,
-			req.SessionID,
-			req.SeatIDs,
-		)
-
-		if err != nil {
-			return err
-		}
-
-		if !valid {
-			return appErrors.ErrInvalidInput
-		}
-
-		var totalPrice decimal.Decimal
-
-		if session.Price != nil {
-			totalPrice = session.Price.Mul(
-				decimal.NewFromInt(
-					int64(quantity),
-				),
-			)
-		}
-
-		booking = models.Booking{
-			UserID:     userID,
-			SessionID:  req.SessionID,
-			Quantity:   quantity,
-			TotalPrice: totalPrice,
-		}
-
-		if err := s.bookingRepository.Create(
-			tx,
-			ctx,
-			&booking,
-		); err != nil {
-			return err
-		}
-
-		if err := s.bookingRepository.CreateBookingSeats(
-			tx,
-			ctx,
-			booking.BookingID,
-			req.SessionID,
-			req.SeatIDs,
-		); err != nil {
-			return err
-		}
-
-		if err := s.bookingRepository.DecreaseSessionCapacity(
-			tx,
-			ctx,
-			req.SessionID,
-			quantity,
-		); err != nil {
-			return err
-		}
-
-		return nil
-	})
-
+	booking, err := s.reservationService.CreateBooking(
+		ctx,
+		userID,
+		req.SessionID,
+		req.Quantity,
+		nil,
+		nil,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -411,7 +312,6 @@ func (s *TicketService) CreateBooking(
 		BookingID:   booking.BookingID,
 		SessionID:   booking.SessionID,
 		Quantity:    booking.Quantity,
-		SeatIDs:     req.SeatIDs,
 		TotalPrice:  booking.TotalPrice,
 		PurchasedAt: booking.PurchasedAt,
 	}, nil
@@ -440,4 +340,43 @@ func (s *TicketService) GetUserBookings(
 		userID,
 		languageID,
 	)
+}
+
+// --------------------------------------------------
+// Seat
+// --------------------------------------------------
+
+func (s *TicketService) GetSessionSeats(
+	ctx context.Context,
+	sessionID uint,
+) ([]dto.SessionSeatResponse, error) {
+	return s.ticketRepository.GetSessionSeats(ctx, sessionID)
+}
+
+func (s *TicketService) CreateSeatBooking(
+	ctx context.Context,
+	userID uint,
+	req dto.CreateSeatBookingRequest,
+) (*dto.CreateBookingResponse, error) {
+	quantity := len(req.SeatIDs)
+
+	booking, err := s.reservationService.CreateBooking(
+		ctx,
+		userID,
+		req.SessionID,
+		quantity,
+		s.seatResourceProvider,
+		req.SeatIDs,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.CreateBookingResponse{
+		BookingID:   booking.BookingID,
+		SessionID:   booking.SessionID,
+		Quantity:    booking.Quantity,
+		TotalPrice:  booking.TotalPrice,
+		PurchasedAt: booking.PurchasedAt,
+	}, nil
 }

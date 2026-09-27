@@ -15,7 +15,15 @@
         "invalid_password": "Invalid password",
         "user_not_found": "User not found",
         "not_found": "The requested resource was not found",
-        "insufficient_capacity": "Not enough tickets available"
+        "insufficient_capacity": "Not enough tickets available",
+        "customer_request_created_successfully": "Customer request created successfully",
+        "session_seats_fetched_successfully": "Session seats fetched successfully",
+        "booking_created_successfully": "Booking created successfully",
+        "user_bookings_fetched_successfully": "User bookings fetched successfully",
+        "no_resources_provided": "No resources were provided",
+        "duplicate_resources_provided": "Duplicate resources were provided",
+        "resource_not_found": "One or more requested resources were not found",
+        "resource_already_reserved": "One or more requested resources are already reserved"
     },
     "success": {
         "verification_required": "Verification required",

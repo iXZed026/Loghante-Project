@@ -116,30 +116,31 @@ func SetupTicketsRoutes(
 
 		tickets.GET(
 			"/bookings",
-			middleware.AuthMiddleware(
-				jwtService,
-				logger,
-			),
-			middleware.RateLimiter(
-				rateLimiter,
-				60,
-				logger,
-			),
+			middleware.AuthMiddleware(jwtService, logger),
+			middleware.RateLimiter(rateLimiter, 60, logger),
 			ticketHandler.GetUserBookings,
 		)
 
 		tickets.POST(
 			"/bookings",
+			middleware.AuthMiddleware(jwtService, logger),
+			middleware.RateLimiter(rateLimiter, 10, logger),
+			ticketHandler.CreateBooking,
+		)
+
+		tickets.GET(
+			"/booking-seat/:sessionId",
+			middleware.RateLimiter(rateLimiter, 60, logger),
+			ticketHandler.GetSessionSeats,
+		)
+
+		tickets.POST(
+			"/booking-seat",
 			middleware.AuthMiddleware(
 				jwtService,
 				logger,
 			),
-			middleware.RateLimiter(
-				rateLimiter,
-				10,
-				logger,
-			),
-			ticketHandler.CreateBooking,
+			ticketHandler.CreateSeatBooking,
 		)
 	}
 }

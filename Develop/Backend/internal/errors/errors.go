@@ -84,4 +84,26 @@ var (
 		Code: http.StatusConflict,
 		Key:  "insufficient_capacity",
 	}
+
+	// Reservation Errors
+
+	ErrNoResources = &AppError{
+		Code: http.StatusBadRequest,
+		Key:  "no_resources_provided",
+	}
+
+	ErrDuplicateResources = &AppError{
+		Code: http.StatusBadRequest,
+		Key:  "duplicate_resources_provided",
+	}
+
+	ErrResourceNotFound = &AppError{
+		Code: http.StatusBadRequest,
+		Key:  "resource_not_found",
+	}
+
+	ErrResourceAlreadyReserved = &AppError{
+		Code: http.StatusConflict,
+		Key:  "resource_already_reserved",
+	}
 )
