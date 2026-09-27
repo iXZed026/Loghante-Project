@@ -328,6 +328,20 @@ VALUES
         (5,1,'2026-09-30 10:30:00+02',120,50,700000),
         (5,1,'2026-10-30 16:30:00+02',120,50,700000);
 
+
+INSERT INTO eventsession (eventid, hallid, startat, duration, capacity, price)
+VALUES
+        (4,1,'2026-09-26 20:30:00+02',120,50,700000) ,
+        (4,1,'2026-09-26 12:30:00+02',120,50,500000 ),
+        (4,1,'2026-09-26 08:30:00+02',120,50,700000),
+        (4,1,'2026-09-27 14:30:00+02',120,50,700000),
+        (4,1,'2026-09-28 14:30:00+02',120,50,500000),
+        (4,1,'2026-09-29 19:30:00+02',120,50,500000),
+        (4,1,'2026-09-29 12:30:00+02',120,50,700000) ,
+        (4,1,'2026-09-30 08:30:00+02',120,50,500000),
+        (4,1,'2026-09-30 15:30:00+02',120,50,700000),
+        (4,1,'2026-09-30 18:30:00+02',120,50,700000);
+
 SELECT * FROM cinemadetails;
 
 SELECT * FROM theaterdetails;
@@ -337,3 +351,12 @@ SELECT * FROM eventsession WHERE eventid = 4;
 SELECT * FROM eventsession WHERE eventid = 5;
 
 SELECT * FROM eventstranslations;
+
+SELECT * FROM eventsession WHERE eventid = 2 AND price = 500000;
+
+SELECT
+    startat,
+    startat AT TIME ZONE 'UTC' AS utc_time,
+    startat AT TIME ZONE 'Asia/Tehran' AS tehran_time
+FROM eventsession
+WHERE sessionid = 69;
