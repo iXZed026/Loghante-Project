@@ -4,8 +4,18 @@ import {
     createContext,
     ReactNode,
     useContext,
+    useEffect,
     useState,
 } from "react";
+
+import {
+    getLocalStorageItem,
+    removeFromLocalStorage,
+    saveToLocalStorage,
+} from "@/lib/utils/localStorage";
+
+const HALL_DATA_STORAGE_KEY =
+    "loghanteh-hall-data";
 
 export interface CinemaDetails {
     eventId?: number;
@@ -35,6 +45,8 @@ export interface HallEventData {
 
     startAt: number | string;
 
+    duration: number;
+
     imageURL: string;
 
     price?: number | string;
@@ -51,7 +63,7 @@ interface HallContextType {
     hallData: HallData | null;
 
     setHallData: (
-        data: HallData
+        data: HallData,
     ) => void;
 
     clearHallData: () => void;
@@ -74,15 +86,50 @@ export function HallProvider({
 
     const [
         hallData,
-        setHallData,
+        setHallDataState,
     ] = useState<HallData | null>(null);
 
     const [
         isReady,
-    ] = useState(true);
+        setIsReady,
+    ] = useState(false);
+
+    useEffect(() => {
+
+        const storedHallData =
+            getLocalStorageItem<HallData>(
+                HALL_DATA_STORAGE_KEY,
+            );
+
+        if (storedHallData) {
+            setHallDataState(
+                storedHallData,
+            );
+        }
+
+        setIsReady(true);
+
+    }, []);
+
+    const setHallData = (
+        data: HallData,
+    ) => {
+
+        setHallDataState(data);
+
+        saveToLocalStorage(
+            HALL_DATA_STORAGE_KEY,
+            data,
+        );
+    };
 
     const clearHallData = () => {
-        setHallData(null);
+
+        setHallDataState(null);
+
+        removeFromLocalStorage(
+            HALL_DATA_STORAGE_KEY,
+        );
     };
 
     return (
@@ -106,7 +153,7 @@ export function useHall() {
 
     if (!context) {
         throw new Error(
-            "useHall must be used within HallProvider"
+            "useHall must be used within HallProvider",
         );
     }
 

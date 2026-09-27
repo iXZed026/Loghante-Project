@@ -1,13 +1,31 @@
 "use client";
 
-import React from "react";
+import {
+    useRouter,
+} from "next/navigation";
+
+import {
+    useLocale,
+} from "next-intl";
 
 import Button from "@/components/ui/Button";
 
-import { cn } from "@/lib/utils/cn";
+import {
+    cn,
+} from "@/lib/utils/cn";
 
-import type { SelectedSeat } from "./SeatsWrapper";
-import { useHall } from "../../context/HallProvider";
+import type {
+    SelectedSeat,
+} from "./SeatsWrapper";
+
+import {
+    useHall,
+} from "../../context/HallProvider";
+
+import {
+    useTicketPayment,
+} from "@/features/loghante(root)/context/TicketPaymentContext";
+import { removeFromLocalStorage } from "@/lib/utils/localStorage";
 
 interface SelectedSeatsProps {
     seats: SelectedSeat[];
@@ -17,12 +35,76 @@ function SelectedSeats({
     seats,
 }: SelectedSeatsProps) {
 
+    const locale =
+        useLocale();
+
+    const router =
+        useRouter();
+
+    const {
+        hallData,
+        clearHallData,
+    } = useHall();
+
+    const {
+        setPaymentData,
+    } = useTicketPayment();
+
     const event =
-        useHall().hallData?.eventData
+        hallData?.eventData;
 
     const handleContinue = () => {
-        // TODO:
-        // Navigate to /payment
+
+        if (!event) {
+            return;
+        }
+
+        setPaymentData({
+            type: "cinema-and-theater",
+
+            ticket: {
+                sessionId:
+                    event.sessionId,
+
+                eventId:
+                    event.eventId,
+
+                name:
+                    event.title,
+
+                startAt:
+                    String(event.startAt),
+
+                durationM:
+                    event.duration,
+
+                price:
+                    event.price !== undefined
+                        ? Number(event.price)
+                        : null,
+            },
+
+            hall: {
+                hallName:
+                    "Loghanteh Grand Hall",
+
+                seatsNumbs:
+                    seats.map((seat) => ({
+                        seatNum:
+                            seat.seatNum,
+
+                        row:
+                            seat.row,
+                    })),
+            },
+
+            quantity:
+                seats.length,
+        });
+        
+        router.push(
+            `/${locale}/payment`,
+        );
     };
 
     if (seats.length === 0) {
@@ -47,7 +129,7 @@ function SelectedSeats({
     const groupedSeats =
         Object.groupBy(
             seats,
-            (seat) => seat.row
+            (seat) => seat.row,
         );
 
     return (
@@ -61,14 +143,18 @@ function SelectedSeats({
             )}
         >
             <div className="fbc mb-5 gap-4">
+
                 <div className="fcol gap-1">
+
                     <h2 className="text-lg font-bold">
                         Selected Seats
                     </h2>
 
                     <span className="text-xs text-black-light-utility">
-                        {seats.length} seats x {event?.price} Toman
+                        {seats.length} seats x{" "}
+                        {event?.price ?? 0} Toman
                     </span>
+
                 </div>
 
                 <div
@@ -83,40 +169,50 @@ function SelectedSeats({
                 >
                     {seats.length}
                 </div>
+
             </div>
 
-            <div className="fcol justify-between min-h-[30vh]">
+            <div
+                className="
+                    fcol
+                    min-h-[30vh]
+                    justify-between
+                "
+            >
+
                 <div className="fcol gap-3">
+
                     {Object.entries(
-                        groupedSeats
+                        groupedSeats,
                     ).map(
                         ([row, rowSeats]) => (
                             <div
                                 key={row}
                                 className="
-                                flex
-                                items-center
-                                gap-3
-                            "
+                                    flex
+                                    items-center
+                                    gap-3
+                                "
                             >
+
                                 <span
                                     className="
-                                    w-14
-                                    shrink-0
-                                    text-xs
-                                    font-semibold
-                                    text-black-light-utility
-                                "
+                                        w-14
+                                        shrink-0
+                                        text-xs
+                                        font-semibold
+                                        text-black-light-utility
+                                    "
                                 >
                                     Row {row}
                                 </span>
 
                                 <div
                                     className="
-                                    flex
-                                    flex-wrap
-                                    gap-2
-                                "
+                                        flex
+                                        flex-wrap
+                                        gap-2
+                                    "
                                 >
                                     {rowSeats?.map(
                                         (seat) => (
@@ -125,60 +221,89 @@ function SelectedSeats({
                                                     seat.seatNum
                                                 }
                                                 className="
-                                                fcc
-                                                h-9
-                                                min-w-9
-                                                rounded-lg
-                                                bg-[var(--crimson-opacity-color)]
-                                                px-2
-                                                text-sm
-                                                font-semibold
-                                                text-crimson
-                                            "
+                                                    fcc
+                                                    h-9
+                                                    min-w-9
+                                                    rounded-lg
+                                                    bg-[var(--crimson-opacity-color)]
+                                                    px-2
+                                                    text-sm
+                                                    font-semibold
+                                                    text-crimson
+                                                "
                                             >
                                                 {
                                                     seat.seatNum
                                                 }
                                             </span>
-                                        )
+                                        ),
                                     )}
                                 </div>
+
                             </div>
-                        )
+                        ),
                     )}
+
                 </div>
 
                 <div className="mt-6">
+
                     <Button
+                        type="button"
                         onClick={
                             handleContinue
                         }
                         className="
-                        text-sm
-                        w-full
-                        font-semibold
-                        bg-crimson
-                        hover:bg-[var(--crimson-opacity-color)]
-                        hover:text-crimson
-                        py-3
-                        fbc
-                    "
+                            w-full
+                            fbc
+                            bg-crimson
+                            py-3
+                            text-sm
+                            font-semibold
+                            hover:bg-[var(--crimson-opacity-color)]
+                            hover:text-crimson
+                        "
                     >
-                        Continue to Payment
-                        {event?.price === 0 || null ? (
-                            <span className="text-gold utility font-semibold">
+                        <span>
+                            Continue to Payment
+                        </span>
+
+                        {event?.price === 0 ? (
+                            <span
+                                className="
+                                    font-semibold
+                                    text-gold-utility
+                                "
+                            >
                                 Free
                             </span>
                         ) : (
-                            <span className="fcol gap-y-1 items-center">
-                                {(Number(event?.price)) * seats.length}
-                                <span>Toman</span>
+                            <span
+                                className="
+                                    fcol
+                                    items-center
+                                    gap-y-1
+                                "
+                            >
+                                {(
+                                    Number(
+                                        event?.price ?? 0,
+                                    ) *
+                                    seats.length
+                                ).toLocaleString()}
+
+                                <span>
+                                    Toman
+                                </span>
                             </span>
                         )}
+
                     </Button>
+
                 </div>
+
             </div>
-        </div >
+        </div>
     );
 }
 

@@ -1,6 +1,8 @@
 "use client";
 
-import React from "react";
+import {
+    useEffect,
+} from "react";
 
 import {
     useParams,
@@ -9,16 +11,16 @@ import {
 
 import HallHeader from "@/features/loghante(root)/halls/hall/componenets/HallHeader";
 import HallContent from "@/features/loghante(root)/halls/hall/componenets/HallContent";
+import HallTicketDetails from "@/features/loghante(root)/halls/hall/componenets/HallTicketDetails";
 
 import HallGuard from "@/features/loghante(root)/halls/componenets/HallGuard";
-
 
 import {
     halls,
 } from "@/features/loghante(root)/halls/data/halls";
-import HallTicketDetails from "@/features/loghante(root)/halls/hall/componenets/HallTicketDetails";
 
 function HallPage() {
+
     const params =
         useParams();
 
@@ -31,11 +33,21 @@ function HallPage() {
     const hall =
         halls.find(
             (item) =>
-                item.id === hallId
+                item.id === hallId,
         );
 
+    useEffect(() => {
+
+        if (!hall) {
+            router.back();
+        }
+
+    }, [
+        hall,
+        router,
+    ]);
+
     if (!hall) {
-        router.back();
         return null;
     }
 
@@ -44,7 +56,16 @@ function HallPage() {
 
             <div className="min-h-screen py-30">
 
-                <div className="mx-auto w-full max-w-7xl px-5 fcol gap-y-15">
+                <div
+                    className="
+                        mx-auto
+                        w-full
+                        max-w-7xl
+                        px-5
+                        fcol
+                        gap-y-15
+                    "
+                >
 
                     <HallHeader />
 

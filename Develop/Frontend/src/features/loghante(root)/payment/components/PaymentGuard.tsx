@@ -6,6 +6,10 @@ import {
 } from "react";
 
 import {
+    useLocale,
+} from "next-intl";
+
+import {
     useRouter,
 } from "next/navigation";
 
@@ -24,20 +28,35 @@ function PaymentGuard({
     const router =
         useRouter();
 
+    const locale =
+        useLocale();
+
     const {
         paymentData,
+        isReady,
     } = useTicketPayment();
 
     useEffect(() => {
 
-        if (!paymentData) {
-            router.back();
+        if (
+            isReady &&
+            !paymentData
+        ) {
+            router.replace(
+                `/${locale}`,
+            );
         }
 
     }, [
+        isReady,
         paymentData,
+        locale,
         router,
     ]);
+
+    if (!isReady) {
+        return null;
+    }
 
     if (!paymentData) {
         return null;

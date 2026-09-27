@@ -30,6 +30,7 @@ function HallGuard({
 
     const {
         hallData,
+        isReady,
     } = useHall();
 
     const locale =
@@ -37,15 +38,25 @@ function HallGuard({
 
     useEffect(() => {
 
-        if (!hallData) {
-            router.replace(`/${locale}`);
+        if (
+            isReady &&
+            !hallData
+        ) {
+            router.replace(
+                `/${locale}`,
+            );
         }
 
     }, [
         hallData,
+        isReady,
         locale,
         router,
     ]);
+
+    if (!isReady) {
+        return null;
+    }
 
     if (!hallData) {
         return null;

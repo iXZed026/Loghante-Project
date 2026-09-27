@@ -1,8 +1,8 @@
 import { DEVELOPMENT } from "../constants";
 
-export function saveToLocalStorage(
+export function saveToLocalStorage<T>(
     itemName: string,
-    data: string,
+    data: T,
 ): void {
 
     if (data === undefined || data === null) {
@@ -16,15 +16,25 @@ export function saveToLocalStorage(
         return;
     }
 
-    localStorage.setItem(
-        itemName,
-        JSON.stringify(data)
-    );
+    try {
+        localStorage.setItem(
+            itemName,
+            JSON.stringify(data),
+        );
+    } catch (error) {
+
+        if (DEVELOPMENT) {
+            console.error(
+                `Failed to save localStorage item "${itemName}".`,
+                error,
+            );
+        }
+    }
 }
 
-export function getLocalStorageItem(
-    itemName: string
-): string | null {
+export function getLocalStorageItem<T>(
+    itemName: string,
+): T | null {
 
     const item =
         localStorage.getItem(itemName);
@@ -36,13 +46,12 @@ export function getLocalStorageItem(
     try {
 
         const parsedItem =
-            JSON.parse(item);
+            JSON.parse(item) as T;
 
         if (
             parsedItem === undefined ||
             parsedItem === null
         ) {
-
             localStorage.removeItem(itemName);
 
             return null;
@@ -55,7 +64,7 @@ export function getLocalStorageItem(
         if (DEVELOPMENT) {
             console.error(
                 `Failed to parse localStorage item "${itemName}".`,
-                error
+                error,
             );
         }
 
@@ -66,7 +75,7 @@ export function getLocalStorageItem(
 }
 
 export function removeFromLocalStorage(
-    itemName: string
+    itemName: string,
 ): void {
     localStorage.removeItem(itemName);
 }

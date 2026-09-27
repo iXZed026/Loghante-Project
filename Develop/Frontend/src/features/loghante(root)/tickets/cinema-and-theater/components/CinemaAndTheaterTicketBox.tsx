@@ -38,6 +38,7 @@ import {
 import type {
     CinemaAndTheaterSession,
 } from "@/lib/api/ticket/cinema-and-theater";
+import { saveToLocalStorage } from "@/lib/utils/localStorage";
 
 interface CinemaAndTheaterTicketBoxProps {
     event: CinemaAndTheaterSession;
@@ -177,6 +178,9 @@ function CinemaAndTheaterTicketBox({
                 description:
                     event.description,
 
+                duration:
+                    event.duration,
+
                 startAt:
                     event.startAt,
 
@@ -236,7 +240,7 @@ function CinemaAndTheaterTicketBox({
         });
 
         router.push(
-            `/${locale}/hall/${event.hallId}`
+            `/${locale}/hall/${event.hallId}`,
         );
     }
 
@@ -456,7 +460,7 @@ function CinemaAndTheaterTicketBox({
                     fbc
                     gap-4
                     px-6
-                    py-5
+                    py-8
                 "
             >
 
@@ -501,47 +505,6 @@ function CinemaAndTheaterTicketBox({
                     </div>
                 </div>
 
-                {/* Time */}
-
-                <div
-                    className="
-                        flex
-                        items-center
-                        gap-3
-                    "
-                >
-                    <div
-                        className="
-                            fcc
-                            size-10
-                            rounded-full
-                            bg-[var(--white-light-color)]
-                            text-crimson
-                        "
-                    >
-                        <FaRegClock
-                            className="size-5"
-                        />
-                    </div>
-
-                    <div className="fcol">
-
-                        <span
-                            className="
-                                text-xs
-                                text-black-light-utility
-                            "
-                        >
-                            Time
-                        </span>
-
-                        <span className="font-bold">
-                            {formattedTime}
-                        </span>
-
-                    </div>
-                </div>
-
                 {/* Price */}
 
                 <div
@@ -556,7 +519,7 @@ function CinemaAndTheaterTicketBox({
                     "
                 >
                     {event.price !== null
-                        ? `${event.price.toLocaleString()} تومان`
+                        ? `${event.price.toLocaleString()} Toman`
                         : "Free"}
                 </div>
 

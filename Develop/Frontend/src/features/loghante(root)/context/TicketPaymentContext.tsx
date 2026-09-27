@@ -4,13 +4,28 @@ import {
     createContext,
     ReactNode,
     useContext,
+    useEffect,
     useState,
 } from "react";
+
+import {
+    getLocalStorageItem,
+    removeFromLocalStorage,
+    saveToLocalStorage,
+} from "@/lib/utils/localStorage";
+
+const PAYMENT_DATA_STORAGE_KEY =
+    "loghanteh-payment-data";
 
 export type TicketPaymentType =
     | "museum-tour"
     | "events-and-courses"
     | "cinema-and-theater";
+
+export interface SelectedPaymentSeat {
+    seatNum: number;
+    row: number;
+}
 
 export interface TicketPaymentData {
     type: TicketPaymentType;
@@ -21,13 +36,13 @@ export interface TicketPaymentData {
         name: string;
         startAt: string;
         durationM: number;
-        capacity: number;
+        capacity?: number;
         price: number | null;
     };
 
     hall?: {
         hallName: string;
-        seatsNumbs: number[];
+        seatsNumbs: SelectedPaymentSeat[];
     };
 
     quantity: number;
@@ -37,10 +52,12 @@ interface TicketPaymentContextType {
     paymentData: TicketPaymentData | null;
 
     setPaymentData: (
-        data: TicketPaymentData
+        data: TicketPaymentData,
     ) => void;
 
     clearPaymentData: () => void;
+
+    isReady: boolean;
 }
 
 const TicketPaymentContext =
@@ -58,30 +75,52 @@ export function TicketPaymentProvider({
 
     const [
         paymentData,
-        setPaymentData,
-    ] = useState<TicketPaymentData | null>({
-        type: "cinema-and-theater",
+        setPaymentDataState,
+    ] = useState<TicketPaymentData | null>(
+        null,
+    );
 
-        ticket: {
-            sessionId: 25,
-            eventId: 8,
-            name: "Shadows of Tehran",
-            startAt: "2026-09-24T18:30:00",
-            durationM: 120,
-            capacity: 100,
-            price: 250000,
-        },
+    const [
+        isReady,
+        setIsReady,
+    ] = useState(false);
 
-        hall: {
-            hallName: "Loghanteh Grand Hall",
-            seatsNumbs: [12, 13],
-        },
+    useEffect(() => {
 
-        quantity: 2,
-    });
+        const storedPaymentData =
+            getLocalStorageItem<TicketPaymentData>(
+                PAYMENT_DATA_STORAGE_KEY,
+            );
+
+        if (storedPaymentData) {
+            setPaymentDataState(
+                storedPaymentData,
+            );
+        }
+
+        setIsReady(true);
+
+    }, []);
+
+    const setPaymentData = (
+        data: TicketPaymentData,
+    ) => {
+
+        setPaymentDataState(data);
+
+        saveToLocalStorage(
+            PAYMENT_DATA_STORAGE_KEY,
+            data,
+        );
+    };
 
     const clearPaymentData = () => {
-        setPaymentData(null);
+
+        setPaymentDataState(null);
+
+        removeFromLocalStorage(
+            PAYMENT_DATA_STORAGE_KEY,
+        );
     };
 
     return (
@@ -90,6 +129,7 @@ export function TicketPaymentProvider({
                 paymentData,
                 setPaymentData,
                 clearPaymentData,
+                isReady,
             }}
         >
             {children}
@@ -101,12 +141,12 @@ export function useTicketPayment() {
 
     const context =
         useContext(
-            TicketPaymentContext
+            TicketPaymentContext,
         );
 
     if (!context) {
         throw new Error(
-            "useTicketPayment must be used within TicketPaymentProvider"
+            "useTicketPayment must be used within TicketPaymentProvider",
         );
     }
 

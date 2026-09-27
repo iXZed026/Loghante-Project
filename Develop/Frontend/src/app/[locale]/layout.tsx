@@ -41,7 +41,9 @@ export default async function LocaleLayout({
             <TicketPaymentProvider>
               <Header />
               <HallProvider>
-                {children}
+                <div className="min-h-screen">
+                  {children}
+                </div>
               </HallProvider>
               <Footer />
             </TicketPaymentProvider>

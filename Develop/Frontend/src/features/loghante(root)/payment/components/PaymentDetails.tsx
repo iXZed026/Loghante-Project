@@ -85,6 +85,8 @@ function PaymentDetails() {
 
             event.preventDefault()
 
+            console.log(quantity)
+
             if (quantity < 1) {
                 return
             }
@@ -116,6 +118,8 @@ function PaymentDetails() {
 
                 if (!response.success) {
 
+                    console.log(response)
+
                     setErrorMessage(
                         response.message
                     )
@@ -123,14 +127,7 @@ function PaymentDetails() {
                     return
                 }
 
-                /*
-                 * Booking was created successfully.
-                 *
-                 * Later, when the payment gateway
-                 * is implemented, redirect the user
-                 * to the payment gateway here.
-                 */
-
+                //Success
                 clearPaymentData()
 
                 console.log(
