@@ -384,3 +384,5 @@ VALUES
         (1,'2026-10-05 18:30:00+02',120,50,700000);
 
 SELECT * FROM eventsession WHERE sessionid =48;
+
+SELECT * FROM bookingseats;
