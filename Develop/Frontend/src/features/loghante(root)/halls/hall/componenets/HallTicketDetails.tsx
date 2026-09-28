@@ -1,66 +1,77 @@
-"use client";
+"use client"
 
-import React from "react";
+import React from "react"
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"
 
 import {
     FaRegMoneyBillAlt,
-} from "react-icons/fa";
+} from "react-icons/fa"
 
 import {
     SlCalender,
-} from "react-icons/sl";
+} from "react-icons/sl"
 
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button"
 
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/lib/utils/cn"
 
 import {
     useHall,
-} from "../../context/HallProvider";
+} from "../../context/HallProvider"
+
+import { useLocale, useTranslations } from "next-intl"
+
+import {
+    formatTime,
+    formatWeekdayDate,
+} from "@/lib/utils/date"
 
 function HallTicketDetails() {
 
+    const T =
+        useTranslations(
+            "hall.hall-details",
+        )
+
+
+    const commonT =
+        useTranslations("common")
+
     const router =
-        useRouter();
+        useRouter()
+
+    const locale = useLocale()
+
 
     const {
         hallData,
-    } = useHall();
+    } = useHall()
 
     const event =
-        hallData?.eventData;
+        hallData?.eventData
 
     if (!event) {
-        return null;
+        return null
     }
 
     const startAt =
-        new Date(event.startAt);
+        new Date(event.startAt)
 
     const formattedDate =
-        startAt.toLocaleDateString(
-            "en-US",
-            {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-            },
-        );
+        formatWeekdayDate(
+            startAt,
+            locale,
+        )
 
     const formattedTime =
-        startAt.toLocaleTimeString(
-            "en-US",
-            {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true,
-            },
-        );
+        formatTime(
+            startAt,
+            locale,
+        )
 
     function changeButtonHandler() {
-        router.back();
+        router.back()
     }
 
     return (
@@ -68,30 +79,41 @@ function HallTicketDetails() {
 
             <div>
                 <span className="text-xl">
-                    Choose your seat
+                    {T("title")}
                 </span>
             </div>
 
             <div className="fcc">
 
                 <div className="flex w-full items-center gap-2">
+
                     <FaRegMoneyBillAlt
                         className="text-crimson"
                         size={25}
                     />
 
                     <span>
-                        Amount Paid:{" "}
-                        {event.price?.toLocaleString()}{" "}
-                        Toman
+                        {T("amount")}:{" "}
+                        {event.price?.toLocaleString(
+                            locale,
+                        )}{" "}
+                        {commonT("price-type")}
                     </span>
+
                 </div>
 
                 <div className="w-full fbc bg-gold-opacity p-8">
 
-                    <div className="fcol gap-3 text-sm text-black-light-utility">
+                    <div
+                        className={cn(
+                            "fcol gap-3",
+                            "text-sm",
+                            "text-black-light-utility",
+                        )}
+                    >
 
                         <div className="flex items-center gap-2">
+
                             <SlCalender
                                 className="text-crimson"
                                 size={13}
@@ -100,31 +122,39 @@ function HallTicketDetails() {
                             <span>
                                 {formattedDate}
                             </span>
+
                         </div>
 
                         <div className="flex items-center gap-2">
+
                             <SlCalender
                                 className="text-crimson"
                                 size={13}
                             />
 
                             <span>
-                                Time {formattedTime}
+                                {T("time")}{" "}
+                                {formattedTime}
                             </span>
+
                         </div>
 
                     </div>
 
                     <div>
+
                         <Button
                             className={cn(
                                 "text-crimson",
                                 "hover:text-[var(--crimson-opacity-color)]",
                             )}
-                            onClick={changeButtonHandler}
+                            onClick={
+                                changeButtonHandler
+                            }
                         >
-                            Change
+                            {T("change")}
                         </Button>
+
                     </div>
 
                 </div>
@@ -132,7 +162,7 @@ function HallTicketDetails() {
             </div>
 
         </div>
-    );
+    )
 }
 
-export default HallTicketDetails;
+export default HallTicketDetails

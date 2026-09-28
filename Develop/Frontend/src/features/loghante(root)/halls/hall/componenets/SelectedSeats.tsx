@@ -6,6 +6,7 @@ import {
 
 import {
     useLocale,
+    useTranslations,
 } from "next-intl";
 
 import Button from "@/components/ui/Button";
@@ -35,6 +36,8 @@ function SelectedSeats({
     hallName,
     seats,
 }: SelectedSeatsProps) {
+
+    const T = useTranslations("hall.select-seat")
 
     const locale =
         useLocale();
@@ -149,7 +152,7 @@ function SelectedSeats({
                 )}
             >
                 <p className="text-sm text-black-light-utility">
-                    No seats selected yet.
+                    {T("no-seat")}
                 </p>
             </div>
         );
@@ -177,7 +180,7 @@ function SelectedSeats({
                 <div className="fcol gap-1">
 
                     <h2 className="text-lg font-bold">
-                        Selected Seats
+                        {T("select-seat")}
                     </h2>
 
                     <span className="text-xs text-black-light-utility">
@@ -239,7 +242,7 @@ function SelectedSeats({
                                         text-black-light-utility
                                     "
                                 >
-                                    Row {row}
+                                    {T("row")} {""} {row}
                                 </span>
 
                                 <div
@@ -302,7 +305,7 @@ function SelectedSeats({
                         >
 
                             <span>
-                                Continue to Payment
+                                {T("payment-button")}
                             </span>
 
                             {event?.price === 0 ? (

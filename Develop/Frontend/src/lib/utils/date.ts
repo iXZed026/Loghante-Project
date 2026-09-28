@@ -1,16 +1,6 @@
-/**
- * Formats a date based on the given locale.
- *
- * en:
- * Example: October 5, 2026
- *
- * fa:
- * Returns date using the Persian calendar.
- * Example: ۱۳ مهر ۱۴۰۵
- */
 export function formatMonthDay(
     date: Date,
-    locale: string
+    locale: string,
 ): string {
 
     return new Intl.DateTimeFormat(
@@ -21,7 +11,7 @@ export function formatMonthDay(
             day: "numeric",
             month: "long",
             year: "numeric",
-        }
+        },
     ).format(date)
 }
 
@@ -37,7 +27,7 @@ export function formatMonthDay(
  */
 export function formatMonthYear(
     date: Date,
-    locale: string
+    locale: string,
 ): string {
 
     return new Intl.DateTimeFormat(
@@ -47,7 +37,7 @@ export function formatMonthYear(
         {
             month: "long",
             year: "numeric",
-        }
+        },
     ).format(date)
 }
 
@@ -63,7 +53,7 @@ export function formatMonthYear(
  */
 export function formatTime(
     date: Date,
-    locale: string
+    locale: string,
 ): string {
 
     return new Intl.DateTimeFormat(
@@ -74,6 +64,34 @@ export function formatTime(
             hour: "numeric",
             minute: "2-digit",
             hour12: locale !== "fa",
-        }
+        },
+    ).format(date)
+}
+
+
+/**
+ * Formats weekday and date based on the given locale.
+ *
+ * en:
+ * Example: Monday, October 5, 2026
+ *
+ * fa:
+ * Example: دوشنبه، ۱۳ مهر ۱۴۰۵
+ */
+export function formatWeekdayDate(
+    date: Date,
+    locale: string,
+): string {
+
+    return new Intl.DateTimeFormat(
+        locale === "fa"
+            ? "fa-IR-u-ca-persian"
+            : "en-US",
+        {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+        },
     ).format(date)
 }

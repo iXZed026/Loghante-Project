@@ -143,6 +143,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/cinema-and-theater/cinema-and-theater.json`)
     ).default;
 
+    //Hall
+    const hall = (
+        await import(`../messages/${locale}/hall/hall.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -190,6 +195,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
             conferenceHall,
             //Cinema And Theater
             cinemaAndTheater,
+            //Hall
+            hall,
         },
     };
 });
