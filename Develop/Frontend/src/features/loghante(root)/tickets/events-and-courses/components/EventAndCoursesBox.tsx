@@ -8,6 +8,7 @@ import {
 } from '@/lib/animations/transitions'
 import { cn } from '@/lib/utils/cn'
 import { EventSession } from '@/lib/api/ticket/events-and-courses'
+import { useTranslations } from 'next-intl'
 
 interface IEventAndCoursesBox {
     event: EventSession
@@ -17,11 +18,14 @@ function EventAndCoursesBox({
     event,
 }: IEventAndCoursesBox) {
 
+    const T =
+        useTranslations("eventsAndCourses.box")
+
     const isPaid = event.price > 0
     return (
         <AppLink
             className="md:col-span-4 sm:col-span-6 col-span-12"
-            href={`/events-and-courses/${event.sessionId}?type=${event.eventId === 2? "events" :"courses"}`}
+            href={`/events-and-courses/${event.sessionId}?type=${event.eventId === 2 ? "events" : "courses"}`}
         >
             <FadeUp
                 transition={fastTransitionOut}
@@ -43,12 +47,13 @@ function EventAndCoursesBox({
                         "absolute top-3 rounded-r-xl",
                         "px-5 py-1.5",
                         isPaid
-                            ? "bg-gold-utility"
-                            : "bg-crimson text-white-utility",
+                            ? "hidden"
+                            :
+                            "bg-crimson text-white-utility",
                         "font-semibold",
                     )}
                 >
-                    {isPaid ? "Paid" : "Free"}
+                    {T("price-status.free")}
                 </div>
 
                 {/* Event information */}
