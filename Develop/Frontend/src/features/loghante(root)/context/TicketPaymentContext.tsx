@@ -23,13 +23,14 @@ export type TicketPaymentType =
     | "cinema-and-theater";
 
 export interface SelectedPaymentSeat {
+    seatId: number;
     seatNum: number;
     row: number;
 }
 
 export interface TicketPaymentData {
     type: TicketPaymentType;
-
+    hallName: string,
     ticket: {
         sessionId: number;
         eventId: number;

@@ -138,7 +138,7 @@ function PaymentHallInfo() {
                                         "text-black-light-utility",
                                     )}
                                 >
-                                    Row {row}
+                                    {hallT("row")} {row}
                                 </span>
 
                                 <div

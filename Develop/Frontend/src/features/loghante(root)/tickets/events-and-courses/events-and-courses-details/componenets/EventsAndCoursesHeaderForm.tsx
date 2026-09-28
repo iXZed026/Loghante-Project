@@ -1,29 +1,33 @@
 "use client"
 
-import FadeIn from '@/components/animations/FadeIn'
-import Button from '@/components/ui/Button'
-import { slowTransitionOut } from '@/lib/animations/transitions'
-import { cn } from '@/lib/utils/cn'
+import FadeIn from "@/components/animations/FadeIn"
+import Button from "@/components/ui/Button"
+import { slowTransitionOut } from "@/lib/animations/transitions"
+import { cn } from "@/lib/utils/cn"
 import {
     EventAndCourseSessionDetail,
-} from '@/lib/api/ticket/events-and-courses'
+} from "@/lib/api/ticket/events-and-courses"
 import {
     useLocale,
     useTranslations,
-} from 'next-intl'
-import { useState } from 'react'
+} from "next-intl"
+import { useState } from "react"
 
 import {
     FaLocationDot,
     FaRegClock,
-} from 'react-icons/fa6'
+} from "react-icons/fa6"
 
 import {
     MdOutlineDateRange,
     MdOutlinePriceChange,
-} from 'react-icons/md'
-import { useRouter } from 'next/navigation'
-import { useHall } from '@/features/loghante(root)/halls/context/HallProvider'
+} from "react-icons/md"
+
+import { useRouter } from "next/navigation"
+
+import { useHall } from "@/features/loghante(root)/halls/context/HallProvider"
+
+import { useTicketPayment } from "@/features/loghante(root)/context/TicketPaymentContext" 
 
 interface EventsAndCoursesHeaderFormProps {
     event: EventAndCourseSessionDetail
@@ -36,54 +40,82 @@ function EventsAndCoursesHeaderForm({
     const locale = useLocale()
     const router = useRouter()
 
-    const { setHallData } =
-        useHall()
+    const { setHallData } = useHall()
+
+    const { setPaymentData } =
+        useTicketPayment()
 
     const commonT =
         useTranslations("common")
 
     const eventsAndCoursesHeaderT =
         useTranslations(
-            "eventsAndCoursesDetails.header"
+            "eventsAndCoursesDetails.header",
         )
 
     const [count, setCount] =
         useState<number>(0)
 
     function increaseCount(): void {
-        setCount(prev =>
-            Math.min(prev + 1, 20)
+        setCount((prev) =>
+            Math.min(prev + 1, 20),
         )
     }
 
     function decreaseCount(): void {
-        setCount(prev =>
-            Math.max(prev - 1, 0)
+        setCount((prev) =>
+            Math.max(prev - 1, 0),
         )
     }
 
     function submitForm(
-        e: React.FormEvent<HTMLFormElement>
+        e: React.FormEvent<HTMLFormElement>,
     ): void {
         e.preventDefault()
 
+        const hasHall =
+            typeof event.hallId === "number" &&
+            event.hallId > 0
+
+        if (!hasHall) {
+            setPaymentData({
+                type: "events-and-courses",
+
+                ticket: {
+                    sessionId: event.sessionId,
+                    eventId: event.eventId,
+                    name: event.name,
+                    startAt: event.startAt,
+                    durationM: event.duration,
+                    price: event.price,
+                },
+
+                quantity: Math.max(count, 1),
+            })
+
+            router.push(`/${locale}/payment`)
+
+            return
+        }
 
         setHallData({
             eventData: {
+                sessionId: event.sessionId,
+                eventId: event.eventId,
                 title: event.name,
+                hallId: event.hallId,
                 description: event.description,
+                duration: event.duration,
                 startAt: event.startAt,
-                // imageURL: event.images[0].imageUrl,
                 imageURL: "/images/loghanteh-cafe.jpg",
-                price:event.price
-            }
+                price: event.price,
+            },
         })
 
-        router.push(`/${locale}/hall/${event.hallId}`)
-
+        router.push(
+            `/${locale}/hall/${event.hallId}`,
+        )
     }
-
-
 
     const startAt =
         new Date(event.startAt)
@@ -97,7 +129,7 @@ function EventsAndCoursesHeaderForm({
                 day: "numeric",
                 month: "long",
                 year: "numeric",
-            }
+            },
         )
 
     const hours =
@@ -122,9 +154,7 @@ function EventsAndCoursesHeaderForm({
                 : "AM"
 
     const time =
-        locale === "fa"
-            ? `${formattedHours}:${formattedMinutes} ${period}`
-            : `${formattedHours}:${formattedMinutes} ${period}`
+        `${formattedHours}:${formattedMinutes} ${period}`
 
     return (
         <FadeIn
@@ -173,7 +203,7 @@ function EventsAndCoursesHeaderForm({
 
                         <span>
                             {eventsAndCoursesHeaderT(
-                                "details.address"
+                                "details.address",
                             )}
                         </span>
                     </div>
@@ -218,16 +248,16 @@ function EventsAndCoursesHeaderForm({
                         <div className="fbc w-full">
                             <span>
                                 {eventsAndCoursesHeaderT(
-                                    "details.amount"
+                                    "details.amount",
                                 )}
                             </span>
 
                             <span className="text-xl font-bold text-crimson">
                                 {event.price.toLocaleString(
-                                    locale
+                                    locale,
                                 )}{" "}
                                 {commonT(
-                                    "price-type"
+                                    "price-type",
                                 )}
                             </span>
                         </div>
@@ -235,63 +265,8 @@ function EventsAndCoursesHeaderForm({
 
                 </div>
 
-                {/* Count */}
-
-                {/* <div className="fbc">
-                    <div>
-                        <span className="font-semibold">
-                            {eventsAndCoursesHeaderT(
-                                "details.count"
-                            )}
-                        </span>
-                    </div>
-
-                    <div
-                        className={cn(
-                            "fcc gap-5",
-                            "text-2xl font-bold",
-                            "select-none",
-                        )}
-                    >
-                        <div
-                            className={cn(
-                                "fcc gap-2 px-2",
-                                "rounded-3xl",
-                                "bg-[var(--white-light-color)]",
-                            )}
-                        >
-                            <span
-                                onClick={
-                                    increaseCount
-                                }
-                                className="py-1 px-2 cursor-pointer active:scale-75 transition-all"
-                            >
-                                +
-                            </span>
-
-                            <span>|</span>
-
-                            <span
-                                onClick={
-                                    decreaseCount
-                                }
-                                className="py-1 px-2 cursor-pointer active:scale-75 transition-all"
-                            >
-                                -
-                            </span>
-                        </div>
-
-                        <div className="text-xl px-3 py-1 rounded-3xl bg-[var(--white-light-color)]">
-                            <span>
-                                {count}
-                            </span>
-                        </div>
-                    </div>
-                </div> */}
-
                 {/* Book */}
 
-                {/* {event.price !== 0 &&( */}
                 <div className="w-full">
                     <Button
                         className={cn(
@@ -302,11 +277,10 @@ function EventsAndCoursesHeaderForm({
                         )}
                     >
                         {eventsAndCoursesHeaderT(
-                            "details.book-button"
+                            "details.book-button",
                         )}
                     </Button>
                 </div>
-                {/* )} */}
 
             </form>
         </FadeIn>

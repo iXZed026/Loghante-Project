@@ -1,34 +1,46 @@
 "use client"
 
-import Button from '@/components/ui/Button'
-import { cn } from '@/lib/utils/cn'
+import Modal from "@/components/shared/modal/Modal"
+import Button from "@/components/ui/Button"
+import { cn } from "@/lib/utils/cn"
 import React, {
     FormEvent,
     useState,
-} from 'react'
+} from "react"
 import {
     useLocale,
-    useTranslations
-} from 'next-intl'
-import PaymentDiscoutCodeDropDown from './PaymentDiscoutCodeDropDown'
+    useTranslations,
+} from "next-intl"
+import PaymentDiscoutCodeDropDown from "./PaymentDiscoutCodeDropDown"
 
 import {
-    createBooking
-} from '@/lib/api/ticket/booking'
+    createSeatBooking,
+} from "@/lib/api/ticket/booking-seat"
 
 import {
-    useTicketPayment
-} from '../../context/TicketPaymentContext'
+    createBooking,
+} from "@/lib/api/ticket/booking"
 
 import {
-    formatPrice
-} from '@/lib/utils/formatPrice'
+    useTicketPayment,
+} from "../../context/TicketPaymentContext"
+
+import {
+    formatPrice,
+} from "@/lib/utils/formatPrice"
+
+interface IModalState {
+    active: boolean
+    success: boolean | "warning"
+    message: string
+    pushUrl?: string
+}
 
 function PaymentDetails() {
 
     const paymentPaymentDetailsT =
         useTranslations(
-            "payment.payment-details"
+            "payment.payment-details",
         )
 
     const commonT =
@@ -53,12 +65,17 @@ function PaymentDetails() {
     ] = useState<boolean>(false)
 
     const [
-        errorMessage,
-        setErrorMessage,
-    ] = useState<string>("")
+        modal,
+        setModal,
+    ] = useState<IModalState>({
+        active: false,
+        success: false,
+        message: "",
+        pushUrl: undefined,
+    })
 
     if (!paymentData) {
-        return null;
+        return null
     }
 
     const {
@@ -78,385 +95,466 @@ function PaymentDetails() {
     const payable =
         totalPrice + vat
 
-    const submitHandler =
-        async (
-            event: FormEvent<HTMLFormElement>
-        ) => {
+    async function submitHandler(
+        event: FormEvent<HTMLFormElement>,
+    ) {
 
-            event.preventDefault()
+        event.preventDefault()
 
-            console.log(quantity)
+        if (quantity < 1) {
+            return
+        }
 
-            if (quantity < 1) {
-                return
-            }
+        if (!paymentMethod) {
 
-            if (!paymentMethod) {
+            setModal({
+                active: true,
+                success: "warning",
+                message:
+                    "Please select a payment method.",
+                pushUrl: undefined,
+            })
 
-                setErrorMessage(
-                    "Please select a payment method."
-                )
+            return
+        }
 
-                return
-            }
+        setIsSubmitting(true)
 
-            setIsSubmitting(true)
-            setErrorMessage("")
+        try {
 
-            try {
+            /*
+             * Reserve seats first when this ticket
+             * belongs to a hall.
+             */
+            if (paymentData.hall) {
 
-                const response =
-                    await createBooking(
-                        {
-                            sessionId:
-                                ticket.sessionId,
-
-                            quantity,
-                        },
-                        locale
+                const seatIds =
+                    paymentData.hall.seatsNumbs.map(
+                        (seat) =>
+                            seat.seatId,
                     )
 
-                if (!response.success) {
+                if (seatIds.length === 0) {
 
-                    console.log(response)
-
-                    setErrorMessage(
-                        response.message
-                    )
+                    setModal({
+                        active: true,
+                        success: false,
+                        message:
+                            "No seats selected.",
+                        pushUrl: undefined,
+                    })
 
                     return
                 }
 
-                //Success
-                clearPaymentData()
+                const seatResponse =
+                    await createSeatBooking(
+                        {
+                            sessionId:
+                                ticket.sessionId,
 
-                console.log(
-                    "Booking created:",
-                    response.data
-                )
+                            seatIds,
+                        },
+                        locale,
+                    )
 
-            } catch {
+                if (!seatResponse.success) {
 
-                setErrorMessage(
-                    "An error occurred while creating the booking."
-                )
+                    setModal({
+                        active: true,
+                        success: false,
+                        message:
+                            seatResponse.message,
+                        pushUrl: undefined,
+                    })
 
-            } finally {
-
-                setIsSubmitting(false)
-
+                    return
+                }
             }
+
+            /*
+             * Create the actual ticket booking
+             * after seat reservation succeeds.
+             */
+            const response =
+                await createBooking(
+                    {
+                        sessionId:
+                            ticket.sessionId,
+
+                        quantity,
+                    },
+                    locale,
+                )
+
+            if (!response.success) {
+
+                setModal({
+                    active: true,
+                    success: false,
+                    message:
+                        response.message,
+                    pushUrl: undefined,
+                })
+
+                return
+            }
+
+            clearPaymentData()
+
+            setModal({
+                active: true,
+                success: true,
+                message:
+                    response.message,
+                pushUrl:
+                    "/profile/ticket-purchased",
+            })
+
+        } catch (error) {
+
+            setModal({
+                active: true,
+                success: false,
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : "An error occurred while creating the booking.",
+                pushUrl: undefined,
+            })
+
+        } finally {
+
+            setIsSubmitting(false)
         }
+    }
 
     return (
-        <form
-            onSubmit={submitHandler}
-            className={cn(
-                "lg:col-span-6 col-span-12",
-                "md:p-10 p-8",
-                "border-[1px] border-black-opacity",
-                "rounded-xl",
-                "md:text-base text-sm",
-                "pb-28 md:pb-10",
-            )}
-        >
+        <>
+            <Modal
+                active={modal.active}
+                message={modal.message}
+                success={modal.success}
+                pushUrl={modal.pushUrl}
+                onClose={() => {
+                    setModal((prev) => ({
+                        ...prev,
+                        active: false,
+                    }))
+                }}
+            />
 
-            {/* Payment Details */}
-            <div>
-
-                <span className="text-xl font-semibold">
-                    {
-                        paymentPaymentDetailsT(
-                            "title"
-                        )
-                    }
-                </span>
-
-            </div>
-
-            {/* Ticket Details */}
-            <div className="fcol py-5 px-5">
-
-                <div
-                    className="py-10 border-b-[1px] border-black-opacity"
-                >
-
-                    <div className="fbc mb-5">
-
-                        <span className="w-full">
-
-                            {
-                                paymentPaymentDetailsT(
-                                    "ticket-details.ticket"
-                                )
-                            }{" "}
-
-                            {
-                                formatPrice(
-                                    unitPrice
-                                )
-                            }
-
-                            {commonT("price-type")}
-
-                        </span>
-
-                        <span className="w-full text-center">
-
-                            {quantity}{" "}
-
-                            {
-                                paymentPaymentDetailsT(
-                                    "ticket-details.ticket-count"
-                                )
-                            }
-
-                        </span>
-
-                        <span className="w-full text-end">
-
-                            {
-                                formatPrice(
-                                    totalPrice
-                                )
-                            }
-
-                            {commonT("price-type")}
-
-                        </span>
-
-                    </div>
-
-                    <div className="fbc">
-
-                        <span className="w-full">
-
-                            {
-                                paymentPaymentDetailsT(
-                                    "ticket-vat.ticket-vat"
-                                )
-                            }
-
-                        </span>
-
-                        <span className="w-full text-center">
-                            10%
-                        </span>
-
-                        <span className="w-full text-end">
-
-                            {
-                                formatPrice(
-                                    vat
-                                )
-                            }
-
-                            {commonT("price-type")}
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-                {/* Payable */}
-                <div className="py-10 fbc">
-
-                    <span className="font-bold text-xl">
-
-                        {
-                            paymentPaymentDetailsT(
-                                "payable"
-                            )
-                        }
-
-                    </span>
-
-                    <span className="text-xl font-bold text-crimson">
-
-                        {
-                            formatPrice(
-                                payable
-                            )
-                        }
-
-                        {commonT("price-type")}
-
-                    </span>
-
-                </div>
-
-            </div>
-
-            {/* Discount */}
-            <PaymentDiscoutCodeDropDown />
-
-            {/* Payment Method */}
-            <div
-                className="fcol items-start gap-10 mb-15"
-            >
-
-                <div>
-
-                    <span className="text-xl">
-                        {
-                            paymentPaymentDetailsT(
-                                "payment-method.title"
-                            )
-                        }
-                    </span>
-
-                </div>
-
-                <div
-                    className="fcol items-start gap-5"
-                >
-
-                    {/* Saman Portal */}
-                    <label
-                        className={cn(
-                            "flex items-center gap-2",
-                            "cursor-pointer"
-                        )}
-                    >
-
-                        <input
-                            type="radio"
-                            name="payment-method"
-                            value="saman"
-                            checked={
-                                paymentMethod ===
-                                "saman"
-                            }
-                            onChange={(e) =>
-                                setPaymentMethod(
-                                    e.target.value
-                                )
-                            }
-                        />
-
-                        <span>
-                            {
-                                paymentPaymentDetailsT(
-                                    "payment-method.saman"
-                                )
-                            }
-                        </span>
-
-                    </label>
-
-                    {/* Another Portal */}
-                    <label
-                        className={cn(
-                            "flex items-center gap-2",
-                            "cursor-pointer"
-                        )}
-                    >
-
-                        <input
-                            type="radio"
-                            name="payment-method"
-                            value="another"
-                            checked={
-                                paymentMethod ===
-                                "another"
-                            }
-                            onChange={(e) =>
-                                setPaymentMethod(
-                                    e.target.value
-                                )
-                            }
-                        />
-
-                        <span>
-                            {
-                                paymentPaymentDetailsT(
-                                    "payment-method.another"
-                                )
-                            }
-                        </span>
-
-                    </label>
-
-                </div>
-
-            </div>
-
-            {/* Error */}
-            {
-                errorMessage && (
-
-                    <div
-                        className="mb-5 text-red-600"
-                    >
-                        {errorMessage}
-                    </div>
-
-                )
-            }
-
-            {/* Payment Button */}
-            <div
+            <form
+                onSubmit={submitHandler}
                 className={cn(
-                    "fixed",
-                    "bottom-0",
-                    "left-0",
-                    "right-0",
-                    "z-50",
-                    "bg-white",
-                    "sm:static",
-                    "md:p-0",
-                    "md:bg-transparent",
-                    "md:z-auto",
+                    "lg:col-span-6 col-span-12",
+                    "md:p-10 p-8",
+                    "border-[1px] border-black-opacity",
+                    "rounded-xl",
+                    "md:text-base text-sm",
+                    "pb-28 md:pb-10",
                 )}
             >
 
-                <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={cn(
-                        "w-full",
-                        "fbc",
-                        "font-bold",
-                        "px-4 md:py-4 py-5",
-                        "bg-crimson",
-                        "md:rounded-lg rounded-none",
-                        "hover:bg-[var(--crimson-hover-color)]",
+                {/* Payment Details */}
 
-                        isSubmitting &&
-                        "opacity-60 cursor-not-allowed"
+                <div>
+                    <span className="text-xl font-semibold">
+                        {
+                            paymentPaymentDetailsT(
+                                "title",
+                            )
+                        }
+                    </span>
+                </div>
+
+                {/* Ticket Details */}
+
+                <div className="fcol py-5 px-5">
+
+                    <div
+                        className={cn(
+                            "py-10",
+                            "border-b-[1px]",
+                            "border-black-opacity",
+                        )}
+                    >
+
+                        <div className="fbc mb-5">
+
+                            <span className="w-full">
+
+                                {
+                                    paymentPaymentDetailsT(
+                                        "ticket-details.ticket",
+                                    )
+                                }{" "}
+
+                                {
+                                    formatPrice(
+                                        unitPrice,
+                                    )
+                                }
+
+                                {commonT("price-type")}
+
+                            </span>
+
+                            <span className="w-full text-center">
+
+                                {quantity}{" "}
+
+                                {
+                                    paymentPaymentDetailsT(
+                                        "ticket-details.ticket-count",
+                                    )
+                                }
+
+                            </span>
+
+                            <span className="w-full text-end">
+
+                                {
+                                    formatPrice(
+                                        totalPrice,
+                                    )
+                                }
+
+                                {commonT("price-type")}
+
+                            </span>
+
+                        </div>
+
+                        <div className="fbc">
+
+                            <span className="w-full">
+
+                                {
+                                    paymentPaymentDetailsT(
+                                        "ticket-vat.ticket-vat",
+                                    )
+                                }
+
+                            </span>
+
+                            <span className="w-full text-center">
+                                10%
+                            </span>
+
+                            <span className="w-full text-end">
+
+                                {
+                                    formatPrice(
+                                        vat,
+                                    )
+                                }
+
+                                {commonT("price-type")}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {/* Payable */}
+
+                    <div className="py-10 fbc">
+
+                        <span className="font-bold text-xl">
+                            {
+                                paymentPaymentDetailsT(
+                                    "payable",
+                                )
+                            }
+                        </span>
+
+                        <span className="text-xl font-bold text-crimson">
+
+                            {
+                                formatPrice(
+                                    payable,
+                                )
+                            }
+
+                            {commonT("price-type")}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                {/* Discount */}
+
+                <PaymentDiscoutCodeDropDown />
+
+                {/* Payment Method */}
+
+                <div
+                    className={cn(
+                        "fcol",
+                        "items-start",
+                        "gap-10",
+                        "mb-15",
                     )}
                 >
 
-                    <span>
-
-                        {
-                            isSubmitting
-                                ? "Processing..."
-                                : paymentPaymentDetailsT(
-                                    "payment-button"
+                    <div>
+                        <span className="text-xl">
+                            {
+                                paymentPaymentDetailsT(
+                                    "payment-method.title",
                                 )
-                        }
+                            }
+                        </span>
+                    </div>
 
-                    </span>
+                    <div
+                        className={cn(
+                            "fcol",
+                            "items-start",
+                            "gap-5",
+                        )}
+                    >
 
-                    <span>
+                        {/* Saman */}
 
-                        {
-                            formatPrice(
-                                payable
-                            )
-                        }
+                        <label
+                            className={cn(
+                                "flex items-center gap-2",
+                                "cursor-pointer",
+                            )}
+                        >
 
-                        {commonT("price-type")}
+                            <input
+                                type="radio"
+                                name="payment-method"
+                                value="saman"
+                                checked={
+                                    paymentMethod ===
+                                    "saman"
+                                }
+                                onChange={(e) =>
+                                    setPaymentMethod(
+                                        e.target.value,
+                                    )
+                                }
+                            />
 
-                    </span>
+                            <span>
+                                {
+                                    paymentPaymentDetailsT(
+                                        "payment-method.saman",
+                                    )
+                                }
+                            </span>
 
-                </Button>
+                        </label>
 
-            </div>
+                        {/* Another */}
 
-        </form>
+                        <label
+                            className={cn(
+                                "flex items-center gap-2",
+                                "cursor-pointer",
+                            )}
+                        >
+
+                            <input
+                                type="radio"
+                                name="payment-method"
+                                value="another"
+                                checked={
+                                    paymentMethod ===
+                                    "another"
+                                }
+                                onChange={(e) =>
+                                    setPaymentMethod(
+                                        e.target.value,
+                                    )
+                                }
+                            />
+
+                            <span>
+                                {
+                                    paymentPaymentDetailsT(
+                                        "payment-method.another",
+                                    )
+                                }
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                {/* Payment Button */}
+
+                <div
+                    className={cn(
+                        "fixed",
+                        "bottom-0",
+                        "left-0",
+                        "right-0",
+                        "z-50",
+                        "bg-white",
+                        "sm:static",
+                        "md:p-0",
+                        "md:bg-transparent",
+                        "md:z-auto",
+                    )}
+                >
+
+                    <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className={cn(
+                            "w-full",
+                            "fbc",
+                            "font-bold",
+                            "px-4 md:py-4 py-5",
+                            "bg-crimson",
+                            "md:rounded-lg rounded-none",
+                            "hover:bg-[var(--crimson-hover-color)]",
+
+                            isSubmitting &&
+                            "opacity-60 cursor-not-allowed",
+                        )}
+                    >
+
+                        <span>
+
+                            {
+                                isSubmitting
+                                    ? "Processing..."
+                                    : paymentPaymentDetailsT(
+                                        "payment-button",
+                                    )
+                            }
+
+                        </span>
+
+                        <span>
+
+                            {
+                                formatPrice(
+                                    payable,
+                                )
+                            }
+
+                            {commonT("price-type")}
+
+                        </span>
+
+                    </Button>
+
+                </div>
+
+            </form>
+        </>
     )
 }
 

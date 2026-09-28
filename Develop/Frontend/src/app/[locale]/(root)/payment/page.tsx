@@ -1,9 +1,9 @@
 import FadeUp from "@/components/animations/FadeUp";
 import Container from "@/components/shared/Container";
-import PaymentDetails from "@/features/loghante(root)/payment/components/PaymentDetails";
 import PaymentTicketInfo from "@/features/loghante(root)/payment/components/PaymentTicketInfo";
 import PaymentGuard from "@/features/loghante(root)/payment/components/PaymentGuard";
 import { cn } from "@/lib/utils/cn";
+import PaymentDetails from "@/features/loghante(root)/payment/components/PaymentDetails";
 
 function PaymentPage() {
 
@@ -29,7 +29,6 @@ function PaymentPage() {
                     >
 
                         <PaymentTicketInfo />
-
                         <PaymentDetails />
 
                     </div>

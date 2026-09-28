@@ -1,47 +1,75 @@
-import React from "react";
-
 import { cn } from "@/lib/utils/cn";
 
 interface SeatsBoxProps {
     seatNum: number;
     selected: boolean;
+    reserved: boolean;
+    disabled: boolean;
     onClick: () => void;
 }
 
 function SeatsBox({
     seatNum,
     selected,
+    reserved,
+    disabled,
     onClick,
 }: SeatsBoxProps) {
+
     return (
         <button
             type="button"
             onClick={onClick}
-            aria-pressed={selected}
+            disabled={disabled}
+            aria-pressed={
+                reserved
+                    ? false
+                    : selected
+            }
+            aria-label={
+                reserved
+                    ? `Seat ${seatNum} is reserved`
+                    : `Seat ${seatNum}`
+            }
             className={cn(
                 "size-12",
                 "shrink-0",
                 "rounded-xl",
                 "fcc",
                 "border",
-                "border-[var(--black-light-color)]",
-                "cursor-pointer",
                 "transition-all",
                 "duration-200",
 
-                selected
+                reserved
                     ? [
-                          "bg-crimson",
-                          "border-crimson",
+                          "cursor-not-allowed",
+                          "border-gold-utility",
+                          "bg-gold-utility",
                           "text-white",
-                          "scale-105",
-                          "shadow-md",
+                          "line-through",
                       ]
-                    : [
-                          "bg-white",
-                          "hover:bg-[var(--crimson-opacity-color)]",
-                          "hover:border-crimson",
-                      ],
+                    : selected
+                        ? [
+                              "cursor-pointer",
+                              "border-crimson",
+                              "bg-crimson",
+                              "text-white",
+                              "scale-105",
+                              "shadow-md",
+                          ]
+                        : [
+                              "cursor-pointer",
+                              "border-[var(--black-light-color)]",
+                              "bg-white",
+                              "hover:bg-[var(--crimson-opacity-color)]",
+                              "hover:border-crimson",
+                          ],
+
+                disabled &&
+                    !reserved && [
+                        "cursor-wait",
+                        "opacity-60",
+                    ],
             )}
         >
             {seatNum}

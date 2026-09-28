@@ -1,19 +1,19 @@
 "use client"
 
-import AnimatePresenceWrapper from '@/components/animations/AnimatePresenceWrapper';
-import { defaultTransitionOut } from '@/lib/animations/transitions';
-import { cn } from '@/lib/utils/cn';
-import { motion } from 'framer-motion';
-import { useLocale } from 'next-intl';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import AnimatePresenceWrapper from "@/components/animations/AnimatePresenceWrapper"
+import { defaultTransitionOut } from "@/lib/animations/transitions"
+import { cn } from "@/lib/utils/cn"
+import { motion } from "framer-motion"
+import { useLocale } from "next-intl"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 export interface IModal {
-    active: boolean;
-    message: string;
-    success: boolean | "warning";
-    pushUrl?: string;
-    onClose?: () => void;
+    active: boolean
+    message: string
+    success: boolean | "warning"
+    pushUrl?: string
+    onClose?: () => void
 }
 
 function Modal({
@@ -24,38 +24,43 @@ function Modal({
     onClose,
 }: IModal) {
 
-    const locale = useLocale();
-    const router = useRouter();
+    const locale = useLocale()
+    const router = useRouter()
 
     useEffect(() => {
 
         if (!active) {
-            return;
+            return
         }
 
-        const timeout = setTimeout(() => {
+        const timeout =
+            setTimeout(() => {
 
-            onClose?.();
+                onClose?.()
 
-            if (pushUrl) {
-                router.push(
-                    `/${locale}${pushUrl}`
-                );
-            }
+                if (
+                    success === true &&
+                    pushUrl
+                ) {
+                    router.push(
+                        `/${locale}${pushUrl}`,
+                    )
+                }
 
-        }, 1500);
+            }, 1500)
 
         return () => {
-            clearTimeout(timeout);
-        };
+            clearTimeout(timeout)
+        }
 
     }, [
         active,
+        success,
         pushUrl,
         locale,
         router,
         onClose,
-    ]);
+    ])
 
     return (
         <AnimatePresenceWrapper
@@ -97,8 +102,7 @@ function Modal({
                 {message}
             </motion.div>
         </AnimatePresenceWrapper>
-    );
+    )
 }
 
-export default Modal;
-
+export default Modal

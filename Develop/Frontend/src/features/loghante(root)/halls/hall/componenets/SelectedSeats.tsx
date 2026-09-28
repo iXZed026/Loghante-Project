@@ -25,13 +25,14 @@ import {
 import {
     useTicketPayment,
 } from "@/features/loghante(root)/context/TicketPaymentContext";
-import { removeFromLocalStorage } from "@/lib/utils/localStorage";
 
 interface SelectedSeatsProps {
-    seats: SelectedSeat[];
+    hallName: string
+    seats?: SelectedSeat[];
 }
 
 function SelectedSeats({
+    hallName,
     seats,
 }: SelectedSeatsProps) {
 
@@ -43,71 +44,99 @@ function SelectedSeats({
 
     const {
         hallData,
-        clearHallData,
     } = useHall();
 
     const {
+        paymentData,
         setPaymentData,
     } = useTicketPayment();
 
     const event =
-        hallData?.eventData;
+        hallData?.eventData ??
+        paymentData?.ticket;
+
+    const selectedSeats =
+        seats ??
+        paymentData?.hall?.seatsNumbs.map(
+            (seat) => ({
+                id: seat.seatId,
+                seatNum: seat.seatNum,
+                row: seat.row,
+            }),
+        ) ??
+        [];
 
     const handleContinue = () => {
 
-        if (!event) {
+        if (
+            !hallData?.eventData ||
+            selectedSeats.length === 0
+        ) {
             return;
         }
 
+        const currentEvent =
+            hallData.eventData;
+
         setPaymentData({
             type: "cinema-and-theater",
-
+            hallName:hallName,
             ticket: {
                 sessionId:
-                    event.sessionId,
+                    currentEvent.sessionId,
 
                 eventId:
-                    event.eventId,
+                    currentEvent.eventId,
 
                 name:
-                    event.title,
+                    currentEvent.title,
 
                 startAt:
-                    String(event.startAt),
+                    String(
+                        currentEvent.startAt,
+                    ),
 
                 durationM:
-                    event.duration,
+                    currentEvent.duration,
 
                 price:
-                    event.price !== undefined
-                        ? Number(event.price)
+                    currentEvent.price !==
+                        undefined
+                        ? Number(
+                            currentEvent.price,
+                        )
                         : null,
             },
 
             hall: {
                 hallName:
-                    "Loghanteh Grand Hall",
+                    hallName,
 
                 seatsNumbs:
-                    seats.map((seat) => ({
-                        seatNum:
-                            seat.seatNum,
+                    selectedSeats.map(
+                        (seat) => ({
+                            seatId:
+                                seat.id,
 
-                        row:
-                            seat.row,
-                    })),
+                            seatNum:
+                                seat.seatNum,
+
+                            row:
+                                seat.row,
+                        }),
+                    ),
             },
 
             quantity:
-                seats.length,
+                selectedSeats.length,
         });
-        
+
         router.push(
             `/${locale}/payment`,
         );
     };
 
-    if (seats.length === 0) {
+    if (selectedSeats.length === 0) {
         return (
             <div
                 className={cn(
@@ -128,7 +157,7 @@ function SelectedSeats({
 
     const groupedSeats =
         Object.groupBy(
-            seats,
+            selectedSeats,
             (seat) => seat.row,
         );
 
@@ -142,6 +171,7 @@ function SelectedSeats({
                 "p-6",
             )}
         >
+
             <div className="fbc mb-5 gap-4">
 
                 <div className="fcol gap-1">
@@ -151,7 +181,10 @@ function SelectedSeats({
                     </h2>
 
                     <span className="text-xs text-black-light-utility">
-                        {seats.length} seats x{" "}
+                        {
+                            selectedSeats.length
+                        }{" "}
+                        seats x{" "}
                         {event?.price ?? 0} Toman
                     </span>
 
@@ -167,7 +200,9 @@ function SelectedSeats({
                         text-white
                     "
                 >
-                    {seats.length}
+                    {
+                        selectedSeats.length
+                    }
                 </div>
 
             </div>
@@ -218,18 +253,18 @@ function SelectedSeats({
                                         (seat) => (
                                             <span
                                                 key={
-                                                    seat.seatNum
+                                                    seat.id
                                                 }
                                                 className="
                                                     fcc
                                                     h-9
                                                     min-w-9
                                                     rounded-lg
-                                                    bg-[var(--crimson-opacity-color)]
+                                                    bg-crimson
                                                     px-2
                                                     text-sm
                                                     font-semibold
-                                                    text-crimson
+                                                    text-white-utility
                                                 "
                                             >
                                                 {
@@ -246,63 +281,70 @@ function SelectedSeats({
 
                 </div>
 
-                <div className="mt-6">
+                {seats && (
+                    <div className="mt-6">
 
-                    <Button
-                        type="button"
-                        onClick={
-                            handleContinue
-                        }
-                        className="
-                            w-full
-                            fbc
-                            bg-crimson
-                            py-3
-                            text-sm
-                            font-semibold
-                            hover:bg-[var(--crimson-opacity-color)]
-                            hover:text-crimson
-                        "
-                    >
-                        <span>
-                            Continue to Payment
-                        </span>
+                        <Button
+                            type="button"
+                            onClick={
+                                handleContinue
+                            }
+                            className="
+                                w-full
+                                fbc
+                                bg-crimson
+                                py-3
+                                text-sm
+                                font-semibold
+                                hover:bg-[var(--crimson-opacity-color)]
+                                hover:text-crimson
+                            "
+                        >
 
-                        {event?.price === 0 ? (
-                            <span
-                                className="
-                                    font-semibold
-                                    text-gold-utility
-                                "
-                            >
-                                Free
+                            <span>
+                                Continue to Payment
                             </span>
-                        ) : (
-                            <span
-                                className="
-                                    fcol
-                                    items-center
-                                    gap-y-1
-                                "
-                            >
-                                {(
-                                    Number(
-                                        event?.price ?? 0,
-                                    ) *
-                                    seats.length
-                                ).toLocaleString()}
 
-                                <span>
-                                    Toman
+                            {event?.price === 0 ? (
+                                <span
+                                    className="
+                                        font-semibold
+                                        text-gold-utility
+                                    "
+                                >
+                                    Free
                                 </span>
-                            </span>
-                        )}
+                            ) : (
+                                <span
+                                    className="
+                                        fcol
+                                        items-center
+                                        gap-y-1
+                                    "
+                                >
 
-                    </Button>
+                                    {(
+                                        Number(
+                                            event?.price ??
+                                            0,
+                                        ) *
+                                        selectedSeats.length
+                                    ).toLocaleString()}
 
-                </div>
+                                    <span>
+                                        Toman
+                                    </span>
+
+                                </span>
+                            )}
+
+                        </Button>
+
+                    </div>
+                )}
 
             </div>
+
         </div>
     );
 }

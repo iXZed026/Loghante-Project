@@ -18,8 +18,12 @@ import HallGuard from "@/features/loghante(root)/halls/componenets/HallGuard";
 import {
     halls,
 } from "@/features/loghante(root)/halls/data/halls";
+import { getLocalizedValue } from "@/lib/utils/getLocalizedValue";
+import { useLocale } from "next-intl";
 
 function HallPage() {
+
+    const locale = useLocale()
 
     const params =
         useParams();
@@ -72,6 +76,7 @@ function HallPage() {
                     <HallTicketDetails />
 
                     <HallContent
+                        hallName={getLocalizedValue(hall.hallName,locale)}
                         seats={
                             hall.seats
                         }

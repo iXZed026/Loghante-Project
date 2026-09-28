@@ -1,6 +1,6 @@
 "use client";
 
-import React, {
+import {
     useState,
 } from "react";
 
@@ -11,35 +11,48 @@ import SeatsWrapper, {
 
 import SelectedSeats from "./SelectedSeats";
 
+import {
+    useHall,
+} from "@/features/loghante(root)/halls/context/HallProvider";
+
 interface HallContentProps {
+    hallName: string,
     seats: HallSeat[];
 }
 
 function HallContent({
+    hallName,
     seats,
 }: HallContentProps) {
+
+    const {
+        hallData,
+    } = useHall();
+
     const [
         selectedSeats,
         setSelectedSeats,
     ] = useState<SelectedSeat[]>([]);
 
     const toggleSeat = (
-        seat: SelectedSeat
+        seat: SelectedSeat,
     ) => {
+
         setSelectedSeats(
             (currentSeats) => {
+
                 const exists =
                     currentSeats.some(
                         (item) =>
-                            item.seatNum ===
-                            seat.seatNum
+                            item.id ===
+                            seat.id,
                     );
 
                 if (exists) {
                     return currentSeats.filter(
                         (item) =>
-                            item.seatNum !==
-                            seat.seatNum
+                            item.id !==
+                            seat.id,
                     );
                 }
 
@@ -47,21 +60,46 @@ function HallContent({
                     ...currentSeats,
                     seat,
                 ];
-            }
+            },
         );
     };
 
-    return (
-        <div className="grid grid-cols-12 gap-10">
+    const sessionId =
+        hallData?.eventData.sessionId;
 
-            <div className="col-span-12 lg:col-span-4 lg:order-1">
+    if (!sessionId) {
+        return null;
+    }
+
+    return (
+        <div
+            className="
+                grid
+                grid-cols-12
+                gap-10
+            "
+        >
+
+            <div
+                className="
+                    col-span-12
+                    lg:col-span-4
+                    lg:order-1
+                "
+            >
                 <SelectedSeats
+                    hallName={hallName}
                     seats={selectedSeats}
                 />
             </div>
-            
 
-            <div className="col-span-12 lg:col-span-8 lg:order-2">
+            <div
+                className="
+                    col-span-12
+                    lg:col-span-8
+                    lg:order-2
+                "
+            >
                 <SeatsWrapper
                     seats={seats}
                     selectedSeats={
@@ -69,6 +107,9 @@ function HallContent({
                     }
                     onToggleSeat={
                         toggleSeat
+                    }
+                    sessionId={
+                        sessionId
                     }
                 />
             </div>
