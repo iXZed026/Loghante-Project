@@ -30,6 +30,7 @@ function AboutLoghantehComponent({
                     className="w-full"
                     transition={verySlowTransitionOut}
                     y={100}
+                    once
                 >
                     <div className='lg:h-160 h-110'>
                         {/* <AppImage
@@ -53,6 +54,7 @@ function AboutLoghantehComponent({
                         transition={slowTransitionOut}
                         y={40}
                         amount={0.6}
+                        once
                     >
                         <h2 className={cn(
                             "font-wulkan",
@@ -65,6 +67,7 @@ function AboutLoghantehComponent({
                     <FadeUp
                         transition={slowTransitionOut}
                         y={60}
+                        once
                     >
                         <h4 className={cn(
                             "leading-7",

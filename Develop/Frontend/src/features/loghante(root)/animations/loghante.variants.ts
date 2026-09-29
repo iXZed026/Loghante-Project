@@ -5,7 +5,7 @@ export const MuseumsCardContainerVariant: Variants = {
     hidden: {},
     visible: {
         transition: {
-            staggerChildren: 0.3,
+            staggerChildren: 0.2,
         }
     },
 }

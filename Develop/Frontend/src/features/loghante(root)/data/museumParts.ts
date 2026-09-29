@@ -27,7 +27,7 @@ export const museumParts: IMuseumPart[] = [
       fa: "این یک متن تستی برای دیسکریپشن است",
     },
     href: "/chocolate-coffee",
-    imageURL: "/images/museums/chocolate-coffee.jpg",
+    imageURL: "/images/loghanteh-cafe.jpg",
   },
 
   {
@@ -41,7 +41,7 @@ export const museumParts: IMuseumPart[] = [
       fa: "این یک متن تستی برای دیسکریپشن است",
     },
     href: "/tehran-alef",
-    imageURL: "/images/museums/tehran-alef.jpg",
+    imageURL: "/images/loghanteh-cafe.jpg",
   },
 
   {
@@ -55,7 +55,7 @@ export const museumParts: IMuseumPart[] = [
       fa: "این یک متن تستی برای دیسکریپشن است",
     },
     href: "/palace",
-    imageURL: "/images/museums/palace.jpg",
+    imageURL: "/images/loghanteh-cafe.jpg",
   },
 
   {
@@ -69,7 +69,7 @@ export const museumParts: IMuseumPart[] = [
       fa: "این یک متن تستی برای دیسکریپشن است",
     },
     href: "/cafe",
-    imageURL: "/images/museums/cafe.jpg",
+    imageURL: "/images/loghanteh-cafe.jpg",
   },
 
   {
@@ -83,7 +83,7 @@ export const museumParts: IMuseumPart[] = [
       fa: "این یک متن تستی برای دیسکریپشن است",
     },
     href: "/trade-houses",
-    imageURL: "/images/museums/trade-houses.jpg",
+    imageURL: "/images/loghanteh-cafe.jpg",
   },
 
   {
@@ -97,6 +97,6 @@ export const museumParts: IMuseumPart[] = [
       fa: "این یک متن تستی برای دیسکریپشن است",
     },
     href: "/entrepreneurs",
-    imageURL: "/images/museums/entrepreneurs.jpg",
+    imageURL: "/images/loghanteh-cafe.jpg",
   },
 ];
