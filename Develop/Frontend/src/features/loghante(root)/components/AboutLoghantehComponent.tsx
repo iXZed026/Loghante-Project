@@ -22,15 +22,16 @@ function AboutLoghantehComponent({
         <div className='overflow-hidden'>
 
             <div className={cn(
-                "fbs",
-                reverse && "flex-row-reverse"
+                "flex flex-col-reverse items-center justify-between xl:gap-10 lg:gap-5 gap-y-15",
+                reverse ? "lg:flex-row-reverse" : "lg:flex-row "
             )}>
                 {/* Image */}
                 <FadeUp
+                    className="w-full"
                     transition={verySlowTransitionOut}
                     y={100}
                 >
-                    <div className='h-160'>
+                    <div className='lg:h-160 h-110'>
                         {/* <AppImage
                     width={500}
                     height={750}
@@ -39,14 +40,14 @@ function AboutLoghantehComponent({
                     /> */}
                         {/* Box */}
 
-                        <div className='w-[500px] h-full bg-crimson rounded-2xl'>
+                        <div className='xl:w-6/7 lg:w-full md:w-5/6 mx-auto h-full bg-crimson rounded-2xl'>
 
                         </div>
                     </div>
                 </FadeUp>
                 {/* Content */}
                 <div className={cn(
-                    "w-[500px]",
+                    "lg:w-full md:w-5/6 ",
                 )}>
                     <FadeUp
                         transition={slowTransitionOut}
@@ -56,7 +57,7 @@ function AboutLoghantehComponent({
                         <h2 className={cn(
                             "font-wulkan",
                             "loghante-section-title",
-                            "mb-8"
+                            "mb-8 lg:text-start text-center"
                         )}>
                             {title}
                         </h2>
