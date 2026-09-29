@@ -126,7 +126,7 @@ function PaymentDetails() {
              * Reserve seats first when this ticket
              * belongs to a hall.
              */
-            if (paymentData.hall) {
+            if (paymentData?.hall) {
 
                 const seatIds =
                     paymentData.hall.seatsNumbs.map(
@@ -200,16 +200,17 @@ function PaymentDetails() {
                 return
             }
 
-            clearPaymentData()
-
+            
             setModal({
                 active: true,
                 success: true,
                 message:
-                    response.message,
+                response.message,
                 pushUrl:
-                    "/profile/ticket-purchased",
+                "/profile/ticket-purchased",
             })
+            
+            // clearPaymentData()
 
         } catch (error) {
 
