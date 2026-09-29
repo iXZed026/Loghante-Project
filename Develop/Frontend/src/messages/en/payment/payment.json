@@ -4,7 +4,7 @@
         "tickets": "tickets",
         "location": "Tehran - Shahid Ghodousi",
         "ticket-date": {
-            "change-butto   n": "Change"
+            "change-button": "Change"
         },
         "hall": {
             "title": "Hall",
