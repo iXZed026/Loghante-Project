@@ -16,6 +16,7 @@ function CafesAndFood() {
             <div className='fcol gap-15 text-center mb-20'>
                 <FadeUp
                     y={40}
+                    once
                 >
                     <h2 className={cn(
                         "font-wulkan",
@@ -28,6 +29,7 @@ function CafesAndFood() {
                 <FadeUp
                     y={40}
                     transition={verySlowTransitionOut}
+                    once
                 >
                     <h5 className='text-lg'>
                         Discover food and drink menus from our cafes and food truck.
@@ -38,6 +40,8 @@ function CafesAndFood() {
             <StaggerWrapper
                 className='grid grid-cols-12 gap-10 overflow-hidden'
                 variants={cafesAndFoodsContainerVariant}
+                once
+                amount={0.5}
             >
                 {cafesAndFoods.map(CAF => (
                     <div
@@ -50,6 +54,8 @@ function CafesAndFood() {
                         <FadeUp
                             variants={cafesAndFoodsVariant}
                             transition={defaultTransitionOut}
+                            once
+                            amount={0.5}
                         >
                             <CafesAndFoodsBox {...CAF} />
                         </FadeUp>

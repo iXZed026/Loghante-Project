@@ -49,10 +49,13 @@ function LoghantehSectionBox({
                     alt='shop image'
                     src={"/images/"}
                 /> */}
-                    <FadeIn className={cn(
-                        "lg:w-[450px] md:w-[350px] w-full",
-                        " lg:h-full md:h-3/4 h-full"
-                    )}>
+                    <FadeIn
+                        className={cn(
+                            "lg:w-[450px] md:w-[350px] w-full",
+                            " lg:h-full md:h-3/4 h-full"
+                        )}
+                        once
+                    >
                         <div className={cn(
                             "w-full",
                             "h-full",
@@ -71,6 +74,7 @@ function LoghantehSectionBox({
                 )}>
                     <FadeIn
                         transition={verySlowTransitionOut}
+                        once
                     >
                         <h2 className={cn(
                             "font-bold text-crimson text-lg",
@@ -78,7 +82,9 @@ function LoghantehSectionBox({
                             {sectionName}
                         </h2>
                     </FadeIn>
-                    <FadeUp>
+                    <FadeUp
+                        once
+                    >
                         <h4 className={cn(
                             "xl:text-5xl lg:text-4xl md:text-3xl text-4xl",
                             "font-wulkan",
@@ -88,6 +94,7 @@ function LoghantehSectionBox({
                     </FadeUp>
                     <FadeUp
                         transition={verySlowTransitionOut}
+                        once
                     >
                         <h6 className={cn(
                             "xl:text-lg md:text-sm",
@@ -99,6 +106,7 @@ function LoghantehSectionBox({
                     </FadeUp>
                     <FadeIn
                         transition={verySlowTransitionOut}
+                        once
                     >
                         <AppLink
                             href={href}
