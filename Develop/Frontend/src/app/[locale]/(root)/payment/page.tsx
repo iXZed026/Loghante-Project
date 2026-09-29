@@ -4,40 +4,45 @@ import PaymentTicketInfo from "@/features/loghante(root)/payment/components/Paym
 import PaymentGuard from "@/features/loghante(root)/payment/components/PaymentGuard";
 import { cn } from "@/lib/utils/cn";
 import PaymentDetails from "@/features/loghante(root)/payment/components/PaymentDetails";
+import CheckAuthorized from "@/components/shared/auth/CheckAuthorized";
 
 function PaymentPage() {
 
     return (
-        <PaymentGuard>
+        <CheckAuthorized>
 
-            <FadeUp>
+            <PaymentGuard>
 
-                <Container>
+                <FadeUp>
 
-                    <div
-                        className={cn(
-                            "grid",
-                            "grid-cols-12",
-                            "lg:gap-8",
-                            "gap-5",
-                            "w-full",
-                            "max-w-full",
-                            "min-w-0",
-                            "overflow-x-hidden",
-                            "py-7.5",
-                        )}
-                    >
+                    <Container>
 
-                        <PaymentTicketInfo />
-                        <PaymentDetails />
+                        <div
+                            className={cn(
+                                "grid",
+                                "grid-cols-12",
+                                "lg:gap-8",
+                                "gap-5",
+                                "w-full",
+                                "max-w-full",
+                                "min-w-0",
+                                "overflow-x-hidden",
+                                "py-7.5",
+                            )}
+                        >
 
-                    </div>
+                            <PaymentTicketInfo />
+                            <PaymentDetails />
 
-                </Container>
+                        </div>
 
-            </FadeUp>
+                    </Container>
 
-        </PaymentGuard>
+                </FadeUp>
+
+            </PaymentGuard>
+        </CheckAuthorized>
+
     );
 }
 
