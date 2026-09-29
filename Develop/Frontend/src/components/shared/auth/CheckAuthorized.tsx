@@ -3,6 +3,7 @@
 import { ReactNode, useEffect } from "react"
 import { useProfile } from "@/contexts/ProfileProvider"
 import { useRouter } from "next/navigation"
+import { useLocale } from "next-intl"
 
 interface CheckAuthorizedProps {
   children: ReactNode
@@ -12,23 +13,25 @@ function CheckAuthorized({
   children,
 }: CheckAuthorizedProps) {
 
+  const locale = useLocale()
+  const router = useRouter()
+
   const {
     isAuthenticated,
     isLoading,
   } = useProfile()
 
-  const router = useRouter()
-
   useEffect(() => {
 
     if (!isLoading && !isAuthenticated) {
-      router.push("/")
+      router.replace(`/${locale}/login`)
     }
 
   }, [
     isLoading,
     isAuthenticated,
     router,
+    locale,
   ])
 
   if (isLoading || !isAuthenticated) {
