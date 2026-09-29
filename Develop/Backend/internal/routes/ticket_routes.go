@@ -90,7 +90,7 @@ func SetupTicketsRoutes(
 			"/cinema",
 			middleware.RateLimiter(
 				rateLimiter,
-				60,
+				30,
 				logger,
 			),
 			ticketHandler.GetCinema,
@@ -104,7 +104,7 @@ func SetupTicketsRoutes(
 			"/theater",
 			middleware.RateLimiter(
 				rateLimiter,
-				60,
+				30,
 				logger,
 			),
 			ticketHandler.GetTheater,
