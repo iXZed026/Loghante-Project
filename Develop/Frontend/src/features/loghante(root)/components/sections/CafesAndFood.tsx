@@ -9,8 +9,13 @@ import {
 } from '../../animations/loghante.variants'
 import { cafesAndFoods } from '../../data/cafesAndFoods'
 import CafesAndFoodsBox from '../CafesAndFoodsBox'
+import { useTranslations } from 'next-intl'
 
 function CafesAndFood() {
+
+    const T =
+        useTranslations("LoghantehCafeAndFood")
+
     return (
         <section id="cafes-and-foods" className='loghante-section'>
             <div className='fcol gap-15 text-center mb-20'>
@@ -23,7 +28,7 @@ function CafesAndFood() {
                         "loghante-section-title",
                         "",
                     )}>
-                        Cafes & Foods in Loghanteh
+                        {T("title")}
                     </h2>
                 </FadeUp>
                 <FadeUp
@@ -32,13 +37,13 @@ function CafesAndFood() {
                     once
                 >
                     <h5 className='text-lg'>
-                        Discover food and drink menus from our cafes and food truck.
+                        {T("description")}
                     </h5>
                 </FadeUp>
             </div>
             {/* CARDS */}
             <StaggerWrapper
-                className='grid grid-cols-12 gap-10 overflow-hidden'
+                className='grid grid-cols-12 md:gap-10 gap-y-15 overflow-hidden'
                 variants={cafesAndFoodsContainerVariant}
                 once
                 amount={0.5}

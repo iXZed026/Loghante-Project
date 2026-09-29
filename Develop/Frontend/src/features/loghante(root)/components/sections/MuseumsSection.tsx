@@ -64,7 +64,7 @@ function MuseumsSection() {
         {mobileRows.map((row, rowIndex) => (
           <StaggerWrapper
             key={`mobile-row-${rowIndex}`}
-            className="grid grid-cols-12 gap-4 md:gap-7"
+            className="grid grid-cols-12 gap-1 md:gap-7"
             variants={MuseumsCardContainerVariant}
             once
             amount={0.5}

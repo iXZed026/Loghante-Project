@@ -1,6 +1,6 @@
 import React from 'react'
 import { ICafesAndFoods } from '../data/cafesAndFoods'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import AppLink from '@/components/ui/AppLink'
 import { cn } from '@/lib/utils/cn'
 import { getLocalizedValue } from '@/lib/utils/getLocalizedValue'
@@ -19,9 +19,16 @@ function CafesAndFopdsBox(props: cafesAndFoodsBox) {
 
     const locale = useLocale()
 
+    const T =
+        useTranslations("LoghantehCafeAndFood.box")
+
     return (
         <div className={cn(
             "text-black-utility",
+            "py-5",
+            "rounded-xl",
+            "shadow-md",
+            "border border-[var(--white-light-color)]",
         )}>
             <div
                 className={cn(
@@ -57,7 +64,7 @@ function CafesAndFopdsBox(props: cafesAndFoodsBox) {
                                     "px-4 py-2.5"
                                 )}
                             >
-                                Discover More
+                                {T("discover-button")}
                             </Button>
                         </AppLink>
                     </div>

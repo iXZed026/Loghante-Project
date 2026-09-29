@@ -29,6 +29,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/Loghante/museums.json`)
     ).default;
 
+    const LoghantehCafeAndFood = (
+        await import(`../messages/${locale}/Loghante/cafe-and-food.json`)
+    ).default;
+
     const LoghantehShop = (
         await import(`../messages/${locale}/Loghante/shop.json`)
     ).default;
@@ -158,6 +162,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             LoghantehHero,
             LoghantehAbout,
             LoghantehMuseums,
+            LoghantehCafeAndFood,
             LoghantehShop,
             LoghantehEventsAndCourses,
             LoghantehCinemaAndTheaters,
