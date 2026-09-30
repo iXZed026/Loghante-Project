@@ -1,44 +1,93 @@
 "use client"
 
-import { ReactNode, useEffect } from "react"
-import { useProfile } from "@/contexts/ProfileProvider"
-import { useRouter } from "next/navigation"
-import { useLocale } from "next-intl"
+import {
+    ReactNode,
+    useEffect,
+} from "react"
+
+import {
+    useProfile,
+} from "@/contexts/ProfileProvider"
+
+import {
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from "next/navigation"
+
+import {
+    useLocale,
+} from "next-intl"
+
+import {
+    saveToLocalStorage,
+} from "@/lib/utils/localStorage"
+
+export const AUTH_REDIRECT_KEY =
+    "authRedirectPath"
 
 interface CheckAuthorizedProps {
-  children: ReactNode
+    children: ReactNode
 }
 
 function CheckAuthorized({
-  children,
+    children,
 }: CheckAuthorizedProps) {
 
-  const locale = useLocale()
-  const router = useRouter()
+    const locale = useLocale()
+    const router = useRouter()
 
-  const {
-    isAuthenticated,
-    isLoading,
-  } = useProfile()
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
 
-  useEffect(() => {
+    const {
+        isAuthenticated,
+        isLoading,
+    } = useProfile()
 
-    if (!isLoading && !isAuthenticated) {
-      router.replace(`/${locale}/login`)
+    useEffect(() => {
+
+        if (
+            isLoading ||
+            isAuthenticated
+        ) {
+            return
+        }
+
+        const queryString =
+            searchParams.toString()
+
+        const currentPath =
+            queryString
+                ? `${pathname}?${queryString}`
+                : pathname
+
+        saveToLocalStorage(
+            AUTH_REDIRECT_KEY,
+            currentPath,
+        )
+
+        router.replace(
+            `/${locale}/login`,
+        )
+
+    }, [
+        isLoading,
+        isAuthenticated,
+        pathname,
+        searchParams,
+        router,
+        locale,
+    ])
+
+    if (
+        isLoading ||
+        !isAuthenticated
+    ) {
+        return null
     }
 
-  }, [
-    isLoading,
-    isAuthenticated,
-    router,
-    locale,
-  ])
-
-  if (isLoading || !isAuthenticated) {
-    return null
-  }
-
-  return children
+    return children
 }
 
 export default CheckAuthorized
