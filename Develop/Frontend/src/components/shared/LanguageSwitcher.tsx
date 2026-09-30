@@ -147,18 +147,17 @@ function LanguageSwitcher({
                     "cursor-pointer",
                     "transition-all",
                     "click-scale",
-                    "rounded-lg",
-                    "md:bg-transparent bg-crimson",
+                    "bg-crimson",
                     "text-white-utility",
 
                     !activeLanguageDropDown &&
-                    "hover:bg-[var(--black-light-color)]",
+                    "md:hover:bg-[var(--white-light-color)] hover:bg-[var(--black-light-color)] md:bg-transparent rounded-lg",
 
                     isScrolled &&
                     "text-gold-utility",
 
                     activeLanguageDropDown && [
-                        "bg-crimson",
+                        "bg-[var(--crimson-color)]",
                         "text-white-utility",
                         "rounded-t-sm",
                     ],

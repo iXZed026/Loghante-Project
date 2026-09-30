@@ -33,7 +33,7 @@ function CafesAndFopdsBox(props: cafesAndFoodsBox) {
             <div
                 className={cn(
                     "min-h-120",
-                    "px-12",
+                    "md:px-12 ",
                     "fcol items-center justify-center gap-8",
                 )}
             >

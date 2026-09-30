@@ -40,7 +40,7 @@ function LoghantehSectionBox({
                 <div className={cn(
                     "w-full h-113",
                     "flex items-center",
-                    "justify-end0",
+                    "justify-end",
                     reverse && "justify-end"
                 )}>
                     {/* <AppImage
@@ -66,10 +66,11 @@ function LoghantehSectionBox({
                         </div>
                     </FadeIn>
                 </div>
+
                 {/* COntent */}
                 <div className={cn(
                     "w-full",
-                    "xl:px-14 md:px-7 px-10 py-10",
+                    "xl:px-14 sm:px-7 px-5 py-10",
                     "fcol xl:gap-12 md:gap-8 gap-7",
                 )}>
                     <FadeIn
@@ -86,7 +87,7 @@ function LoghantehSectionBox({
                         once
                     >
                         <h4 className={cn(
-                            "xl:text-5xl lg:text-4xl md:text-3xl text-4xl",
+                            "xl:text-5xl lg:text-4xl  text-3xl",
                             "font-wulkan",
                         )}>
                             {title}

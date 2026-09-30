@@ -145,7 +145,7 @@ html {
   }
 
   .click-scale {
-    @apply active:scale-90 duration-150
+    @apply active:scale-95 duration-150
   }
 
   .opacity-utility {
