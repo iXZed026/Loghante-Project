@@ -850,3 +850,184 @@ func (r *TicketRepository) GetSessionSeats(
 
 	return seats, nil
 }
+
+// --------------------------------------------------
+// User Reserved Session
+// --------------------------------------------------
+
+func (r *TicketRepository) GetUserReservedSession(
+	ctx context.Context,
+	userID uint,
+	sessionID uint,
+	languageID uint,
+) (*dto.UserReservedSessionResponse, error) {
+	type sessionRow struct {
+		SessionID   uint  `gorm:"column:sessionId"`
+		EventID     uint  `gorm:"column:eventId"`
+		EventTypeID uint  `gorm:"column:eventTypeId"`
+		HallID      *uint `gorm:"column:hallId"`
+
+		Name        string    `gorm:"column:name"`
+		Description string    `gorm:"column:description"`
+		StartAt     time.Time `gorm:"column:startAt"`
+		Duration    int       `gorm:"column:duration"`
+		Price       *float64  `gorm:"column:price"`
+
+		ReleaseYear    *int     `gorm:"column:releaseYear"`
+		CinemaDirector *string  `gorm:"column:cinemaDirector"`
+		Country        *string  `gorm:"column:country"`
+		FilmDuration   *int     `gorm:"column:filmDuration"`
+		Genre          *string  `gorm:"column:genre"`
+		IMDBScore      *float64 `gorm:"column:imdbScore"`
+
+		TheaterDirector string `gorm:"column:theaterDirector"`
+		Writer          string `gorm:"column:writer"`
+		TheaterDuration *int   `gorm:"column:theaterDuration"`
+	}
+
+	var row sessionRow
+
+	err := r.db.
+		WithContext(ctx).
+		Table("eventsession AS es").
+		Select(`
+			es.sessionid AS "sessionId",
+			es.eventid AS "eventId",
+			e.eventtypeid AS "eventTypeId",
+			es.hallid AS "hallId",
+
+			COALESCE(ets.name, '') AS "name",
+			COALESCE(ets.description, '') AS "description",
+			es.startat AS "startAt",
+			es.duration AS "duration",
+			es.price AS "price",
+
+			cd.releaseyear AS "releaseYear",
+			cd.director AS "cinemaDirector",
+			cd.country AS "country",
+			cd.filmduration AS "filmDuration",
+			cd.genre AS "genre",
+			cd.imdbscore AS "imdbScore",
+
+			COALESCE(td.director, '') AS "theaterDirector",
+			COALESCE(td.writer, '') AS "writer",
+			td.duration AS "theaterDuration"
+		`).
+		Joins(`
+			INNER JOIN events AS e
+				ON e.eventid = es.eventid
+		`).
+		Joins(`
+			LEFT JOIN eventstranslations AS ets
+				ON ets.eventid = e.eventid
+				AND ets.languagesid = ?
+		`, languageID).
+		Joins(`
+			LEFT JOIN cinemadetails AS cd
+				ON cd.eventid = e.eventid
+		`).
+		Joins(`
+			LEFT JOIN theaterdetails AS td
+				ON td.eventid = e.eventid
+		`).
+		Where("es.sessionid = ?", sessionID).
+		Scan(&row).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	if row.SessionID == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	images, err := r.getEventImages(
+		ctx,
+		row.EventID,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	// Only seats belonging to bookings of the current user
+	// and the requested session are returned.
+	seats := make([]dto.SessionSeatResponse, 0)
+
+	err = r.db.
+		WithContext(ctx).
+		Table("seats AS s").
+		Select(`
+        s.seatid AS "seatId",
+        s.rowlabel AS "rowLabel",
+        s.seatnumber AS "seatNumber",
+        'reserved' AS "status"
+    `).
+		Joins(`
+        INNER JOIN bookingseats AS bs
+            ON bs.seatid = s.seatid
+            AND bs.sessionid = ?
+    `, sessionID).
+		Joins(`
+        INNER JOIN bookings AS b
+            ON b.bookingid = bs.bookingid
+            AND b.sessionid = ?
+            AND b.userid = ?
+    `, sessionID, userID).
+		Order(`
+        CAST(s.rowlabel AS INTEGER),
+        s.seatnumber
+    `).
+		Scan(&seats).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	cinemaDetails := (*dto.CinemaDetailResponse)(nil)
+
+	if row.EventTypeID == 4 {
+		cinemaDetails = &dto.CinemaDetailResponse{
+			EventID:      row.EventID,
+			ReleaseYear:  row.ReleaseYear,
+			Director:     row.CinemaDirector,
+			Country:      row.Country,
+			FilmDuration: row.FilmDuration,
+			Genre:        row.Genre,
+			IMDBScore:    row.IMDBScore,
+		}
+	}
+
+	theaterDetails := (*dto.TheaterDetailResponse)(nil)
+
+	if row.EventTypeID == 5 {
+		theaterDuration := 0
+
+		if row.TheaterDuration != nil {
+			theaterDuration = *row.TheaterDuration
+		}
+
+		theaterDetails = &dto.TheaterDetailResponse{
+			EventID:  row.EventID,
+			Director: row.TheaterDirector,
+			Writer:   row.Writer,
+			Duration: theaterDuration,
+		}
+	}
+
+	return &dto.UserReservedSessionResponse{
+		SessionID:      row.SessionID,
+		EventID:        row.EventID,
+		HallID:         row.HallID,
+		Name:           row.Name,
+		Description:    row.Description,
+		Images:         images,
+		StartAt:        row.StartAt,
+		Duration:       row.Duration,
+		Price:          row.Price,
+		CinemaDetails:  cinemaDetails,
+		TheaterDetails: theaterDetails,
+		Seats:          seats,
+	}, nil
+}

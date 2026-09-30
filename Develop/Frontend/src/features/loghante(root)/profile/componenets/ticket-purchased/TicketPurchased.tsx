@@ -1,34 +1,46 @@
 "use client"
 
-import FadeUp from '@/components/animations/FadeUp'
-import TicketBox from '@/features/loghante(root)/profile/componenets/ticket-purchased/TicketBox'
+import FadeUp from "@/components/animations/FadeUp"
+import TicketBox from "@/features/loghante(root)/profile/componenets/ticket-purchased/TicketBox"
 import {
     getUserBookings,
     UserBookingResponse,
-} from '@/lib/api/ticket/booking'
+} from "@/lib/api/ticket/booking"
 
-import { useLocale, useTranslations } from 'next-intl'
-import { useEffect, useState } from 'react'
+import {
+    useLocale,
+    useTranslations,
+} from "next-intl"
+
+import {
+    useEffect,
+    useState,
+} from "react"
 
 function TicketPurchased() {
 
-    const locale = useLocale()
+    const locale =
+        useLocale()
 
-    const ticketPurchasedT = useTranslations(
-        "profileTicketPurchased",
-    )
+    const ticketPurchasedT =
+        useTranslations(
+            "profileTicketPurchased",
+        )
 
     const [
         bookings,
         setBookings,
-    ] = useState<
-        UserBookingResponse[]
-    >([])
+    ] = useState<UserBookingResponse[]>([])
 
     const [
         isLoading,
         setIsLoading,
     ] = useState(true)
+
+    const [
+        error,
+        setError,
+    ] = useState<string | null>(null)
 
     useEffect(() => {
 
@@ -36,20 +48,39 @@ function TicketPurchased() {
 
             try {
 
+                setIsLoading(true)
+                setError(null)
+
                 const response =
                     await getUserBookings(
-                        locale
+                        locale,
                     )
 
+                console.log(
+                    "[TicketPurchased] bookings:",
+                    JSON.stringify(response.data, null, 2)
+                )
+
+                console.log(
+                    "[TicketPurchased] bookings:",
+                    response.data,
+                )
+
                 setBookings(
-                    response.data ?? []
+                    response.data ?? [],
                 )
 
             } catch (error) {
 
                 console.error(
                     "Failed to fetch user bookings:",
-                    error
+                    error,
+                )
+
+                setError(
+                    error instanceof Error
+                        ? error.message
+                        : "Failed to fetch tickets.",
                 )
 
             } finally {
@@ -64,6 +95,7 @@ function TicketPurchased() {
     }, [locale])
 
     if (isLoading) {
+
         return (
             <div>
                 Loading...
@@ -71,20 +103,43 @@ function TicketPurchased() {
         )
     }
 
+    if (error) {
+
+        return (
+            <div className="text-center text-red-600">
+                {error}
+            </div>
+        )
+    }
+
     return (
-        <FadeUp>
+        <FadeUp
+            amount={0}
+        >
 
             <div>
 
-                {/* Ticket Purchased Header */}
-                <div className='mb-18'>
-                    <h2 className='font-medium md:text-4xl text-2xl'>
+                <div className="mb-18">
+
+                    <h2
+                        className="
+                            font-medium
+                            md:text-4xl
+                            text-2xl
+                        "
+                    >
                         {ticketPurchasedT("title")}
                     </h2>
+
                 </div>
 
-                {/* Tickets */}
-                <div className='fcol gap-5 xl:px-20'>
+                <div
+                    className="
+                        fcol
+                        gap-5
+                        xl:px-20
+                    "
+                >
 
                     {bookings.length > 0 ? (
 
@@ -92,21 +147,37 @@ function TicketPurchased() {
                             (ticket) => (
 
                                 <TicketBox
-                                    key={ticket.bookingId}
-                                    eventTypeName={ticket.eventTypeName}
-                                    name={ticket.name}
-                                    startAt={ticket.startAt}
-                                    duration={ticket.duration}
-                                    quantity={ticket.quantity}
+                                    key={
+                                        ticket.bookingId
+                                    }
+                                    bookingId={
+                                        ticket.bookingId
+                                    }
+                                    eventTypeName={
+                                        ticket.eventTypeName
+                                    }
+                                    name={
+                                        ticket.name
+                                    }
+                                    startAt={
+                                        ticket.startAt
+                                    }
+                                    duration={
+                                        ticket.duration
+                                    }
+                                    quantity={
+                                        ticket.quantity
+                                    }
                                 />
 
-                            )
+                            ),
                         )
 
                     ) : (
 
-                        <p className='text-center'>
-                            You don't have any tickets at the moment.
+                        <p className="text-center">
+                            You don't have any tickets
+                            at the moment.
                         </p>
 
                     )}
@@ -120,4 +191,3 @@ function TicketPurchased() {
 }
 
 export default TicketPurchased
-

@@ -380,3 +380,29 @@ func (s *TicketService) CreateSeatBooking(
 		PurchasedAt: booking.PurchasedAt,
 	}, nil
 }
+
+// --------------------------------------------------
+// User Reserved Session
+// --------------------------------------------------
+
+func (s *TicketService) GetUserReservedSession(
+	ctx context.Context,
+	userID uint,
+	sessionID uint,
+	languageCode string,
+) (*dto.UserReservedSessionResponse, error) {
+	languageID, err := s.languageRepository.GetIDByCode(
+		ctx,
+		languageCode,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.ticketRepository.GetUserReservedSession(
+		ctx,
+		userID,
+		sessionID,
+		languageID,
+	)
+}

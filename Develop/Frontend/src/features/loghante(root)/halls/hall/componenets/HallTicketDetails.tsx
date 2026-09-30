@@ -55,6 +55,8 @@ function HallTicketDetails() {
         return null
     }
 
+    console.log(event.startAt)
+
     const startAt =
         new Date(event.startAt)
 

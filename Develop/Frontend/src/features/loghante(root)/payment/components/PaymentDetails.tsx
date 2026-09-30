@@ -98,7 +98,6 @@ function PaymentDetails() {
     async function submitHandler(
         event: FormEvent<HTMLFormElement>,
     ) {
-
         event.preventDefault()
 
         if (quantity < 1) {
@@ -106,12 +105,10 @@ function PaymentDetails() {
         }
 
         if (!paymentMethod) {
-
             setModal({
                 active: true,
                 success: "warning",
-                message:
-                    "Please select a payment method.",
+                message: "Please select a payment method.",
                 pushUrl: undefined,
             })
 
@@ -121,99 +118,61 @@ function PaymentDetails() {
         setIsSubmitting(true)
 
         try {
+            let response
 
-            /*
-             * Reserve seats first when this ticket
-             * belongs to a hall.
-             */
             if (paymentData?.hall) {
-
-                const seatIds =
-                    paymentData.hall.seatsNumbs.map(
-                        (seat) =>
-                            seat.seatId,
-                    )
+                const seatIds = paymentData.hall.seatsNumbs.map(
+                    (seat) => seat.seatId,
+                )
 
                 if (seatIds.length === 0) {
-
                     setModal({
                         active: true,
                         success: false,
-                        message:
-                            "No seats selected.",
+                        message: "No seats selected.",
                         pushUrl: undefined,
                     })
 
                     return
                 }
 
-                const seatResponse =
-                    await createSeatBooking(
-                        {
-                            sessionId:
-                                ticket.sessionId,
-
-                            seatIds,
-                        },
-                        locale,
-                    )
-
-                if (!seatResponse.success) {
-
-                    setModal({
-                        active: true,
-                        success: false,
-                        message:
-                            seatResponse.message,
-                        pushUrl: undefined,
-                    })
-
-                    return
-                }
-            }
-
-            /*
-             * Create the actual ticket booking
-             * after seat reservation succeeds.
-             */
-            const response =
-                await createBooking(
+                response = await createSeatBooking(
                     {
-                        sessionId:
-                            ticket.sessionId,
-
+                        sessionId: ticket.sessionId,
+                        seatIds,
+                    },
+                    locale,
+                )
+            } else {
+                response = await createBooking(
+                    {
+                        sessionId: ticket.sessionId,
                         quantity,
                     },
                     locale,
                 )
+            }
 
             if (!response.success) {
-
                 setModal({
                     active: true,
                     success: false,
-                    message:
-                        response.message,
+                    message: response.message,
                     pushUrl: undefined,
                 })
 
                 return
             }
 
-            
             setModal({
                 active: true,
                 success: true,
-                message:
-                response.message,
-                pushUrl:
-                "/profile/ticket-purchased",
+                message: response.message,
+                pushUrl: "/profile/ticket-purchased",
             })
-            
+
             // clearPaymentData()
-
         } catch (error) {
-
             setModal({
                 active: true,
                 success: false,
@@ -223,9 +182,7 @@ function PaymentDetails() {
                         : "An error occurred while creating the booking.",
                 pushUrl: undefined,
             })
-
         } finally {
-
             setIsSubmitting(false)
         }
     }

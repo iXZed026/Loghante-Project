@@ -1,15 +1,33 @@
-import TicketStatus from '../ui/TicketStatus'
-import { cn } from '@/lib/utils/cn'
-import { FaRegCalendarAlt } from 'react-icons/fa'
-import { FaRegClock } from 'react-icons/fa6'
-import { IoTicketOutline } from 'react-icons/io5'
-import { useLocale, useTranslations } from 'next-intl'
+import { AppLinks } from "next/dist/lib/metadata/types/extra-types"
+import TicketStatus from "../ui/TicketStatus"
+
+import { cn } from "@/lib/utils/cn"
+
+import {
+    FaRegCalendarAlt,
+} from "react-icons/fa"
+
+import {
+    FaRegClock,
+} from "react-icons/fa6"
+
+import {
+    IoTicketOutline,
+} from "react-icons/io5"
+
+import {
+    useLocale,
+    useTranslations,
+} from "next-intl"
+
 import {
     formatMonthDay,
     formatTime,
-} from '@/lib/utils/date'
+} from "@/lib/utils/date"
+import AppLink from "@/components/ui/AppLink"
 
 interface ITicketBox {
+    bookingId: number
     eventTypeName: string
     name: string
     startAt: string
@@ -18,6 +36,7 @@ interface ITicketBox {
 }
 
 function TicketBox({
+    bookingId,
     eventTypeName,
     name,
     startAt,
@@ -25,17 +44,20 @@ function TicketBox({
     quantity,
 }: ITicketBox) {
 
-    const locale = useLocale()
+    const locale =
+        useLocale()
 
-    const ticketBoxT = useTranslations(
-        "profileTicketPurchased.ticket-box",
-    )
+    const ticketBoxT =
+        useTranslations(
+            "profileTicketPurchased.ticket-box",
+        )
 
-    const common = useTranslations("common")
+    const common =
+        useTranslations("common")
 
     function getTicketStatus(
         startAt: string,
-        duration: number
+        duration: number,
     ): "upcoming" | "progress" | "past" {
 
         const now =
@@ -47,7 +69,7 @@ function TicketBox({
         const end =
             new Date(
                 start.getTime() +
-                duration * 60 * 1000
+                duration * 60 * 1000,
             )
 
         if (now < start) {
@@ -67,7 +89,7 @@ function TicketBox({
     const status =
         getTicketStatus(
             startAt,
-            duration
+            duration,
         )
 
     const startDate =
@@ -76,13 +98,13 @@ function TicketBox({
     const date =
         formatMonthDay(
             startDate,
-            locale
+            locale,
         )
 
     const time =
         formatTime(
             startDate,
-            locale
+            locale,
         )
 
     return (
@@ -104,6 +126,7 @@ function TicketBox({
         >
 
             {/* Left Crimson Section */}
+
             <div
                 className={cn(
                     "relative",
@@ -117,7 +140,6 @@ function TicketBox({
                 )}
             >
 
-                {/* Decorative Circle */}
                 <div
                     className={cn(
                         "absolute",
@@ -142,7 +164,6 @@ function TicketBox({
                     )}
                 />
 
-                {/* Ticket Icon */}
                 <div className="relative z-10">
 
                     <div
@@ -159,7 +180,6 @@ function TicketBox({
 
                 </div>
 
-                {/* Event Info */}
                 <div className="relative z-10 mt-8">
 
                     <span
@@ -191,6 +211,7 @@ function TicketBox({
             </div>
 
             {/* Right Content */}
+
             <div
                 className={cn(
                     "lg:col-span-8 md:col-span-7 col-span-12",
@@ -200,6 +221,7 @@ function TicketBox({
             >
 
                 {/* Header */}
+
                 <div className="fbc gap-5">
 
                     <div>
@@ -221,7 +243,6 @@ function TicketBox({
 
                     </div>
 
-                    {/* Quantity */}
                     <div
                         className={cn(
                             "fcc",
@@ -244,6 +265,7 @@ function TicketBox({
                 </div>
 
                 {/* Date & Time */}
+
                 <div
                     className={cn(
                         "grid",
@@ -253,7 +275,6 @@ function TicketBox({
                     )}
                 >
 
-                    {/* Date */}
                     <div
                         className={cn(
                             "flex items-center gap-4",
@@ -297,7 +318,6 @@ function TicketBox({
 
                     </div>
 
-                    {/* Time */}
                     <div
                         className={cn(
                             "flex items-center gap-4",
@@ -344,6 +364,7 @@ function TicketBox({
                 </div>
 
                 {/* Bottom */}
+
                 <div
                     className={cn(
                         "flex",
@@ -355,7 +376,6 @@ function TicketBox({
                     )}
                 >
 
-                    {/* Duration */}
                     <div>
 
                         <span
@@ -375,7 +395,6 @@ function TicketBox({
 
                     </div>
 
-                    {/* Tickets */}
                     <div className="text-right">
 
                         <span
@@ -400,6 +419,21 @@ function TicketBox({
                         </span>
 
                     </div>
+
+                    <AppLink
+                        href={`/profile/ticket-purchased/${bookingId}`}
+                        className={cn(
+                            "text-sm",
+                            "font-semibold",
+                            "text-crimson",
+                            "underline",
+                            "underline-offset-4",
+                            "hover:opacity-70",
+                            "transition-opacity",
+                        )}
+                    >
+                        View Details
+                    </AppLink>
 
                 </div>
 

@@ -36,7 +36,7 @@ function FadeUp({
 
     y = 50,
 
-    amount = 0.2,
+    amount = 0,
 
     once = false,
 

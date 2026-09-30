@@ -140,3 +140,18 @@ type CreateSeatBookingRequest struct {
 	SessionID uint   `json:"sessionId" binding:"required"`
 	SeatIDs   []uint `json:"seatIds" binding:"required,min=1"`
 }
+
+type UserReservedSessionResponse struct {
+	SessionID      uint                   `json:"sessionId"`
+	EventID        uint                   `json:"eventId"`
+	HallID         *uint                  `json:"hallId"`
+	Name           string                 `json:"name"`
+	Description    string                 `json:"description"`
+	Images         []EventImageResponse   `json:"images"`
+	StartAt        time.Time              `json:"startAt"`
+	Duration       int                    `json:"duration"`
+	Price          *float64               `json:"price"`
+	CinemaDetails  *CinemaDetailResponse  `json:"cinemaDetails"`
+	TheaterDetails *TheaterDetailResponse `json:"theaterDetails"`
+	Seats          []SessionSeatResponse  `json:"seats"`
+}
