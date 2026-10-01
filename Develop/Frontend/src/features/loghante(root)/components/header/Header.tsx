@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
+import Container from "@/components/shared/Container";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import AppImage from "@/components/ui/AppImage";
 import AppLink from "@/components/ui/AppLink";
 import Button from "@/components/ui/Button";
+import Skeleton from "@/components/ui/Skeleton";
 import { cn } from "@/lib/utils/cn";
-import { IoIosMenu } from "react-icons/io";
-import TicketDropDown from "./TicketDropDown";
-import Container from "@/components/shared/Container";
-import HamburgerMenu from "./HamburgerMenu";
-import useActive from "@/hooks/useActive";
-import { useLocale, useTranslations } from "next-intl";
-import useScroll from "@/hooks/useScroll";
-import { FiShoppingBag, FiUser } from "react-icons/fi";
-import { usePathname } from "next/navigation";
 import { useProfile } from "@/contexts/ProfileProvider";
 import {
   getHeaderBackground,
   getLayoutVisibility,
 } from "@/features/loghante(root)/utils/layout";
+import useActive from "@/hooks/useActive";
+import useScroll from "@/hooks/useScroll";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
+import { FiShoppingBag, FiUser } from "react-icons/fi";
+import { IoIosMenu } from "react-icons/io";
+import HamburgerMenu from "./HamburgerMenu";
+import TicketDropDown from "./TicketDropDown";
 
 function Header() {
-
   const t = useTranslations("LoghantehHeader");
   const locale = useLocale();
   const pathname = usePathname();
@@ -59,18 +59,16 @@ function Header() {
         hideHeader
           ? "hidden"
           : getHeaderBackground(
-            pathname,
-            locale,
-            isScrolled
-          )
+              pathname,
+              locale,
+              isScrolled,
+            ),
       )}
     >
       <Container>
         <div className="grid grid-cols-12">
-
           {/* LEFT */}
           <div className="col-span-4 flex items-center gap-2">
-
             {/* Hamburger */}
             <IoIosMenu
               className={cn(
@@ -85,52 +83,58 @@ function Header() {
             />
 
             {/* Desktop Auth */}
-            {!isLoading && (
-              isAuthenticated ? (
-                <AppLink href="/profile">
-                  <Button
-                    className={cn(
-                      "hidden md:flex",
-                      "size-10 p-0",
-                      "items-center justify-center",
-                      "hover:bg-white/35",
-                      isScrolled && "text-gold-utility",
-                    )}
-                    aria-label="Profile"
-                  >
-                    <FiUser className="size-5" />
-                  </Button>
-                </AppLink>
-              ) : (
-                <AppLink href="/login">
-                  <Button
-                    className={cn(
-                      "hidden md:block",
-                      "px-4 py-2",
-                      "font-semibold",
-                      "border",
-                      "hover:bg-white/35",
-                      isScrolled && "text-gold-utility",
-                    )}
-                  >
-                    {t("login-button")}
-                  </Button>
-                </AppLink>
-              )
+            {isLoading ? (
+              <Skeleton
+                className={cn(
+                  "hidden md:block",
+                  "h-10 w-16",
+                  "rounded-md",
+                  isScrolled
+                    ? "bg-gold-utility/20"
+                    : "bg-white/20",
+                )}
+              />
+            ) : isAuthenticated ? (
+              <AppLink href="/profile">
+                <Button
+                  className={cn(
+                    "hidden md:flex",
+                    "size-10 p-0",
+                    "items-center justify-center",
+                    "hover:bg-white/35",
+                    isScrolled && "text-gold-utility",
+                  )}
+                  aria-label="Profile"
+                >
+                  <FiUser className="size-5" />
+                </Button>
+              </AppLink>
+            ) : (
+              <AppLink href="/login">
+                <Button
+                  className={cn(
+                    "hidden md:block",
+                    "px-4 py-2",
+                    "font-semibold",
+                    "border",
+                    "hover:bg-white/35",
+                    isScrolled && "text-gold-utility",
+                  )}
+                >
+                  {t("login-button")}
+                </Button>
+              </AppLink>
             )}
 
             {/* Desktop Language */}
             <div className="hidden md:block">
-              <div className="hidden md:block">
-                <LanguageSwitcher
-                  isScrolled={isScrolled}
-                  className="w-20"
-                />
-              </div>
+              <LanguageSwitcher
+                isScrolled={isScrolled}
+                className="w-20"
+              />
             </div>
           </div>
 
-          {/* LOGO */}
           {/* LOGO */}
           <div className="col-span-4 fcc">
             <AppLink href="/">
@@ -148,9 +152,9 @@ function Header() {
               />
             </AppLink>
           </div>
+
           {/* RIGHT */}
           <div className="col-span-4 fec gap-2">
-
             {/* Desktop Tickets */}
             <div className="hidden md:block">
               <TicketDropDown
@@ -160,7 +164,7 @@ function Header() {
               />
             </div>
 
-            {/* Shop - visible everywhere */}
+            {/* Shop */}
             <AppLink href="/shop">
               <Button
                 className={cn(
@@ -179,7 +183,6 @@ function Header() {
                 Shop
               </Button>
             </AppLink>
-
           </div>
         </div>
       </Container>
