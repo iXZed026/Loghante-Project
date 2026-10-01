@@ -28,6 +28,7 @@ import {
 import {
     formatPrice,
 } from "@/lib/utils/formatPrice"
+import Loading from "@/components/ui/Loading"
 
 interface IModalState {
     active: boolean
@@ -487,10 +488,14 @@ function PaymentDetails() {
 
                             {
                                 isSubmitting
-                                    ? "Processing..."
-                                    : paymentPaymentDetailsT(
-                                        "payment-button",
-                                    )
+                                    ?<Loading
+                                        className="w-full"
+                                        size={40}
+                                        color="var(--white-color)"
+                                    />
+                                        : paymentPaymentDetailsT(
+                                            "payment-button",
+                                        )
                             }
 
                         </span>
