@@ -21,6 +21,7 @@ import {
     getMuseumTour,
     MuseumTourSessionResponse,
 } from "@/lib/api/ticket/museum-tour";
+import Loading from "@/components/ui/Loading";
 
 function MuseumsTourTickets() {
 
@@ -151,9 +152,10 @@ function MuseumsTourTickets() {
                 {isLoading && (
 
                     <div className="col-span-12 fcc py-10">
-                        <span>
-                            Loading...
-                        </span>
+                        <Loading
+                            className="w-full h-[50vh]"
+                            size={50}
+                        />
                     </div>
 
                 )}

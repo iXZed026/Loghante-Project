@@ -4,6 +4,7 @@ import Modal from '@/components/shared/modal/Modal'
 import AppLink from '@/components/ui/AppLink'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
+import Loading from '@/components/ui/Loading'
 import useInput from '@/hooks/useInput'
 import { login } from '@/lib/api/auth/login'
 import { cn } from '@/lib/utils/cn'
@@ -210,7 +211,11 @@ function LoginForm({
                         )}
                     >
                         {isLoading
-                            ? "Loading..."
+                            ? <Loading
+                                className="w-full h-12,5"
+                                size={40}
+                                color="var(--white-color)"
+                            />
                             : loginT("login-button")
                         }
                     </Button>

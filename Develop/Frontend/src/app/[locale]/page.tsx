@@ -12,12 +12,13 @@ import Footer from '@/components/shared/footer/Footer';
 import ConferenceHall from '@/features/loghante(root)/components/sections/ConferenceHall';
 import WorkshopAndStudios from '@/features/loghante(root)/components/sections/WorkshopAndStudios';
 import CafesAndFood from '@/features/loghante(root)/components/sections/CafesAndFood';
+import Loading from '@/components/ui/Loading';
 
 
 function Loghante() {
   return (
     <div className='overflow-x-hidden '>
-      {/* <Header /> */}
+      <Header />
       <HeroSection />
       <Container>
         <AboutMuseums />
@@ -30,7 +31,7 @@ function Loghante() {
         <ConferenceHall />
         <VirtualTourSection />
       </Container>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   )
 }

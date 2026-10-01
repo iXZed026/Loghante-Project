@@ -3,6 +3,7 @@
 import Modal from '@/components/shared/modal/Modal'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
+import Loading from '@/components/ui/Loading'
 import useInput from '@/hooks/useInput'
 import { forgetPassword } from '@/lib/api/auth/forgetPassword'
 import { cn } from '@/lib/utils/cn'
@@ -72,13 +73,11 @@ function ForgotPassword() {
                 return
             }
 
-            // Save verification token
             saveToLocalStorage(
                 "forgetPasswordVerificationToken",
                 response.data.verificationToken
             )
 
-            // Save email for verification page
             saveToLocalStorage(
                 "forgetPasswordVerificationEmail",
                 response.data.email
@@ -92,6 +91,20 @@ function ForgotPassword() {
             })
 
             clearEmailOrPasswordValue()
+
+        } catch (error) {
+
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "An unexpected error occurred."
+
+            setModal({
+                active: true,
+                success: false,
+                message,
+                pushUrl: undefined,
+            })
 
         } finally {
 
@@ -159,7 +172,13 @@ function ForgotPassword() {
                         )}
                     >
                         {isLoading
-                            ? "Loading..."
+                            ? (
+                                <Loading
+                                    className="w-full h-12"
+                                    size={38}
+                                    color="var(--white-color)"
+                                />
+                            )
                             : forgotPassT("submit-button")
                         }
                     </Button>

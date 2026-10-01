@@ -9,6 +9,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import React, { FormEvent, useEffect, useState } from 'react'
 import { editProfile } from '@/lib/api/profile/editProfile'
 import Modal from '@/components/shared/modal/Modal'
+import Loading from '@/components/ui/Loading'
 
 interface IModalState {
     active: boolean
@@ -138,8 +139,8 @@ function EditProfileForm() {
                     phoneNumber: phoneValue,
                     dob:
                         yearValue &&
-                        monthValue &&
-                        dayValue
+                            monthValue &&
+                            dayValue
                             ? `${yearValue}-${monthValue}-${dayValue}`
                             : "",
                     currentPassword: currentPasswordValue,
@@ -170,8 +171,8 @@ function EditProfileForm() {
                     phone_number: phoneValue,
                     dob:
                         yearValue &&
-                        monthValue &&
-                        dayValue
+                            monthValue &&
+                            dayValue
                             ? `${yearValue}-${monthValue}-${dayValue}`
                             : null,
                 })
@@ -444,7 +445,11 @@ function EditProfileForm() {
                             )}
                         >
                             {loading
-                                ? "Loading..."
+                                ? <Loading
+                                    className="w-full h-12,5"
+                                    size={40}
+                                    color="var(--white-color)"
+                                />
                                 : editProfileT("apply-button")}
                         </Button>
 

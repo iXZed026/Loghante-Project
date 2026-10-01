@@ -1,6 +1,7 @@
 "use client"
 
 import FadeUp from "@/components/animations/FadeUp"
+import Loading from "@/components/ui/Loading"
 import TicketBox from "@/features/loghante(root)/profile/componenets/ticket-purchased/TicketBox"
 import {
     getUserBookings,
@@ -97,9 +98,10 @@ function TicketPurchased() {
     if (isLoading) {
 
         return (
-            <div>
-                Loading...
-            </div>
+            <Loading
+                className="w-full h-screen"
+                size={60}
+            />
         )
     }
 

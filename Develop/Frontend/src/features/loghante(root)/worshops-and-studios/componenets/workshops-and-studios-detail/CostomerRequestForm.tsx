@@ -3,6 +3,7 @@
 import Modal from "@/components/shared/modal/Modal";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import Loading from "@/components/ui/Loading";
 import useInput from "@/hooks/useInput";
 import useRemoveHashOnExit from "@/hooks/useRemoveHashOnExit";
 import { createCustomerRequest } from "@/lib/api/customer-requests";
@@ -336,8 +337,11 @@ function CostomerRequestForm({
                             disabled={isLoading}
                         >
                             {isLoading
-                                ? "Loading..."
-                                :  <span>{T("submit-button")}</span>
+                                ? <Loading
+                                    className="w-full"
+                                    size={40}
+                                />
+                                : <span>{T("submit-button")}</span>
                             }
                         </Button>
                     </div>

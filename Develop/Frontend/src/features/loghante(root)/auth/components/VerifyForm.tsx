@@ -34,12 +34,13 @@ import React, {
 import {
     AUTH_REDIRECT_KEY,
 } from "@/components/shared/auth/CheckAuthorized"
+import Loading from "@/components/ui/Loading"
 
 interface IVerifyForm {
     mode:
-        | "login"
-        | "register"
-        | "forgot-password"
+    | "login"
+    | "register"
+    | "forgot-password"
 }
 
 interface IModalState {
@@ -485,7 +486,11 @@ function VerifyForm({
                             )}
                         >
                             {isLoading
-                                ? "Loading..."
+                                ? <Loading
+                                    className="w-full h-12,5"
+                                    size={40}
+                                    color="var(--white-color)"
+                                />
                                 : verifyT(
                                     "verify-button",
                                 )}

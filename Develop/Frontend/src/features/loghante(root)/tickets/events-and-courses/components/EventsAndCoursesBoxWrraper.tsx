@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils/cn'
 
 import EventAndCoursesBox from './EventAndCoursesBox'
 import { EventSession } from '@/lib/api/ticket/events-and-courses'
+import Loading from '@/components/ui/Loading'
 
 interface EventsAndCoursesBoxWrraperProps {
     data: EventSession[]
@@ -23,9 +24,10 @@ function EventsAndCoursesBoxWrraper({
     if (isLoading) {
         return (
             <Container>
-                <div className="fcc lg:px-45 min-h-[30vh]">
-                    Loading...
-                </div>
+                <Loading
+                    className="w-full h-[50vh]"
+                    size={50}
+                />
             </Container>
         )
     }

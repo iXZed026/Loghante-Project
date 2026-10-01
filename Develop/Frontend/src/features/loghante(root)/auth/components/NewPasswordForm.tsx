@@ -3,6 +3,7 @@
 import Modal from '@/components/shared/modal/Modal'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
+import Loading from '@/components/ui/Loading'
 import useInput from '@/hooks/useInput'
 
 import { newPassword } from '@/lib/api/auth/new-password'
@@ -277,7 +278,11 @@ function NewPasswordForm() {
                         >
 
                             {isLoading
-                                ? "Loading..."
+                                ? <Loading
+                                    className="w-full h-12,5"
+                                    size={40}
+                                    color="var(--white-color)"
+                                />
                                 : newPasswordT("submit-button")
                             }
 

@@ -9,7 +9,7 @@ import { getCinemaAndTheaterTickets } from "@/lib/api/ticket/cinema-and-theater"
 import CinemaAndTheaterTicketBox from "./CinemaAndTheaterTicketBox";
 
 import type {
-    CinemaAndTheaterType,
+CinemaAndTheaterType,
 } from "./data/cinema-and-theater-tabs";
 
 interface Props {
@@ -36,7 +36,7 @@ async function CinemaAndTheaterTicketsWrapper({
 
     if (tickets.length === 0) {
         return (
-            <div className="py-16 text-center">
+            <div className="py-16 h-[100vh] text-center">
                 <p className="text-lg text-[var(--black-light-color)]">
                     برای این روز برنامه‌ای وجود ندارد.
                 </p>
