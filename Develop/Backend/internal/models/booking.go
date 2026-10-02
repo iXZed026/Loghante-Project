@@ -17,8 +17,8 @@ type Booking struct {
 
 	PurchasedAt time.Time `gorm:"column:purchasedat;not null;default:now()"`
 
-	User    User         `gorm:"foreignKey:UserID"`
-	Session EventSession `gorm:"foreignKey:SessionID"`
+	User    User          `gorm:"foreignKey:UserID"`
+	Session EventSession  `gorm:"foreignKey:SessionID"`
 	Seats   []BookingSeat `gorm:"foreignKey:BookingID"`
 }
 

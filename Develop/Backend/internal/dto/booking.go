@@ -33,3 +33,9 @@ type UserBookingResponse struct {
 	TotalPrice    decimal.Decimal `json:"totalPrice"`
 	PurchasedAt   time.Time       `json:"purchasedAt"`
 }
+
+type BookingForShowDetailsResponse struct {
+	BookingID  uint            `json:"bookingId"`
+	Quantity   int             `json:"quantity"`
+	TotalPrice decimal.Decimal `json:"totalPrice"`
+}

@@ -1,6 +1,10 @@
 package dto
 
-import "time"
+import (
+	"time"
+
+	"github.com/shopspring/decimal"
+)
 
 // --------------------------------------------------
 // Museum Tour
@@ -142,16 +146,26 @@ type CreateSeatBookingRequest struct {
 }
 
 type UserReservedSessionResponse struct {
-	SessionID      uint                   `json:"sessionId"`
-	EventID        uint                   `json:"eventId"`
-	HallID         *uint                  `json:"hallId"`
-	Name           string                 `json:"name"`
-	Description    string                 `json:"description"`
-	Images         []EventImageResponse   `json:"images"`
-	StartAt        time.Time              `json:"startAt"`
-	Duration       int                    `json:"duration"`
-	Price          *float64               `json:"price"`
-	CinemaDetails  *CinemaDetailResponse  `json:"cinemaDetails"`
-	TheaterDetails *TheaterDetailResponse `json:"theaterDetails"`
-	Seats          []SessionSeatResponse  `json:"seats"`
+	BookingID   uint `json:"bookingId"`
+	SessionID   uint `json:"sessionId"`
+	EventID     uint `json:"eventId"`
+	EventTypeID uint `json:"eventTypeId"`
+	HallID      uint `json:"hallId"`
+
+	Quantity   int             `json:"quantity"`
+	TotalPrice decimal.Decimal `json:"totalPrice"`
+
+	HallName      string `json:"hallName"`
+	EventTypeName string `json:"eventTypeName"`
+
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	StartAt     time.Time `json:"startAt"`
+	Duration    int       `json:"duration"`
+	Price       *float64  `json:"price"`
+
+	CinemaDetails  *CinemaDetailResponse  `json:"cinemaDetails,omitempty"`
+	TheaterDetails *TheaterDetailResponse `json:"theaterDetails,omitempty"`
+
+	Seats []SessionSeatResponse `json:"seats"`
 }

@@ -704,13 +704,13 @@ func (h *TicketHandler) CreateSeatBooking(c *gin.Context) {
 // --------------------------------------------------
 
 func (h *TicketHandler) GetUserReservedSession(c *gin.Context) {
-	sessionID, err := strconv.ParseUint(
-		c.Param("sessionId"),
+	bookingID, err := strconv.ParseUint(
+		c.Param("bookingId"),
 		10,
 		64,
 	)
 
-	if err != nil || sessionID == 0 {
+	if err != nil || bookingID == 0 {
 		response.HandleError(c, appErrors.ErrInvalidInput, h.logger)
 		return
 	}
@@ -731,14 +731,14 @@ func (h *TicketHandler) GetUserReservedSession(c *gin.Context) {
 	session, err := h.ticketService.GetUserReservedSession(
 		c.Request.Context(),
 		uint(userID),
-		uint(sessionID),
+		uint(bookingID),
 		language,
 	)
 	if err != nil {
 		h.logger.Error(
 			"failed to get user reserved session",
 			"userID", userID,
-			"sessionId", sessionID,
+			"bookingId", bookingID,
 			"language", language,
 			"error", err,
 		)

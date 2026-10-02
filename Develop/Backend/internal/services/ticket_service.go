@@ -10,8 +10,11 @@ import (
 )
 
 const (
-	CinemaEventTypeID  uint = 4
-	TheaterEventTypeID uint = 5
+	MuseumTourEventTypeID uint = 1
+	EventEventTypeID      uint = 2
+	CourseEventTypeID     uint = 3
+	CinemaEventTypeID     uint = 4
+	TheaterEventTypeID    uint = 5
 )
 
 type TicketService struct {
@@ -39,7 +42,7 @@ func NewTicketService(
 }
 
 // --------------------------------------------------
-// Museum
+// Museum Tour
 // --------------------------------------------------
 
 func (s *TicketService) GetMuseumTourSessions(
@@ -47,7 +50,6 @@ func (s *TicketService) GetMuseumTourSessions(
 	date time.Time,
 	languageCode string,
 ) ([]dto.MuseumTourSessionResponse, error) {
-
 	languageID, err := s.languageRepository.GetIDByCode(
 		ctx,
 		languageCode,
@@ -56,18 +58,10 @@ func (s *TicketService) GetMuseumTourSessions(
 		return nil, err
 	}
 
-	eventTypeID, err := s.ticketRepository.GetEventTypeIDByName(
-		ctx,
-		"museum-tour",
-	)
-	if err != nil {
-		return nil, err
-	}
-
 	return s.ticketRepository.GetMuseumTourSessions(
 		ctx,
 		date,
-		eventTypeID,
+		MuseumTourEventTypeID,
 		languageID,
 	)
 }
@@ -81,12 +75,11 @@ func (s *TicketService) GetEventSessions(
 	date time.Time,
 	languageCode string,
 ) ([]dto.EventSessionListResponse, error) {
-
 	return s.getSessionsByType(
 		ctx,
 		date,
 		languageCode,
-		"events",
+		EventEventTypeID,
 		s.ticketRepository.GetEventSessions,
 	)
 }
@@ -100,12 +93,11 @@ func (s *TicketService) GetCourseSessions(
 	date time.Time,
 	languageCode string,
 ) ([]dto.EventSessionListResponse, error) {
-
 	return s.getSessionsByType(
 		ctx,
 		date,
 		languageCode,
-		"courses",
+		CourseEventTypeID,
 		s.ticketRepository.GetCourseSessions,
 	)
 }
@@ -119,7 +111,6 @@ func (s *TicketService) GetCinemaSessions(
 	date time.Time,
 	languageCode string,
 ) ([]dto.CinemaSessionListResponse, error) {
-
 	languageID, err := s.languageRepository.GetIDByCode(
 		ctx,
 		languageCode,
@@ -145,7 +136,6 @@ func (s *TicketService) GetTheaterSessions(
 	date time.Time,
 	languageCode string,
 ) ([]dto.TheaterSessionListResponse, error) {
-
 	languageID, err := s.languageRepository.GetIDByCode(
 		ctx,
 		languageCode,
@@ -177,21 +167,12 @@ func (s *TicketService) getSessionsByType(
 	ctx context.Context,
 	date time.Time,
 	languageCode string,
-	eventTypeName string,
+	eventTypeID uint,
 	getSessions sessionListFunc,
 ) ([]dto.EventSessionListResponse, error) {
-
 	languageID, err := s.languageRepository.GetIDByCode(
 		ctx,
 		languageCode,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	eventTypeID, err := s.ticketRepository.GetEventTypeIDByName(
-		ctx,
-		eventTypeName,
 	)
 	if err != nil {
 		return nil, err
@@ -206,7 +187,7 @@ func (s *TicketService) getSessionsByType(
 }
 
 // --------------------------------------------------
-// Event detail
+// Event Detail
 // --------------------------------------------------
 
 func (s *TicketService) GetEventSessionDetail(
@@ -214,18 +195,17 @@ func (s *TicketService) GetEventSessionDetail(
 	sessionID uint,
 	languageCode string,
 ) (*dto.EventSessionDetailResponse, error) {
-
 	return s.getEventDetail(
 		ctx,
 		sessionID,
 		languageCode,
-		"events",
+		EventEventTypeID,
 		s.ticketRepository.GetEventSessionDetail,
 	)
 }
 
 // --------------------------------------------------
-// Course detail
+// Course Detail
 // --------------------------------------------------
 
 func (s *TicketService) GetCourseSessionDetail(
@@ -233,18 +213,17 @@ func (s *TicketService) GetCourseSessionDetail(
 	sessionID uint,
 	languageCode string,
 ) (*dto.EventSessionDetailResponse, error) {
-
 	return s.getEventDetail(
 		ctx,
 		sessionID,
 		languageCode,
-		"courses",
+		CourseEventTypeID,
 		s.ticketRepository.GetCourseSessionDetail,
 	)
 }
 
 // --------------------------------------------------
-// Generic event detail helper
+// Generic Event Detail Helper
 // --------------------------------------------------
 
 type sessionDetailFunc func(
@@ -258,21 +237,12 @@ func (s *TicketService) getEventDetail(
 	ctx context.Context,
 	sessionID uint,
 	languageCode string,
-	eventTypeName string,
+	eventTypeID uint,
 	getDetail sessionDetailFunc,
 ) (*dto.EventSessionDetailResponse, error) {
-
 	languageID, err := s.languageRepository.GetIDByCode(
 		ctx,
 		languageCode,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	eventTypeID, err := s.ticketRepository.GetEventTypeIDByName(
-		ctx,
-		eventTypeName,
 	)
 	if err != nil {
 		return nil, err
@@ -295,7 +265,6 @@ func (s *TicketService) CreateBooking(
 	userID uint,
 	req dto.CreateBookingRequest,
 ) (*dto.CreateBookingResponse, error) {
-
 	booking, err := s.reservationService.CreateBooking(
 		ctx,
 		userID,
@@ -318,7 +287,7 @@ func (s *TicketService) CreateBooking(
 }
 
 // --------------------------------------------------
-// User bookings
+// User Bookings
 // --------------------------------------------------
 
 func (s *TicketService) GetUserBookings(
@@ -326,7 +295,6 @@ func (s *TicketService) GetUserBookings(
 	userID uint,
 	languageCode string,
 ) ([]dto.UserBookingResponse, error) {
-
 	languageID, err := s.languageRepository.GetIDByCode(
 		ctx,
 		languageCode,
@@ -343,14 +311,17 @@ func (s *TicketService) GetUserBookings(
 }
 
 // --------------------------------------------------
-// Seat
+// Seats
 // --------------------------------------------------
 
 func (s *TicketService) GetSessionSeats(
 	ctx context.Context,
 	sessionID uint,
 ) ([]dto.SessionSeatResponse, error) {
-	return s.ticketRepository.GetSessionSeats(ctx, sessionID)
+	return s.ticketRepository.GetSessionSeats(
+		ctx,
+		sessionID,
+	)
 }
 
 func (s *TicketService) CreateSeatBooking(
@@ -385,16 +356,14 @@ func (s *TicketService) CreateSeatBooking(
 // User Reserved Session
 // --------------------------------------------------
 
+// User Reserved Session
 func (s *TicketService) GetUserReservedSession(
 	ctx context.Context,
 	userID uint,
-	sessionID uint,
+	bookingID uint,
 	languageCode string,
 ) (*dto.UserReservedSessionResponse, error) {
-	languageID, err := s.languageRepository.GetIDByCode(
-		ctx,
-		languageCode,
-	)
+	languageID, err := s.languageRepository.GetIDByCode(ctx, languageCode)
 	if err != nil {
 		return nil, err
 	}
@@ -402,7 +371,7 @@ func (s *TicketService) GetUserReservedSession(
 	return s.ticketRepository.GetUserReservedSession(
 		ctx,
 		userID,
-		sessionID,
+		bookingID,
 		languageID,
 	)
 }

@@ -59,11 +59,6 @@ function TicketPurchased() {
 
                 console.log(
                     "[TicketPurchased] bookings:",
-                    JSON.stringify(response.data, null, 2)
-                )
-
-                console.log(
-                    "[TicketPurchased] bookings:",
                     response.data,
                 )
 
@@ -149,6 +144,10 @@ function TicketPurchased() {
                             (ticket) => (
 
                                 <TicketBox
+
+                                    sessionId={
+                                        ticket.sessionId
+                                    }
                                     key={
                                         ticket.bookingId
                                     }

@@ -6,7 +6,16 @@ import (
 
 	"loghanteh-project/internal/dto"
 
+	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
+)
+
+const (
+	museumTourEventTypeID uint = 1
+	eventEventTypeID      uint = 2
+	courseEventTypeID     uint = 3
+	cinemaEventTypeID     uint = 4
+	theaterEventTypeID    uint = 5
 )
 
 type TicketRepository struct {
@@ -21,11 +30,14 @@ func NewTicketRepository(
 	}
 }
 
+// --------------------------------------------------
+// Event Type
+// --------------------------------------------------
+
 func (r *TicketRepository) GetEventTypeIDByName(
 	ctx context.Context,
 	eventTypeName string,
 ) (uint, error) {
-
 	var eventTypeID uint
 
 	err := r.db.
@@ -60,7 +72,6 @@ func (r *TicketRepository) GetMuseumTourSessions(
 	eventTypeID uint,
 	languageID uint,
 ) ([]dto.MuseumTourSessionResponse, error) {
-
 	startOfDay := time.Date(
 		date.Year(),
 		date.Month(),
@@ -117,7 +128,7 @@ func (r *TicketRepository) GetMuseumTourSessions(
 }
 
 // --------------------------------------------------
-// Events / Courses / Cinema / Theater
+// Events / Courses
 // --------------------------------------------------
 
 func (r *TicketRepository) GetEventSessions(
@@ -126,7 +137,6 @@ func (r *TicketRepository) GetEventSessions(
 	eventTypeID uint,
 	languageID uint,
 ) ([]dto.EventSessionListResponse, error) {
-
 	return r.getEventSessionsByType(
 		ctx,
 		date,
@@ -141,7 +151,6 @@ func (r *TicketRepository) GetCourseSessions(
 	eventTypeID uint,
 	languageID uint,
 ) ([]dto.EventSessionListResponse, error) {
-
 	return r.getEventSessionsByType(
 		ctx,
 		date,
@@ -160,7 +169,6 @@ func (r *TicketRepository) GetCinemaSessions(
 	eventTypeID uint,
 	languageID uint,
 ) ([]dto.CinemaSessionListResponse, error) {
-
 	startOfDay := time.Date(
 		date.Year(),
 		date.Month(),
@@ -251,7 +259,6 @@ func (r *TicketRepository) GetCinemaSessions(
 	eventIDSet := make(map[uint]struct{}, len(rows))
 
 	for _, row := range rows {
-
 		if _, exists := eventIDSet[row.EventID]; exists {
 			continue
 		}
@@ -264,7 +271,6 @@ func (r *TicketRepository) GetCinemaSessions(
 		ctx,
 		eventIDs,
 	)
-
 	if err != nil {
 		return nil, err
 	}
@@ -276,7 +282,6 @@ func (r *TicketRepository) GetCinemaSessions(
 	)
 
 	for _, row := range rows {
-
 		images := imageMap[row.EventID]
 
 		if images == nil {
@@ -323,7 +328,6 @@ func (r *TicketRepository) GetTheaterSessions(
 	eventTypeID uint,
 	languageID uint,
 ) ([]dto.TheaterSessionListResponse, error) {
-
 	startOfDay := time.Date(
 		date.Year(),
 		date.Month(),
@@ -406,7 +410,6 @@ func (r *TicketRepository) GetTheaterSessions(
 	eventIDSet := make(map[uint]struct{}, len(rows))
 
 	for _, row := range rows {
-
 		if _, exists := eventIDSet[row.EventID]; exists {
 			continue
 		}
@@ -419,7 +422,6 @@ func (r *TicketRepository) GetTheaterSessions(
 		ctx,
 		eventIDs,
 	)
-
 	if err != nil {
 		return nil, err
 	}
@@ -431,7 +433,6 @@ func (r *TicketRepository) GetTheaterSessions(
 	)
 
 	for _, row := range rows {
-
 		images := imageMap[row.EventID]
 
 		if images == nil {
@@ -475,7 +476,6 @@ func (r *TicketRepository) getEventSessionsByType(
 	eventTypeID uint,
 	languageID uint,
 ) ([]dto.EventSessionListResponse, error) {
-
 	startOfMonth := time.Date(
 		date.Year(),
 		date.Month(),
@@ -540,7 +540,6 @@ func (r *TicketRepository) getEventSessionsByType(
 	eventIDSet := make(map[uint]struct{}, len(rows))
 
 	for _, row := range rows {
-
 		if _, exists := eventIDSet[row.EventID]; exists {
 			continue
 		}
@@ -553,7 +552,6 @@ func (r *TicketRepository) getEventSessionsByType(
 		ctx,
 		eventIDs,
 	)
-
 	if err != nil {
 		return nil, err
 	}
@@ -565,7 +563,6 @@ func (r *TicketRepository) getEventSessionsByType(
 	)
 
 	for _, row := range rows {
-
 		images := imageMap[row.EventID]
 
 		if images == nil {
@@ -598,7 +595,6 @@ func (r *TicketRepository) GetEventSessionDetail(
 	eventTypeID uint,
 	languageID uint,
 ) (*dto.EventSessionDetailResponse, error) {
-
 	type sessionRow struct {
 		SessionID   uint      `gorm:"column:sessionId"`
 		EventID     uint      `gorm:"column:eventId"`
@@ -651,7 +647,6 @@ func (r *TicketRepository) GetEventSessionDetail(
 		ctx,
 		row.EventID,
 	)
-
 	if err != nil {
 		return nil, err
 	}
@@ -675,7 +670,6 @@ func (r *TicketRepository) GetCourseSessionDetail(
 	eventTypeID uint,
 	languageID uint,
 ) (*dto.EventSessionDetailResponse, error) {
-
 	return r.GetEventSessionDetail(
 		ctx,
 		sessionID,
@@ -692,7 +686,6 @@ func (r *TicketRepository) getEventImages(
 	ctx context.Context,
 	eventID uint,
 ) ([]dto.EventImageResponse, error) {
-
 	type imageRow struct {
 		ImageURL     string `gorm:"column:imageUrl"`
 		DisplayOrder int    `gorm:"column:displayOrder"`
@@ -739,7 +732,6 @@ func (r *TicketRepository) getEventImagesMap(
 	ctx context.Context,
 	eventIDs []uint,
 ) (map[uint][]dto.EventImageResponse, error) {
-
 	type imageRow struct {
 		EventID      uint   `gorm:"column:eventId"`
 		ImageURL     string `gorm:"column:imageUrl"`
@@ -770,7 +762,6 @@ func (r *TicketRepository) getEventImagesMap(
 	)
 
 	for _, row := range rows {
-
 		imageMap[row.EventID] = append(
 			imageMap[row.EventID],
 			dto.EventImageResponse{
@@ -783,11 +774,14 @@ func (r *TicketRepository) getEventImagesMap(
 	return imageMap, nil
 }
 
+// --------------------------------------------------
+// Session Seats
+// --------------------------------------------------
+
 func (r *TicketRepository) GetSessionSeats(
 	ctx context.Context,
 	sessionID uint,
 ) ([]dto.SessionSeatResponse, error) {
-
 	type seatRow struct {
 		SeatID     *uint   `gorm:"column:seatId"`
 		RowLabel   *string `gorm:"column:rowLabel"`
@@ -858,14 +852,22 @@ func (r *TicketRepository) GetSessionSeats(
 func (r *TicketRepository) GetUserReservedSession(
 	ctx context.Context,
 	userID uint,
-	sessionID uint,
+	bookingID uint,
 	languageID uint,
 ) (*dto.UserReservedSessionResponse, error) {
+
 	type sessionRow struct {
-		SessionID   uint  `gorm:"column:sessionId"`
-		EventID     uint  `gorm:"column:eventId"`
-		EventTypeID uint  `gorm:"column:eventTypeId"`
-		HallID      *uint `gorm:"column:hallId"`
+		BookingID  uint            `gorm:"column:bookingId"`
+		Quantity   int             `gorm:"column:quantity"`
+		TotalPrice decimal.Decimal `gorm:"column:totalPrice"`
+
+		SessionID   uint `gorm:"column:sessionId"`
+		EventID     uint `gorm:"column:eventId"`
+		EventTypeID uint `gorm:"column:eventTypeId"`
+		HallID      uint `gorm:"column:hallId"`
+
+		HallName  string `gorm:"column:hallName"`
+		EventType string `gorm:"column:eventTypeName"`
 
 		Name        string    `gorm:"column:name"`
 		Description string    `gorm:"column:description"`
@@ -891,10 +893,17 @@ func (r *TicketRepository) GetUserReservedSession(
 		WithContext(ctx).
 		Table("eventsession AS es").
 		Select(`
+			b.bookingid AS "bookingId",
+			b.quantity AS "quantity",
+			b.totalprice AS "totalPrice",
+
 			es.sessionid AS "sessionId",
 			es.eventid AS "eventId",
 			e.eventtypeid AS "eventTypeId",
 			es.hallid AS "hallId",
+
+			COALESCE(ht.name, '') AS "hallName",
+			COALESCE(et.eventtypename, '') AS "eventTypeName",
 
 			COALESCE(ets.name, '') AS "name",
 			COALESCE(ets.description, '') AS "description",
@@ -914,6 +923,12 @@ func (r *TicketRepository) GetUserReservedSession(
 			td.duration AS "theaterDuration"
 		`).
 		Joins(`
+			INNER JOIN bookings AS b
+				ON b.sessionid = es.sessionid
+				AND b.bookingid = ?
+				AND b.userid = ?
+		`, bookingID, userID).
+		Joins(`
 			INNER JOIN events AS e
 				ON e.eventid = es.eventid
 		`).
@@ -923,6 +938,15 @@ func (r *TicketRepository) GetUserReservedSession(
 				AND ets.languagesid = ?
 		`, languageID).
 		Joins(`
+			LEFT JOIN halltranslations AS ht
+				ON ht.hallid = es.hallid
+				AND ht.languagesid = ?
+		`, languageID).
+		Joins(`
+			INNER JOIN eventtypes AS et
+				ON et.eventtypeid = e.eventtypeid
+		`).
+		Joins(`
 			LEFT JOIN cinemadetails AS cd
 				ON cd.eventid = e.eventid
 		`).
@@ -930,7 +954,7 @@ func (r *TicketRepository) GetUserReservedSession(
 			LEFT JOIN theaterdetails AS td
 				ON td.eventid = e.eventid
 		`).
-		Where("es.sessionid = ?", sessionID).
+		Where("es.sessionid = b.sessionid").
 		Scan(&row).
 		Error
 
@@ -938,46 +962,32 @@ func (r *TicketRepository) GetUserReservedSession(
 		return nil, err
 	}
 
-	if row.SessionID == 0 {
+	if row.BookingID == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
 
-	images, err := r.getEventImages(
-		ctx,
-		row.EventID,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	// Only seats belonging to bookings of the current user
-	// and the requested session are returned.
 	seats := make([]dto.SessionSeatResponse, 0)
 
 	err = r.db.
 		WithContext(ctx).
 		Table("seats AS s").
 		Select(`
-        s.seatid AS "seatId",
-        s.rowlabel AS "rowLabel",
-        s.seatnumber AS "seatNumber",
-        'reserved' AS "status"
-    `).
+			s.seatid AS "seatId",
+			s.rowlabel AS "rowLabel",
+			s.seatnumber AS "seatNumber",
+			'reserved' AS "status"
+		`).
 		Joins(`
-        INNER JOIN bookingseats AS bs
-            ON bs.seatid = s.seatid
-            AND bs.sessionid = ?
-    `, sessionID).
-		Joins(`
-        INNER JOIN bookings AS b
-            ON b.bookingid = bs.bookingid
-            AND b.sessionid = ?
-            AND b.userid = ?
-    `, sessionID, userID).
+			INNER JOIN bookingseats AS bs
+				ON bs.seatid = s.seatid
+				AND bs.sessionid = ?
+				AND bs.bookingid = ?
+		`, row.SessionID, row.BookingID).
+		Where("bs.bookingid = ?", row.BookingID).
 		Order(`
-        CAST(s.rowlabel AS INTEGER),
-        s.seatnumber
-    `).
+			CAST(s.rowlabel AS INTEGER),
+			s.seatnumber
+		`).
 		Scan(&seats).
 		Error
 
@@ -985,11 +995,10 @@ func (r *TicketRepository) GetUserReservedSession(
 		return nil, err
 	}
 
-	cinemaDetails := (*dto.CinemaDetailResponse)(nil)
+	var cinemaDetails *dto.CinemaDetailResponse
 
-	if row.EventTypeID == 4 {
+	if row.EventTypeID == cinemaEventTypeID {
 		cinemaDetails = &dto.CinemaDetailResponse{
-			EventID:      row.EventID,
 			ReleaseYear:  row.ReleaseYear,
 			Director:     row.CinemaDirector,
 			Country:      row.Country,
@@ -999,9 +1008,9 @@ func (r *TicketRepository) GetUserReservedSession(
 		}
 	}
 
-	theaterDetails := (*dto.TheaterDetailResponse)(nil)
+	var theaterDetails *dto.TheaterDetailResponse
 
-	if row.EventTypeID == 5 {
+	if row.EventTypeID == theaterEventTypeID {
 		theaterDuration := 0
 
 		if row.TheaterDuration != nil {
@@ -1009,7 +1018,6 @@ func (r *TicketRepository) GetUserReservedSession(
 		}
 
 		theaterDetails = &dto.TheaterDetailResponse{
-			EventID:  row.EventID,
 			Director: row.TheaterDirector,
 			Writer:   row.Writer,
 			Duration: theaterDuration,
@@ -1017,15 +1025,24 @@ func (r *TicketRepository) GetUserReservedSession(
 	}
 
 	return &dto.UserReservedSessionResponse{
-		SessionID:      row.SessionID,
-		EventID:        row.EventID,
-		HallID:         row.HallID,
-		Name:           row.Name,
-		Description:    row.Description,
-		Images:         images,
-		StartAt:        row.StartAt,
-		Duration:       row.Duration,
-		Price:          row.Price,
+		BookingID:   row.BookingID,
+		SessionID:   row.SessionID,
+		EventID:     row.EventID,
+		EventTypeID: row.EventTypeID,
+		HallID:      row.HallID,
+
+		Quantity:   row.Quantity,
+		TotalPrice: row.TotalPrice,
+
+		HallName:      row.HallName,
+		EventTypeName: row.EventType,
+
+		Name:        row.Name,
+		Description: row.Description,
+		StartAt:     row.StartAt,
+		Duration:    row.Duration,
+		Price:       row.Price,
+
 		CinemaDetails:  cinemaDetails,
 		TheaterDetails: theaterDetails,
 		Seats:          seats,

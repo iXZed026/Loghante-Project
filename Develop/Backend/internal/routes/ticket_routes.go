@@ -135,7 +135,7 @@ func SetupTicketsRoutes(
 		)
 
 		tickets.GET(
-			"/bookings/session/:sessionId",
+			"/bookings/:bookingId",
 			middleware.AuthMiddleware(jwtService, logger),
 			middleware.RateLimiter(rateLimiter, 60, logger),
 			ticketHandler.GetUserReservedSession,

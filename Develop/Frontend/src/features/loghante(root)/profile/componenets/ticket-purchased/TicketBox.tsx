@@ -27,6 +27,7 @@ import {
 import AppLink from "@/components/ui/AppLink"
 
 interface ITicketBox {
+    sessionId: number | string
     bookingId: number
     eventTypeName: string
     name: string
@@ -36,6 +37,7 @@ interface ITicketBox {
 }
 
 function TicketBox({
+    sessionId,
     bookingId,
     eventTypeName,
     name,

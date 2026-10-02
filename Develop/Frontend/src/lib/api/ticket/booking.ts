@@ -68,3 +68,73 @@ export async function getUserBookings(
         locale,
     );
 }
+
+// Get Booking By SessionId
+
+export interface ReservedSessionSeat {
+    seatId: number;
+    rowLabel: string;
+    seatNumber: number;
+    status: 'reserved' | 'available';
+}
+
+export interface CinemaDetails {
+    releaseYear?: number;
+    director?: string;
+    country?: string;
+    filmDuration?: number;
+    genre?: string;
+    imdbScore?: number;
+}
+
+export interface TheaterDetails {
+    director?: string;
+    writer?: string;
+    duration?: number;
+}
+
+export interface UserReservedSession {
+    bookingId: number;
+
+    sessionId: number;
+    eventId: number;
+    eventTypeId: number;
+    hallId: number;
+
+    quantity: number;
+    totalPrice: number;
+
+    name: string;
+    description: string;
+
+    eventTypeName: string;
+    hallName: string;
+
+    startAt: string;
+    duration: number;
+    price: number;
+
+    seats: ReservedSessionSeat[];
+
+    cinemaDetails: CinemaDetails | null;
+    theaterDetails: TheaterDetails | null;
+}
+
+export interface GetUserReservedSessionResponse {
+    data: UserReservedSession;
+    message: string;
+    success: boolean;
+}
+
+export async function getUserReservedSession(
+    bookingId: number,
+    locale?: string,
+): Promise<GetUserReservedSessionResponse> {
+    return fetcher<GetUserReservedSessionResponse>(
+        `/tickets/bookings/${bookingId}`,
+        {
+            method: 'GET',
+        },
+        locale,
+    );
+}
