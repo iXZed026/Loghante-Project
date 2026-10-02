@@ -1,6 +1,7 @@
 "use client";
 
 import Loading from "@/components/ui/Loading";
+import BookingPDFDownload from "@/features/loghante(root)/profile/componenets/BookingPDFDownload";
 import { getUserReservedSession } from "@/lib/api/ticket/booking";
 import { cn } from "@/lib/utils/cn";
 import { useLocale } from "next-intl";
@@ -490,6 +491,10 @@ function TicketDetailsPage() {
                                     Scan your ticket
                                 </p>
 
+                            </div>
+
+                            <div>
+                                <BookingPDFDownload booking={ticket}/>
                             </div>
 
                         </div>
