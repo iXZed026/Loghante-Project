@@ -1,127 +1,171 @@
-
 import {
   Document,
+  Image,
   Page,
   StyleSheet,
   Text,
   View,
 } from '@react-pdf/renderer'
+import QRCode from 'qrcode'
 
 import { BookingPDFData } from '../types/booking-pdf.types'
 
+const QR_CODE_URL = 'https://next-mart-shop.vercel.app/'
+
 const styles = StyleSheet.create({
   page: {
-    padding: 32,
+    padding: 24,
     backgroundColor: '#F5F3EF',
     fontFamily: 'Helvetica',
     color: '#242424',
   },
+
   header: {
     backgroundColor: '#252525',
-    padding: 24,
-    borderRadius: 10,
-    marginBottom: 22,
+    padding: 18,
+    borderRadius: 8,
+    marginBottom: 14,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
+
+  headerContent: {
+    flex: 1,
+    paddingRight: 15,
+  },
+
   brand: {
     color: '#D6B477',
-    fontSize: 11,
-    letterSpacing: 3,
-    marginBottom: 12,
+    fontSize: 9,
+    letterSpacing: 2,
+    marginBottom: 7,
   },
+
   title: {
     color: '#FFFFFF',
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: 700,
-    marginBottom: 8,
+    marginBottom: 5,
   },
+
   subtitle: {
     color: '#D0D0D0',
-    fontSize: 10,
-    lineHeight: 1.6,
+    fontSize: 8,
+    lineHeight: 1.4,
   },
+
+  qrWrapper: {
+    width: 74,
+    height: 74,
+    padding: 5,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+  },
+
+  qrCode: {
+    width: 64,
+    height: 64,
+  },
+
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 16,
+    borderRadius: 8,
+    padding: 15,
+    marginBottom: 11,
   },
+
   sectionTitle: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 700,
     color: '#967541',
-    marginBottom: 16,
+    marginBottom: 11,
   },
+
   infoGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
+
   infoItem: {
     width: '50%',
-    paddingRight: 10,
-    marginBottom: 18,
+    paddingRight: 8,
+    marginBottom: 11,
   },
+
   label: {
-    fontSize: 9,
+    fontSize: 7.5,
     color: '#858585',
-    marginBottom: 6,
+    marginBottom: 4,
   },
+
   value: {
-    fontSize: 11,
+    fontSize: 9,
     color: '#252525',
   },
+
   description: {
-    fontSize: 10,
-    lineHeight: 1.7,
+    fontSize: 8.5,
+    lineHeight: 1.5,
     color: '#626262',
   },
+
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: '#EAE7E0',
-    marginVertical: 15,
+    marginVertical: 10,
   },
+
   seatHeader: {
     flexDirection: 'row',
     backgroundColor: '#F5F3EF',
-    padding: 10,
+    padding: 7,
     borderRadius: 4,
   },
+
   seatRow: {
     flexDirection: 'row',
-    padding: 10,
+    padding: 7,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },
+
   seatCell: {
     flex: 1,
-    fontSize: 10,
+    fontSize: 8.5,
     color: '#333333',
   },
+
   seatHeaderText: {
     flex: 1,
-    fontSize: 9,
+    fontSize: 7.5,
     fontWeight: 700,
     color: '#686868',
   },
+
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+
   totalLabel: {
-    fontSize: 11,
+    fontSize: 9,
     color: '#686868',
   },
+
   totalValue: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 700,
     color: '#967541',
   },
+
   footer: {
     textAlign: 'center',
-    fontSize: 9,
-    lineHeight: 1.7,
+    fontSize: 7.5,
+    lineHeight: 1.5,
     color: '#858585',
-    marginTop: 8,
+    marginTop: 2,
   },
 })
 
@@ -176,6 +220,12 @@ export default function BookingTicketPDF({
 }) {
   const seats = booking.seats ?? []
 
+  const qrCode = QRCode.toDataURL(QR_CODE_URL, {
+    width: 200,
+    margin: 0,
+    errorCorrectionLevel: 'M',
+  })
+
   return (
     <Document
       title={`Loghanteh Booking ${booking.bookingId}`}
@@ -183,16 +233,29 @@ export default function BookingTicketPDF({
       subject="Booking confirmation"
     >
       <Page size="A4" style={styles.page}>
+        {/* Header + QR Code */}
         <View style={styles.header}>
-          <Text style={styles.brand}>LOGHANTEH</Text>
+          <View style={styles.headerContent}>
+            <Text style={styles.brand}>LOGHANTEH</Text>
 
-          <Text style={styles.title}>Booking Confirmation</Text>
+            <Text style={styles.title}>
+              Booking Confirmation
+            </Text>
 
-          <Text style={styles.subtitle}>
-            Your booking details and reservation information.
-          </Text>
+            <Text style={styles.subtitle}>
+              Your booking details and reservation information.
+            </Text>
+          </View>
+
+          <View style={styles.qrWrapper}>
+            <Image
+              src={qrCode}
+              style={styles.qrCode}
+            />
+          </View>
         </View>
 
+        {/* Booking Information */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>
             BOOKING INFORMATION
@@ -248,7 +311,9 @@ export default function BookingTicketPDF({
             <>
               <View style={styles.divider} />
 
-              <Text style={styles.label}>DESCRIPTION</Text>
+              <Text style={styles.label}>
+                DESCRIPTION
+              </Text>
 
               <Text style={styles.description}>
                 {booking.description}
@@ -257,6 +322,7 @@ export default function BookingTicketPDF({
           ) : null}
         </View>
 
+        {/* Seats */}
         {seats.length > 0 && (
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>
@@ -264,9 +330,17 @@ export default function BookingTicketPDF({
             </Text>
 
             <View style={styles.seatHeader}>
-              <Text style={styles.seatHeaderText}>Row</Text>
-              <Text style={styles.seatHeaderText}>Seat</Text>
-              <Text style={styles.seatHeaderText}>Status</Text>
+              <Text style={styles.seatHeaderText}>
+                Row
+              </Text>
+
+              <Text style={styles.seatHeaderText}>
+                Seat
+              </Text>
+
+              <Text style={styles.seatHeaderText}>
+                Status
+              </Text>
             </View>
 
             {seats.map((seat) => (
@@ -290,6 +364,7 @@ export default function BookingTicketPDF({
           </View>
         )}
 
+        {/* Payment */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>
             PAYMENT SUMMARY
