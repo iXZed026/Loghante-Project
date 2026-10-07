@@ -39,18 +39,16 @@
 
 --Latest Create Query for when it is needed
 
--- ALTER TABLE Bookings
--- ADD COLUMN DiscountCodeId INTEGER,
--- ADD COLUMN DiscountAmount NUMERIC(12,2) NOT NULL DEFAULT 0;
+ALTER TABLE Bookings
+ADD COLUMN DiscountCodeId INTEGER,
+ADD COLUMN DiscountAmount NUMERIC(12,2) NOT NULL DEFAULT 0;
 
--- ALTER TABLE Bookings
--- ADD CONSTRAINT FK_Bookings_DiscountCode
---     FOREIGN KEY (DiscountCodeId)
---     REFERENCES DiscountCodes(DiscountCodeId)
---     ON DELETE SET NULL;
+ALTER TABLE Bookings
+ADD CONSTRAINT FK_Bookings_DiscountCode
+    FOREIGN KEY (DiscountCodeId)
+    REFERENCES DiscountCodes(DiscountCodeId)
+    ON DELETE SET NULL;
 
--- ALTER TABLE Bookings
--- ADD CONSTRAINT CK_Bookings_DiscountAmount
---     CHECK (DiscountAmount >= 0);
-
---Not run yet
+ALTER TABLE Bookings
+ADD CONSTRAINT CK_Bookings_DiscountAmount
+    CHECK (DiscountAmount >= 0);
