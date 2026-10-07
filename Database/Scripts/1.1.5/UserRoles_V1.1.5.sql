@@ -9,3 +9,5 @@ INSERT INTO UserRoles (Code, Name, Description)
 VALUES
     ('USER', 'User', 'Regular system user'),
     ('ADMIN', 'Admin', 'System administrator');
+
+SELECT * FROM userroles;

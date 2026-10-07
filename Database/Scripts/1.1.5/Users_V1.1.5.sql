@@ -20,4 +20,33 @@
 --         REFERENCES UserRoles(UserRoleId)
 -- );
 
+ALTER TABLE Users
+ADD COLUMN UserRoleId INTEGER NOT NULL DEFAULT 1;
+
+ALTER TABLE Users
+ADD CONSTRAINT FK_Users_UserRole
+    FOREIGN KEY (UserRoleId)
+    REFERENCES UserRoles(UserRoleId);
+
+SELECT *
+FROM UserTypes
+ORDER BY UserTypeId;
+
+
+UPDATE Users
+SET UserRoleId = 2
+WHERE UserTypeId = (
+    SELECT UserTypeId
+    FROM UserTypes
+    WHERE Code = 'ADMIN'
+);
+
+
+SELECT UserId, FullName, UserTypeId, UserRoleId
+FROM Users
+ORDER BY UserId;
+
+DELETE FROM UserTypes
+WHERE Code = 'ADMIN';
+
 
