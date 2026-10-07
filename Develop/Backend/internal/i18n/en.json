@@ -23,7 +23,8 @@
         "no_resources_provided": "No resources were provided",
         "duplicate_resources_provided": "Duplicate resources were provided",
         "resource_not_found": "One or more requested resources were not found",
-        "resource_already_reserved": "One or more requested resources are already reserved"
+        "resource_already_reserved": "One or more requested resources are already reserved",
+        "either_email_phonenumber":"At least one field—either the email or the phone number—must be filled in."
     },
     "success": {
         "verification_required": "Verification required",

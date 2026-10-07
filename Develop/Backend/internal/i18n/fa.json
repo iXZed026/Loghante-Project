@@ -23,7 +23,8 @@
         "no_resources_provided": "هیچ منبعی برای رزرو ارسال نشده است",
         "duplicate_resources_provided": "صندلی تکراری در درخواست وجود دارد",
         "resource_not_found": "یک یا چند صندلی موردنظر پیدا نشد",
-        "resource_already_reserved": "یک یا چند صندلی قبلاً رزرو شده است"
+        "resource_already_reserved": "یک یا چند صندلی قبلاً رزرو شده است",
+        "either_email_phonenumber":"حداقل یک فیلد بین ایمیل یا شماره تلفن باید پر باشد."
     },
     "success": {
         "verification_required": "تأیید حساب الزامی است",

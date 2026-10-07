@@ -3,16 +3,28 @@ import AboutCafeMenuSection from '@/features/loghante(root)/cafe-menu/components
 import CafeMenuHero from '@/features/loghante(root)/cafe-menu/components/sections/CafeMenuHeroSection'
 import CafeMenusSections from '@/features/loghante(root)/cafe-menu/components/sections/CafeMenusSection'
 
-function CafeMenu() {
+interface CafeMenuPageDetailProps {
+    params: Promise<{
+        id: string
+    }>
+}
+
+async function CafeMenuPageDetail({
+    params,
+}: CafeMenuPageDetailProps) {
+    const { id } = await params
+    const cafeId = Number(id)
+
     return (
         <div>
-            <CafeMenuHero />
+            <CafeMenuHero cafeId={cafeId} />
+
             <Container>
-                <AboutCafeMenuSection />
-                <CafeMenusSections />
+                <AboutCafeMenuSection cafeId={cafeId} />
+                <CafeMenusSections cafeId={cafeId} />
             </Container>
         </div>
     )
 }
 
-export default CafeMenu
+export default CafeMenuPageDetail

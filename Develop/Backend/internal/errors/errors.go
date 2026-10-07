@@ -25,6 +25,11 @@ var (
 		Key:  "unauthorized",
 	}
 
+	ErrAfieldForEitherEmailOrPhoneNumber = &AppError{
+		Code: http.StatusBadRequest,
+		Key:  "either_email_phonenumber",
+	}
+
 	ErrUserAlreadyVerified = &AppError{
 		Code: http.StatusConflict,
 		Key:  "user_already_verified",
