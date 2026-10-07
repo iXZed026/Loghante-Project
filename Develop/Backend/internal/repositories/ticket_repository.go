@@ -903,7 +903,7 @@ func (r *TicketRepository) GetUserReservedSession(
 			es.hallid AS "hallId",
 
 			COALESCE(ht.name, '') AS "hallName",
-			COALESCE(et.eventtypename, '') AS "eventTypeName",
+			COALESCE(ett.name, '') AS "eventTypeName",
 
 			COALESCE(ets.name, '') AS "name",
 			COALESCE(ets.description, '') AS "description",
@@ -946,6 +946,11 @@ func (r *TicketRepository) GetUserReservedSession(
 			INNER JOIN eventtypes AS et
 				ON et.eventtypeid = e.eventtypeid
 		`).
+		Joins(`
+			LEFT JOIN eventtypetranslations AS ett
+				ON ett.eventtypeid = et.eventtypeid
+				AND ett.languagesid = ?
+		`, languageID).
 		Joins(`
 			LEFT JOIN cinemadetails AS cd
 				ON cd.eventid = e.eventid

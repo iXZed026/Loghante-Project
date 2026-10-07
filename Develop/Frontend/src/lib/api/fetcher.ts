@@ -32,15 +32,44 @@ interface ApiErrorResponse {
   success?: boolean;
 }
 
+function isBrowser(): boolean {
+  return typeof window !== "undefined";
+}
+
+function getAccessToken(): string | null {
+  if (!isBrowser()) {
+    return null;
+  }
+
+  return getLocalStorageItem(ACCESS_TOKEN_KEY);
+}
+
+function removeAccessToken(): void {
+  if (!isBrowser()) {
+    return;
+  }
+
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+}
+
+function saveAccessToken(accessToken: string): void {
+  if (!isBrowser()) {
+    return;
+  }
+
+  saveToLocalStorage(
+    ACCESS_TOKEN_KEY,
+    accessToken,
+  );
+}
+
 export async function fetcher<T>(
   endpoint: string,
   options?: RequestInit,
   locale?: string,
   isRetry: boolean = false,
 ): Promise<T> {
-
-  const accessToken =
-    getLocalStorageItem(ACCESS_TOKEN_KEY);
+  const accessToken = getAccessToken();
 
   const response = await fetch(
     `${BASE_URL}${endpoint}`,
@@ -62,7 +91,7 @@ export async function fetcher<T>(
 
         ...options?.headers,
       },
-    }
+    },
   );
 
   const isAuthEndpoint =
@@ -73,9 +102,7 @@ export async function fetcher<T>(
     !isRetry &&
     !isAuthEndpoint
   ) {
-
     try {
-
       const refreshResponse = await fetch(
         `${BASE_URL}/auth/refresh`,
         {
@@ -90,14 +117,11 @@ export async function fetcher<T>(
               "Accept-Language": locale,
             }),
           },
-        }
+        },
       );
 
       if (!refreshResponse.ok) {
-
-        localStorage.removeItem(
-          ACCESS_TOKEN_KEY
-        );
+        removeAccessToken();
 
         throw new Error("Session expired");
       }
@@ -109,47 +133,35 @@ export async function fetcher<T>(
         !refreshData.success ||
         !refreshData.data?.accessToken
       ) {
-
-        localStorage.removeItem(
-          ACCESS_TOKEN_KEY
-        );
+        removeAccessToken();
 
         throw new Error("Session expired");
       }
 
-      saveToLocalStorage(
-        ACCESS_TOKEN_KEY,
-        refreshData.data.accessToken
+      saveAccessToken(
+        refreshData.data.accessToken,
       );
 
       return fetcher<T>(
         endpoint,
         options,
         locale,
-        true
+        true,
       );
-
     } catch (error) {
-
-      localStorage.removeItem(
-        ACCESS_TOKEN_KEY
-      );
+      removeAccessToken();
 
       throw error;
     }
   }
 
   if (!response.ok) {
-
     let errorData: ApiErrorResponse | null = null;
 
     try {
-
       errorData =
         await response.json();
-
     } catch {
-
       errorData = null;
     }
 

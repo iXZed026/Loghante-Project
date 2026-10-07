@@ -98,6 +98,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/profile/edit-profile-page.json`)
     ).default;
 
+    const ticketPurchasedDetails = (
+        await import(`../messages/${locale}/profile/ticket-purchased-details.json`)
+    ).default;
+
     const profileTicketPurchased = (
         await import(`../messages/${locale}/profile/ticket-purchased.json`)
     ).default;
@@ -152,6 +156,13 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/hall/hall.json`)
     ).default;
 
+    //pdf
+
+    //PDF Booking
+    const pdfBooking = (
+        await import(`../messages/${locale}/pdf/booking-pdf.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -182,6 +193,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             profileDashboardPage,
             profileEdit,
             profileTicketPurchased,
+            ticketPurchasedDetails,
             //Museums Tour
             museumsTour,
             //Payment
@@ -202,6 +214,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
             cinemaAndTheater,
             //Hall
             hall,
+            //PDF Bookig
+            pdfBooking
         },
     };
 });

@@ -1,27 +1,59 @@
 import {
   Document,
+  Font,
   Image,
   Page,
   StyleSheet,
   Text,
   View,
 } from '@react-pdf/renderer'
-import QRCode from 'qrcode'
 
-import { BookingPDFData } from '../types/booking-pdf.types'
+import type { BookingPDFData } from '../types/booking-pdf.types'
 
-const QR_CODE_URL = 'https://next-mart-shop.vercel.app/'
+Font.register({
+  family: 'Vazirmatn',
+  src: '/fonts/persian/vazirmatn/Vazirmatn-Regular.ttf',
+})
+
+export interface BookingPDFTranslations {
+  title: string
+  subtitle: string
+  bookingInformation: string
+  bookingId: string
+  sessionId: string
+  event: string
+  eventType: string
+  dateTime: string
+  duration: string
+  minutes: string
+  hall: string
+  quantity: string
+  description: string
+  reservedSeats: string
+  row: string
+  seat: string
+  status: string
+  paymentSummary: string
+  unitPrice: string
+  ticketQuantity: string
+  totalPrice: string
+  footer: string
+  footerNote: string
+  download: string
+  generating: string
+  error: string
+}
 
 const styles = StyleSheet.create({
   page: {
     padding: 24,
     backgroundColor: '#F5F3EF',
-    fontFamily: 'Helvetica',
+    fontFamily: 'Vazirmatn',
     color: '#242424',
   },
 
   header: {
-    backgroundColor: '#252525',
+    backgroundColor: '#5c2127',
     padding: 18,
     borderRadius: 8,
     marginBottom: 14,
@@ -40,19 +72,21 @@ const styles = StyleSheet.create({
     fontSize: 9,
     letterSpacing: 2,
     marginBottom: 7,
+    fontFamily: 'Helvetica',
   },
 
   title: {
     color: '#FFFFFF',
     fontSize: 20,
-    fontWeight: 700,
     marginBottom: 5,
+    fontFamily: 'Vazirmatn',
   },
 
   subtitle: {
     color: '#D0D0D0',
     fontSize: 8,
     lineHeight: 1.4,
+    fontFamily: 'Vazirmatn',
   },
 
   qrWrapper: {
@@ -77,9 +111,9 @@ const styles = StyleSheet.create({
 
   sectionTitle: {
     fontSize: 10,
-    fontWeight: 700,
     color: '#967541',
     marginBottom: 11,
+    fontFamily: 'Vazirmatn',
   },
 
   infoGrid: {
@@ -97,17 +131,20 @@ const styles = StyleSheet.create({
     fontSize: 7.5,
     color: '#858585',
     marginBottom: 4,
+    fontFamily: 'Vazirmatn',
   },
 
   value: {
     fontSize: 9,
     color: '#252525',
+    fontFamily: 'Vazirmatn',
   },
 
   description: {
     fontSize: 8.5,
     lineHeight: 1.5,
     color: '#626262',
+    fontFamily: 'Vazirmatn',
   },
 
   divider: {
@@ -134,13 +171,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 8.5,
     color: '#333333',
+    fontFamily: 'Vazirmatn',
   },
 
   seatHeaderText: {
     flex: 1,
     fontSize: 7.5,
-    fontWeight: 700,
     color: '#686868',
+    fontFamily: 'Vazirmatn',
   },
 
   totalRow: {
@@ -152,12 +190,13 @@ const styles = StyleSheet.create({
   totalLabel: {
     fontSize: 9,
     color: '#686868',
+    fontFamily: 'Vazirmatn',
   },
 
   totalValue: {
     fontSize: 15,
-    fontWeight: 700,
     color: '#967541',
+    fontFamily: 'Vazirmatn',
   },
 
   footer: {
@@ -166,16 +205,19 @@ const styles = StyleSheet.create({
     lineHeight: 1.5,
     color: '#858585',
     marginTop: 2,
+    fontFamily: 'Vazirmatn',
   },
 })
 
 function formatDate(date?: string) {
-  if (!date) return 'Not specified'
+  if (!date) {
+    return '-'
+  }
 
   const parsedDate = new Date(date)
 
   if (Number.isNaN(parsedDate.getTime())) {
-    return 'Not specified'
+    return '-'
   }
 
   return new Intl.DateTimeFormat('en-GB', {
@@ -191,7 +233,9 @@ function formatDate(date?: string) {
 function formatPrice(value: number | string) {
   const amount = Number(value)
 
-  if (!Number.isFinite(amount)) return String(value)
+  if (!Number.isFinite(amount)) {
+    return String(value)
+  }
 
   return new Intl.NumberFormat('en-US', {
     maximumFractionDigits: 2,
@@ -208,6 +252,7 @@ function InfoItem({
   return (
     <View style={styles.infoItem}>
       <Text style={styles.label}>{label}</Text>
+
       <Text style={styles.value}>{value}</Text>
     </View>
   )
@@ -215,35 +260,32 @@ function InfoItem({
 
 export default function BookingTicketPDF({
   booking,
+  translations,
+  qrCode,
 }: {
   booking: BookingPDFData
+  translations: BookingPDFTranslations
+  qrCode: string
 }) {
   const seats = booking.seats ?? []
-
-  const qrCode = QRCode.toDataURL(QR_CODE_URL, {
-    width: 200,
-    margin: 0,
-    errorCorrectionLevel: 'M',
-  })
 
   return (
     <Document
       title={`Loghanteh Booking ${booking.bookingId}`}
       author="Loghanteh"
-      subject="Booking confirmation"
+      subject={translations.title}
     >
       <Page size="A4" style={styles.page}>
-        {/* Header + QR Code */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <Text style={styles.brand}>LOGHANTEH</Text>
 
             <Text style={styles.title}>
-              Booking Confirmation
+              {translations.title}
             </Text>
 
             <Text style={styles.subtitle}>
-              Your booking details and reservation information.
+              {translations.subtitle}
             </Text>
           </View>
 
@@ -255,54 +297,53 @@ export default function BookingTicketPDF({
           </View>
         </View>
 
-        {/* Booking Information */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>
-            BOOKING INFORMATION
+            {translations.bookingInformation}
           </Text>
 
           <View style={styles.infoGrid}>
             <InfoItem
-              label="Booking ID"
+              label={translations.bookingId}
               value={booking.bookingId}
             />
 
             <InfoItem
-              label="Session ID"
+              label={translations.sessionId}
               value={booking.sessionId ?? '-'}
             />
 
             <InfoItem
-              label="Event"
+              label={translations.event}
               value={booking.name}
             />
 
             <InfoItem
-              label="Event Type"
+              label={translations.eventType}
               value={booking.eventTypeName ?? '-'}
             />
 
             <InfoItem
-              label="Date & Time"
+              label={translations.dateTime}
               value={formatDate(booking.startAt)}
             />
 
             <InfoItem
-              label="Duration"
+              label={translations.duration}
               value={
                 booking.duration != null
-                  ? `${booking.duration} minutes`
+                  ? `${booking.duration} ${translations.minutes}`
                   : '-'
               }
             />
 
             <InfoItem
-              label="Hall"
+              label={translations.hall}
               value={booking.hallName ?? '-'}
             />
 
             <InfoItem
-              label="Quantity"
+              label={translations.quantity}
               value={booking.quantity}
             />
           </View>
@@ -312,7 +353,7 @@ export default function BookingTicketPDF({
               <View style={styles.divider} />
 
               <Text style={styles.label}>
-                DESCRIPTION
+                {translations.description}
               </Text>
 
               <Text style={styles.description}>
@@ -322,24 +363,23 @@ export default function BookingTicketPDF({
           ) : null}
         </View>
 
-        {/* Seats */}
         {seats.length > 0 && (
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>
-              RESERVED SEATS
+              {translations.reservedSeats}
             </Text>
 
             <View style={styles.seatHeader}>
               <Text style={styles.seatHeaderText}>
-                Row
+                {translations.row}
               </Text>
 
               <Text style={styles.seatHeaderText}>
-                Seat
+                {translations.seat}
               </Text>
 
               <Text style={styles.seatHeaderText}>
-                Status
+                {translations.status}
               </Text>
             </View>
 
@@ -364,20 +404,19 @@ export default function BookingTicketPDF({
           </View>
         )}
 
-        {/* Payment */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>
-            PAYMENT SUMMARY
+            {translations.paymentSummary}
           </Text>
 
           <View style={styles.infoGrid}>
             <InfoItem
-              label="Unit Price"
+              label={translations.unitPrice}
               value={formatPrice(booking.price)}
             />
 
             <InfoItem
-              label="Ticket Quantity"
+              label={translations.ticketQuantity}
               value={booking.quantity}
             />
           </View>
@@ -386,7 +425,7 @@ export default function BookingTicketPDF({
 
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>
-              Total Price
+              {translations.totalPrice}
             </Text>
 
             <Text style={styles.totalValue}>
@@ -396,9 +435,9 @@ export default function BookingTicketPDF({
         </View>
 
         <Text style={styles.footer}>
-          Thank you for choosing Loghanteh.
+          {translations.footer}
           {'\n'}
-          Please keep this document for your records.
+          {translations.footerNote}
         </Text>
       </Page>
     </Document>
