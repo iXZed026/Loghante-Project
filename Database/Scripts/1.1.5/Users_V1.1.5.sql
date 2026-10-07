@@ -1,0 +1,23 @@
+-- CREATE TABLE Users (
+--     UserId INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+--
+--     FullName VARCHAR(150) NOT NULL,
+--     Email VARCHAR(254) UNIQUE,
+--     PhoneNumber VARCHAR(20) NOT NULL,
+--
+--     DOB DATE,
+--     PasswordHash TEXT NOT NULL,
+--
+--     UserTypeId INTEGER NOT NULL DEFAULT 2,
+--     UserRoleId INTEGER NOT NULL DEFAULT 1,
+--
+--     CONSTRAINT FK_Users_UserType
+--         FOREIGN KEY (UserTypeId)
+--         REFERENCES UserTypes(UserTypeId),
+--
+--     CONSTRAINT FK_Users_UserRole
+--         FOREIGN KEY (UserRoleId)
+--         REFERENCES UserRoles(UserRoleId)
+-- );
+
+
