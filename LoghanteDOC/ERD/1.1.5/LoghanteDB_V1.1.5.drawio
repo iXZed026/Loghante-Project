@@ -5,10 +5,10 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="kypA1kfzzhGkplOl2yWJ-35" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;" value="Users" vertex="1">
-          <mxGeometry height="158" width="160" x="-30" y="302" as="geometry" />
+          <mxGeometry height="178" width="160" x="-30" y="290" as="geometry" />
         </mxCell>
-        <mxCell id="kypA1kfzzhGkplOl2yWJ-36" parent="kypA1kfzzhGkplOl2yWJ-35" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="UserId PK&lt;br&gt;UserTypeId FK&lt;br&gt;FullName&lt;br&gt;Email UNIQUE&lt;br&gt;PhoneNumber&lt;br&gt;DOB&lt;br&gt;PasswordHash" vertex="1">
-          <mxGeometry height="108" width="160" y="50" as="geometry" />
+        <mxCell id="kypA1kfzzhGkplOl2yWJ-36" parent="kypA1kfzzhGkplOl2yWJ-35" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="UserId PK&lt;br&gt;UserTypeId FK&lt;div&gt;UserRoleId FK&lt;br&gt;FullName&lt;br&gt;Email UNIQUE&lt;br&gt;PhoneNumber&lt;br&gt;DOB&lt;br&gt;PasswordHash&lt;/div&gt;" vertex="1">
+          <mxGeometry height="128" width="160" y="50" as="geometry" />
         </mxCell>
         <mxCell id="kypA1kfzzhGkplOl2yWJ-37" parent="1" style="shape=rhombus;double=1;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;align=center;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;" value="CanHave" vertex="1">
           <mxGeometry height="60" width="120" x="210" y="342" as="geometry" />
@@ -429,6 +429,19 @@
         </mxCell>
         <mxCell id="S2WXyfxVUr1UFrcb1tyj-2" parent="S2WXyfxVUr1UFrcb1tyj-1" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="DiscountCodeId&amp;nbsp;&lt;div&gt;Code&amp;nbsp;&lt;/div&gt;&lt;div&gt;DiscountPercent&lt;br/&gt;MaxDiscountAmount NULL&lt;br/&gt;UsageLimit&amp;nbsp;&lt;div&gt;UsedCount&amp;nbsp;&lt;/div&gt;&lt;div&gt;StartAt&amp;nbsp;&lt;div&gt;ExpiresAt&amp;nbsp;&lt;div&gt;IsActive&amp;nbsp;&lt;/div&gt;&lt;div&gt;CreatedAt&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="160" width="160" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="S2WXyfxVUr1UFrcb1tyj-4" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;" value="UserRoles" vertex="1">
+          <mxGeometry height="158" width="160" x="-460" y="189" as="geometry" />
+        </mxCell>
+        <mxCell id="S2WXyfxVUr1UFrcb1tyj-5" parent="S2WXyfxVUr1UFrcb1tyj-4" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="UserRoleId PK&lt;div&gt;Code&lt;/div&gt;&lt;div&gt;Name&lt;/div&gt;&lt;div&gt;Description&lt;/div&gt;" vertex="1">
+          <mxGeometry height="108" width="160" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="S2WXyfxVUr1UFrcb1tyj-6" edge="1" parent="1" source="S2WXyfxVUr1UFrcb1tyj-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="kypA1kfzzhGkplOl2yWJ-35">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="50" y="270.03" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
