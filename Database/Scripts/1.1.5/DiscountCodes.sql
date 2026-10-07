@@ -77,5 +77,3 @@ WHERE Code = 'INACTIVE25';
 SELECT *
 FROM DiscountCodes
 ORDER BY DiscountCodeId;
-
---NotRun Yet

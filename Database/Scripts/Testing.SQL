@@ -515,3 +515,7 @@ SELECT * FROM bookings;
 SELECT * FROM seats;
 
 SELECT * FROM eventstranslations;
+
+SELECT * FROM usertypes;
+
+SELECT * FROM users;
