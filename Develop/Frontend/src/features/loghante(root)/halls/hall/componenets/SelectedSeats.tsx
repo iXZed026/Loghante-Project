@@ -1,6 +1,10 @@
 "use client";
 
 import {
+    useMemo,
+} from "react";
+
+import {
     useRouter,
 } from "next/navigation";
 
@@ -28,7 +32,7 @@ import {
 } from "@/features/loghante(root)/context/TicketPaymentContext";
 
 interface SelectedSeatsProps {
-    hallName: string
+    hallName: string;
     seats?: SelectedSeat[];
 }
 
@@ -37,7 +41,10 @@ function SelectedSeats({
     seats,
 }: SelectedSeatsProps) {
 
-    const T = useTranslations("hall.select-seat")
+    const T =
+        useTranslations(
+            "hall.select-seat",
+        );
 
     const locale =
         useLocale();
@@ -69,6 +76,23 @@ function SelectedSeats({
         ) ??
         [];
 
+    const groupedSeats =
+        useMemo(
+            () =>
+                Object.groupBy(
+                    selectedSeats,
+                    (seat) =>
+                        seat.row,
+                ),
+            [selectedSeats],
+        );
+
+    const totalPrice =
+        Number(
+            event?.price ?? 0,
+        ) *
+        selectedSeats.length;
+
     const handleContinue = () => {
 
         if (
@@ -83,7 +107,7 @@ function SelectedSeats({
 
         setPaymentData({
             type: "cinema-and-theater",
-            hallName:hallName,
+
             ticket: {
                 sessionId:
                     currentEvent.sessionId,
@@ -112,8 +136,7 @@ function SelectedSeats({
             },
 
             hall: {
-                hallName:
-                    hallName,
+                hallName,
 
                 seatsNumbs:
                     selectedSeats.map(
@@ -142,27 +165,37 @@ function SelectedSeats({
     if (selectedSeats.length === 0) {
         return (
             <div
-                className={cn(
-                    "rounded-2xl",
-                    "border",
-                    "border-black-opacity",
-                    "bg-white",
-                    "p-6",
-                    "text-center",
-                )}
+                className="
+                    rounded-2xl
+                    border
+                    border-black-opacity
+                    bg-white
+                    p-4
+                    sm:p-6
+                "
             >
-                <p className="text-sm text-black-light-utility">
-                    {T("no-seat")}
-                </p>
+                <div
+                    className="
+                        flex
+                        min-h-24
+                        items-center
+                        justify-center
+                        text-center
+                    "
+                >
+                    <p
+                        className="
+                            text-xs
+                            text-black-light-utility
+                            sm:text-sm
+                        "
+                    >
+                        {T("no-seat")}
+                    </p>
+                </div>
             </div>
         );
     }
-
-    const groupedSeats =
-        Object.groupBy(
-            selectedSeats,
-            (seat) => seat.row,
-        );
 
     return (
         <div
@@ -171,55 +204,92 @@ function SelectedSeats({
                 "border",
                 "border-black-opacity",
                 "bg-white",
-                "p-6",
+                "p-4",
+                "sm:p-6",
             )}
         >
 
-            <div className="fbc mb-5 gap-4">
+            {/* Header */}
 
-                <div className="fcol gap-1">
+            <div
+                className="
+                    flex
+                    items-center
+                    justify-between
+                    gap-3
+                    border-b
+                    border-black-opacity
+                    pb-4
+                    sm:pb-5
+                "
+            >
 
-                    <h2 className="text-lg font-bold">
+                <div className="min-w-0">
+
+                    <h2
+                        className="
+                            truncate
+                            text-base
+                            font-bold
+                            sm:text-lg
+                        "
+                    >
                         {T("select-seat")}
                     </h2>
 
-                    <span className="text-xs text-black-light-utility">
-                        {
-                            selectedSeats.length
-                        }{" "}
-                        seats x{" "}
-                        {event?.price ?? 0} Toman
-                    </span>
+                    <p
+                        className="
+                            mt-1
+                            text-[11px]
+                            text-black-light-utility
+                            sm:text-xs
+                        "
+                    >
+                        {selectedSeats.length} seats ×{" "}
+                        {Number(
+                            event?.price ?? 0,
+                        ).toLocaleString()}{" "}
+                        Toman
+                    </p>
 
                 </div>
 
                 <div
                     className="
-                        size-10
                         fcc
+                        size-9
+                        shrink-0
                         rounded-xl
                         bg-crimson
+                        text-sm
                         font-bold
                         text-white
+                        sm:size-10
                     "
                 >
-                    {
-                        selectedSeats.length
-                    }
+                    {selectedSeats.length}
                 </div>
 
             </div>
 
+            {/* Seats */}
             <div
-                className="
-                    fcol
-                    min-h-[30vh]
-                    justify-between
-                "
+                className={cn(
+                    "mt-4",
+                    "sm:mt-5",
+                    "overflow-y-auto",
+                    "overscroll-contain",
+                    "pr-1",
+                    "scrollbar-thin",
+                    "h-60",
+                )}
             >
-
-                <div className="fcol gap-3">
-
+                <div
+                    className="
+            fcol
+            gap-3
+        "
+                >
                     {Object.entries(
                         groupedSeats,
                     ).map(
@@ -227,124 +297,134 @@ function SelectedSeats({
                             <div
                                 key={row}
                                 className="
-                                    flex
-                                    items-center
-                                    gap-3
-                                "
+                        flex
+                        min-w-0
+                        items-start
+                        gap-2
+                        sm:gap-3
+                    "
                             >
-
                                 <span
                                     className="
-                                        w-14
-                                        shrink-0
-                                        text-xs
-                                        font-semibold
-                                        text-black-light-utility
-                                    "
+                            w-10
+                            shrink-0
+                            pt-2
+                            text-[10px]
+                            font-semibold
+                            text-black-light-utility
+                            sm:w-14
+                            sm:text-xs
+                        "
                                 >
-                                    {T("row")} {""} {row}
+                                    {T("row")} {row}
                                 </span>
 
                                 <div
                                     className="
-                                        flex
-                                        flex-wrap
-                                        gap-2
-                                    "
+                            flex
+                            min-w-0
+                            flex-1
+                            flex-wrap
+                            gap-1.5
+                            sm:gap-2
+                        "
                                 >
                                     {rowSeats?.map(
                                         (seat) => (
                                             <span
-                                                key={
-                                                    seat.id
-                                                }
+                                                key={seat.id}
                                                 className="
-                                                    fcc
-                                                    h-9
-                                                    min-w-9
-                                                    rounded-lg
-                                                    bg-crimson
-                                                    px-2
-                                                    text-sm
-                                                    font-semibold
-                                                    text-white-utility
-                                                "
+                                        fcc
+                                        h-8
+                                        min-w-8
+                                        rounded-lg
+                                        bg-crimson
+                                        px-2
+                                        text-xs
+                                        font-semibold
+                                        text-white-utility
+                                        sm:h-9
+                                        sm:min-w-9
+                                        sm:text-sm
+                                    "
                                             >
-                                                {
-                                                    seat.seatNum
-                                                }
+                                                {seat.seatNum}
                                             </span>
                                         ),
                                     )}
                                 </div>
-
                             </div>
                         ),
                     )}
-
                 </div>
+            </div>
 
-                {seats && (
-                    <div className="mt-6">
+            {/* Payment */}
 
-                        <Button
-                            type="button"
-                            onClick={
-                                handleContinue
-                            }
+            <div className="mt-5 sm:mt-6">
+
+                <Button
+                    type="button"
+                    onClick={
+                        handleContinue
+                    }
+                    className="
+                        flex
+                        w-full
+                        items-center
+                        justify-between
+                        gap-4
+                        bg-crimson
+                        px-4
+                        py-3
+                        text-xs
+                        font-semibold
+                        transition-colors
+                        hover:bg-[var(--crimson-opacity-color)]
+                        hover:text-crimson
+                        sm:px-5
+                        sm:py-3.5
+                        sm:text-sm
+                    "
+                >
+
+                    <span>
+                        {T("payment-button")}
+                    </span>
+
+                    {event?.price === 0 ? (
+                        <span
                             className="
-                                w-full
-                                fbc
-                                bg-crimson
-                                py-3
-                                text-sm
                                 font-semibold
-                                hover:bg-[var(--crimson-opacity-color)]
-                                hover:text-crimson
+                                text-gold-utility
                             "
                         >
-
-                            <span>
-                                {T("payment-button")}
+                            Free
+                        </span>
+                    ) : (
+                        <span
+                            className="
+                                fcol
+                                items-end
+                                gap-y-0.5
+                            "
+                        >
+                            <span className="font-bold">
+                                {totalPrice.toLocaleString()}
                             </span>
 
-                            {event?.price === 0 ? (
-                                <span
-                                    className="
-                                        font-semibold
-                                        text-gold-utility
-                                    "
-                                >
-                                    Free
-                                </span>
-                            ) : (
-                                <span
-                                    className="
-                                        fcol
-                                        items-center
-                                        gap-y-1
-                                    "
-                                >
+                            <span
+                                className="
+                                    text-[10px]
+                                    opacity-80
+                                "
+                            >
+                                Toman
+                            </span>
+                        </span>
+                    )}
 
-                                    {(
-                                        Number(
-                                            event?.price ??
-                                            0,
-                                        ) *
-                                        selectedSeats.length
-                                    ).toLocaleString()}
-
-                                    <span>
-                                        Toman
-                                    </span>
-
-                                </span>
-                            )}
-
-                        </Button>
-
-                    </div>
-                )}
+                </Button>
 
             </div>
 

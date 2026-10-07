@@ -72,8 +72,7 @@ function SeatsWrapper({
                         );
 
                     if (
-                        !controller.signal
-                            .aborted
+                        !controller.signal.aborted
                     ) {
                         setBookingSeats(data);
                     }
@@ -81,8 +80,7 @@ function SeatsWrapper({
                 } catch (error) {
 
                     if (
-                        !controller.signal
-                            .aborted
+                        !controller.signal.aborted
                     ) {
                         console.error(
                             "Failed to fetch booking seats:",
@@ -93,8 +91,7 @@ function SeatsWrapper({
                 } finally {
 
                     if (
-                        !controller.signal
-                            .aborted
+                        !controller.signal.aborted
                     ) {
                         setIsLoading(false);
                     }
@@ -109,6 +106,9 @@ function SeatsWrapper({
 
     }, [sessionId]);
 
+    /*
+     * O(1) reserved-seat lookup.
+     */
     const reservedSeatIds =
         useMemo(
             () =>
@@ -127,113 +127,189 @@ function SeatsWrapper({
             [bookingSeats],
         );
 
-    const rows = Object.groupBy(
-        seats ?? [],
-        (seat) => seat.row,
-    );
-
-    const isSeatSelected = (
-        seatId: number,
-    ) => {
-
-        return selectedSeats.some(
-            (seat) =>
-                seat.id === seatId,
+    /*
+     * O(1) selected-seat lookup.
+     */
+    const selectedSeatIds =
+        useMemo(
+            () =>
+                new Set(
+                    selectedSeats.map(
+                        (seat) =>
+                            seat.id,
+                    ),
+                ),
+            [selectedSeats],
         );
-    };
 
-    const isSeatReserved = (
-        seatId: number,
-    ) => {
-
-        return reservedSeatIds.has(
-            seatId,
+    /*
+     * Keep rows memoized.
+     */
+    const rows =
+        useMemo(
+            () =>
+                Object.groupBy(
+                    seats ?? [],
+                    (seat) =>
+                        seat.row,
+                ),
+            [seats],
         );
-    };
+
+    const rowEntries =
+        useMemo(
+            () =>
+                Object.entries(rows),
+            [rows],
+        );
 
     return (
-        <div className="fcol gap-4">
+        <div
+            className="
+                w-full
+                min-w-0
+            "
+        >
 
-            {Object.entries(rows).map(
-                ([row, rowSeats]) => (
-                    <div
-                        key={row}
-                        className="
-                            flex
-                            items-center
-                            justify-center
-                            gap-3
-                        "
-                    >
+            <div
+                className="
+                    flex
+                    w-full
+                    flex-col
+                    gap-4
+                    rounded-2xl
+                    md:border
+                    border-black-opacity
+                    bg-white
+                    px-2
+                    py-6
+                    sm:gap-5
+                    sm:px-4
+                    sm:py-8
+                "
+            >
 
-                        {/* Row Number */}
 
-                        <div
-                            className="
-                                size-8
-                                shrink-0
-                                fcc
-                                rounded-lg
-                                bg-black
-                                text-xs
-                                font-semibold
-                                text-white
-                            "
-                        >
-                            {row}
-                        </div>
+                {/* Seat rows */}
 
-                        {/* Seats */}
+                <div
+                    className="
+                        mx-auto
+                        flex
+                        w-full
+                        max-w-full
+                        flex-col
+                        gap-3
+                        sm:gap-4
+                    "
+                >
 
-                        <div
-                            className="
-                                flex
-                                justify-center
-                                gap-3
-                            "
-                        >
-                            {rowSeats?.map(
-                                (seat) => {
+                    {rowEntries.map(
+                        ([row, rowSeats]) => (
+                            <div
+                                key={row}
+                                className="
+                                    flex
+                                    w-full
+                                    min-w-0
+                                    items-center
+                                    justify-center
+                                    gap-1
+                                    sm:gap-3
+                                "
+                            >
 
-                                    const reserved =
-                                        isSeatReserved(
-                                            seat.id,
-                                        );
+                                {/* Row number */}
 
-                                    return (
-                                        <SeatsBox
-                                            key={
-                                                seat.id
-                                            }
-                                            seatNum={
-                                                seat.seatNum
-                                            }
-                                            selected={
-                                                isSeatSelected(
+                                <div
+                                    className="
+                                        hidden
+                                        md:flex
+                                        items-center
+                                        justify-center
+                                        size-4
+                                        shrink-0
+                                        
+                                        rounded-md
+                                        bg-black
+                                        text-[9px]
+                                        font-semibold
+                                        text-white
+                                        sm:size-8
+                                        sm:rounded-lg
+                                        sm:text-xs
+                                    "
+                                >
+                                    {row}
+                                </div>
+
+                                {/* Seats */}
+
+                                <div
+                                    className="
+                                        flex
+                                        min-w-0
+                                        flex-1
+                                        items-center
+                                        justify-center
+                                        gap-1
+                                        sm:flex-none
+                                        sm:gap-3
+                                    "
+                                >
+
+                                    {rowSeats?.map(
+                                        (
+                                            seat,
+                                        ) => {
+
+                                            const reserved =
+                                                reservedSeatIds.has(
                                                     seat.id,
-                                                )
-                                            }
-                                            reserved={
-                                                reserved
-                                            }
-                                            disabled={
-                                                isLoading ||
-                                                reserved
-                                            }
-                                            onClick={() =>
-                                                onToggleSeat(
-                                                    seat,
-                                                )
-                                            }
-                                        />
-                                    );
-                                },
-                            )}
-                        </div>
+                                                );
 
-                    </div>
-                ),
-            )}
+                                            const selected =
+                                                selectedSeatIds.has(
+                                                    seat.id,
+                                                );
+
+                                            return (
+                                                <SeatsBox
+                                                    key={
+                                                        seat.id
+                                                    }
+                                                    seatNum={
+                                                        seat.seatNum
+                                                    }
+                                                    selected={
+                                                        selected
+                                                    }
+                                                    reserved={
+                                                        reserved
+                                                    }
+                                                    disabled={
+                                                        isLoading ||
+                                                        reserved
+                                                    }
+                                                    onClick={() =>
+                                                        onToggleSeat(
+                                                            seat,
+                                                        )
+                                                    }
+                                                />
+                                            );
+                                        },
+                                    )}
+
+                                </div>
+
+                            </div>
+                        ),
+                    )}
+
+                </div>
+
+            </div>
 
         </div>
     );

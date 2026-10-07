@@ -80,7 +80,7 @@ function NewPasswordForm() {
         e.preventDefault()
 
         const verificationToken =
-            getLocalStorageItem(
+            getLocalStorageItem<string>(
                 "forgetPasswordVerificationToken"
             )
 

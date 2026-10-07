@@ -3,7 +3,6 @@ import AppLink from '@/components/ui/AppLink';
 import Button from '@/components/ui/Button';
 import { cn } from '@/lib/utils/cn'
 import { TranslationFunction } from '@/types/translations';
-import React from 'react'
 import { CiLocationOn } from "react-icons/ci";
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { IoTimeOutline } from "react-icons/io5";

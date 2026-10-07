@@ -30,7 +30,7 @@ export interface SelectedPaymentSeat {
 
 export interface TicketPaymentData {
     type: TicketPaymentType;
-    hallName: string,
+
     ticket: {
         sessionId: number;
         eventId: number;
