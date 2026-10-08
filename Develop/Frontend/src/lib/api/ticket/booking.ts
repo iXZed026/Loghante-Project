@@ -104,6 +104,14 @@ export interface UserReservedSession {
     quantity: number;
     totalPrice: number;
 
+    purchasedAt: string;
+
+    discountCodeId: number | null;
+    discountAmount: number;
+
+    ticketToken: string;
+    ticketIsValid: boolean;
+
     name: string;
     description: string;
 

@@ -3,6 +3,7 @@ package dto
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
 
@@ -145,6 +146,10 @@ type CreateSeatBookingRequest struct {
 	SeatIDs   []uint `json:"seatIds" binding:"required,min=1"`
 }
 
+// --------------------------------------------------
+// User Reserved Session
+// --------------------------------------------------
+
 type UserReservedSessionResponse struct {
 	BookingID   uint `json:"bookingId"`
 	SessionID   uint `json:"sessionId"`
@@ -152,8 +157,14 @@ type UserReservedSessionResponse struct {
 	EventTypeID uint `json:"eventTypeId"`
 	HallID      uint `json:"hallId"`
 
-	Quantity   int             `json:"quantity"`
-	TotalPrice decimal.Decimal `json:"totalPrice"`
+	Quantity    int             `json:"quantity"`
+	TotalPrice  decimal.Decimal `json:"totalPrice"`
+	PurchasedAt time.Time       `json:"purchasedAt"`
+
+	DiscountCodeID *uint           `json:"discountCodeId"`
+	DiscountAmount decimal.Decimal `json:"discountAmount"`
+	TicketToken    uuid.UUID       `json:"ticketToken"`
+	TicketIsValid  bool            `json:"ticketIsValid"`
 
 	HallName      string `json:"hallName"`
 	EventTypeName string `json:"eventTypeName"`
