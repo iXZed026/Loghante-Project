@@ -36,6 +36,15 @@ func (h *DiscountCodeHandler) GetByCode(c *gin.Context) {
 	if code == "" {
 		response.HandleError(
 			c,
+			appErrors.ErrEmptyValue,
+			h.logger,
+		)
+		return
+	}
+
+	if len(code) > 50 {
+		response.HandleError(
+			c,
 			appErrors.ErrInvalidInput,
 			h.logger,
 		)
@@ -54,13 +63,17 @@ func (h *DiscountCodeHandler) GetByCode(c *gin.Context) {
 			"error", err,
 		)
 
-		response.HandleError(c, err, h.logger)
+		response.HandleError(
+			c,
+			err,
+			h.logger,
+		)
 		return
 	}
 
 	response.Success(
 		c,
-		"discount_code_fetched_successfully",
+		"discount_code_applied_successfully",
 		discountCode,
 	)
 }

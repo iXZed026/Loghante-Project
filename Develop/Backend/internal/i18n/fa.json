@@ -24,7 +24,12 @@
         "duplicate_resources_provided": "صندلی تکراری در درخواست وجود دارد",
         "resource_not_found": "یک یا چند صندلی موردنظر پیدا نشد",
         "resource_already_reserved": "یک یا چند صندلی قبلاً رزرو شده است",
-        "either_email_phonenumber":"حداقل یک فیلد بین ایمیل یا شماره تلفن باید پر باشد."
+        "either_email_phonenumber": "حداقل یک فیلد بین ایمیل یا شماره تلفن باید پر باشد.",
+        "discount_code_not_found": "کد تخفیف پیدا نشد",
+        "discount_code_inactive": "کد تخفیف غیرفعال است",
+        "discount_code_not_started": "زمان استفاده از این کد تخفیف هنوز شروع نشده است",
+        "discount_code_expired": "کد تخفیف منقضی شده است",
+        "discount_code_usage_limit_reached": "سقف استفاده از این کد تخفیف تکمیل شده است"
     },
     "success": {
         "verification_required": "تأیید حساب الزامی است",
@@ -38,6 +43,7 @@
         "password_changed_successfully": "رمز عبور با موفقیت تغییر کرد",
         "profile_fetched_successfully": "پروفایل با موفقیت دریافت شد",
         "profile_updated_successfully": "پروفایل با موفقیت به‌روزرسانی شد",
-        "customer_request_created_successfully": "درخواست مشتری با موفقیت ثبت شد"
+        "customer_request_created_successfully": "درخواست مشتری با موفقیت ثبت شد",
+        "discount_code_applied_successfully": "کد تخفیف با موفقیت اعمال شد"
     }
 }

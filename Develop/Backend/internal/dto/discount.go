@@ -10,9 +10,9 @@ import (
 // Discount Code
 // --------------------------------------------------
 
-// type DiscountCodeRequest struct {
-// 	Code string `json:"code" binding:"required,max=50"`
-// }
+type DiscountCodeRequest struct {
+	Code string `json:"code" binding:"required,max=50"`
+}
 
 type DiscountCodeResponse struct {
 	DiscountCodeID    uint            `json:"discountCodeId"`

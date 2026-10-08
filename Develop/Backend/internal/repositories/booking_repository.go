@@ -64,6 +64,59 @@ func (r *BookingRepository) Create(
 }
 
 // --------------------------------------------------
+// Discount Code
+// --------------------------------------------------
+
+func (r *BookingRepository) GetDiscountCodeForBooking(
+	tx *gorm.DB,
+	ctx context.Context,
+	discountCodeID uint,
+) (*models.DiscountCode, error) {
+
+	var discountCode models.DiscountCode
+
+	err := tx.
+		WithContext(ctx).
+		Clauses(
+			clause.Locking{
+				Strength: "UPDATE",
+			},
+		).
+		Where(
+			"discountcodeid = ?",
+			discountCodeID,
+		).
+		First(&discountCode).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &discountCode, nil
+}
+
+func (r *BookingRepository) IncrementDiscountUsage(
+	tx *gorm.DB,
+	ctx context.Context,
+	discountCodeID uint,
+) error {
+
+	return tx.
+		WithContext(ctx).
+		Model(&models.DiscountCode{}).
+		Where(
+			"discountcodeid = ?",
+			discountCodeID,
+		).
+		UpdateColumn(
+			"usedcount",
+			gorm.Expr("usedcount + ?", 1),
+		).
+		Error
+}
+
+// --------------------------------------------------
 // Seat validation
 // --------------------------------------------------
 
@@ -201,8 +254,14 @@ func (r *BookingRepository) GetUserBookings(
 			es.startat AS "startAt",
 			es.duration AS "duration",
 			b.quantity AS "quantity",
-			b.totalprice AS "totalPrice",
-			b.purchasedat AS "purchasedAt"
+			(
+				b.totalprice - COALESCE(b.discountamount, 0)
+			) AS "totalPrice",
+			b.purchasedat AS "purchasedAt",
+			b.discountcodeid AS "discountCodeId",
+			COALESCE(b.discountamount, 0) AS "discountAmount",
+			b.tickettoken AS "ticketToken",
+			b.ticketisvalid AS "ticketIsValid"
 		`).
 		Joins(`
 			INNER JOIN eventsession AS es

@@ -272,6 +272,7 @@ func (s *TicketService) CreateBooking(
 		req.Quantity,
 		nil,
 		nil,
+		req.DiscountCodeID,
 	)
 	if err != nil {
 		return nil, err
@@ -338,6 +339,7 @@ func (s *TicketService) CreateSeatBooking(
 		quantity,
 		s.seatResourceProvider,
 		req.SeatIDs,
+		req.DiscountCodeID,
 	)
 	if err != nil {
 		return nil, err
@@ -356,7 +358,6 @@ func (s *TicketService) CreateSeatBooking(
 // User Reserved Session
 // --------------------------------------------------
 
-// User Reserved Session
 func (s *TicketService) GetUserReservedSession(
 	ctx context.Context,
 	userID uint,

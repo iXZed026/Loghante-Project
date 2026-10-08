@@ -903,11 +903,11 @@ func (r *TicketRepository) GetUserReservedSession(
 		Select(`
 			b.bookingid AS "bookingId",
 			b.quantity AS "quantity",
-			b.totalprice AS "totalPrice",
+			(b.totalprice - COALESCE(b.discountamount, 0)) AS "totalPrice",
 			b.purchasedat AS "purchasedAt",
 
 			b.discountcodeid AS "discountCodeId",
-			b.discountamount AS "discountAmount",
+			COALESCE(b.discountamount, 0) AS "discountAmount",
 			b.tickettoken AS "ticketToken",
 			b.ticketisvalid AS "ticketIsValid",
 

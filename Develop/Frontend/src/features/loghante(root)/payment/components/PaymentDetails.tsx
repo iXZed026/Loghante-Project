@@ -2,15 +2,21 @@
 
 import Modal from "@/components/shared/modal/Modal"
 import Button from "@/components/ui/Button"
+import Loading from "@/components/ui/Loading"
 import { cn } from "@/lib/utils/cn"
+import { formatPrice } from "@/lib/utils/formatPrice"
+import { calculateDiscountPrice } from "@/lib/utils/calculateDiscountPrice"
+
 import React, {
     FormEvent,
     useState,
 } from "react"
+
 import {
     useLocale,
     useTranslations,
 } from "next-intl"
+
 import PaymentDiscoutCodeDropDown from "./PaymentDiscoutCodeDropDown"
 
 import {
@@ -25,10 +31,7 @@ import {
     useTicketPayment,
 } from "../../context/TicketPaymentContext"
 
-import {
-    formatPrice,
-} from "@/lib/utils/formatPrice"
-import Loading from "@/components/ui/Loading"
+import type { DiscountCodeResponse } from "@/lib/api/discount-codes/discount-codes"
 
 interface IModalState {
     active: boolean
@@ -38,7 +41,6 @@ interface IModalState {
 }
 
 function PaymentDetails() {
-
     const paymentPaymentDetailsT =
         useTranslations(
             "payment.payment-details",
@@ -66,6 +68,11 @@ function PaymentDetails() {
     ] = useState<boolean>(false)
 
     const [
+        discountData,
+        setDiscountData,
+    ] = useState<DiscountCodeResponse | null>(null)
+
+    const [
         modal,
         setModal,
     ] = useState<IModalState>({
@@ -90,11 +97,35 @@ function PaymentDetails() {
     const totalPrice =
         unitPrice * quantity
 
+    /*
+     * Calculate discount only when a valid
+     * discount response exists.
+     */
+    const discount = discountData?.success
+        ? calculateDiscountPrice({
+            price: totalPrice,
+            discountPercent:
+                discountData.data.discountPercent,
+            maxDiscountAmount:
+                discountData.data.maxDiscountAmount,
+        })
+        : {
+            originalPrice: totalPrice,
+            discountAmount: 0,
+            finalPrice: totalPrice,
+        }
+
+    const discountedPrice =
+        discount.finalPrice
+
+    const discountAmount =
+        discount.discountAmount
+
     const vat =
-        totalPrice * 0.1
+        discountedPrice * 0.1
 
     const payable =
-        totalPrice + vat
+        discountedPrice + vat
 
     async function submitHandler(
         event: FormEvent<HTMLFormElement>,
@@ -122,9 +153,10 @@ function PaymentDetails() {
             let response
 
             if (paymentData?.hall) {
-                const seatIds = paymentData.hall.seatsNumbs.map(
-                    (seat) => seat.seatId,
-                )
+                const seatIds =
+                    paymentData.hall.seatsNumbs.map(
+                        (seat) => seat.seatId,
+                    )
 
                 if (seatIds.length === 0) {
                     setModal({
@@ -137,18 +169,22 @@ function PaymentDetails() {
                     return
                 }
 
-                response = await createSeatBooking(
-                    {
-                        sessionId: ticket.sessionId,
-                        seatIds,
-                    },
-                    locale,
-                )
+                response =
+                    await createSeatBooking(
+                        {
+                            sessionId: ticket.sessionId,
+                            seatIds,
+                            discountCodeId:
+                                discountData?.data.discountCodeId,
+                        },
+                        locale,
+                    )
             } else {
                 response = await createBooking(
                     {
                         sessionId: ticket.sessionId,
                         quantity,
+                        discountCodeId: discountData?.data.discountCodeId
                     },
                     locale,
                 )
@@ -169,10 +205,11 @@ function PaymentDetails() {
                 active: true,
                 success: true,
                 message: response.message,
-                pushUrl: "/profile/ticket-purchased",
+                pushUrl:
+                    "/profile/ticket-purchased",
             })
 
-            // clearPaymentData()
+            clearPaymentData()
         } catch (error) {
             setModal({
                 active: true,
@@ -186,6 +223,12 @@ function PaymentDetails() {
         } finally {
             setIsSubmitting(false)
         }
+    }
+
+    function getDiscountData(
+        data: DiscountCodeResponse,
+    ) {
+        setDiscountData(data)
     }
 
     return (
@@ -214,9 +257,7 @@ function PaymentDetails() {
                     "pb-28 md:pb-10",
                 )}
             >
-
                 {/* Payment Details */}
-
                 <div>
                     <span className="text-xl font-semibold">
                         {
@@ -228,9 +269,7 @@ function PaymentDetails() {
                 </div>
 
                 {/* Ticket Details */}
-
                 <div className="fcol py-5 px-5">
-
                     <div
                         className={cn(
                             "py-10",
@@ -238,11 +277,9 @@ function PaymentDetails() {
                             "border-black-opacity",
                         )}
                     >
-
+                        {/* Ticket Price */}
                         <div className="fbc mb-5">
-
                             <span className="w-full">
-
                                 {
                                     paymentPaymentDetailsT(
                                         "ticket-details.ticket",
@@ -255,12 +292,12 @@ function PaymentDetails() {
                                     )
                                 }
 
-                                {commonT("price-type")}
-
+                                {commonT(
+                                    "price-type",
+                                )}
                             </span>
 
                             <span className="w-full text-center">
-
                                 {quantity}{" "}
 
                                 {
@@ -268,33 +305,53 @@ function PaymentDetails() {
                                         "ticket-details.ticket-count",
                                     )
                                 }
-
                             </span>
 
                             <span className="w-full text-end">
-
                                 {
                                     formatPrice(
                                         totalPrice,
                                     )
                                 }
 
-                                {commonT("price-type")}
-
+                                {commonT(
+                                    "price-type",
+                                )}
                             </span>
-
                         </div>
 
+                        {/* Discount */}
+                        {discountAmount > 0 && (
+                            <div className="fbc mb-5 text-crimson">
+                                <span className="w-full">
+                                    Discount
+                                </span>
+
+                                <span className="w-full text-center">
+                                    {discountData?.data.discountPercent}%
+                                </span>
+
+                                <span className="w-full text-end">
+                                    -
+                                    {formatPrice(
+                                        discountAmount,
+                                    )}
+
+                                    {commonT(
+                                        "price-type",
+                                    )}
+                                </span>
+                            </div>
+                        )}
+
+                        {/* VAT */}
                         <div className="fbc">
-
                             <span className="w-full">
-
                                 {
                                     paymentPaymentDetailsT(
                                         "ticket-vat.ticket-vat",
                                     )
                                 }
-
                             </span>
 
                             <span className="w-full text-center">
@@ -302,25 +359,21 @@ function PaymentDetails() {
                             </span>
 
                             <span className="w-full text-end">
-
                                 {
                                     formatPrice(
                                         vat,
                                     )
                                 }
 
-                                {commonT("price-type")}
-
+                                {commonT(
+                                    "price-type",
+                                )}
                             </span>
-
                         </div>
-
                     </div>
 
                     {/* Payable */}
-
                     <div className="py-10 fbc">
-
                         <span className="font-bold text-xl">
                             {
                                 paymentPaymentDetailsT(
@@ -330,27 +383,27 @@ function PaymentDetails() {
                         </span>
 
                         <span className="text-xl font-bold text-crimson">
-
                             {
                                 formatPrice(
                                     payable,
                                 )
                             }
 
-                            {commonT("price-type")}
-
+                            {commonT(
+                                "price-type",
+                            )}
                         </span>
-
                     </div>
-
                 </div>
 
                 {/* Discount */}
-
-                <PaymentDiscoutCodeDropDown />
+                <PaymentDiscoutCodeDropDown
+                    onDIscountData={
+                        getDiscountData
+                    }
+                />
 
                 {/* Payment Method */}
-
                 <div
                     className={cn(
                         "fcol",
@@ -359,7 +412,6 @@ function PaymentDetails() {
                         "mb-15",
                     )}
                 >
-
                     <div>
                         <span className="text-xl">
                             {
@@ -377,16 +429,13 @@ function PaymentDetails() {
                             "gap-5",
                         )}
                     >
-
                         {/* Saman */}
-
                         <label
                             className={cn(
                                 "flex items-center gap-2",
                                 "cursor-pointer",
                             )}
                         >
-
                             <input
                                 type="radio"
                                 name="payment-method"
@@ -395,9 +444,9 @@ function PaymentDetails() {
                                     paymentMethod ===
                                     "saman"
                                 }
-                                onChange={(e) =>
+                                onChange={(event) =>
                                     setPaymentMethod(
-                                        e.target.value,
+                                        event.target.value,
                                     )
                                 }
                             />
@@ -409,18 +458,15 @@ function PaymentDetails() {
                                     )
                                 }
                             </span>
-
                         </label>
 
                         {/* Another */}
-
                         <label
                             className={cn(
                                 "flex items-center gap-2",
                                 "cursor-pointer",
                             )}
                         >
-
                             <input
                                 type="radio"
                                 name="payment-method"
@@ -429,9 +475,9 @@ function PaymentDetails() {
                                     paymentMethod ===
                                     "another"
                                 }
-                                onChange={(e) =>
+                                onChange={(event) =>
                                     setPaymentMethod(
-                                        e.target.value,
+                                        event.target.value,
                                     )
                                 }
                             />
@@ -443,15 +489,11 @@ function PaymentDetails() {
                                     )
                                 }
                             </span>
-
                         </label>
-
                     </div>
-
                 </div>
 
                 {/* Payment Button */}
-
                 <div
                     className={cn(
                         "fixed",
@@ -466,7 +508,6 @@ function PaymentDetails() {
                         "md:z-auto",
                     )}
                 >
-
                     <Button
                         type="submit"
                         disabled={isSubmitting}
@@ -478,44 +519,39 @@ function PaymentDetails() {
                             "bg-crimson",
                             "md:rounded-lg rounded-none",
                             "hover:bg-[var(--crimson-hover-color)]",
-
                             isSubmitting &&
                             "opacity-60 cursor-not-allowed",
                         )}
                     >
-
                         <span>
-
                             {
                                 isSubmitting
-                                    ?<Loading
-                                        className="w-full"
-                                        size={40}
-                                        color="var(--white-color)"
-                                    />
-                                        : paymentPaymentDetailsT(
-                                            "payment-button",
-                                        )
+                                    ? (
+                                        <Loading
+                                            className="w-full"
+                                            size={40}
+                                            color="var(--white-color)"
+                                        />
+                                    )
+                                    : paymentPaymentDetailsT(
+                                        "payment-button",
+                                    )
                             }
-
                         </span>
 
                         <span>
-
                             {
                                 formatPrice(
                                     payable,
                                 )
                             }
 
-                            {commonT("price-type")}
-
+                            {commonT(
+                                "price-type",
+                            )}
                         </span>
-
                     </Button>
-
                 </div>
-
             </form>
         </>
     )

@@ -24,7 +24,12 @@
         "duplicate_resources_provided": "Duplicate resources were provided",
         "resource_not_found": "One or more requested resources were not found",
         "resource_already_reserved": "One or more requested resources are already reserved",
-        "either_email_phonenumber":"At least one field—either the email or the phone number—must be filled in."
+        "either_email_phonenumber": "At least one field—either the email or the phone number—must be filled in.",
+        "discount_code_not_found": "Discount code not found",
+        "discount_code_inactive": "Discount code is inactive",
+        "discount_code_not_started": "Discount code is not active yet",
+        "discount_code_expired": "Discount code has expired",
+        "discount_code_usage_limit_reached": "Discount code usage limit has been reached"
     },
     "success": {
         "verification_required": "Verification required",
@@ -38,6 +43,7 @@
         "password_changed_successfully": "Password changed successfully",
         "profile_fetched_successfully": "Profile fetched successfully",
         "profile_updated_successfully": "Profile updated successfully",
-        "customer_request_created_successfully": "Customer request created successfully"
+        "customer_request_created_successfully": "Customer request created successfully",
+        "discount_code_applied_successfully": "Discount code applied successfully"
     }
 }

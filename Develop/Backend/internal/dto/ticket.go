@@ -142,8 +142,9 @@ type SessionSeatResponse struct {
 }
 
 type CreateSeatBookingRequest struct {
-	SessionID uint   `json:"sessionId" binding:"required"`
-	SeatIDs   []uint `json:"seatIds" binding:"required,min=1"`
+	SessionID      uint   `json:"sessionId" binding:"required"`
+	SeatIDs        []uint `json:"seatIds" binding:"required,min=1"`
+	DiscountCodeID *uint  `json:"discountCodeId"`
 }
 
 // --------------------------------------------------
