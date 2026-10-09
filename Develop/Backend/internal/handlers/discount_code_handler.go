@@ -27,27 +27,44 @@ func NewDiscountCodeHandler(
 }
 
 // --------------------------------------------------
-// Get Discount Code
+// Get All Discount Codes
+// --------------------------------------------------
+
+func (h *DiscountCodeHandler) GetAll(c *gin.Context) {
+	discountCodes, err := h.discountCodeService.GetAll(
+		c.Request.Context(),
+	)
+	if err != nil {
+		h.logger.Error(
+			"failed to get all discount codes",
+			"error", err,
+		)
+
+		response.HandleError(c, err, h.logger)
+		return
+	}
+
+	response.Success(
+		c,
+		"discount_codes_fetched_successfully",
+		discountCodes,
+	)
+}
+
+// --------------------------------------------------
+// Get Discount Code By Code
 // --------------------------------------------------
 
 func (h *DiscountCodeHandler) GetByCode(c *gin.Context) {
 	code := strings.TrimSpace(c.Param("code"))
 
 	if code == "" {
-		response.HandleError(
-			c,
-			appErrors.ErrEmptyValue,
-			h.logger,
-		)
+		response.HandleError(c, appErrors.ErrEmptyValue, h.logger)
 		return
 	}
 
 	if len(code) > 50 {
-		response.HandleError(
-			c,
-			appErrors.ErrInvalidInput,
-			h.logger,
-		)
+		response.HandleError(c, appErrors.ErrInvalidInput, h.logger)
 		return
 	}
 
@@ -55,7 +72,6 @@ func (h *DiscountCodeHandler) GetByCode(c *gin.Context) {
 		c.Request.Context(),
 		code,
 	)
-
 	if err != nil {
 		h.logger.Error(
 			"failed to get discount code",
@@ -63,11 +79,7 @@ func (h *DiscountCodeHandler) GetByCode(c *gin.Context) {
 			"error", err,
 		)
 
-		response.HandleError(
-			c,
-			err,
-			h.logger,
-		)
+		response.HandleError(c, err, h.logger)
 		return
 	}
 

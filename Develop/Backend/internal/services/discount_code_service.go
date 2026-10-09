@@ -26,25 +26,30 @@ func NewDiscountCodeService(
 }
 
 // --------------------------------------------------
-// Get Discount Code
+// Get All Discount Codes
+// --------------------------------------------------
+
+func (s *DiscountCodeService) GetAll(
+	ctx context.Context,
+) ([]dto.DiscountCodeResponse, error) {
+	return s.discountCodeRepository.GetAll(ctx)
+}
+
+// --------------------------------------------------
+// Get Discount Code By Code
 // --------------------------------------------------
 
 func (s *DiscountCodeService) GetByCode(
 	ctx context.Context,
 	code string,
 ) (*dto.DiscountCodeResponse, error) {
-
 	code = strings.TrimSpace(code)
 
 	if code == "" {
 		return nil, appErrors.ErrEmptyValue
 	}
 
-	discountCode, err := s.discountCodeRepository.GetByCode(
-		ctx,
-		code,
-	)
-
+	discountCode, err := s.discountCodeRepository.GetByCode(ctx, code)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, appErrors.ErrDiscountCodeNotFound
@@ -55,35 +60,20 @@ func (s *DiscountCodeService) GetByCode(
 
 	now := time.Now()
 
-	// --------------------------------------------------
-	// Active Check
-	// --------------------------------------------------
-
 	if !discountCode.IsActive {
 		return nil, appErrors.ErrDiscountCodeInactive
 	}
-
-	// --------------------------------------------------
-	// Start Date Check
-	// --------------------------------------------------
 
 	if now.Before(discountCode.StartAt) {
 		return nil, appErrors.ErrDiscountCodeNotStarted
 	}
 
-	// --------------------------------------------------
-	// Expiration Check
-	// --------------------------------------------------
-
-	if now.After(discountCode.ExpiresAt) {
+	if !now.Before(discountCode.ExpiresAt) {
 		return nil, appErrors.ErrDiscountCodeExpired
 	}
 
-	// --------------------------------------------------
-	// Usage Limit Check
-	// --------------------------------------------------
-
-	if discountCode.UsedCount >= discountCode.UsageLimit {
+	if discountCode.UsageLimit > 0 &&
+		discountCode.UsedCount >= discountCode.UsageLimit {
 		return nil, appErrors.ErrDiscountCodeUsageLimitReached
 	}
 

@@ -31,20 +31,21 @@ import {
     useTicketPayment,
 } from "../../context/TicketPaymentContext"
 
-import type { DiscountCodeResponse } from "@/lib/api/discount-codes/discount-codes"
+import type {
+    DiscountCodeResponse,
+} from "@/lib/api/discount-codes/discount-codes"
 
 interface IModalState {
     active: boolean
     success: boolean | "warning"
     message: string
     pushUrl?: string
+    clearData?: () => void
 }
 
 function PaymentDetails() {
     const paymentPaymentDetailsT =
-        useTranslations(
-            "payment.payment-details",
-        )
+        useTranslations("payment.payment-details")
 
     const commonT =
         useTranslations("common")
@@ -80,6 +81,7 @@ function PaymentDetails() {
         success: false,
         message: "",
         pushUrl: undefined,
+        clearData: undefined,
     })
 
     if (!paymentData) {
@@ -97,10 +99,6 @@ function PaymentDetails() {
     const totalPrice =
         unitPrice * quantity
 
-    /*
-     * Calculate discount only when a valid
-     * discount response exists.
-     */
     const discount = discountData?.success
         ? calculateDiscountPrice({
             price: totalPrice,
@@ -132,7 +130,7 @@ function PaymentDetails() {
     ) {
         event.preventDefault()
 
-        if (quantity < 1) {
+        if (quantity < 1 || isSubmitting) {
             return
         }
 
@@ -141,7 +139,6 @@ function PaymentDetails() {
                 active: true,
                 success: "warning",
                 message: "Please select a payment method.",
-                pushUrl: undefined,
             })
 
             return
@@ -163,28 +160,27 @@ function PaymentDetails() {
                         active: true,
                         success: false,
                         message: "No seats selected.",
-                        pushUrl: undefined,
                     })
 
                     return
                 }
 
-                response =
-                    await createSeatBooking(
-                        {
-                            sessionId: ticket.sessionId,
-                            seatIds,
-                            discountCodeId:
-                                discountData?.data.discountCodeId,
-                        },
-                        locale,
-                    )
+                response = await createSeatBooking(
+                    {
+                        sessionId: ticket.sessionId,
+                        seatIds,
+                        discountCodeId:
+                            discountData?.data.discountCodeId,
+                    },
+                    locale,
+                )
             } else {
                 response = await createBooking(
                     {
                         sessionId: ticket.sessionId,
                         quantity,
-                        discountCodeId: discountData?.data.discountCodeId
+                        discountCodeId:
+                            discountData?.data.discountCodeId,
                     },
                     locale,
                 )
@@ -195,7 +191,6 @@ function PaymentDetails() {
                     active: true,
                     success: false,
                     message: response.message,
-                    pushUrl: undefined,
                 })
 
                 return
@@ -205,11 +200,9 @@ function PaymentDetails() {
                 active: true,
                 success: true,
                 message: response.message,
-                pushUrl:
-                    "/profile/ticket-purchased",
+                pushUrl: "/profile/ticket-purchased",
+                clearData: clearPaymentData,
             })
-
-            clearPaymentData()
         } catch (error) {
             setModal({
                 active: true,
@@ -218,7 +211,6 @@ function PaymentDetails() {
                     error instanceof Error
                         ? error.message
                         : "An error occurred while creating the booking.",
-                pushUrl: undefined,
             })
         } finally {
             setIsSubmitting(false)
@@ -238,6 +230,7 @@ function PaymentDetails() {
                 message={modal.message}
                 success={modal.success}
                 pushUrl={modal.pushUrl}
+                clearData={modal.clearData}
                 onClose={() => {
                     setModal((prev) => ({
                         ...prev,
@@ -260,11 +253,7 @@ function PaymentDetails() {
                 {/* Payment Details */}
                 <div>
                     <span className="text-xl font-semibold">
-                        {
-                            paymentPaymentDetailsT(
-                                "title",
-                            )
-                        }
+                        {paymentPaymentDetailsT("title")}
                     </span>
                 </div>
 
@@ -280,43 +269,23 @@ function PaymentDetails() {
                         {/* Ticket Price */}
                         <div className="fbc mb-5">
                             <span className="w-full">
-                                {
-                                    paymentPaymentDetailsT(
-                                        "ticket-details.ticket",
-                                    )
-                                }{" "}
-
-                                {
-                                    formatPrice(
-                                        unitPrice,
-                                    )
-                                }
-
-                                {commonT(
-                                    "price-type",
-                                )}
+                                {paymentPaymentDetailsT(
+                                    "ticket-details.ticket",
+                                )}{" "}
+                                {formatPrice(unitPrice)}
+                                {commonT("price-type")}
                             </span>
 
                             <span className="w-full text-center">
                                 {quantity}{" "}
-
-                                {
-                                    paymentPaymentDetailsT(
-                                        "ticket-details.ticket-count",
-                                    )
-                                }
+                                {paymentPaymentDetailsT(
+                                    "ticket-details.ticket-count",
+                                )}
                             </span>
 
                             <span className="w-full text-end">
-                                {
-                                    formatPrice(
-                                        totalPrice,
-                                    )
-                                }
-
-                                {commonT(
-                                    "price-type",
-                                )}
+                                {formatPrice(totalPrice)}
+                                {commonT("price-type")}
                             </span>
                         </div>
 
@@ -332,14 +301,8 @@ function PaymentDetails() {
                                 </span>
 
                                 <span className="w-full text-end">
-                                    -
-                                    {formatPrice(
-                                        discountAmount,
-                                    )}
-
-                                    {commonT(
-                                        "price-type",
-                                    )}
+                                    -{formatPrice(discountAmount)}
+                                    {commonT("price-type")}
                                 </span>
                             </div>
                         )}
@@ -347,11 +310,9 @@ function PaymentDetails() {
                         {/* VAT */}
                         <div className="fbc">
                             <span className="w-full">
-                                {
-                                    paymentPaymentDetailsT(
-                                        "ticket-vat.ticket-vat",
-                                    )
-                                }
+                                {paymentPaymentDetailsT(
+                                    "ticket-vat.ticket-vat",
+                                )}
                             </span>
 
                             <span className="w-full text-center">
@@ -359,15 +320,8 @@ function PaymentDetails() {
                             </span>
 
                             <span className="w-full text-end">
-                                {
-                                    formatPrice(
-                                        vat,
-                                    )
-                                }
-
-                                {commonT(
-                                    "price-type",
-                                )}
+                                {formatPrice(vat)}
+                                {commonT("price-type")}
                             </span>
                         </div>
                     </div>
@@ -375,32 +329,19 @@ function PaymentDetails() {
                     {/* Payable */}
                     <div className="py-10 fbc">
                         <span className="font-bold text-xl">
-                            {
-                                paymentPaymentDetailsT(
-                                    "payable",
-                                )
-                            }
+                            {paymentPaymentDetailsT("payable")}
                         </span>
 
                         <span className="text-xl font-bold text-crimson">
-                            {
-                                formatPrice(
-                                    payable,
-                                )
-                            }
-
-                            {commonT(
-                                "price-type",
-                            )}
+                            {formatPrice(payable)}
+                            {commonT("price-type")}
                         </span>
                     </div>
                 </div>
 
-                {/* Discount */}
+                {/* Discount Code */}
                 <PaymentDiscoutCodeDropDown
-                    onDIscountData={
-                        getDiscountData
-                    }
+                    onDIscountData={getDiscountData}
                 />
 
                 {/* Payment Method */}
@@ -414,11 +355,9 @@ function PaymentDetails() {
                 >
                     <div>
                         <span className="text-xl">
-                            {
-                                paymentPaymentDetailsT(
-                                    "payment-method.title",
-                                )
-                            }
+                            {paymentPaymentDetailsT(
+                                "payment-method.title",
+                            )}
                         </span>
                     </div>
 
@@ -429,7 +368,6 @@ function PaymentDetails() {
                             "gap-5",
                         )}
                     >
-                        {/* Saman */}
                         <label
                             className={cn(
                                 "flex items-center gap-2",
@@ -440,27 +378,19 @@ function PaymentDetails() {
                                 type="radio"
                                 name="payment-method"
                                 value="saman"
-                                checked={
-                                    paymentMethod ===
-                                    "saman"
-                                }
+                                checked={paymentMethod === "saman"}
                                 onChange={(event) =>
-                                    setPaymentMethod(
-                                        event.target.value,
-                                    )
+                                    setPaymentMethod(event.target.value)
                                 }
                             />
 
                             <span>
-                                {
-                                    paymentPaymentDetailsT(
-                                        "payment-method.saman",
-                                    )
-                                }
+                                {paymentPaymentDetailsT(
+                                    "payment-method.saman",
+                                )}
                             </span>
                         </label>
 
-                        {/* Another */}
                         <label
                             className={cn(
                                 "flex items-center gap-2",
@@ -471,23 +401,16 @@ function PaymentDetails() {
                                 type="radio"
                                 name="payment-method"
                                 value="another"
-                                checked={
-                                    paymentMethod ===
-                                    "another"
-                                }
+                                checked={paymentMethod === "another"}
                                 onChange={(event) =>
-                                    setPaymentMethod(
-                                        event.target.value,
-                                    )
+                                    setPaymentMethod(event.target.value)
                                 }
                             />
 
                             <span>
-                                {
-                                    paymentPaymentDetailsT(
-                                        "payment-method.another",
-                                    )
-                                }
+                                {paymentPaymentDetailsT(
+                                    "payment-method.another",
+                                )}
                             </span>
                         </label>
                     </div>
@@ -520,35 +443,24 @@ function PaymentDetails() {
                             "md:rounded-lg rounded-none",
                             "hover:bg-[var(--crimson-hover-color)]",
                             isSubmitting &&
-                            "opacity-60 cursor-not-allowed",
+                                "opacity-60 cursor-not-allowed",
                         )}
                     >
                         <span>
-                            {
-                                isSubmitting
-                                    ? (
-                                        <Loading
-                                            className="w-full"
-                                            size={40}
-                                            color="var(--white-color)"
-                                        />
-                                    )
-                                    : paymentPaymentDetailsT(
-                                        "payment-button",
-                                    )
-                            }
+                            {isSubmitting ? (
+                                <Loading
+                                    className="w-full"
+                                    size={40}
+                                    color="var(--white-color)"
+                                />
+                            ) : (
+                                paymentPaymentDetailsT("payment-button")
+                            )}
                         </span>
 
                         <span>
-                            {
-                                formatPrice(
-                                    payable,
-                                )
-                            }
-
-                            {commonT(
-                                "price-type",
-                            )}
+                            {formatPrice(payable)}
+                            {commonT("price-type")}
                         </span>
                     </Button>
                 </div>

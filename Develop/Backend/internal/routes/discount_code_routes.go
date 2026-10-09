@@ -19,10 +19,15 @@ func SetupDiscountCodeRoutes(
 	rateLimiter limiter.RateLimiter,
 ) {
 	discountCodes := api.Group("/discount-codes")
-	discountCodes.Use(
-		middleware.AuthMiddleware(jwtService, logger),
+
+	// Temporary public endpoint for testing.
+	discountCodes.GET(
+		"",
+		middleware.RateLimiter(rateLimiter, 60, logger),
+		discountCodeHandler.GetAll,
 	)
 
+	// Existing endpoint: authentication removed temporarily for testing.
 	discountCodes.GET(
 		"/:code",
 		middleware.RateLimiter(rateLimiter, 60, logger),
