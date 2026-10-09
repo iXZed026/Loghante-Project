@@ -44,6 +44,9 @@
         "profile_fetched_successfully": "پروفایل با موفقیت دریافت شد",
         "profile_updated_successfully": "پروفایل با موفقیت به‌روزرسانی شد",
         "customer_request_created_successfully": "درخواست مشتری با موفقیت ثبت شد",
-        "discount_code_applied_successfully": "کد تخفیف با موفقیت اعمال شد"
+        "discount_code_applied_successfully": "کد تخفیف با موفقیت اعمال شد",
+        "user_bookings_fetched_successfully": "رزروهای کاربر با موفقیت دریافت شدند",
+        "booking_created_successfully": "رزرو با موفقیت ایجاد شد",
+        "session_seats_fetched_successfully": "صندلی‌های جلسه با موفقیت دریافت شدند"
     }
 }

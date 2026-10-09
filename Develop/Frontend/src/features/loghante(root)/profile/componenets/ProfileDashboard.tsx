@@ -76,7 +76,7 @@ function ProfileDashboard({
             setModal({
                 active: true,
                 success: true,
-                message: "You have been logged out successfully.",
+                message: dashboardLinksT("logout-success"),
                 pushUrl: "/",
                 clearData: clearSession,
             });

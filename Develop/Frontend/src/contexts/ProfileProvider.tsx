@@ -12,6 +12,7 @@ import {
 import { fetcher } from "@/lib/api/fetcher";
 import { logout as logoutRequest } from "@/lib/api/auth/logout";
 import { removeFromLocalStorage } from "@/lib/utils/localStorage";
+import { useLocale } from "next-intl";
 
 interface Profile {
     user_Id: number;
@@ -49,6 +50,8 @@ export function ProfileProvider({
     const [profile, setProfile] = useState<Profile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    const locale = useLocale()
+
     const getProfile = useCallback(async () => {
         try {
             setIsLoading(true);
@@ -70,7 +73,7 @@ export function ProfileProvider({
     // Send the logout request without clearing the current session.
     // The UI clears the session after showing the success modal.
     const logout = useCallback(async () => {
-        const response = await logoutRequest();
+        const response = await logoutRequest(locale);
 
         if (!response.success) {
             throw new Error(

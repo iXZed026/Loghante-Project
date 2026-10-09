@@ -25,5 +25,6 @@
         "title": "Discover the museums of Loghanteh",
         "sub-title": "Explore our museums, exhibitions and cultural collections",
         "museums-button": "Explore Museums"
-    }
+    },
+    "logout-success": "You have been logged out successfully."
 }

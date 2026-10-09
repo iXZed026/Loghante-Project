@@ -44,6 +44,9 @@
         "profile_fetched_successfully": "Profile fetched successfully",
         "profile_updated_successfully": "Profile updated successfully",
         "customer_request_created_successfully": "Customer request created successfully",
-        "discount_code_applied_successfully": "Discount code applied successfully"
+        "discount_code_applied_successfully": "Discount code applied successfully",
+        "user_bookings_fetched_successfully": "User bookings fetched successfully",
+        "booking_created_successfully": "Booking created successfully",
+        "session_seats_fetched_successfully": "Session seats fetched successfully"
     }
 }
