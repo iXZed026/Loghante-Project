@@ -548,3 +548,8 @@ SELECT * FROM discountcodes WHERE discountcodeid = 5;
 SELECT * FROM bookings AS b
 LEFT JOIN users AS u
 ON u.userid = b.userid;
+
+SELECT * FROM users WHERE phonenumber ='09302303576';
+
+DELETE FROM users
+WHERE userid = 53;
