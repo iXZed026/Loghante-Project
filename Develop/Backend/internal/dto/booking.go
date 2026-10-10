@@ -21,6 +21,17 @@ type CreateBookingResponse struct {
 	PurchasedAt time.Time       `json:"purchasedAt"`
 }
 
+type BookingCountResponse struct {
+	Count int64 `json:"count"`
+}
+
+type NextBookingResponse struct {
+	BookingID   uint      `json:"bookingId"`
+	Name        string    `json:"name"`
+	TicketToken uuid.UUID `json:"ticketToken"`
+	StartAt     time.Time `json:"startAt"`
+}
+
 type UserBookingResponse struct {
 	BookingID     uint   `json:"bookingId"`
 	EventTypeID   uint   `json:"eventTypeId"`

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"time"
 
 	"loghanteh-project/internal/dto"
 	"loghanteh-project/internal/models"
@@ -231,6 +232,72 @@ func (r *BookingRepository) DecreaseSessionCapacity(
 // --------------------------------------------------
 // User bookings
 // --------------------------------------------------
+
+func (r *BookingRepository) GetBookingCount(
+	ctx context.Context,
+	bookingID uint,
+	userID uint,
+) (*dto.BookingCountResponse, error) {
+	var count int64
+
+	err := r.db.
+		WithContext(ctx).
+		Model(&models.Booking{}).
+		Select("quantity").
+		Where("bookingid = ? AND userid = ?", bookingID, userID).
+		Scan(&count).
+		Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.BookingCountResponse{Count: count}, nil
+}
+
+func (r *BookingRepository) GetNextBooking(
+	ctx context.Context,
+	userID uint,
+	languageID uint,
+) (*dto.NextBookingResponse, error) {
+	var nextBooking dto.NextBookingResponse
+
+	err := r.db.
+		WithContext(ctx).
+		Table("bookings AS b").
+		Select(`
+			b.bookingid AS "bookingId",
+			COALESCE(ets.name, '') AS "name",
+			b.tickettoken AS "ticketToken",
+			es.startat AS "startAt"
+		`).
+		Joins(`
+			INNER JOIN eventsession AS es
+				ON es.sessionid = b.sessionid
+		`).
+		Joins(`
+			INNER JOIN events AS e
+				ON e.eventid = es.eventid
+		`).
+		Joins(`
+			LEFT JOIN eventstranslations AS ets
+				ON ets.eventid = e.eventid
+				AND ets.languagesid = ?
+		`, languageID).
+		Where("b.userid = ?", userID).
+		Where("es.startat > ?", time.Now()).
+		Order("es.startat ASC").
+		Limit(1).
+		Scan(&nextBooking).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	if nextBooking.StartAt.IsZero() {
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	return &nextBooking, nil
+}
 
 func (r *BookingRepository) GetUserBookings(
 	ctx context.Context,

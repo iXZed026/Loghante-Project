@@ -311,6 +311,27 @@ func (s *TicketService) GetUserBookings(
 	)
 }
 
+func (s *TicketService) GetBookingCount(
+	ctx context.Context,
+	bookingID uint,
+	userID uint,
+) (*dto.BookingCountResponse, error) {
+	return s.bookingRepository.GetBookingCount(ctx, bookingID, userID)
+}
+
+func (s *TicketService) GetNextBooking(
+	ctx context.Context,
+	userID uint,
+	languageCode string,
+) (*dto.NextBookingResponse, error) {
+	languageID, err := s.languageRepository.GetIDByCode(ctx, languageCode)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.bookingRepository.GetNextBooking(ctx, userID, languageID)
+}
+
 // --------------------------------------------------
 // Seats
 // --------------------------------------------------
