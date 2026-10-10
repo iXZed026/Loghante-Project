@@ -544,3 +544,7 @@ SET isactive = false
 WHERE discountcodeid = 4;
 
 SELECT * FROM discountcodes WHERE discountcodeid = 5;
+
+SELECT * FROM bookings AS b
+LEFT JOIN users AS u
+ON u.userid = b.userid;
