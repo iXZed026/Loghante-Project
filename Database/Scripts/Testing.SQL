@@ -510,7 +510,7 @@ VALUES
 --DELETE FROM bookings;
 
 SELECT * FROM eventsession;
-SELECT * FROM bookings;
+SELECT * FROM bookings WHERE bookingid = 71;
 
 SELECT * FROM seats;
 
@@ -519,3 +519,28 @@ SELECT * FROM eventstranslations;
 SELECT * FROM usertypes;
 
 SELECT * FROM users;
+
+SELECT * FROM discountcodes;
+
+INSERT INTO DiscountCodes
+    (Code, DiscountPercent, MaxDiscountAmount, UsageLimit, UsedCount, StartAt, ExpiresAt)
+VALUES
+    (
+        'SALAMDADASH',
+        25.00,
+        750000,
+        3,
+        0,
+        '2026-10-19 00:00:00+03:30',
+        '2026-12-31 23:59:59+03:30'
+    );
+
+UPDATE discountcodes
+SET isactive = false
+WHERE discountcodeid = 5;
+
+UPDATE discountcodes
+SET isactive = false
+WHERE discountcodeid = 4;
+
+SELECT * FROM discountcodes WHERE discountcodeid = 5;
