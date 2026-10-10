@@ -11,6 +11,7 @@ import { getDiscountCode } from "@/lib/api/discount-codes/discount-codes"
 import { cn } from "@/lib/utils/cn"
 import { useLocale, useTranslations } from "next-intl"
 import { useRef, useState } from "react"
+import type { KeyboardEvent } from "react"
 import { CiDiscount1 } from "react-icons/ci"
 import { MdKeyboardArrowDown } from "react-icons/md"
 import { motion } from "framer-motion"
@@ -31,9 +32,9 @@ interface IModalState {
 function PaymentDiscoutCodeDropDown({
     onDIscountData,
 }: PaymentDiscoutCodeDropDownProps) {
-
-    const paymentPaymentDetailsDDT =
-        useTranslations("payment.payment-details.drop-down")
+    const paymentPaymentDetailsDDT = useTranslations(
+        "payment.payment-details.drop-down"
+    )
 
     const [
         discountValue,
@@ -49,60 +50,44 @@ function PaymentDiscoutCodeDropDown({
         toggleDDHandler,
     ] = useActive(false)
 
-    const [
-        isLoading,
-        setIsLoading,
-    ] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
-    const [
-        modal,
-        setModal,
-    ] = useState<IModalState>({
+    const [modal, setModal] = useState<IModalState>({
         active: false,
         success: false,
         message: "",
     })
 
     const locale = useLocale()
+    const dropDownRef = useRef<HTMLDivElement | null>(null)
 
-    const dropDownRef =
-        useRef<HTMLDivElement | null>(null)
-
-    useClickOutside(
-        dropDownRef,
-        unActiveDDHandler,
-    )
+    useClickOutside(dropDownRef, unActiveDDHandler)
 
     async function applyDiscountHandle() {
+        if (isLoading) return
 
         const code = discountValue.trim()
 
         if (!code) {
-
             setModal({
                 active: true,
                 success: "warning",
                 message: "Please enter a discount code.",
             })
-
             return
         }
 
         setIsLoading(true)
 
         try {
-
-            const response =
-                await getDiscountCode(code,locale)
+            const response = await getDiscountCode(code, locale)
 
             if (!response.success) {
-
                 setModal({
                     active: true,
                     success: false,
                     message: response.message,
                 })
-
                 return
             }
 
@@ -115,11 +100,8 @@ function PaymentDiscoutCodeDropDown({
             })
 
             clearDiscountValue()
-
             unActiveDDHandler()
-
         } catch (error) {
-
             const message =
                 error instanceof Error
                     ? error.message
@@ -130,23 +112,30 @@ function PaymentDiscoutCodeDropDown({
                 success: false,
                 message,
             })
-
         } finally {
-
             setIsLoading(false)
-
         }
+    }
+
+    function handleDiscountKeyDown(
+        event: KeyboardEvent<HTMLInputElement>
+    ) {
+        if (event.key !== "Enter") return
+
+        event.preventDefault()
+        event.stopPropagation()
+
+        void applyDiscountHandle()
     }
 
     return (
         <>
-            {/* Discount Response Modal */}
             <Modal
                 active={modal.active}
                 message={modal.message}
                 success={modal.success}
                 onClose={() => {
-                    setModal(prev => ({
+                    setModal((prev) => ({
                         ...prev,
                         active: false,
                     }))
@@ -157,7 +146,6 @@ function PaymentDiscoutCodeDropDown({
                 className="px-5 mb-15"
                 ref={dropDownRef}
             >
-                {/* Discount Button */}
                 <Button
                     type="button"
                     className={cn(
@@ -172,16 +160,13 @@ function PaymentDiscoutCodeDropDown({
                 >
                     <div className="fcc gap-2">
                         <CiDiscount1 className="size-6" />
-
                         <span>
                             {paymentPaymentDetailsDDT("title")}
                         </span>
                     </div>
 
                     <motion.div
-                        animate={{
-                            rotate: activeDD ? 180 : 0,
-                        }}
+                        animate={{ rotate: activeDD ? 180 : 0 }}
                         transition={{
                             duration: 0.25,
                             ease: "easeInOut",
@@ -191,7 +176,6 @@ function PaymentDiscoutCodeDropDown({
                     </motion.div>
                 </Button>
 
-                {/* Discount Code */}
                 <AnimatePresenceWrapper isActive={activeDD}>
                     <motion.div
                         variants={dropdownVariants}
@@ -211,13 +195,12 @@ function PaymentDiscoutCodeDropDown({
                                 "border-[1px] border-black-opacity",
                             )}
                             type="text"
-                            placeholder={
-                                paymentPaymentDetailsDDT(
-                                    "discount-placeholder"
-                                )
-                            }
+                            placeholder={paymentPaymentDetailsDDT(
+                                "discount-placeholder"
+                            )}
                             value={discountValue}
                             onChange={changeDiscountValue}
+                            onKeyDown={handleDiscountKeyDown}
                             disabled={isLoading}
                         />
 

@@ -1,3 +1,4 @@
+
 "use client"
 
 import Modal from "@/components/shared/modal/Modal"
@@ -7,10 +8,7 @@ import { cn } from "@/lib/utils/cn"
 import { formatPrice } from "@/lib/utils/formatPrice"
 import { calculateDiscountPrice } from "@/lib/utils/calculateDiscountPrice"
 
-import React, {
-    FormEvent,
-    useState,
-} from "react"
+import { useState } from "react"
 
 import {
     useLocale,
@@ -125,11 +123,7 @@ function PaymentDetails() {
     const payable =
         discountedPrice + vat
 
-    async function submitHandler(
-        event: FormEvent<HTMLFormElement>,
-    ) {
-        event.preventDefault()
-
+    async function submitHandler() {
         if (quantity < 1 || isSubmitting) {
             return
         }
@@ -239,8 +233,7 @@ function PaymentDetails() {
                 }}
             />
 
-            <form
-                onSubmit={submitHandler}
+            <div
                 className={cn(
                     "lg:col-span-6 col-span-12",
                     "md:p-10 p-8",
@@ -432,7 +425,8 @@ function PaymentDetails() {
                     )}
                 >
                     <Button
-                        type="submit"
+                        type="button"
+                        onClick={submitHandler}
                         disabled={isSubmitting}
                         className={cn(
                             "w-full",
@@ -464,7 +458,7 @@ function PaymentDetails() {
                         </span>
                     </Button>
                 </div>
-            </form>
+            </div>
         </>
     )
 }
