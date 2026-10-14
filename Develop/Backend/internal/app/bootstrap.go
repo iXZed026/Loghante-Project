@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"log"
 	"log/slog"
 
 	"loghanteh-project/internal/auth"
@@ -23,161 +22,80 @@ func New() (*App, error) {
 
 	cfg, err := config.Load()
 	if err != nil {
-		logger.Error(
-			"failed to load env",
-			"error",
-			err,
-		)
-
+		logger.Error("failed to load env", "error", err)
 		return nil, err
 	}
 
-	//////////////
-	// Redis
-	//////////////
+	// Context
+	ctx, cancel := context.WithCancel(context.Background())
 
-	var rateLimiter limiter.RateLimiter
-
-	if cfg.EnableRateLimiter {
-		if err := config.ConnectRedis(cfg); err != nil {
-			logger.Error(
-				"failed to connect redis",
-				"error",
-				err,
-			)
-
-			return nil, err
-		}
-
-		logger.Info(
-			"Redis connected successfully!",
-		)
-
-		rateLimiter = limiter.NewRedisLimiter(
-			config.Redis,
+	// Redis: connect independently of the rate limiter.
+	redisErr := config.ConnectRedis(cfg)
+	if redisErr != nil {
+		logger.Warn(
+			"Redis is unavailable; cache will fall back to database",
+			"error", redisErr,
 		)
 	} else {
-		logger.Info(
-			"Rate limiter disabled",
-		)
-
-		rateLimiter = limiter.NewNoopLimiter()
+		logger.Info("Redis connected successfully")
 	}
 
-	//////////////
-	// Context
-	//////////////
+	// Rate limiter
+	var rateLimiter limiter.RateLimiter
 
-	ctx, cancel := context.WithCancel(
-		context.Background(),
-	)
+	if cfg.EnableRateLimiter && redisErr == nil {
+		rateLimiter = limiter.NewRedisLimiter(config.Redis)
+		logger.Info("Redis rate limiter enabled")
+	} else {
+		rateLimiter = limiter.NewNoopLimiter()
 
-	//////////////
+		if cfg.EnableRateLimiter {
+			logger.Warn(
+				"Redis rate limiter unavailable; using no-op limiter",
+			)
+		} else {
+			logger.Info("Rate limiter disabled")
+		}
+	}
+
 	// Database
-	//////////////
-
 	db, err := database.Connect(cfg.DatabaseURL)
 	if err != nil {
 		cancel()
-
-		log.Fatal(
-			"failed to connect database:",
-			err,
-		)
+		return nil, err
 	}
 
-	logger.Info(
-		"PostgreSQL connected successfully!",
-	)
+	logger.Info("PostgreSQL connected successfully")
 
 	sqlDB, err := db.DB()
 	if err != nil {
 		cancel()
-
-		log.Fatal(
-			"failed to get sql database:",
-			err,
-		)
+		return nil, err
 	}
 
 	if err := sqlDB.Ping(); err != nil {
 		cancel()
-
-		log.Fatal(
-			"database ping failed:",
-			err,
-		)
+		return nil, err
 	}
 
-	logger.Info(
-		"Database ping successful!",
-	)
+	logger.Info("Database ping successful")
 
-	//////////////
 	// JWT
-	//////////////
+	jwtService := auth.NewJWTService(cfg.JwtSecret)
 
-	jwtService := auth.NewJWTService(
-		cfg.JwtSecret,
-	)
-
-	//////////////
 	// Repositories
-	//////////////
+	userRepo := repositories.NewUserRepository(db)
+	refreshTokenRepo := repositories.NewRefreshTokenRepository(db)
+	loginVerificationRepository := repositories.NewLoginVerificationRepository(db)
+	registerVerificationRepository := repositories.NewRegisterVerificationRepository(db)
+	forgetPasswordVerificationRepository := repositories.NewForgetPasswordVerificationRepository(db)
+	ticketRepository := repositories.NewTicketRepository(db)
+	languageRepository := repositories.NewLanguageRepository(db)
+	bookingRepository := repositories.NewBookingRepository(db)
+	customerRequestRepository := repositories.NewCustomerRequestRepository(db)
+	discountCodeRepository := repositories.NewDiscountCodeRepository(db)
 
-	userRepo := repositories.NewUserRepository(
-		db,
-	)
-
-	refreshTokenRepo :=
-		repositories.NewRefreshTokenRepository(
-			db,
-		)
-
-	loginVerificationRepository :=
-		repositories.NewLoginVerificationRepository(
-			db,
-		)
-
-	registerVerificationRepository :=
-		repositories.NewRegisterVerificationRepository(
-			db,
-		)
-
-	forgetPasswordVerificationRepository :=
-		repositories.NewForgetPasswordVerificationRepository(
-			db,
-		)
-
-	ticketRepository :=
-		repositories.NewTicketRepository(
-			db,
-		)
-
-	languageRepository :=
-		repositories.NewLanguageRepository(
-			db,
-		)
-
-	bookingRepository :=
-		repositories.NewBookingRepository(
-			db,
-		)
-
-	customerRequestRepository :=
-		repositories.NewCustomerRequestRepository(
-			db,
-		)
-
-	discountCodeRepository :=
-		repositories.NewDiscountCodeRepository(
-			db,
-		)
-
-	//////////////
 	// Services
-	//////////////
-
 	authService := services.NewAuthService(
 		userRepo,
 		refreshTokenRepo,
@@ -187,9 +105,7 @@ func New() (*App, error) {
 		forgetPasswordVerificationRepository,
 	)
 
-	profileService := services.NewProfileService(
-		userRepo,
-	)
+	profileService := services.NewProfileService(userRepo)
 
 	reservationService := reservation.NewService(
 		db,
@@ -204,53 +120,34 @@ func New() (*App, error) {
 		bookingRepository,
 		reservationService,
 		seatResourceProvider,
+		config.Redis,
+		logger,
 	)
 
-	customerRequestService :=
-		services.NewCustomerRequestService(
-			customerRequestRepository,
-		)
+	customerRequestService := services.NewCustomerRequestService(
+		customerRequestRepository,
+	)
 
-	discountCodeService :=
-		services.NewDiscountCodeService(
-			discountCodeRepository,
-		)
+	discountCodeService := services.NewDiscountCodeService(
+		discountCodeRepository,
+	)
 
-	//////////////
 	// Handlers
-	//////////////
+	authHandler := handlers.NewAuthHandler(authService, logger)
+	profileHandler := handlers.NewProfileHandler(profileService, logger)
+	ticketHandler := handlers.NewTicketHandler(ticketService, logger)
 
-	authHandler := handlers.NewAuthHandler(
-		authService,
+	customerRequestHandler := handlers.NewCustomerRequestHandler(
+		customerRequestService,
 		logger,
 	)
 
-	profileHandler := handlers.NewProfileHandler(
-		profileService,
+	discountCodeHandler := handlers.NewDiscountCodeHandler(
+		discountCodeService,
 		logger,
 	)
 
-	ticketHandler := handlers.NewTicketHandler(
-		ticketService,
-		logger,
-	)
-
-	customerRequestHandler :=
-		handlers.NewCustomerRequestHandler(
-			customerRequestService,
-			logger,
-		)
-
-	discountCodeHandler :=
-		handlers.NewDiscountCodeHandler(
-			discountCodeService,
-			logger,
-		)
-
-	//////////////
 	// Router
-	//////////////
-
 	r := gin.Default()
 
 	routes.SetupRoutes(

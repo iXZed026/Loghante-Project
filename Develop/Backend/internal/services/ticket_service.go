@@ -2,11 +2,17 @@ package services
 
 import (
 	"context"
+	"fmt"
+	"log/slog"
+	"strings"
 	"time"
 
+	"loghanteh-project/internal/cache"
 	"loghanteh-project/internal/dto"
 	"loghanteh-project/internal/repositories"
 	"loghanteh-project/internal/reservation"
+
+	"github.com/redis/go-redis/v9"
 )
 
 const (
@@ -23,6 +29,9 @@ type TicketService struct {
 	bookingRepository    *repositories.BookingRepository
 	reservationService   *reservation.Service
 	seatResourceProvider reservation.ResourceProvider
+
+	redisClient *redis.Client
+	logger      *slog.Logger
 }
 
 func NewTicketService(
@@ -31,6 +40,8 @@ func NewTicketService(
 	bookingRepository *repositories.BookingRepository,
 	reservationService *reservation.Service,
 	seatResourceProvider reservation.ResourceProvider,
+	redisClient *redis.Client,
+	logger *slog.Logger,
 ) *TicketService {
 	return &TicketService{
 		ticketRepository:     ticketRepository,
@@ -38,7 +49,24 @@ func NewTicketService(
 		bookingRepository:    bookingRepository,
 		reservationService:   reservationService,
 		seatResourceProvider: seatResourceProvider,
+		redisClient:          redisClient,
+		logger:               logger,
 	}
+}
+
+// cacheLanguage normalizes the language used in cache keys.
+func cacheLanguage(language string) string {
+	language = strings.ToLower(strings.TrimSpace(language))
+
+	if len(language) > 2 {
+		language = language[:2]
+	}
+
+	if language == "" {
+		return "en"
+	}
+
+	return language
 }
 
 // --------------------------------------------------
@@ -50,19 +78,34 @@ func (s *TicketService) GetMuseumTourSessions(
 	date time.Time,
 	languageCode string,
 ) ([]dto.MuseumTourSessionResponse, error) {
-	languageID, err := s.languageRepository.GetIDByCode(
-		ctx,
-		languageCode,
+	key := fmt.Sprintf(
+		"loghanteh:tickets:v1:museum-tour:date:%s:lang:%s",
+		date.Format("2006-01-02"),
+		cacheLanguage(languageCode),
 	)
-	if err != nil {
-		return nil, err
-	}
 
-	return s.ticketRepository.GetMuseumTourSessions(
+	return cache.RememberJSON(
 		ctx,
-		date,
-		MuseumTourEventTypeID,
-		languageID,
+		s.redisClient,
+		s.logger,
+		key,
+		cache.DefaultTTL,
+		func() ([]dto.MuseumTourSessionResponse, error) {
+			languageID, err := s.languageRepository.GetIDByCode(
+				ctx,
+				languageCode,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			return s.ticketRepository.GetMuseumTourSessions(
+				ctx,
+				date,
+				MuseumTourEventTypeID,
+				languageID,
+			)
+		},
 	)
 }
 
@@ -111,19 +154,34 @@ func (s *TicketService) GetCinemaSessions(
 	date time.Time,
 	languageCode string,
 ) ([]dto.CinemaSessionListResponse, error) {
-	languageID, err := s.languageRepository.GetIDByCode(
-		ctx,
-		languageCode,
+	key := fmt.Sprintf(
+		"loghanteh:tickets:v1:cinema:date:%s:lang:%s",
+		date.Format("2006-01-02"),
+		cacheLanguage(languageCode),
 	)
-	if err != nil {
-		return nil, err
-	}
 
-	return s.ticketRepository.GetCinemaSessions(
+	return cache.RememberJSON(
 		ctx,
-		date,
-		CinemaEventTypeID,
-		languageID,
+		s.redisClient,
+		s.logger,
+		key,
+		cache.DefaultTTL,
+		func() ([]dto.CinemaSessionListResponse, error) {
+			languageID, err := s.languageRepository.GetIDByCode(
+				ctx,
+				languageCode,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			return s.ticketRepository.GetCinemaSessions(
+				ctx,
+				date,
+				CinemaEventTypeID,
+				languageID,
+			)
+		},
 	)
 }
 
@@ -136,24 +194,39 @@ func (s *TicketService) GetTheaterSessions(
 	date time.Time,
 	languageCode string,
 ) ([]dto.TheaterSessionListResponse, error) {
-	languageID, err := s.languageRepository.GetIDByCode(
-		ctx,
-		languageCode,
+	key := fmt.Sprintf(
+		"loghanteh:tickets:v1:theater:date:%s:lang:%s",
+		date.Format("2006-01-02"),
+		cacheLanguage(languageCode),
 	)
-	if err != nil {
-		return nil, err
-	}
 
-	return s.ticketRepository.GetTheaterSessions(
+	return cache.RememberJSON(
 		ctx,
-		date,
-		TheaterEventTypeID,
-		languageID,
+		s.redisClient,
+		s.logger,
+		key,
+		cache.DefaultTTL,
+		func() ([]dto.TheaterSessionListResponse, error) {
+			languageID, err := s.languageRepository.GetIDByCode(
+				ctx,
+				languageCode,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			return s.ticketRepository.GetTheaterSessions(
+				ctx,
+				date,
+				TheaterEventTypeID,
+				languageID,
+			)
+		},
 	)
 }
 
 // --------------------------------------------------
-// Generic session list helper
+// Generic Session List Helper
 // --------------------------------------------------
 
 type sessionListFunc func(
@@ -170,19 +243,35 @@ func (s *TicketService) getSessionsByType(
 	eventTypeID uint,
 	getSessions sessionListFunc,
 ) ([]dto.EventSessionListResponse, error) {
-	languageID, err := s.languageRepository.GetIDByCode(
-		ctx,
-		languageCode,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return getSessions(
-		ctx,
-		date,
+	key := fmt.Sprintf(
+		"loghanteh:tickets:v1:sessions:type:%d:date:%s:lang:%s",
 		eventTypeID,
-		languageID,
+		date.Format("2006-01-02"),
+		cacheLanguage(languageCode),
+	)
+
+	return cache.RememberJSON(
+		ctx,
+		s.redisClient,
+		s.logger,
+		key,
+		cache.DefaultTTL,
+		func() ([]dto.EventSessionListResponse, error) {
+			languageID, err := s.languageRepository.GetIDByCode(
+				ctx,
+				languageCode,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			return getSessions(
+				ctx,
+				date,
+				eventTypeID,
+				languageID,
+			)
+		},
 	)
 }
 
@@ -240,19 +329,35 @@ func (s *TicketService) getEventDetail(
 	eventTypeID uint,
 	getDetail sessionDetailFunc,
 ) (*dto.EventSessionDetailResponse, error) {
-	languageID, err := s.languageRepository.GetIDByCode(
-		ctx,
-		languageCode,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return getDetail(
-		ctx,
-		sessionID,
+	key := fmt.Sprintf(
+		"loghanteh:tickets:v1:session-detail:type:%d:session:%d:lang:%s",
 		eventTypeID,
-		languageID,
+		sessionID,
+		cacheLanguage(languageCode),
+	)
+
+	return cache.RememberJSON(
+		ctx,
+		s.redisClient,
+		s.logger,
+		key,
+		cache.DefaultTTL,
+		func() (*dto.EventSessionDetailResponse, error) {
+			languageID, err := s.languageRepository.GetIDByCode(
+				ctx,
+				languageCode,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			return getDetail(
+				ctx,
+				sessionID,
+				eventTypeID,
+				languageID,
+			)
+		},
 	)
 }
 
@@ -296,18 +401,50 @@ func (s *TicketService) GetUserBookings(
 	userID uint,
 	languageCode string,
 ) ([]dto.UserBookingResponse, error) {
-	languageID, err := s.languageRepository.GetIDByCode(
-		ctx,
-		languageCode,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return s.bookingRepository.GetUserBookings(
-		ctx,
+	key := fmt.Sprintf(
+		"loghanteh:tickets:v1:user-bookings:user:%d:lang:%s",
 		userID,
-		languageID,
+		cacheLanguage(languageCode),
+	)
+
+	return cache.RememberJSON(
+		ctx,
+		s.redisClient,
+		s.logger,
+		key,
+		cache.DefaultTTL,
+		func() ([]dto.UserBookingResponse, error) {
+			languageID, err := s.languageRepository.GetIDByCode(
+				ctx,
+				languageCode,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			return s.bookingRepository.GetUserBookings(
+				ctx,
+				userID,
+				languageID,
+			)
+		},
+	)
+}
+
+func (s *TicketService) invalidateUserBookingsCache(
+	ctx context.Context,
+	userID uint,
+) {
+	pattern := fmt.Sprintf(
+		"loghanteh:tickets:v1:user-bookings:user:%d:lang:*",
+		userID,
+	)
+
+	_ = cache.DeletePattern(
+		ctx,
+		s.redisClient,
+		s.logger,
+		pattern,
 	)
 }
 
@@ -316,7 +453,11 @@ func (s *TicketService) GetBookingCount(
 	bookingID uint,
 	userID uint,
 ) (*dto.BookingCountResponse, error) {
-	return s.bookingRepository.GetBookingCount(ctx, bookingID, userID)
+	return s.bookingRepository.GetBookingCount(
+		ctx,
+		bookingID,
+		userID,
+	)
 }
 
 func (s *TicketService) GetNextBooking(
@@ -324,12 +465,19 @@ func (s *TicketService) GetNextBooking(
 	userID uint,
 	languageCode string,
 ) (*dto.NextBookingResponse, error) {
-	languageID, err := s.languageRepository.GetIDByCode(ctx, languageCode)
+	languageID, err := s.languageRepository.GetIDByCode(
+		ctx,
+		languageCode,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.bookingRepository.GetNextBooking(ctx, userID, languageID)
+	return s.bookingRepository.GetNextBooking(
+		ctx,
+		userID,
+		languageID,
+	)
 }
 
 // --------------------------------------------------
@@ -385,7 +533,10 @@ func (s *TicketService) GetUserReservedSession(
 	bookingID uint,
 	languageCode string,
 ) (*dto.UserReservedSessionResponse, error) {
-	languageID, err := s.languageRepository.GetIDByCode(ctx, languageCode)
+	languageID, err := s.languageRepository.GetIDByCode(
+		ctx,
+		languageCode,
+	)
 	if err != nil {
 		return nil, err
 	}

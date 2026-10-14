@@ -83,3 +83,53 @@ func RememberJSON[T any](
 
 	return value, nil
 }
+
+func DeletePattern(
+	ctx context.Context,
+	client *redis.Client,
+	logger *slog.Logger,
+	pattern string,
+) error {
+	if client == nil {
+		return nil
+	}
+
+	var cursor uint64
+
+	for {
+		keys, nextCursor, err := client.Scan(
+			ctx,
+			cursor,
+			pattern,
+			100,
+		).Result()
+		if err != nil {
+			if logger != nil {
+				logger.Warn(
+					"failed to scan Redis cache keys",
+					"pattern", pattern,
+					"error", err,
+				)
+			}
+			return err
+		}
+
+		if len(keys) > 0 {
+			if err := client.Del(ctx, keys...).Err(); err != nil {
+				if logger != nil {
+					logger.Warn(
+						"failed to delete Redis cache keys",
+						"pattern", pattern,
+						"error", err,
+					)
+				}
+				return err
+			}
+		}
+
+		cursor = nextCursor
+		if cursor == 0 {
+			return nil
+		}
+	}
+}

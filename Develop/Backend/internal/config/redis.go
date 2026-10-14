@@ -25,7 +25,6 @@ func ConnectRedis(cfg Config) error {
 		WriteTimeout: 2 * time.Second,
 	})
 
-	// Keep the client even when the initial ping fails.
 	Redis = client
 
 	ctx, cancel := context.WithTimeout(
