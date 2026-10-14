@@ -676,3 +676,11 @@ VALUES
 SELECT * FROM users WHERE usertypeid = 3;
 
 SELECT * FROM usertypes;
+
+SELECT * FROM users;
+
+INSERT INTO eventsession (eventid, hallid, startat, duration, capacity, price)
+VALUES
+        (2,1,'2026-10-14 20:30:00+02',120,50,0);
+
+SELECT * FROM eventstranslations;
