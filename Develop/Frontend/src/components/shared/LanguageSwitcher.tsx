@@ -126,6 +126,8 @@ function LanguageSwitcher({
         UnActiveLanguageDropDownHandler,
     );
 
+    const getlanguageName = languages.find(lg => lg.code === locale)
+
     return (
         <div
             className={cn(
@@ -142,7 +144,7 @@ function LanguageSwitcher({
                 className={cn(
                     "flex items-center justify-center",
                     "gap-1",
-                    "md:py-3 py-2",
+                    "md:py-3 py-2 ",
                     "font-semibold",
                     "cursor-pointer",
                     "transition-all",
@@ -168,7 +170,11 @@ function LanguageSwitcher({
             >
                 <GrLanguage />
 
-                {locale.toUpperCase()}
+                {
+                    getlanguageName?.name &&
+                    getLocalizedValue(getlanguageName?.name, locale)
+                }
+
 
                 <IoMdArrowDropdown
                     className={cn(
@@ -199,7 +205,7 @@ function LanguageSwitcher({
                         "text-white-utility",
                         "shadow-lg",
 
-    
+
                         "bottom-full",
                         "rounded-t-md",
 
