@@ -32,7 +32,6 @@ function Loghante() {
         <ConferenceHall />
         <VirtualTourSection />
       </Container>
-      {/* <Footer /> */}
     </div>
   )
 }

@@ -18,11 +18,15 @@ export function getLayoutVisibility(
   const isLoading =
     normalizedPathname.includes("/loading");
 
+  const isShop =
+    normalizedPathname.includes("/shop");
+
   const hideLayout =
     isProfile ||
     isLoginOrRegister ||
     isPayment ||
-    isLoading;
+    isLoading ||
+    isShop
 
   return {
     hideHeader: hideLayout,

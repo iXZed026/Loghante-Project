@@ -3,6 +3,15 @@
 import { languages } from "@/data/languages";
 import useActive from "@/hooks/useActive";
 import { cn } from "@/lib/utils/cn";
+import { getLocalizedValue } from "@/lib/utils/getLocalizedValue";
+import {
+    getLocalStorageItem,
+    saveToLocalStorage,
+} from "@/lib/utils/localStorage";
+import { dropdownVariants } from "@/lib/animations/variants";
+import AnimatePresenceWrapper from "@/components/animations/AnimatePresenceWrapper";
+import Button from "../ui/Button";
+import useClickOutside from "@/hooks/useClickOutside";
 import { useLocale } from "next-intl";
 import {
     usePathname,
@@ -10,35 +19,21 @@ import {
     useSearchParams,
 } from "next/navigation";
 import { motion } from "framer-motion";
-import {
-    dropdownVariants,
-} from "@/lib/animations/variants";
-import {
-    IoMdArrowDropdown,
-} from "react-icons/io";
-import { GrLanguage } from "react-icons/gr";
-import {
-    getLocalStorageItem,
-    saveToLocalStorage,
-} from "@/lib/utils/localStorage";
 import { useEffect, useRef } from "react";
-import AnimatePresenceWrapper from "@/components/animations/AnimatePresenceWrapper";
-import useClickOutside from "@/hooks/useClickOutside";
-import {
-    getLocalizedValue,
-} from "@/lib/utils/getLocalizedValue";
-import Button from "../ui/Button";
+import { GrLanguage } from "react-icons/gr";
+import { IoMdArrowDropdown } from "react-icons/io";
 
 interface ILanguageSwitcherProps {
     className?: string;
-    isScrolled: boolean;
+    isScrolled?: boolean;
+    background?: string;
 }
 
 function LanguageSwitcher({
     className,
-    isScrolled,
+    isScrolled = false,
+    background = "var(--crimson-color)",
 }: ILanguageSwitcherProps) {
-
     const [
         activeLanguageDropDown,
         ,
@@ -49,76 +44,53 @@ function LanguageSwitcher({
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
-
-    const dropDownRef =
-        useRef<HTMLDivElement | null>(null);
-
     const locale = useLocale();
 
-    useEffect(() => {
+    const dropDownRef = useRef<HTMLDivElement | null>(null);
 
-        const lang =
-            getLocalStorageItem("lang");
+    useEffect(() => {
+        const savedLanguage = getLocalStorageItem("lang");
 
         if (
-            lang &&
-            lang !== locale
+            savedLanguage &&
+            savedLanguage !== locale &&
+            languages.some((language) => language.code === savedLanguage)
         ) {
-            const newPath =
-                pathname.replace(
-                    `/${locale}`,
-                    `/${lang}`,
-                );
-
-            const queryString =
-                searchParams.toString();
-
-            const finalPath =
-                queryString
-                    ? `${newPath}?${queryString}`
-                    : newPath;
-
-            router.push(
-                finalPath,
-                {
-                    scroll: false,
-                }
-            );
-        }
-
-    }, []);
-
-    function changeLanguage(
-        languageCode: string
-    ): void {
-
-        saveToLocalStorage(
-            "lang",
-            languageCode
-        );
-
-        const newPath =
-            pathname.replace(
+            const newPath = pathname.replace(
                 `/${locale}`,
-                `/${languageCode}`,
+                `/${savedLanguage}`,
             );
 
-        const queryString =
-            searchParams.toString();
-
-        const finalPath =
-            queryString
+            const queryString = searchParams.toString();
+            const finalPath = queryString
                 ? `${newPath}?${queryString}`
                 : newPath;
 
+            router.push(finalPath, { scroll: false });
+        }
+    }, [locale, pathname, router, searchParams]);
+
+    function changeLanguage(languageCode: string): void {
+        if (languageCode === locale) {
+            UnActiveLanguageDropDownHandler();
+            return;
+        }
+
+        saveToLocalStorage("lang", languageCode);
+
+        const newPath = pathname.replace(
+            `/${locale}`,
+            `/${languageCode}`,
+        );
+
+        const queryString = searchParams.toString();
+        const finalPath = queryString
+            ? `${newPath}?${queryString}`
+            : newPath;
+
         UnActiveLanguageDropDownHandler();
 
-        router.push(
-            finalPath,
-            {
-                scroll: false,
-            }
-        );
+        router.push(finalPath, { scroll: false });
     }
 
     useClickOutside(
@@ -126,70 +98,66 @@ function LanguageSwitcher({
         UnActiveLanguageDropDownHandler,
     );
 
-    const getlanguageName = languages.find(lg => lg.code === locale)
+    const activeLanguage = languages.find(
+        (language) => language.code === locale,
+    );
 
     return (
         <div
             className={cn(
-                "relative",
+                "relative z-20",
                 "flex flex-col justify-center",
-                "z-20",
                 className,
             )}
         >
-
-            {/* BUTTON */}
+            {/* Trigger */}
             <div
                 ref={dropDownRef}
                 className={cn(
-                    "flex items-center justify-center",
-                    "gap-1",
-                    "md:py-3 py-2 ",
+                    "flex items-center justify-center gap-1",
+                    "py-2 md:py-3",
                     "font-semibold",
                     "cursor-pointer",
-                    "transition-all",
+                    "transition-colors duration-200",
                     "click-scale",
-                    "bg-crimson",
-                    "text-white-utility",
 
-                    !activeLanguageDropDown &&
-                    "md:hover:bg-[var(--white-light-color)] hover:bg-[var(--black-light-color)] md:bg-transparent rounded-lg",
-
-                    isScrolled &&
-                    "text-gold-utility",
-
+                    background ? "text-[var(--gold-color)]"
+                    :"text-white-utility",
+                    "rounded-lg",
+                    !activeLanguageDropDown && [
+                        "md:bg-transparent",
+                        "md:hover:bg-white/15",
+                        "hover:bg-black/20",
+                    ],
+                    isScrolled && "text-gold-utility",
                     activeLanguageDropDown && [
-                        "bg-[var(--crimson-color)]",
                         "text-white-utility",
-                        "rounded-t-sm",
+                        "rounded-b-none",
                     ],
                 )}
-                onClick={
-                    toggleLanguageDropDownHandler
-                }
+                style={{
+                    backgroundColor: activeLanguageDropDown
+                        ? background
+                        : undefined,
+                }}
+                onClick={toggleLanguageDropDownHandler}
             >
                 <GrLanguage />
 
-                {
-                    getlanguageName?.name &&
-                    getLocalizedValue(getlanguageName?.name, locale)
-                }
-
+                {activeLanguage?.name &&
+                    getLocalizedValue(activeLanguage.name, locale)}
 
                 <IoMdArrowDropdown
                     className={cn(
                         "transition-transform duration-300",
-                        activeLanguageDropDown &&
-                        "rotate-180",
+                        activeLanguageDropDown && "rotate-180",
                     )}
                 />
             </div>
 
-            {/* DROPDOWN */}
+            {/* Dropdown */}
             <AnimatePresenceWrapper
-                isActive={
-                    activeLanguageDropDown
-                }
+                isActive={activeLanguageDropDown}
             >
                 <motion.div
                     variants={dropdownVariants}
@@ -198,50 +166,41 @@ function LanguageSwitcher({
                     exit="exit"
                     className={cn(
                         "absolute",
-                        "w-full",
-                        "flex flex-col items-center",
+                        "flex w-full flex-col items-center",
                         "overflow-hidden",
-                        "bg-crimson",
                         "text-white-utility",
                         "shadow-lg",
-
-
-                        "bottom-full",
-                        "rounded-t-md",
-
-
-                        "md:bottom-auto",
-                        "md:top-full",
-                        "md:rounded-t-none",
-                        "md:rounded-b-md",
+                        "bottom-full rounded-t-md",
+                        "md:bottom-auto md:top-full",
+                        "md:rounded-t-none md:rounded-b-md",
                     )}
+                    style={{ backgroundColor: background }}
                 >
-                    {languages.map((lang) => (
+                    {languages.map((language) => (
                         <Button
-                            key={lang.id}
+                            key={language.id}
                             className={cn(
-                                "w-full",
-                                "py-3",
-                                "text-center",
-                                "text-white-utility",
+                                "w-full py-3",
+                                "text-center text-white-utility",
                                 "cursor-pointer",
-                                "transition-all",
-                                "hover:bg-[#42151A]",
+                                "transition-colors duration-200",
+                                "hover:bg-white/15",
                                 "click-scale",
+                                language.code === locale &&
+                                    "font-bold",
                             )}
                             onClick={() =>
-                                changeLanguage(lang.code)
+                                changeLanguage(language.code)
                             }
                         >
                             {getLocalizedValue(
-                                lang.name,
-                                locale
+                                language.name,
+                                locale,
                             )}
                         </Button>
                     ))}
                 </motion.div>
             </AnimatePresenceWrapper>
-
         </div>
     );
 }

@@ -1,0 +1,12 @@
+/* Shop theme */
+:root {
+    --blue-color: #03003D
+}
+
+/* Shop utilities */
+
+@layer utilities {
+    .bg-blue-utility {
+        @apply bg-[var(--blue-color)]
+    }
+}
