@@ -10,7 +10,7 @@ function Shoplayout({
     return (
         <>
             <ShopHeader />
-            <div className='min-h-screen bg-black'>
+            <div className='min-h-screen '>
                 {children}
                 <div className='min-h-screen> '></div>
             </div >

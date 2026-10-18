@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { IoSearchSharp } from "react-icons/io5";
 
 import AnimatePresenceWrapper from "@/components/animations/AnimatePresenceWrapper";
@@ -35,6 +35,9 @@ function ShopSearchDropdown() {
     const searchInputRef = useRef<HTMLInputElement | null>(null);
 
     const locale = useLocale();
+
+    const t =
+        useTranslations("shopHeader.search")
 
     useEffect(() => {
         if (isOpen) {
@@ -90,7 +93,13 @@ function ShopSearchDropdown() {
     return (
         <div
             ref={dropDownRef}
-            className="relative hidden w-10 shrink-0 md:block"
+            className="
+                relative 
+                hidden 
+                w-10 
+                shrink-0 
+                md:block
+                "
         >
             <Button
                 type="button"
@@ -120,12 +129,13 @@ function ShopSearchDropdown() {
                             "absolute top-full z-50 pt-3",
                             "w-[min(22rem,calc(100vw-2rem))]",
                             "max-w-[calc(100vw-2rem)]",
-                            direction === "rtl" ? "left-full" : "right-full",
+                            direction === "rtl" ? "left-1/2" : "right-1/2",
                         )}
                     >
                         <div
                             className={cn(
                                 "w-full min-w-0 overflow-hidden rounded-xl",
+                                "shadow-md shadow-black/10",
                                 "border border-black/10",
                                 "bg-white-utility text-black-utility",
                                 "shadow-xl shadow-black/15",
@@ -154,7 +164,7 @@ function ShopSearchDropdown() {
                                         onChange={(event) =>
                                             setQuery(event.target.value)
                                         }
-                                        placeholder="Search products..."
+                                        placeholder={t("place-holder")}
                                         aria-label="Search products"
                                         aria-busy={isLoading}
                                         className={cn(
@@ -200,7 +210,7 @@ function ShopSearchDropdown() {
                             >
                                 {isLoading ? (
                                     <p className="px-3 py-4 text-sm text-black-light-utility">
-                                        Searching...
+                                        {t("searching")}
                                     </p>
                                 ) : error ? (
                                     <p className="px-3 py-4 text-sm text-crimson">
@@ -232,7 +242,7 @@ function ShopSearchDropdown() {
                                     </ul>
                                 ) : (
                                     <p className="px-3 py-4 text-sm text-black-light-utility">
-                                        No products found.
+                                         {t("not-found")}
                                     </p>
                                 )}
                             </div>
@@ -240,7 +250,7 @@ function ShopSearchDropdown() {
                     </motion.div>
                 )}
             </AnimatePresenceWrapper>
-        </div>
+        </div >
     );
 }
 

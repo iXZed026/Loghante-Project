@@ -163,6 +163,16 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/pdf/booking-pdf.json`)
     ).default;
 
+
+
+    //////////////////////
+    ///     SHOP
+    //////////////////////
+
+    const shopHeader = (
+        await import(`../messages/${locale}/shop/shop-header/shop-header.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -215,7 +225,13 @@ export default getRequestConfig(async ({ requestLocale }) => {
             //Hall
             hall,
             //PDF Bookig
-            pdfBooking
+            pdfBooking,
+
+            //////////////////////
+            ///     SHOP
+            //////////////////////
+            shopHeader,
+
         },
     };
 });
