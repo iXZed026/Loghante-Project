@@ -1,4 +1,4 @@
-import ShopHeader from '@/features/shop/componenets/shared/ShopHeader'
+import ShopHeader from '@/features/shop/componenets/ShopHeader/ShopHeader'
 import React from 'react'
 import "@/features/shop/styles/shop.css";
 

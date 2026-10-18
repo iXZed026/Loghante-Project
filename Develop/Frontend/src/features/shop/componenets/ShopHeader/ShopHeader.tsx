@@ -23,6 +23,7 @@ import TicketDropDown from "@/features/loghante(root)/components/header/TicketDr
 import { IoCartOutline, IoSearchSharp } from "react-icons/io5";
 import ShopSearchDropdown from "./ShopSearchDropdown";
 import { shopNavLinks } from "../../data/shoNavLinks";
+import ShopCartDropdown from "./shopCartDropdown/ShopCartDropdown";
 
 function ShopHeader() {
   const t = useTranslations("LoghantehHeader");
@@ -155,22 +156,7 @@ function ShopHeader() {
             <ShopSearchDropdown />
 
             {/* Cart */}
-            <div>
-              <AppLink href="/shop/cart">
-                <Button
-                  className={cn(
-                    "p-1",
-                    "fcc gap-2",
-                    "py-2.5 md:py-3",
-                    "text-gold-utility",
-                    "hover:opacity-50",
-                    "transition-colors",
-                  )}
-                >
-                  <IoCartOutline size={22} />
-                </Button>
-              </AppLink>
-            </div>
+            <ShopCartDropdown />
           </div>
         </div>
       </Container>
