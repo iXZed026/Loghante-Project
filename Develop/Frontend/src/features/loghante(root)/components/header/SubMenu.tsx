@@ -1,35 +1,46 @@
+
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { IoChevronDownOutline } from "react-icons/io5";
+import { motion } from "framer-motion";
+import { useLocale } from "next-intl";
+
 import AppLink from "@/components/ui/AppLink";
 import Button from "@/components/ui/Button";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils/cn";
-import {
-  INavLink,
-} from "../../data/navLinks";
 import AnimatePresenceWrapper from "@/components/animations/AnimatePresenceWrapper";
-import {
-  openSlideMenu,
-  openSlideMenuFa,
-} from "@/lib/animations/variants";
-import {
-  getLocalizedValue,
-} from "@/lib/utils/getLocalizedValue";
-import { useLocale } from "next-intl";
-import {
-  TranslationFunction,
-} from "@/types/translations";
 import ArrowIcon from "@/components/shared/ArrowIcon";
 
+import { openSlideMenu, openSlideMenuFa } from "@/lib/animations/variants";
+import { getLocalizedValue } from "@/lib/utils/getLocalizedValue";
+import { cn } from "@/lib/utils/cn";
+
+import type { TranslationFunction } from "@/types/translations";
+import type { IMuseumPart } from "../../data/museumParts";
+import type { IProductCategory } from "@/features/shop/data/productCategories";
+
+export interface INavMenuLink {
+  id: number;
+  name: {
+    en: string;
+    fa: string;
+  };
+  path: string;
+  museumParts?: IMuseumPart[];
+  productCategories?: IProductCategory[];
+}
+
 interface ISubMenu {
-  link: INavLink;
+  link: INavMenuLink;
   UnActiveHumberHandler: () => void;
   activeSubMenu: boolean;
   UnActiveSubMenuHandler: () => void;
   t: TranslationFunction;
+  color?: string;
 }
 
 const subMenuLinkClass = cn(
-  "w-full",
-  "block",
+  "block w-full",
   "px-4 md:px-7 py-5",
   "border-b border-b-black/25",
   "hover:bg-[var(--white-light-color)]",
@@ -46,95 +57,150 @@ function SubMenu({
   activeSubMenu,
   UnActiveSubMenuHandler,
   t,
+  color = "var(--crimson-color)",
 }: ISubMenu) {
-
   const locale = useLocale();
   const isFa = locale === "fa";
 
+  const submenuItems = link.museumParts ?? link.productCategories ?? [];
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const [shouldScroll, setShouldScroll] = useState(false);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+
+  const updateScrollIndicator = useCallback(() => {
+    const element = scrollRef.current;
+
+    if (!element) {
+      setShouldScroll(false);
+      setShowScrollIndicator(false);
+      return;
+    }
+
+    const hasOverflow = element.scrollHeight > element.clientHeight + 2;
+
+    setShouldScroll(hasOverflow);
+
+    setShowScrollIndicator(
+      hasOverflow &&
+        element.scrollTop + element.clientHeight <
+          element.scrollHeight - 2,
+    );
+  }, []);
+
+  useEffect(() => {
+    const scrollElement = scrollRef.current;
+    const contentElement = contentRef.current;
+
+    if (!scrollElement) return;
+
+    updateScrollIndicator();
+
+    const observer = new ResizeObserver(updateScrollIndicator);
+
+    observer.observe(scrollElement);
+
+    if (contentElement) {
+      observer.observe(contentElement);
+    }
+
+    return () => observer.disconnect();
+  }, [updateScrollIndicator, submenuItems, activeSubMenu]);
+
   return (
-    <AnimatePresenceWrapper
-      isActive={activeSubMenu}
-    >
+    <AnimatePresenceWrapper isActive={activeSubMenu}>
       <div
         className={cn(
-          "absolute top-0",
-          "w-full",
-          "overflow-hidden",
-          isFa
-            ? "lg:right-full"
-            : "lg:left-full",
+          "absolute inset-y-0 z-10",
+          "h-screen w-full overflow-hidden",
+          isFa ? "lg:right-full" : "lg:left-full",
         )}
       >
         <motion.div
-          variants={
-            isFa
-              ? openSlideMenuFa
-              : openSlideMenu
-          }
+          variants={isFa ? openSlideMenuFa : openSlideMenu}
           initial="hidden"
           animate="visible"
           exit="exit"
-          className={cn(
-            "h-screen",
-            "xl:w-140 lg:w-110 w-full",
-            "flex flex-col",
-            "bg-white-utility",
-            "border-l-2 border-black/20",
-          )}
+          className="h-full w-full"
         >
-
-          {/* HEADER */}
           <div
             className={cn(
-              "shrink-0",
-              "py-4 md:px-7 px-4",
-              "mb-5",
-              "border-b-2",
-              "border-[var(--crimson-color)]",
+              "flex h-full min-h-0 flex-col",
+              "xl:w-auto lg:w-110 w-full",
+              "bg-white-utility",
+              "border-l-2 border-black/20",
             )}
           >
-            <Button
-              className={cn(
-                "flex items-center",
-                "p-0",
-                "text-black-utility",
-                "hover:opacity-50",
-              )}
-              onClick={
-                UnActiveSubMenuHandler
-              }
+            <div
+              className="mb-5 shrink-0 border-b-2 py-4 md:px-7 px-4"
+              style={{ borderColor: color }}
             >
-              <ArrowIcon direction="left" />
+              <Button
+                type="button"
+                className="flex items-center gap-2 p-0 text-black-utility hover:opacity-50"
+                onClick={UnActiveSubMenuHandler}
+              >
+                <ArrowIcon direction="left" />
+                {t("back-button")}
+              </Button>
+            </div>
 
-              {t("back-button")}
-            </Button>
-          </div>
-
-          {/* LINKS */}
-          <div
-            className={cn(
-              "flex-1",
-              "max-h-[62%]",
-              "overflow-y-scroll",
-            )}
-          >
-            {link.museumParts?.map((part) => (
-              <AppLink
-                key={part.id}
-                href={part.href}
-                className={subMenuLinkClass}
-                onClick={
-                  UnActiveHumberHandler
+            <div className="relative min-h-0 flex-1">
+              <div
+                ref={scrollRef}
+                onScroll={updateScrollIndicator}
+                className={cn(
+                  "h-full overflow-x-hidden overscroll-contain",
+                  shouldScroll ? "overflow-y-auto" : "overflow-y-hidden",
+                )}
+                style={
+                  shouldScroll
+                    ? {
+                        scrollbarColor: `${color} transparent`,
+                        scrollbarWidth: "thin",
+                      }
+                    : undefined
                 }
               >
-                {getLocalizedValue(
-                  part.name,
-                  locale
-                )}
-              </AppLink>
-            ))}
-          </div>
+                <div ref={contentRef}>
+                  {submenuItems.map((item) => (
+                    <AppLink
+                      key={item.id}
+                      href={item.href}
+                      className={subMenuLinkClass}
+                      onClick={UnActiveHumberHandler}
+                    >
+                      {getLocalizedValue(item.name, locale)}
+                    </AppLink>
+                  ))}
+                </div>
+              </div>
 
+              {showScrollIndicator && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    y: [0, 6, 0],
+                  }}
+                  transition={{
+                    opacity: { duration: 0.2 },
+                    y: {
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    },
+                  }}
+                  className="pointer-events-none absolute bottom-10 left-1/2 z-10 -translate-x-1/2"
+                  style={{ color }}
+                >
+                  <IoChevronDownOutline size={30} />
+                </motion.div>
+              )}
+            </div>
+          </div>
         </motion.div>
       </div>
     </AnimatePresenceWrapper>

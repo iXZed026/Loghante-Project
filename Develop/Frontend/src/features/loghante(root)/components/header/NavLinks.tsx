@@ -1,17 +1,27 @@
+
+"use client";
+
+import { useEffect, useState } from "react";
 import AppLink from "@/components/ui/AppLink";
-import { cn } from "@/lib/utils/cn";
-import { navLinks } from "../../data/navLinks";
 import Button from "@/components/ui/Button";
-import SubMenu from "./SubMenu";
-import useActive from "@/hooks/useActive";
+import ArrowIcon from "@/components/shared/ArrowIcon";
+import SubMenu, { type INavMenuLink } from "./SubMenu";
+
+import { cn } from "@/lib/utils/cn";
 import { getLocalizedValue } from "@/lib/utils/getLocalizedValue";
 import { useLocale } from "next-intl";
-import { TranslationFunction } from "@/types/translations";
-import ArrowIcon from "@/components/shared/ArrowIcon";
+
+import type { TranslationFunction } from "@/types/translations";
+import type { INavLink } from "../../data/navLinks";
+import type { IShopNavLink } from "@/features/shop/data/shoNavLinks";
 
 interface INavLinksProps {
   UnActiveHumberHandler: () => void;
   t: TranslationFunction;
+  navLinks: (INavLink | IShopNavLink)[];
+  color?: string;
+  hasChildren?: boolean;
+  onActiveSub: (active: boolean) => void;
 }
 
 const navItemClass = cn(
@@ -29,79 +39,76 @@ const navItemClass = cn(
 function NavLinks({
   UnActiveHumberHandler,
   t,
+  navLinks,
+  color = "var(--crimson-color)",
+  onActiveSub,
 }: INavLinksProps) {
-
   const locale = useLocale();
 
-  const [
-    activeSubMenu,
-    ,
-    UnActiveSubMenuHandler,
-    toggleSubMenuHandler,
-  ] = useActive(false);
+  const [activeSubMenuId, setActiveSubMenuId] = useState<number | null>(null);
+
+  const closeSubMenu = () => setActiveSubMenuId(null);
+
+  useEffect(() => {
+    onActiveSub(activeSubMenuId !== null);
+  }, [activeSubMenuId, onActiveSub]);
 
   return (
     <nav>
       <ul>
-        {navLinks.map((link) => (
+        {navLinks.map((link) => {
+          const menuLink = link as INavMenuLink;
 
-          link.museumParts ? (
+          const hasSubMenu = Boolean(
+            menuLink.museumParts?.length ||
+              menuLink.productCategories?.length,
+          );
 
+          const isSubMenuActive = activeSubMenuId === link.id;
+
+          return (
             <li key={link.id}>
+              {hasSubMenu ? (
+                <>
+                  <Button
+                    type="button"
+                    aria-expanded={isSubMenuActive}
+                    className={cn(
+                      navItemClass,
+                      "flex items-center justify-between",
+                    )}
+                    onClick={() =>
+                      setActiveSubMenuId((current) =>
+                        current === link.id ? null : link.id,
+                      )
+                    }
+                  >
+                    {getLocalizedValue(link.name, locale)}
+                    <ArrowIcon />
+                  </Button>
 
-              <Button
-                className={cn(
-                  navItemClass,
-                  "flex items-center justify-between",
-                )}
-                onClick={toggleSubMenuHandler}
-              >
-                {getLocalizedValue(
-                  link.name,
-                  locale
-                )}
-
-                <ArrowIcon />
-              </Button>
-
-              <SubMenu
-                link={link}
-                UnActiveHumberHandler={
-                  UnActiveHumberHandler
-                }
-                activeSubMenu={activeSubMenu}
-                UnActiveSubMenuHandler={
-                  UnActiveSubMenuHandler
-                }
-                t={t}
-              />
-
+                  <SubMenu
+                    link={menuLink}
+                    UnActiveHumberHandler={UnActiveHumberHandler}
+                    activeSubMenu={isSubMenuActive}
+                    UnActiveSubMenuHandler={closeSubMenu}
+                    t={t}
+                    color={color}
+                  />
+                </>
+              ) : (
+                <AppLink
+                  href={link.path}
+                  scroll
+                  className={cn(navItemClass, "block", "click-scale")}
+                  onClick={UnActiveHumberHandler}
+                >
+                  {getLocalizedValue(link.name, locale)}
+                </AppLink>
+              )}
             </li>
-
-          ) : (
-
-            <li key={link.id}>
-
-              <AppLink
-                href={link.path}
-                scroll
-                className={cn(
-                  navItemClass,
-                  "block",
-                  "click-scale",
-                )}
-                onClick={UnActiveHumberHandler}
-              >
-                {getLocalizedValue(
-                  link.name,
-                  locale
-                )}
-              </AppLink>
-
-            </li>
-
-          )
-        ))}
+          );
+        })}
       </ul>
     </nav>
   );

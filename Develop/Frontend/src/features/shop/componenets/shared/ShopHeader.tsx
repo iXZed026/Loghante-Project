@@ -22,6 +22,7 @@ import HamburgerMenu from "@/features/loghante(root)/components/header/Hamburger
 import TicketDropDown from "@/features/loghante(root)/components/header/TicketDropDown";
 import { IoCartOutline, IoSearchSharp } from "react-icons/io5";
 import ShopSearchDropdown from "./ShopSearchDropdown";
+import { shopNavLinks } from "../../data/shoNavLinks";
 
 function ShopHeader() {
   const t = useTranslations("LoghantehHeader");
@@ -181,6 +182,8 @@ function ShopHeader() {
         t={t}
         isAuthenticated={isAuthenticated}
         isLoading={isLoading}
+        navLinks={shopNavLinks}
+        color="var(--blue-color)"
       />
     </header>
   );

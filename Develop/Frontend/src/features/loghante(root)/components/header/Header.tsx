@@ -20,6 +20,7 @@ import { FiShoppingBag, FiUser } from "react-icons/fi";
 import { IoIosMenu } from "react-icons/io";
 import HamburgerMenu from "./HamburgerMenu";
 import TicketDropDown from "./TicketDropDown";
+import { navLinks } from "../../data/navLinks";
 
 function Header() {
   const t = useTranslations("LoghantehHeader");
@@ -144,9 +145,9 @@ function Header() {
                 className={cn(
                   "block w-[55px] h-[40px]",
                   "md:w-[70px] md:h-[50px]",
-                  isScrolled ? 
-                  "bg-[var(--gold-color)]":
-                  "bg-[var(--white-color)]",
+                  isScrolled ?
+                    "bg-[var(--gold-color)]" :
+                    "bg-[var(--white-color)]",
                 )}
                 style={{
                   maskImage: 'url("/images/Loghanteh-logo.svg")',
@@ -203,7 +204,64 @@ function Header() {
         t={t}
         isAuthenticated={isAuthenticated}
         isLoading={isLoading}
-      />
+        navLinks={navLinks}
+      >
+
+          <LanguageSwitcher
+            isScrolled={false}
+            className="w-full"
+          />
+
+          <TicketDropDown
+            t={t}
+            isScrolled={false}
+            UnActiveHumberHandler={UnActiveHumberHandler}
+            className="w-full"
+          />
+
+          {!isLoading &&
+            (isAuthenticated ? (
+              <AppLink
+                href="/profile"
+                onClick={UnActiveHumberHandler}
+                className="w-full"
+              >
+                <Button
+                  className={cn(
+                    "w-full",
+                    "px-4 md:py-3 py-2",
+                    "flex items-center justify-center gap-2",
+                    "font-semibold",
+                    "border",
+                    "text-black-utility",
+                    "hover:bg-black/5",
+                  )}
+                >
+                  <FiUser className="size-5" />
+                  {t("profile")}
+                </Button>
+              </AppLink>
+            ) : (
+              <AppLink
+                href="/login"
+                onClick={UnActiveHumberHandler}
+                className="w-full"
+              >
+                <Button
+                  className={cn(
+                    "w-full",
+                    "px-4 py-3",
+                    "font-semibold",
+                    "border",
+                    "text-black-utility",
+                    "hover:bg-black/5",
+                  )}
+                >
+                  {t("login-button")}
+                </Button>
+              </AppLink>
+            ))}
+      </HamburgerMenu>
     </header>
   );
 }
