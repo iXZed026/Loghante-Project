@@ -1,40 +1,103 @@
-"use client"
 
-import { useState } from "react"
-import AnimatePresenceWrapper from "@/components/animations/AnimatePresenceWrapper"
-import AppLink from "@/components/ui/AppLink"
-import Button from "@/components/ui/Button"
-import { cn } from "@/lib/utils/cn"
-import { IoSearchSharp } from "react-icons/io5"
+"use client";
 
-const SUGGESTIONS = [
-    {
-        title: "Naser al-Din Shah's Ring",
-        href: "/",
-    },
-    {
-        title: "Loghanteh Museum Collection",
-        href: "/",
-    },
-]
+import { useCallback, useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { useLocale } from "next-intl";
+import { IoSearchSharp } from "react-icons/io5";
+
+import AnimatePresenceWrapper from "@/components/animations/AnimatePresenceWrapper";
+import AppLink from "@/components/ui/AppLink";
+import Button from "@/components/ui/Button";
+import Loading from "@/components/ui/Loading";
+
+import useDebouncedSearch from "@/hooks/useDebouncedSearch";
+import useClickOutside from "@/hooks/useClickOutside";
+import { dropdownVariants } from "@/lib/animations/variants";
+import { cn } from "@/lib/utils/cn";
+
+interface ISearchSuggestion {
+    title: string;
+    href: string;
+}
+
+const SUGGESTIONS: ISearchSuggestion[] = [
+    { title: "Naser al-Din Shah's Ring", href: "/" },
+    { title: "Loghanteh Museum Collection", href: "/" },
+];
 
 function ShopSearchDropdown() {
-    const [isOpen, setIsOpen] = useState(false)
-    const [query, setQuery] = useState("")
+    const [isOpen, setIsOpen] = useState(false);
+    const [query, setQuery] = useState("");
+    const [direction, setDirection] = useState<"ltr" | "rtl">("ltr");
 
-    const filteredSuggestions = SUGGESTIONS.filter((item) =>
-        item.title.toLowerCase().includes(query.trim().toLowerCase()),
-    )
+    const dropDownRef = useRef<HTMLDivElement | null>(null);
+    const searchInputRef = useRef<HTMLInputElement | null>(null);
+
+    const locale = useLocale();
+
+    useEffect(() => {
+        if (isOpen) {
+            searchInputRef.current?.focus();
+        }
+    }, [isOpen]);
+
+    useEffect(() => {
+        const pageDirection =
+            document.documentElement.getAttribute("dir");
+
+        setDirection(
+            pageDirection === "rtl" ||
+                (pageDirection !== "ltr" && locale === "fa")
+                ? "rtl"
+                : "ltr",
+        );
+    }, [locale]);
+
+
+
+    // Replace with the API request when the backend is ready.
+    const searchProducts = useCallback(
+        async (
+            searchTerm: string,
+            signal: AbortSignal,
+        ): Promise<ISearchSuggestion[]> => {
+            if (signal.aborted) return [];
+
+            const normalizedQuery = searchTerm.toLowerCase();
+
+            return SUGGESTIONS.filter((item) =>
+                item.title.toLowerCase().includes(normalizedQuery),
+            );
+        },
+        [],
+    );
+
+    const { results, isLoading, error } =
+        useDebouncedSearch<ISearchSuggestion>({
+            query,
+            search: searchProducts,
+            debounceMs: 400,
+            minLength: 1,
+        });
+
+    const suggestions = query.trim() ? results : SUGGESTIONS;
+
+    const closeDropdown = () => setIsOpen(false);
+
+    useClickOutside(dropDownRef, closeDropdown);
 
     return (
-        <div className="relative hidden w-10 shrink-0 md:block">
-            {/* Search Button */}
+        <div
+            ref={dropDownRef}
+            className="relative hidden w-10 shrink-0 md:block"
+        >
             <Button
                 type="button"
                 aria-label="Open search"
                 aria-expanded={isOpen}
                 aria-haspopup="true"
-                onClick={() => setIsOpen((prev) => !prev)}
+                onClick={() => setIsOpen((previous) => !previous)}
                 className={cn(
                     "fcc size-10 p-0",
                     "text-gold-utility",
@@ -46,16 +109,18 @@ function ShopSearchDropdown() {
                 <IoSearchSharp size={22} />
             </Button>
 
-            {/* Search Dropdown */}
             <AnimatePresenceWrapper isActive={isOpen}>
                 {isOpen && (
-                    <div
+                    <motion.div
+                        variants={dropdownVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
                         className={cn(
                             "absolute top-full z-50 pt-3",
-                            "left-0 right-0",
                             "w-[min(22rem,calc(100vw-2rem))]",
                             "max-w-[calc(100vw-2rem)]",
-                            "md:left-auto md:right-0",
+                            direction === "rtl" ? "left-full" : "right-full",
                         )}
                     >
                         <div
@@ -66,7 +131,6 @@ function ShopSearchDropdown() {
                                 "shadow-xl shadow-black/15",
                             )}
                         >
-                            {/* Search Input */}
                             <div className="p-3">
                                 <div
                                     className={cn(
@@ -85,59 +149,80 @@ function ShopSearchDropdown() {
                                     />
 
                                     <input
-                                        type="search"
+                                        ref={searchInputRef}
                                         value={query}
                                         onChange={(event) =>
                                             setQuery(event.target.value)
                                         }
                                         placeholder="Search products..."
                                         aria-label="Search products"
+                                        aria-busy={isLoading}
                                         className={cn(
                                             "h-full min-w-0 flex-1",
                                             "bg-transparent text-sm",
                                             "text-black-utility outline-none",
                                             "placeholder:text-black-light-utility",
+                                            "appearance-none",
                                         )}
                                     />
+
+                                    {isLoading && (
+                                        <Loading
+                                            color="var(--blue-color)"
+                                            size={26}
+                                        />
+                                    )}
 
                                     {query && (
                                         <button
                                             type="button"
                                             onClick={() => setQuery("")}
                                             aria-label="Clear search"
-                                            className="shrink-0 text-black-light-utility transition-colors hover:text-crimson"
+                                            className="
+                                            cursor-pointer
+                                            shrink-0 
+                                            p-1
+                                            text-3xl
+                                            text-black-light-utility 
+                                            transition-colors 
+                                            hover:text-crimson"
                                         >
                                             ×
                                         </button>
                                     )}
+
                                 </div>
                             </div>
 
-                            {/* Suggestions */}
-                            <div className="min-w-0 px-3 pb-3">
-                                <p className="px-2 pb-2 text-xs font-semibold text-black-light-utility">
-                                    {query ? "Search results" : "Suggestions"}
-                                </p>
-
-                                {filteredSuggestions.length > 0 ? (
+                            <div
+                                className="min-w-0 px-3 pb-3"
+                                aria-live="polite"
+                            >
+                                {isLoading ? (
+                                    <p className="px-3 py-4 text-sm text-black-light-utility">
+                                        Searching...
+                                    </p>
+                                ) : error ? (
+                                    <p className="px-3 py-4 text-sm text-crimson">
+                                        Search failed. Please try again.
+                                    </p>
+                                ) : suggestions.length > 0 ? (
                                     <ul className="flex w-full min-w-0 flex-col gap-1">
-                                        {filteredSuggestions.map((item) => (
+                                        {suggestions.map((item) => (
                                             <li
                                                 key={item.title}
                                                 className="w-full min-w-0"
                                             >
                                                 <AppLink
                                                     href={item.href}
-                                                    onClick={() =>
-                                                        setIsOpen(false)
-                                                    }
+                                                    onClick={closeDropdown}
                                                     className={cn(
                                                         "block w-full min-w-0 rounded-lg",
-                                                        "break-words px-3 py-3",
+                                                        "break-words px-3 py-4",
                                                         "text-sm font-medium",
                                                         "transition-colors duration-200",
-                                                        "hover:bg-white-light-utility",
-                                                        "hover:text-crimson",
+                                                        "hover:bg-[var(--white-light-color)]",
+                                                        "hover:text-[var(--crimson-color)]",
                                                     )}
                                                 >
                                                     {item.title}
@@ -152,11 +237,11 @@ function ShopSearchDropdown() {
                                 )}
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                 )}
             </AnimatePresenceWrapper>
         </div>
-    )
+    );
 }
 
-export default ShopSearchDropdown
+export default ShopSearchDropdown;
