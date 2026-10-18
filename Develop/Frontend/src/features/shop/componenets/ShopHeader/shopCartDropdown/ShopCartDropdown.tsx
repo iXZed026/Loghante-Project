@@ -12,6 +12,7 @@ import Button from "@/components/ui/Button";
 import { dropdownVariants } from "@/lib/animations/variants";
 import { cn } from "@/lib/utils/cn";
 import { useLocale } from "next-intl";
+import ShopCartDropdownBox from "./ShopCartDropdownBox";
 
 function ShopCartDropdown() {
     const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +39,7 @@ function ShopCartDropdown() {
             ref={dropDownRef}
             onMouseEnter={() => setIsOpen(true)}
             onMouseLeave={() => setIsOpen(false)}
-            className="relative hidden w-10 shrink-0 md:block"
+            className="relative w-10 shrink-0 "
         >
             <AppLink href="/shop/cart">
                 <Button
@@ -47,10 +48,13 @@ function ShopCartDropdown() {
                         "fcc gap-2 p-1 py-2.5 md:py-3",
                         "text-gold-utility",
                         "transition-colors hover:opacity-50",
+                        "cursor-pointer"
                     )}
                     aria-label="Shopping cart"
                 >
-                    <IoCartOutline size={22} />
+                    <IoCartOutline 
+                        className="md:size-7 size-8"
+                    />
                 </Button>
             </AppLink>
 
@@ -63,7 +67,7 @@ function ShopCartDropdown() {
                         exit="exit"
                         className={cn(
                             "absolute top-0 z-50 py-15",
-                            "w-[min(26rem,calc(100vw-2rem))]",
+                            "md:w-[min(27rem,calc(100vw-2rem))] w-[min(23rem,calc(100vw-2rem))]",
                             "max-w-[calc(100vw-2rem)]",
                             direction === "rtl" ? "left-0" : "right-0",
                         )}
@@ -74,12 +78,30 @@ function ShopCartDropdown() {
                                 "border border-black/10",
                                 "bg-white-utility text-black-utility",
                                 "p-8 shadow-xl shadow-black/15",
+                                "fcol gap-y-7",
                             )}
                         >
                             <div>
                                 <h2 className="text-sm font-semibold">
                                     Your shopping cart summary
                                 </h2>
+                            </div>
+                            <div className="fcol gap-y-3">
+                                <ShopCartDropdownBox/>
+                                 <ShopCartDropdownBox/>
+                            </div>
+                            <div>
+                                <Button
+                                    className={cn(
+                                        "w-full",
+                                        "py-3",
+                                        "bg-blue-utility",
+                                        "transition-color",
+                                        "hover:opacity-70",
+                                    )}
+                                >
+                                    Place an Order
+                                </Button>
                             </div>
                         </div>
                     </motion.div>
