@@ -3,5 +3,9 @@
         "place-holder": "Search products...",
         "not-found": "No products found.",
         "searching": "Searching..."
+    },
+    "cart":{
+        "title":"Your shopping cart summary",
+        "order-button":"View Shopping Cart"
     }
 }

@@ -11,13 +11,15 @@ import Button from "@/components/ui/Button";
 
 import { dropdownVariants } from "@/lib/animations/variants";
 import { cn } from "@/lib/utils/cn";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import ShopCartDropdownBox from "./ShopCartDropdownBox";
 
 function ShopCartDropdown() {
     const [isOpen, setIsOpen] = useState(false);
     const dropDownRef = useRef<HTMLDivElement | null>(null);
     const [direction, setDirection] = useState<"ltr" | "rtl">("ltr");
+
+    const T = useTranslations("shopHeader.cart")
 
     const locale = useLocale()
 
@@ -83,7 +85,7 @@ function ShopCartDropdown() {
                         >
                             <div>
                                 <h2 className="text-sm font-semibold">
-                                    Your shopping cart summary
+                                    {T("title")}
                                 </h2>
                             </div>
                             <div className="fcol gap-y-3">
@@ -100,7 +102,7 @@ function ShopCartDropdown() {
                                         "hover:opacity-70",
                                     )}
                                 >
-                                    Place an Order
+                                    {T("order-button")}
                                 </Button>
                             </div>
                         </div>
