@@ -19,18 +19,21 @@ function RecommendedProducts({
         <div>
             {/* Title */}
             <div className='fbc'>
-                <div>
-                    <h3 className='font-wulkan text-4xl'>
+                <div className='fcol gap-y-5 md:w-130 w-full'>
+                    <h3 className='font-wulkan sm:text-4xl text-3xl font-bold'>
                         {title}
                     </h3>
-                    {description && <h6>{description}</h6>}
+                    {description &&
+                        <h6 className='text-black-light-utility sm:text-base text-sm'>
+                            {description}
+                        </h6>}
                 </div>
 
-                <div>
+                <div className='md:w-auto w-4/6'>
                     <AppLink
                         href='/products'
                         className='
-                            fcc 
+                            fec 
                             px-3 py-2 
                             text-sm hover:text-[var(--black-light-color)]
                             transition-colors

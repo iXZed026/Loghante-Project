@@ -23,6 +23,9 @@ function getSlidesPerView(width: number) {
 function ProductBoxexWrraper({
     children,
 }: IProductBoxexWrraper) {
+
+    console.log("initial")
+
     const viewportRef = useRef<HTMLDivElement>(null)
 
     const [viewportWidth, setViewportWidth] = useState(0)
