@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -104,7 +103,7 @@ function ShopSearchDropdown({
       className={cn(
         "flex h-12 min-w-0 items-center gap-3",
         "rounded-lg border border-black/10",
-        "bg-white-light-utility px-3",
+        "bg-[#f2f2f2] px-3",
         "transition-colors duration-200",
         mobile && "w-full",
       )}
@@ -125,7 +124,7 @@ function ShopSearchDropdown({
         className={cn(
           "h-full min-w-0 flex-1",
           "appearance-none bg-transparent text-sm",
-          "text-black-utility outline-none",
+          "text-black-utility outline-none focus:outline-none focus:ring-0",
           "placeholder:text-black-light-utility",
         )}
       />
@@ -153,10 +152,7 @@ function ShopSearchDropdown({
     if (!hasQuery) return null;
 
     return (
-      <div
-        className="min-w-0 p-3"
-        aria-live="polite"
-      >
+      <div className="min-w-0 p-3" aria-live="polite">
         {isLoading ? (
           <p className="px-3 py-4 text-sm text-black-light-utility">
             {t("searching")}
@@ -269,12 +265,13 @@ function ShopSearchDropdown({
             <div
               className={cn(
                 "w-full min-w-0 overflow-hidden rounded-xl",
-                "border border-black/30",
-                "bg-white-utility text-black-utility",
-                "shadow-md shadow-black/15",
+                hasQuery
+                  ? "border border-black/30 bg-white-utility shadow-md shadow-black/15"
+                  : "border-0 bg-transparent shadow-none",
+                "text-black-utility",
               )}
             >
-              <div className="p-3">
+              <div className={cn(hasQuery ? "p-3" : "p-3")}>
                 {renderSearchInput()}
               </div>
 
