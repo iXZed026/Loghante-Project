@@ -1,0 +1,71 @@
+import Button from '@/components/ui/Button'
+import Container from '@/components/shared/Container'
+import React from 'react'
+import { cn } from '@/lib/utils/cn'
+
+function ShopHero() {
+  return (
+    <section className="relative mt-[80px] min-h-[calc(100vh-80px)] overflow-hidden text-white-utility">
+
+      {/* Video */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 z-0 h-full w-full object-cover"
+      >
+        <source
+          // src="https://74aex8lzr0js8tkj.public.blob.vercel-storage.com/loghante-hero-video.mp4"
+          type="video/mp4"
+        />
+      </video>
+
+      {/* Overlay */}
+      <div className="absolute inset-0 z-[1] bg-black/40" />
+
+      {/* Content */}
+      <div className="relative z-10 flex min-h-[calc(100vh-80px)] md:items-center items-end">
+        <Container>
+          <div className="md:py-0 py-10 fcol md:justify-start justify-center md:items-start items-center md:gap-y-10 gap-y-5 xl:w-1/2 md:w-2/3 w-full">
+            <div>
+              <h1 className="font-wulkan md:text-5xl text-3xl font-bold">
+                LOGHANTEH SHOP
+              </h1>
+            </div>
+
+            <div>
+              <h4 className='leading-7 md:text-base text-sm md:text-start text-center'>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas purus viverra accumsan in nisl nisi. Arcu cursus vitae congue mauris rhoncus aenean vel elit scelerisque. In egestas erat imperdiet sed euismod nisi
+              </h4>
+            </div>
+
+            <div className="flex gap-5 flex-wrap gap-4 text-sm font-bold transition-colors">
+              <Button
+                className={cn(
+                  "bg-blue-utility py-3 px-5",
+                  "hover:bg-[var(--blue-hover-color)]/80",
+                )}
+              >
+                Explore the Shop
+              </Button>
+
+              <Button
+                className={cn(
+                  "border-2",
+                  "py-3 px-5",
+                  "hover:bg-[var(--white-light-color)]/80",
+                )}
+              >
+                Explore the Shop
+              </Button>
+            </div>
+          </div>
+        </Container>
+      </div>
+
+    </section>
+  )
+}
+
+export default ShopHero

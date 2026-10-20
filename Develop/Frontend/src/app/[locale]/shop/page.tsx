@@ -1,9 +1,10 @@
+import ShopHero from '@/features/shop/componenets/sections/ShopHero'
 import React from 'react'
 
 function ShopPage() {
   return (
     <div>
-      ShopPage
+      <ShopHero />
     </div>
   )
 }
