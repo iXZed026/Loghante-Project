@@ -53,6 +53,8 @@ function RecommendedProducts({
                 <ProductBox />
                 <ProductBox />
                 <ProductBox />
+                <ProductBox />
+                <ProductBox />
             </ProductBoxexWrraper>
 
         </div>
