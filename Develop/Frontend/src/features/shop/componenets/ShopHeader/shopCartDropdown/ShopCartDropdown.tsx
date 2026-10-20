@@ -68,7 +68,7 @@ function ShopCartDropdown() {
                         animate="visible"
                         exit="exit"
                         className={cn(
-                            "absolute top-0 z-50 py-15",
+                            "absolute top-FULL z-50 ",
                             "md:w-[min(27rem,calc(100vw-2rem))] w-[min(23rem,calc(100vw-2rem))]",
                             "max-w-[calc(100vw-2rem)]",
                             direction === "rtl" ? "left-0" : "right-0",

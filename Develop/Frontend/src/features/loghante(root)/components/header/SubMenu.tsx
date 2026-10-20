@@ -2,7 +2,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { IoChevronDownOutline } from "react-icons/io5";
+import { IoChevronDownOutline, IoArrowForwardOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { useLocale } from "next-intl";
 
@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils/cn";
 import type { TranslationFunction } from "@/types/translations";
 import type { IMuseumPart } from "../../data/museumParts";
 import type { IProductCategory } from "@/features/shop/data/productCategories";
+import ShopHumburgerBox from "@/features/shop/componenets/ShopHeader/ShopHumburgerBox";
 
 export interface INavMenuLink {
   id: number;
@@ -28,6 +29,7 @@ export interface INavMenuLink {
   path: string;
   museumParts?: IMuseumPart[];
   productCategories?: IProductCategory[];
+  category?: string;
 }
 
 interface ISubMenu {
@@ -39,15 +41,50 @@ interface ISubMenu {
   color?: string;
 }
 
+interface INewProduct {
+  id: number;
+  name: string;
+  href: string;
+  image: string;
+}
+
+const NEW_PRODUCTS: INewProduct[] = [
+  {
+    id: 1,
+    name: "Persian Art Collection",
+    href: "/shop",
+    image:
+      "/images/loghanteh-cafe.jpg",
+  },
+  {
+    id: 2,
+    name: "Classic Art Book",
+    href: "/shop",
+    image:
+      "/images/loghanteh-cafe.jpg",
+  },
+  {
+    id: 3,
+    name: "Decorative Artwork",
+    href: "/shop",
+    image:
+      "/images/loghanteh-cafe.jpg",
+  },
+  {
+    id: 4,
+    name: "Museum Art Piece",
+    href: "/shop",
+    image:
+      "/images/loghanteh-cafe.jpg",
+  },
+];
+
 const subMenuLinkClass = cn(
   "block w-full",
-  "px-4 md:px-7 py-5",
-  "border-b border-b-black/25",
-  "hover:bg-[var(--white-light-color)]",
-  "transition-all",
-  "rounded-md",
-  "font-wulkan font-bold",
-  "md:text-xl text-lg italic",
+  "px-4 py-5 md:px-7",
+  "rounded-md border-b border-b-black/25",
+  "font-wulkan text-lg font-bold italic md:text-xl",
+  "transition-all hover:bg-[var(--white-light-color)]",
   "click-scale",
 );
 
@@ -85,8 +122,8 @@ function SubMenu({
 
     setShowScrollIndicator(
       hasOverflow &&
-        element.scrollTop + element.clientHeight <
-          element.scrollHeight - 2,
+      element.scrollTop + element.clientHeight <
+      element.scrollHeight - 2,
     );
   }, []);
 
@@ -128,13 +165,14 @@ function SubMenu({
           <div
             className={cn(
               "flex h-full min-h-0 flex-col",
-              "xl:w-auto lg:w-110 w-full",
-              "bg-white-utility",
+              "w-full lg:w-110 xl:w-auto",
               "border-l-2 border-black/20",
+              "bg-white-utility",
             )}
           >
+            {/* Back button */}
             <div
-              className="mb-5 shrink-0 border-b-2 py-4 md:px-7 px-4"
+              className="mb-3 shrink-0 border-b-2 px-4 py-4 md:px-7"
               style={{ borderColor: color }}
             >
               <Button
@@ -147,6 +185,7 @@ function SubMenu({
               </Button>
             </div>
 
+            {/* Navigation links: independent scroll */}
             <div className="relative min-h-0 flex-1">
               <div
                 ref={scrollRef}
@@ -158,9 +197,9 @@ function SubMenu({
                 style={
                   shouldScroll
                     ? {
-                        scrollbarColor: `${color} transparent`,
-                        scrollbarWidth: "thin",
-                      }
+                      scrollbarColor: `${color} transparent`,
+                      scrollbarWidth: "thin",
+                    }
                     : undefined
                 }
               >
@@ -181,10 +220,7 @@ function SubMenu({
               {showScrollIndicator && (
                 <motion.div
                   initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: 1,
-                    y: [0, 6, 0],
-                  }}
+                  animate={{ opacity: 1, y: [0, 6, 0] }}
                   transition={{
                     opacity: { duration: 0.2 },
                     y: {
@@ -193,13 +229,53 @@ function SubMenu({
                       ease: "easeInOut",
                     },
                   }}
-                  className="pointer-events-none absolute bottom-10 left-1/2 z-10 -translate-x-1/2"
+                  className="pointer-events-none absolute bottom-4 left-1/2 z-10 -translate-x-1/2"
                   style={{ color }}
                 >
                   <IoChevronDownOutline size={30} />
                 </motion.div>
               )}
             </div>
+
+            {/* New products: rendered only when category exists */}
+
+            {link.category && (
+              <section className="flex h-[44%] min-h-0 shrink-0 flex-col border-t border-black/10">
+                <div className="flex shrink-0 items-center justify-between px-4 py-3 md:px-5">
+                  <h3 className="text-sm font-semibold text-black-utility md:text-base">
+                    New Products
+                  </h3>
+
+                  <AppLink
+                    href="/shop"
+                    onClick={UnActiveHumberHandler}
+                    className="flex items-center gap-1 text-xs font-medium text-black-light-utility transition-colors hover:text-[var(--crimson-color)]"
+                  >
+                    View All
+                    <IoArrowForwardOutline size={14} />
+                  </AppLink>
+                </div>
+
+                <div
+                  className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-4"
+                  style={{
+                    scrollbarColor: `${color} transparent`,
+                    scrollbarWidth: "thin",
+                  }}
+                >
+                  <div className="grid grid-cols-2 gap-3">
+                    {NEW_PRODUCTS.map((product) => (
+                      <ShopHumburgerBox
+                        key={product.id}
+                        product={product}
+                        UnActiveHumberHandler={UnActiveHumberHandler}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+
           </div>
         </motion.div>
       </div>

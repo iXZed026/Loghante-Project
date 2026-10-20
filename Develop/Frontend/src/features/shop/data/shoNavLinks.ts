@@ -16,6 +16,7 @@ export interface IShopNavLink {
 
   museumParts?: IMuseumPart[];
   productCategories?: IProductCategory[];
+  category?: string,
 }
 
 export const shopNavLinks: IShopNavLink[] = [
@@ -52,6 +53,7 @@ export const shopNavLinks: IShopNavLink[] = [
     },
     path: "/shop",
     productCategories,
+    category: "new-products",
   },
   {
     id: 5,

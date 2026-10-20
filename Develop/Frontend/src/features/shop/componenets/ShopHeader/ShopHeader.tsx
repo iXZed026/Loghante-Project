@@ -1,42 +1,29 @@
+
 "use client";
 
 import Container from "@/components/shared/Container";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
-import AppImage from "@/components/ui/AppImage";
 import AppLink from "@/components/ui/AppLink";
 import Button from "@/components/ui/Button";
 import Skeleton from "@/components/ui/Skeleton";
+
 import { cn } from "@/lib/utils/cn";
 import { useProfile } from "@/contexts/ProfileProvider";
-import {
-  getHeaderBackground,
-  getLayoutVisibility,
-} from "@/features/loghante(root)/utils/layout";
 import useActive from "@/hooks/useActive";
-import useScroll from "@/hooks/useScroll";
-import { useLocale, useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
-import { FiShoppingBag, FiUser } from "react-icons/fi";
+import { useTranslations } from "next-intl";
+
+import { FiUser } from "react-icons/fi";
 import { IoIosMenu } from "react-icons/io";
+
 import HamburgerMenu from "@/features/loghante(root)/components/header/HamburgerMenu";
-import TicketDropDown from "@/features/loghante(root)/components/header/TicketDropDown";
-import { IoCartOutline, IoSearchSharp } from "react-icons/io5";
 import ShopSearchDropdown from "./ShopSearchDropdown";
-import { shopNavLinks } from "../../data/shoNavLinks";
 import ShopCartDropdown from "./shopCartDropdown/ShopCartDropdown";
+
+import { shopNavLinks } from "../../data/shoNavLinks";
 
 function ShopHeader() {
   const t = useTranslations("LoghantehHeader");
-  const locale = useLocale();
-  const pathname = usePathname();
-
-  const {
-    isAuthenticated,
-    isLoading,
-  } = useProfile();
-
-
-
+  const { isAuthenticated, isLoading } = useProfile();
 
   const [
     activeHumber,
@@ -48,51 +35,40 @@ function ShopHeader() {
     <header
       className={cn(
         "fixed top-0 z-30",
-        "w-full h-[80px]",
-        "py-3",
-        "select-none",
-        "text-white-utility",
+        "h-[80px] w-full py-3",
+        "select-none text-white-utility",
         "text-xs sm:text-sm md:text-md",
         "transition-all duration-300 ease-in-out",
-        "bg-blue-utility"
+        "bg-blue-utility",
       )}
     >
       <Container>
         <div className="grid grid-cols-12">
           {/* LEFT */}
           <div className="col-span-4 flex items-center gap-2">
-            {/* Hamburger */}
             <IoIosMenu
               className={cn(
-                "sm:size-11 size-13",
-                "cursor-pointer",
-                "click-scale",
-                "transition-all",
-                "hover:opacity-50",
+                "size-13 cursor-pointer sm:size-11",
+                "click-scale transition-all hover:opacity-50",
                 "text-gold-utility",
               )}
               onClick={activeHumberHandler}
             />
 
-            {/* Desktop Auth */}
+            {/* Desktop authentication */}
             {isLoading ? (
               <Skeleton
                 className={cn(
-                  "hidden md:block",
-                  "h-10 w-16",
-                  "rounded-md",
-                  "bg-gold-utility"
+                  "hidden h-10 w-16 rounded-md md:block",
+                  "bg-gold-utility",
                 )}
               />
             ) : isAuthenticated ? (
               <AppLink href="/profile">
                 <Button
                   className={cn(
-                    "hidden md:flex",
-                    "size-10 p-0",
-                    "items-center justify-center",
-                    "hover:bg-white/35",
-                    "text-gold-utility",
+                    "hidden size-10 items-center justify-center p-0 md:flex",
+                    "text-gold-utility hover:bg-white/35",
                   )}
                   aria-label="Profile"
                 >
@@ -103,12 +79,8 @@ function ShopHeader() {
               <AppLink href="/login">
                 <Button
                   className={cn(
-                    "hidden md:block",
-                    "px-4 py-2",
-                    "font-semibold",
-                    "border",
-                    "hover:bg-white/35",
-                    "text-gold-utility",
+                    "hidden border px-4 py-2 font-semibold md:block",
+                    "text-gold-utility hover:bg-white/35",
                   )}
                 >
                   {t("login-button")}
@@ -116,7 +88,7 @@ function ShopHeader() {
               </AppLink>
             )}
 
-            {/* Desktop Language */}
+            {/* Desktop language switcher */}
             <div className="hidden md:block">
               <LanguageSwitcher
                 className="w-27"
@@ -130,11 +102,11 @@ function ShopHeader() {
             <AppLink href="/">
               <span
                 role="img"
-                aria-label="loghante icon"
+                aria-label="Loghanteh logo"
                 className={cn(
-                  "block w-[55px] h-[40px]",
-                  "md:w-[70px] md:h-[50px]",
-                  "bg-[var(--gold-color)]"
+                  "block h-[40px] w-[55px]",
+                  "bg-[var(--gold-color)]",
+                  "md:h-[50px] md:w-[70px]",
                 )}
                 style={{
                   maskImage: 'url("/images/Loghanteh-logo.svg")',
@@ -152,16 +124,15 @@ function ShopHeader() {
 
           {/* RIGHT */}
           <div className="col-span-4 fec gap-5">
-            {/* Search */}
-            <ShopSearchDropdown />
+            {/* Visible only on desktop */}
+            <ShopSearchDropdown variant="header" />
 
-            {/* Cart */}
             <ShopCartDropdown />
           </div>
         </div>
       </Container>
 
-      {/* Hamburger */}
+      {/* Hamburger menu */}
       <HamburgerMenu
         activeHumber={activeHumber}
         UnActiveHumberHandler={UnActiveHumberHandler}
@@ -170,7 +141,51 @@ function ShopHeader() {
         isLoading={isLoading}
         navLinks={shopNavLinks}
         color="var(--blue-color)"
-      />
+      >
+        {/* Visible only on mobile/tablet */}
+        <ShopSearchDropdown variant="menu" />
+
+        <LanguageSwitcher
+          isScrolled={false}
+          className="w-full"
+          background="var(--blue-color)"
+        />
+
+        {!isLoading &&
+          (isAuthenticated ? (
+            <AppLink
+              href="/profile"
+              onClick={UnActiveHumberHandler}
+              className="w-full"
+            >
+              <Button
+                className={cn(
+                  "flex w-full items-center justify-center gap-2",
+                  "border px-4 py-3 font-semibold",
+                  "text-black-utility hover:bg-black/5",
+                )}
+              >
+                <FiUser className="size-5" />
+                {t("profile")}
+              </Button>
+            </AppLink>
+          ) : (
+            <AppLink
+              href="/login"
+              onClick={UnActiveHumberHandler}
+              className="w-full"
+            >
+              <Button
+                className={cn(
+                  "w-full border px-4 py-3 font-semibold",
+                  "text-black-utility hover:bg-black/5",
+                )}
+              >
+                {t("login-button")}
+              </Button>
+            </AppLink>
+          ))}
+      </HamburgerMenu>
     </header>
   );
 }
