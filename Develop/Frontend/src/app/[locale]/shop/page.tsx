@@ -1,4 +1,4 @@
-import ShopHero from '@/features/shop/componenets/sections/ShopHero'
+import ShopHero from '@/features/shop/componenets/sections/ShopHeroSection'
 import React from 'react'
 
 function ShopPage() {
