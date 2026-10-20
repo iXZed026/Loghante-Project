@@ -1,6 +1,6 @@
 "use client"
 
-import { Children, useEffect, useRef, useState } from "react"
+import React, { Children, useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import { IoChevronBack, IoChevronForward } from "react-icons/io5"
 import { cn } from "@/lib/utils/cn"
@@ -24,7 +24,6 @@ function ProductBoxexWrraper({
     children,
 }: IProductBoxexWrraper) {
 
-    console.log("initial")
 
     const viewportRef = useRef<HTMLDivElement>(null)
 
