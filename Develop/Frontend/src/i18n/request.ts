@@ -173,6 +173,10 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/shop/shop-header/shop-header.json`)
     ).default;
 
+    const shopHero = (
+        await import(`../messages/${locale}/shop/shop-hero/shop-hero.json`)
+    ).default;
+
     return {
         locale,
         messages: {
@@ -231,7 +235,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             ///     SHOP
             //////////////////////
             shopHeader,
-
+            shopHero,
         },
     };
 });

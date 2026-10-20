@@ -2,8 +2,12 @@ import Button from '@/components/ui/Button'
 import Container from '@/components/shared/Container'
 import React from 'react'
 import { cn } from '@/lib/utils/cn'
+import { useTranslations } from 'next-intl'
 
 function ShopHero() {
+
+  const T = useTranslations("shopHero")
+
   return (
     <section className="relative mt-[80px] min-h-[calc(100vh-80px)] overflow-hidden text-white-utility">
 
@@ -30,13 +34,13 @@ function ShopHero() {
           <div className="md:py-0 py-10 fcol md:justify-start justify-center md:items-start items-center md:gap-y-10 gap-y-5 xl:w-1/2 md:w-2/3 w-full">
             <div>
               <h1 className="font-wulkan md:text-5xl text-3xl font-bold">
-                LOGHANTEH SHOP
+                {T("title")}
               </h1>
             </div>
 
             <div>
               <h4 className='leading-7 md:text-base text-sm md:text-start text-center'>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas purus viverra accumsan in nisl nisi. Arcu cursus vitae congue mauris rhoncus aenean vel elit scelerisque. In egestas erat imperdiet sed euismod nisi
+                {T("description")}
               </h4>
             </div>
 
@@ -47,7 +51,7 @@ function ShopHero() {
                   "hover:bg-[var(--blue-hover-color)]/80",
                 )}
               >
-                Explore the Shop
+                {T("explore-shop-button")}
               </Button>
 
               <Button
@@ -57,7 +61,7 @@ function ShopHero() {
                   "hover:bg-[var(--white-light-color)]/80",
                 )}
               >
-                Explore the Shop
+                {T("explore-loghanteh-button")}
               </Button>
             </div>
           </div>
