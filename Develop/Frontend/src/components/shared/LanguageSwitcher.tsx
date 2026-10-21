@@ -121,8 +121,8 @@ function LanguageSwitcher({
                     "transition-colors duration-200",
                     "click-scale",
 
-                    background ? "text-[var(--gold-color)]"
-                    :"text-white-utility",
+                    background != "var(--crimson-color)" ? "text-[var(--gold-color)]"
+                    :"text-[var(--white-color)]",
                     "rounded-lg",
                     !activeLanguageDropDown && [
                         "md:bg-transparent",
