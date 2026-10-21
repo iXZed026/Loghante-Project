@@ -1,6 +1,7 @@
 import Container from '@/components/shared/Container'
 import LazySection from '@/components/ui/LazySection'
 import DiscountedProductsSection from '@/features/shop/componenets/sections/DiscountedProductsSection'
+import GiftsProductsSection from '@/features/shop/componenets/sections/GiftsProductsSection'
 import MoreThanShoapSection from '@/features/shop/componenets/sections/MoreThanShoapSection'
 import NewProductsSection from '@/features/shop/componenets/sections/NewProductsSection'
 import ShopCategorysSection from '@/features/shop/componenets/sections/ShopCategorysSection'
@@ -22,6 +23,7 @@ function ShopPage() {
       </LazySection>
       <Container>
         <ShopCategorysSection />
+        <GiftsProductsSection/>
       </Container>
 
     </div>

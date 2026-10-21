@@ -78,28 +78,6 @@ function ProductBox({
                     SPECIAL PRICE
                 </span>
 
-                {/* Product Action */}
-                <button
-                    type="button"
-                    aria-label={`View ${title}`}
-                    className="
-                        absolute bottom-3 right-3 z-10
-                        fcc size-10 rounded-full
-                        bg-white text-[var(--blue-color)] shadow-md
-                        transition-colors duration-300
-                        hover:bg-[var(--blue-color)] hover:text-white
-                        sm:size-11
-                    "
-                >
-                    <IoArrowUpOutline
-                        size={20}
-                        className="
-                            transition-transform duration-300
-                            group-hover:translate-x-0.5
-                            group-hover:-translate-y-0.5
-                        "
-                    />
-                </button>
             </div>
 
             {/* Product Details */}
