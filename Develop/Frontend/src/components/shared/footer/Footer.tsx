@@ -28,7 +28,15 @@ const LOCATION_SCHEMA = {
     availableLanguage: ['fa', 'en'],
 }
 
-function Footer() {
+interface IFooter {
+    initial?: boolean
+    background?: string
+}
+
+function Footer({
+    initial,
+    background='var(--crimson-color)',
+}: IFooter) {
     const t = useTranslations('footer')
     const locale = useLocale()
     const pathname = usePathname()
@@ -37,16 +45,18 @@ function Footer() {
         pathname,
         locale,
     )
-
-    if (hideFooter) {
-        return null
+    if (!initial) {
+        if (hideFooter) {
+            return null
+        }
     }
+
 
     return (
         <footer
             id="footer"
             className={cn(
-                'bg-crimson',
+                `bg-[${background}]`,
                 'text-white-utility',
             )}
         >

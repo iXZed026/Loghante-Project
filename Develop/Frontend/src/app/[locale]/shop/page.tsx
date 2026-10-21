@@ -4,6 +4,7 @@ import DiscountedProductsSection from '@/features/shop/componenets/sections/Disc
 import GiftsProductsSection from '@/features/shop/componenets/sections/GiftsProductsSection'
 import MoreThanShoapSection from '@/features/shop/componenets/sections/MoreThanShoapSection'
 import NewProductsSection from '@/features/shop/componenets/sections/NewProductsSection'
+import ShopByMeuseumSection from '@/features/shop/componenets/sections/ShopByMeuseumSection'
 import ShopCategorysSection from '@/features/shop/componenets/sections/ShopCategorysSection'
 import ShopHero from '@/features/shop/componenets/sections/ShopHeroSection'
 
@@ -23,7 +24,13 @@ function ShopPage() {
       </LazySection>
       <Container>
         <ShopCategorysSection />
-        <GiftsProductsSection/>
+        <LazySection
+          rootMargin="350px 0px"
+          placeholderClassName="rounded-none"
+        >
+          <ShopByMeuseumSection />
+        </LazySection>
+        <GiftsProductsSection />
       </Container>
 
     </div>
