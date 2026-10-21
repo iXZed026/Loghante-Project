@@ -4,6 +4,7 @@ import DiscountedProductsSection from '@/features/shop/componenets/sections/Disc
 import MoreThanShoapSection from '@/features/shop/componenets/sections/MoreThanShoapSection'
 import NewProductsSection from '@/features/shop/componenets/sections/NewProductsSection'
 import ShopHero from '@/features/shop/componenets/sections/ShopHeroSection'
+import ShopCategoryBox from '@/features/shop/componenets/ShopCategorys/ShopCategoryBox'
 import React from 'react'
 
 function ShopPage() {
@@ -20,6 +21,9 @@ function ShopPage() {
       >
         <MoreThanShoapSection />
       </LazySection>
+      <Container>
+        <ShopCategoryBox />
+      </Container>
 
     </div>
   )

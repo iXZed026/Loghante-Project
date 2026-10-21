@@ -1,12 +1,15 @@
 "use client"
 
 import Container from '@/components/shared/Container'
+import AppLink from '@/components/ui/AppLink'
 import Button from '@/components/ui/Button'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 
 function MoreThanShoapSection() {
 
-    console.log("More initial")
+    const t =
+        useTranslations("shopMore")
 
 
 
@@ -23,25 +26,38 @@ function MoreThanShoapSection() {
             <Container>
 
 
-                    <div className='fcol md:w-140 w-full gap-y-10'>
-                        <div>
-                            <h6 className='md:text-5xl text-3xl font-wulkan font-bold '>
-                                More Than a Shop
-                            </h6>
-                        </div>
-                        <div>
-                            <p>
-                                Discover Loghanteh — a historical and cultural complex bringing together museums, cafés, exhibitions, cultural spaces and unique experiences.
-                            </p>
-                        </div>
-                        <div>
-                            <Button
-                                className='border-2 border-white py-3 px-5'
-                            >
-                                Explore Loghanteh
-                            </Button>
-                        </div>
+                <div className='fcol md:w-140 w-full gap-y-10'>
+                    <div>
+                        <h6 className='md:text-5xl text-3xl font-wulkan font-bold '>
+                            {t("title")}
+                        </h6>
                     </div>
+                    <div>
+                        <p className='md:text-base text-sm'>
+                            {t("description")}
+                        </p>
+                    </div>
+                    <div>
+                        <AppLink
+                            href='/'
+                        >
+                            <Button
+                                className='
+                                border-2
+                                 border-white 
+                                py-3 
+                                px-5 
+                                md:text-base 
+                                text-sm
+                                hover:bg-[var(--white-light-color)]    
+                                hover:text-[var(--black-color)]   
+                            '
+                            >
+                                {t("explore-button")}
+                            </Button>
+                        </AppLink>
+                    </div>
+                </div>
 
             </Container>
         </section>
