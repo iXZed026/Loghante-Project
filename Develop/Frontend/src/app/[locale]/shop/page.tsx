@@ -3,9 +3,8 @@ import LazySection from '@/components/ui/LazySection'
 import DiscountedProductsSection from '@/features/shop/componenets/sections/DiscountedProductsSection'
 import MoreThanShoapSection from '@/features/shop/componenets/sections/MoreThanShoapSection'
 import NewProductsSection from '@/features/shop/componenets/sections/NewProductsSection'
+import ShopCategorysSection from '@/features/shop/componenets/sections/ShopCategorysSection'
 import ShopHero from '@/features/shop/componenets/sections/ShopHeroSection'
-import ShopCategoryBox from '@/features/shop/componenets/ShopCategorys/ShopCategoryBox'
-import React from 'react'
 
 function ShopPage() {
   return (
@@ -22,7 +21,7 @@ function ShopPage() {
         <MoreThanShoapSection />
       </LazySection>
       <Container>
-        <ShopCategoryBox />
+        <ShopCategorysSection />
       </Container>
 
     </div>
