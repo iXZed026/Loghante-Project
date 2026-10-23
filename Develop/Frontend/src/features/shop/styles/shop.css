@@ -17,4 +17,8 @@ html:has(.shop-layout) {
     .bg-blue-utility {
         @apply bg-[var(--blue-color)];
     }
+
+    .text-blue-utility {
+        @apply text-[var(--blue-color)];
+    }
 }
