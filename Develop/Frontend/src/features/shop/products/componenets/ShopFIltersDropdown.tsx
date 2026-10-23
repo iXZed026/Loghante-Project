@@ -38,7 +38,7 @@ function ShopFIltersDropdown({
           'flex w-full items-center justify-between',
           'text-black-utility',
           'text-left',
-          'border border-[var(--black-color)]/35',
+          'border border-[var(--black-color)]/25',
           'p-5',
 
         )}
@@ -66,7 +66,7 @@ function ShopFIltersDropdown({
             height: { duration: 0.25, ease: 'easeInOut' },
             opacity: { duration: 0.2, ease: 'easeInOut' },
           }}
-          className="fcol gap-y-3 overflow-hidden px-6 py-5"
+          className="fcol gap-y-4 overflow-hidden px-6 py-5"
         >
           {items.map((item) => {
             const id = String(item.id)

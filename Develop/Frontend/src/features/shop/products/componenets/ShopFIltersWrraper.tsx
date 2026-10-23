@@ -52,6 +52,7 @@ function ShopFIltersWrraper() {
         params.delete('category')
         params.delete('minPrice')
         params.delete('maxPrice')
+        params.delete('sort')
 
         const query = params.toString()
 
@@ -63,7 +64,7 @@ function ShopFIltersWrraper() {
     return (
         <aside
             className={cn(
-                'col-span-5',
+                'lg:col-span-4 col-span-12',
                 'fcol gap-y-5',
                 'rounded-lg border border-[var(--black-color)]/25',
                 'py-5',

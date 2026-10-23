@@ -22,6 +22,7 @@ interface ISearchSuggestion {
 
 interface IShopSearchDropdownProps {
   variant?: "header" | "menu";
+  placement?: "top" | "bottom";
 }
 
 const SUGGESTIONS: ISearchSuggestion[] = [
@@ -31,6 +32,7 @@ const SUGGESTIONS: ISearchSuggestion[] = [
 
 function ShopSearchDropdown({
   variant = "header",
+  placement = "bottom",
 }: IShopSearchDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -44,6 +46,7 @@ function ShopSearchDropdown({
 
   const isMenuVariant = variant === "menu";
   const hasQuery = query.trim().length > 0;
+  const opensFromTop = placement === "top";
 
   useEffect(() => {
     if (isOpen && !isMenuVariant) {
@@ -101,15 +104,15 @@ function ShopSearchDropdown({
   const renderSearchInput = (mobile = false) => (
     <div
       className={cn(
-        "flex h-12 min-w-0 items-center gap-3",
+        "flex h-15 min-w-0 items-center gap-3",
         "rounded-lg border border-black/10",
-        "bg-[#f2f2f2] px-3",
+        "bg-[var(--white-light-color)] px-3",
         "transition-colors duration-200",
         mobile && "w-full",
       )}
     >
       <IoSearchSharp
-        size={20}
+        size={24}
         className="shrink-0 text-black-light-utility"
         aria-hidden="true"
       />
@@ -203,7 +206,8 @@ function ShopSearchDropdown({
           animate="visible"
           exit="exit"
           className={cn(
-            "absolute bottom-full left-0 right-0 z-50 mb-2",
+            "absolute left-0 right-0 z-50",
+            opensFromTop ? "bottom-full mb-2" : "top-full mt-2",
             "max-h-[min(60vh,24rem)] overflow-y-auto overscroll-contain",
             "rounded-xl border border-black/20",
             "bg-white-utility text-black-utility",
@@ -219,7 +223,7 @@ function ShopSearchDropdown({
   const menuSearch = (
     <div
       ref={dropDownRef}
-      className="relative z-20 w-full min-w-0 md:hidden"
+      className="relative z-20 w-full min-w-0"
     >
       {menuResults}
       {renderSearchInput(true)}
@@ -256,7 +260,8 @@ function ShopSearchDropdown({
             animate="visible"
             exit="exit"
             className={cn(
-              "absolute top-full z-50 pt-3",
+              "absolute z-50",
+              opensFromTop ? "bottom-full pb-3" : "top-full pt-3",
               "w-[min(22rem,calc(100vw-2rem))]",
               "max-w-[calc(100vw-2rem)]",
               direction === "rtl" ? "left-1/2" : "right-1/2",
@@ -271,7 +276,7 @@ function ShopSearchDropdown({
                 "text-black-utility",
               )}
             >
-              <div className={cn(hasQuery ? "p-3" : "p-3")}>
+              <div className="p-3">
                 {renderSearchInput()}
               </div>
 

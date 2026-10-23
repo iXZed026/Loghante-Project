@@ -143,7 +143,10 @@ function ShopHeader() {
         color="var(--blue-color)"
       >
         {/* Visible only on mobile/tablet */}
-        <ShopSearchDropdown variant="menu" />
+        <ShopSearchDropdown
+          variant="menu"
+          placement="top"
+        />
 
         <LanguageSwitcher
           isScrolled={false}

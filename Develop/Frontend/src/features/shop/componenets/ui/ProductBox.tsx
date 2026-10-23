@@ -23,6 +23,7 @@ function ProductBox({
     return (
         <article
             className="
+                col-span-4
                 group relative flex h-full min-w-0 flex-col
                 overflow-hidden rounded-2xl
                 border border-[var(--blue-border-color)]
