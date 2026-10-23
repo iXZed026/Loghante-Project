@@ -1,8 +1,13 @@
 import LazySection from '@/components/ui/LazySection'
 import React from 'react'
 import RecommendedProducts from '../ui/RecommendedProducts'
+import { useTranslations } from 'next-intl'
 
 function GiftsProductsSection() {
+
+    const t =
+        useTranslations("shopGiftProduct")
+
     return (
         <section
             id="new-products"
@@ -15,8 +20,8 @@ function GiftsProductsSection() {
             >
                 <RecommendedProducts
                     endPointAPI='/gifts'
-                    title='Gifts from Loghanteh'
-                    description='Discover meaningful gifts inspired by history and culture.'
+                    title={t("title")}
+                    description={t("description")}
                 />
             </LazySection>
         </section>

@@ -33,7 +33,7 @@ function ShopMeuseumsBox({
 
                     <div className="flex items-end justify-between gap-3">
                         <div className="min-w-0">
-                            <h3 className="text-xl font-semibold leading-snug text-white transition-colors duration-300 group-hover:text-[var(--gold-color)] sm:text-base">
+                            <h3 className="text-lg font-semibold leading-snug text-white transition-colors duration-300 group-hover:text-[var(--gold-color)] sm:text-base">
                                 {title}
                             </h3>
 

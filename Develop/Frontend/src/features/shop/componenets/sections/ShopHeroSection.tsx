@@ -44,10 +44,10 @@ function ShopHero() {
               </h4>
             </div>
 
-            <div className="flex gap-5 flex-wrap gap-4 text-sm font-bold transition-colors">
+            <div className="flex flex-wrap gap-4 tsm:ext-sm text-xs font-semibold transition-colors">
               <Button
                 className={cn(
-                  "bg-blue-utility py-3 px-5",
+                  "bg-blue-utility py-3 sm:px-5 px-3",
                   "hover:bg-[var(--blue-hover-color)]/80",
                 )}
               >
@@ -57,7 +57,7 @@ function ShopHero() {
               <Button
                 className={cn(
                   "border-2",
-                  "py-3 px-5",
+                  "py-3 sm:px-5 px-3",
                   "hover:bg-[var(--white-light-color)]/80",
                 )}
               >

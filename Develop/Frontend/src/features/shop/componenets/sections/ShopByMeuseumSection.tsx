@@ -4,10 +4,13 @@ import RecommendedProducts from '../ui/RecommendedProducts'
 import ShopMeuseumsBox from '../ui/ShopMeuseumsBox'
 import { cn } from '@/lib/utils/cn'
 import { museumParts } from '@/features/loghante(root)/data/museumParts'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { getLocalizedValue } from '@/lib/utils/getLocalizedValue'
 
 function ShopByMeuseumSection() {
+
+    const t =
+        useTranslations("shopMusesums")
 
     return (
         <section
@@ -19,10 +22,10 @@ function ShopByMeuseumSection() {
                 <div className='fbc min-h-20 mb-20'>
                     <div className='fcol gap-y-5 md:w-130 w-full'>
                         <h3 className='font-wulkan sm:text-4xl text-3xl font-bold'>
-                            Shop by museum
+                            {t("title")}
                         </h3>
                         <h6 className='text-black-light-utility sm:text-base text-sm'>
-                            Explore products inspired by the stories, collections and heritage of each Loghanteh museums.
+                            {t("description")}
                         </h6>
                     </div>
 

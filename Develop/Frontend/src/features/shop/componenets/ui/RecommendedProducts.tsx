@@ -3,6 +3,8 @@ import ProductBoxexWrraper from './ProductBoxexWrraper'
 import ProductBox from './ProductBox'
 import AppLink from '@/components/ui/AppLink'
 import ArrowIcon from '@/components/shared/ArrowIcon'
+import { TranslationFunction } from '@/types/translations'
+import { useTranslations } from 'next-intl'
 
 interface IRecommendedProducts {
     endPointAPI: string
@@ -13,8 +15,13 @@ interface IRecommendedProducts {
 function RecommendedProducts({
     endPointAPI,
     title,
-    description
+    description,
 }: IRecommendedProducts) {
+
+    const t =
+        useTranslations("common")
+
+
     return (
         <div>
             {/* Title */}
@@ -40,7 +47,7 @@ function RecommendedProducts({
                         '
                     >
                         <span>
-                            View all Products
+                            {t("view-all-product")}
                         </span>
                         <ArrowIcon />
                     </AppLink>

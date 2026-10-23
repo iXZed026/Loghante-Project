@@ -185,6 +185,22 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/shop/shop-categorys/shop-categorys.json`)
     ).default;
 
+    const shopDiscountProduct = (
+        await import(`../messages/${locale}/shop/discount-product/discount-product.json`)
+    ).default;
+
+    const shopNewProduct = (
+        await import(`../messages/${locale}/shop/new-product/new-product.json`)
+    ).default;
+
+    const shopMusesums = (
+        await import(`../messages/${locale}/shop/shop-museums/shop-museums.json`)
+    ).default;
+
+    const shopGiftProduct = (
+        await import(`../messages/${locale}/shop/gift-product/gift-product.json`)
+    ).default;
+
 
     return {
         locale,
@@ -246,8 +262,12 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
             shopHeader,
             shopHero,
+            shopDiscountProduct,
+            shopNewProduct,
             shopMore,
             shopCategorys,
+            shopMusesums,
+            shopGiftProduct,
         },
     };
 });
