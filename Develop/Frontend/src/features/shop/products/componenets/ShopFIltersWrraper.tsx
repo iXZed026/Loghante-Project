@@ -7,6 +7,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import ShopFIltersDropdown from './ShopFIltersDropdown'
 import { productCategories } from '../../data/productCategories'
 import PriceRange from './ShopPriceRange'
+import { useTranslations } from 'next-intl'
 
 type FilterKey = 'museum' | 'category'
 
@@ -14,6 +15,9 @@ function ShopFIltersWrraper() {
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
+
+    const T =
+        useTranslations("shopProducts.filters")
 
     const getSelectedIds = (key: FilterKey): string[] => {
         return (searchParams.get(key) ?? '')
@@ -73,7 +77,7 @@ function ShopFIltersWrraper() {
             {/* Header */}
             <div className="fbc px-3 py-4">
                 <h2 className="font-wulkan text-2xl font-bold">
-                    Filters
+                    {T("title")}
                 </h2>
 
                 <Button
@@ -84,21 +88,21 @@ function ShopFIltersWrraper() {
                         'hover:text-[var(--blue-hover-color)]',
                     )}
                 >
-                    Reset All
+                     {T("reset-button")}
                 </Button>
             </div>
 
             {/* Filters */}
             <div className="fcol gap-y-5 px-3">
                 <ShopFIltersDropdown
-                    title="Museum"
+                    title={T("museum")}
                     items={museumParts}
                     selectedIds={museumIds}
                     onToggle={(id) => toggleFilter('museum', id)}
                 />
 
                 <ShopFIltersDropdown
-                    title="Category"
+                    title={T("category")}
                     items={productCategories}
                     selectedIds={categoryIds}
                     onToggle={(id) => toggleFilter('category', id)}

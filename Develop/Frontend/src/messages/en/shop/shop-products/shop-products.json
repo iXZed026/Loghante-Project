@@ -1,0 +1,10 @@
+{
+    "filters": {
+        "title": "Filters",
+        "reset-button": "Reset All",
+        "museum": "Museum",
+        "category": "Category",
+        "price-range":"Price Range",
+        "apply-price-button":"Apply Price Filter"
+    }
+}

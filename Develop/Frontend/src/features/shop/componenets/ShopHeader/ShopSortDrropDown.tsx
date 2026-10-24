@@ -72,6 +72,8 @@ function ShopSortDrropDown() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
+    const locale = useLocale()
+
     const dropdownRef = useState<HTMLDivElement | null>(null);
     const selectedValue = searchParams.get("sort");
     const currentSort: SortValue = isSortValue(selectedValue)
@@ -183,7 +185,7 @@ function ShopSortDrropDown() {
                                         )}
                                     >
                                         <span>
-                                            {getLocalizedValue(option.label, useLocale())}
+                                            {getLocalizedValue(option.label, locale)}
                                         </span>
 
                                         {isSelected && (

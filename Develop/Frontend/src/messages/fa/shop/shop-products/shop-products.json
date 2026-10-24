@@ -1,0 +1,10 @@
+{
+    "filters": {
+        "title": "فیلترها",
+        "reset-button": "بازنشانی همه",
+        "museum": "موزه",
+        "category": "دسته‌بندی",
+        "price-range": "محدوده قیمت",
+        "apply-price-button": "اعمال فیلتر قیمت"
+    }
+}

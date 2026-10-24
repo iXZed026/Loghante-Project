@@ -1,17 +1,20 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
 
-const MIN_LIMIT = 10
-const MAX_LIMIT = 50000
+const MIN_LIMIT = 100_000
+const MAX_LIMIT = 5_000_000_000
 const STEP = 10
 
 function parsePrice(value: string | null, fallback: number) {
+
     if (value === null || value.trim() === '') return fallback
+
+
 
     const parsedValue = Number(value)
 
@@ -25,6 +28,12 @@ function PriceRange() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
     const locale = useLocale()
+
+    const T =
+        useTranslations("shopProducts.filters")
+
+    const commoonT =
+        useTranslations("common")
 
     const minPriceParam = searchParams.get('minPrice')
     const maxPriceParam = searchParams.get('maxPrice')
@@ -109,12 +118,12 @@ function PriceRange() {
     return (
         <section className="fcol gap-y-8 px-3 py-5">
             <h3 className="font-wulkan text-2xl font-bold text-black-utility">
-                Price Range
+                {T("price-range")}
             </h3>
 
             <div className="fbc gap-3 text-sm font-600 text-black-utility">
-                <span>{formatPrice(minPrice)} $</span>
-                <span>{formatPrice(maxPrice)} $</span>
+                <span>{formatPrice(minPrice)} {commoonT("price-type")}</span>
+                <span>{formatPrice(maxPrice)} {commoonT("price-type")}</span>
             </div>
 
             <div className="relative mx-2 h-5" dir="ltr">
@@ -166,7 +175,7 @@ function PriceRange() {
                     'py-2.5'
                 )}
             >
-                Apply Price Filter
+                {T("apply-price-button")}
             </Button>
         </section>
     )
