@@ -5,7 +5,7 @@ import React from 'react'
 function ProductDetailsPage() {
     return (
         <div
-            className='py-27'
+            className='py-32'
         >
 
             <Container>

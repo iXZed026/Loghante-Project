@@ -11,6 +11,7 @@ import {
 import AppImage from "@/components/ui/AppImage";
 import { cn } from "@/lib/utils/cn";
 import ArrowIcon from "@/components/shared/ArrowIcon";
+import Button from "@/components/ui/Button";
 
 const PRODUCT_IMAGES = [
   "/images/loghanteh-cafe.jpg",
@@ -45,19 +46,19 @@ function ProductDetailsHeaderImages() {
   return (
     <div
       className={cn(
-        "col-span-5 flex min-w-0 flex-col gap-4",
+        "xl:col-span-5 lg:col-span-6 col-span-12 flex min-w-0 flex-col gap-4",
         "sm:flex-row sm:items-start sm:gap-3",
       )}
     >
       {/* Thumbnails */}
       <div
         className={cn(
-          "order-2 flex gap-3",
+          "order-2 flex md:gap-3 gap-2",
           "sm:order-1 sm:w-20 sm:shrink-0 sm:flex-col",
         )}
       >
         {PRODUCT_IMAGES.map((src, index) => (
-          <button
+          <Button
             key={`${src}-${index}`}
             type="button"
             onClick={() => selectImage(index)}
@@ -71,6 +72,7 @@ function ProductDetailsHeaderImages() {
                 : "border-transparent hover:border-black/20",
               "focus-visible:outline-none focus-visible:ring-2",
               "focus-visible:ring-[var(--blue-color)]",
+              "p-0",
             )}
           >
             <AppImage
@@ -80,7 +82,7 @@ function ProductDetailsHeaderImages() {
               alt={`Product thumbnail ${index + 1}`}
               className="h-full w-full object-cover"
             />
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -105,7 +107,7 @@ function ProductDetailsHeaderImages() {
           />
 
           {/* Previous */}
-          <button
+          <Button
             type="button"
             onClick={showPrevious}
             aria-label="Previous image"
@@ -120,10 +122,10 @@ function ProductDetailsHeaderImages() {
             )}
           >
             <ArrowIcon direction="left" />
-          </button>
+          </Button>
 
           {/* Next */}
-          <button
+          <Button
             type="button"
             onClick={showNext}
             aria-label="Next image"
@@ -138,7 +140,7 @@ function ProductDetailsHeaderImages() {
             )}
           >
             <ArrowIcon  />
-          </button>
+          </Button>
 
           {/* Image counter */}
           <span
@@ -154,7 +156,7 @@ function ProductDetailsHeaderImages() {
 
         {/* Zoom button */}
         <div className="flex justify-center">
-          <button
+          <Button
             type="button"
             onClick={() => setIsZoomed((current) => !current)}
             aria-label={isZoomed ? "Zoom out" : "Zoom in"}
@@ -178,7 +180,7 @@ function ProductDetailsHeaderImages() {
             )}
 
             <span>{isZoomed ? "Zoom out" : "Zoom in"}</span>
-          </button>
+          </Button>
         </div>
       </div>
     </div>
