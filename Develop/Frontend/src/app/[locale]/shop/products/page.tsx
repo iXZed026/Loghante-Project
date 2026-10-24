@@ -7,7 +7,7 @@ function ProductsPage() {
     return (
         <Container>
             <div
-                className='grid grid-cols-12 gap-5 py-25'
+                className='grid grid-cols-12 gap-5 py-27'
             >
                 <ShopFIltersWrraper />
                 <ShopProductsWrraper />

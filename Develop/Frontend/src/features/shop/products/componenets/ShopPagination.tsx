@@ -168,6 +168,7 @@ function PaginationButton({
         "focus-visible:outline-none focus-visible:ring-2",
         "focus-visible:ring-[var(--blue-color)]",
         "disabled:pointer-events-none disabled:opacity-40",
+        "click-scale cursor-pointer",
       )}
     >
       {children}

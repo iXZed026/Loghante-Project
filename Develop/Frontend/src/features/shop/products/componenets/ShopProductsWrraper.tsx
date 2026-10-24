@@ -3,7 +3,7 @@ import React from 'react'
 import ProductBox from '../../componenets/ui/ProductBox'
 import ShopSearchDropdown from '../../componenets/ShopHeader/ShopSearchDropdown'
 import ShopSortDrropDown from '../../componenets/ShopHeader/ShopSortDrropDown'
-import ShopPagination from '../../componenets/ShopHeader/ShopPagination'
+import ShopPagination from './ShopPagination'
 
 function ShopProductsWrraper() {
     return (
