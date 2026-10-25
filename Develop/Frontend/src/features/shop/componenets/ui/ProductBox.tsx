@@ -10,6 +10,7 @@ interface IProductBoxProps {
     museum?: string
     originalPrice?: string
     discountedPrice?: string
+    col?: string
 }
 
 function ProductBox({
@@ -19,11 +20,12 @@ function ProductBox({
     museum = "Tehran Alef Museum",
     originalPrice = "58,000",
     discountedPrice = "40,000",
+    col = "4",
 }: IProductBoxProps) {
     return (
         <article
-            className="
-                col-span-4
+            className={`
+                col-span-${col}
                 group relative flex h-full min-w-0 flex-col
                 overflow-hidden rounded-2xl
                 border border-[var(--blue-border-color)]
@@ -31,7 +33,7 @@ function ProductBox({
                 transition-shadow duration-500
                 hover:border-[var(--blue-color)]/30
                 hover:shadow-xl hover:shadow-[var(--blue-opacity-color)]
-            "
+            `}
         >
             {/* Product Image */}
             {/* relative aspect-[4/4.5] w-full overflow-hidden */}
