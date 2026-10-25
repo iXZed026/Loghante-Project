@@ -1,5 +1,7 @@
 import Container from '@/components/shared/Container'
 import ProductDetailsHeader from '@/features/shop/products/componenets/product-details/ProductDetailsHeader/ProductDetailsHeader'
+import ProductDetailsWorkshop from '@/features/shop/products/componenets/product-details/ProductDetailsWorkshop'
+import ProductMoreDetails from '@/features/shop/products/componenets/product-details/ProductMoreDetails'
 import React from 'react'
 
 function ProductDetailsPage() {
@@ -9,17 +11,19 @@ function ProductDetailsPage() {
         >
 
             <Container>
-                {/* Header */}
+                <div className='fcol gap-y-15'>
+                    {/* Header */}
+                    <ProductDetailsHeader />
 
-                <ProductDetailsHeader />
+                    {/* More Details */}
+                    <ProductMoreDetails />
 
-                {/* More Details */}
+                    {/* Workshps */}
+                    <ProductDetailsWorkshop />
 
 
-                {/* Workshps */}
-
-
-                {/* Like Suggestion */}
+                    {/* Like Suggestion */}
+                </div>
             </Container>
 
 
