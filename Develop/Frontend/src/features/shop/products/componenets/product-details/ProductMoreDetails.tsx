@@ -11,7 +11,7 @@ function ProductMoreDetails() {
 
             {/* Title */}
             <div>
-                <h6 className='text-2xl font-semibold'>
+                <h6 className='text-2xl font-bold'>
                     {t("title")}
                 </h6>
             </div>

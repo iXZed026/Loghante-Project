@@ -1,18 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaExpand,
-  FaCompress,
-} from "react-icons/fa6";
+import { FaExpand, FaCompress } from "react-icons/fa6";
+import { useTranslations, useLocale } from "next-intl";
 
 import AppImage from "@/components/ui/AppImage";
-import { cn } from "@/lib/utils/cn";
-import ArrowIcon from "@/components/shared/ArrowIcon";
 import Button from "@/components/ui/Button";
-import { useTranslations } from "next-intl";
+import ArrowIcon from "@/components/shared/ArrowIcon";
+import { cn } from "@/lib/utils/cn";
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
 const PRODUCT_IMAGES = [
   "/images/loghanteh-cafe.jpg",
@@ -25,8 +21,9 @@ function ProductDetailsHeaderImages() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
 
-  const T = 
-    useTranslations("shopProductDetails.header")
+  const t = useTranslations("shopProductDetails.header");
+  const locale = useLocale();
+  const isRTL = locale === "fa";
 
   const showPrevious = () => {
     setActiveIndex((current) =>
@@ -50,14 +47,14 @@ function ProductDetailsHeaderImages() {
   return (
     <div
       className={cn(
-        "xl:col-span-5 lg:col-span-6 col-span-12 flex min-w-0 flex-col gap-4",
+        "col-span-12 flex min-w-0 flex-col gap-4 lg:col-span-6 xl:col-span-5",
         "sm:flex-row sm:items-start sm:gap-3",
       )}
     >
       {/* Thumbnails */}
       <div
         className={cn(
-          "order-2 flex md:gap-3 gap-2",
+          "order-2 flex gap-2 md:gap-3",
           "sm:order-1 sm:w-20 sm:shrink-0 sm:flex-col",
         )}
       >
@@ -69,14 +66,13 @@ function ProductDetailsHeaderImages() {
             aria-label={`Show product image ${index + 1}`}
             aria-pressed={activeIndex === index}
             className={cn(
-              "relative aspect-square w-16 shrink-0 overflow-hidden rounded-lg",
-              "border-2 transition-colors duration-200 sm:w-20",
+              "relative aspect-square w-16 shrink-0 overflow-hidden rounded-lg p-0 sm:w-20",
+              "border-2 transition-colors duration-200",
               activeIndex === index
                 ? "border-[var(--blue-color)]"
                 : "border-transparent hover:border-black/20",
               "focus-visible:outline-none focus-visible:ring-2",
               "focus-visible:ring-[var(--blue-color)]",
-              "p-0",
             )}
           >
             <AppImage
@@ -110,44 +106,43 @@ function ProductDetailsHeaderImages() {
             )}
           />
 
-          {/* Previous */}
+          {/* Previous image */}
           <Button
             type="button"
             onClick={showPrevious}
-            aria-label="Previous image"
             className={cn(
-              "absolute left-3 top-1/2 z-10 -translate-y-1/2",
-              "flex size-10 items-center justify-center rounded-full",
-              "bg-white/90 text-black shadow-md backdrop-blur-sm",
+              "absolute top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center",
+              "rounded-full bg-white/90 text-black shadow-md backdrop-blur-sm",
               "transition-colors duration-200 hover:bg-white",
               "focus-visible:outline-none focus-visible:ring-2",
-              "focus-visible:ring-[var(--blue-color)] cursor-pointer",
-              "click-scale"
+              "focus-visible:ring-[var(--blue-color)]",
+              "click-scale",
+              isRTL ? "end-3" : "start-3",
             )}
           >
-            <ArrowIcon direction="left" />
+            <MdKeyboardArrowLeft />
           </Button>
 
-          {/* Next */}
+          {/* Next image */}
           <Button
             type="button"
             onClick={showNext}
-            aria-label="Next image"
             className={cn(
-              "absolute right-3 top-1/2 z-10 -translate-y-1/2",
-              "flex size-10 items-center justify-center rounded-full",
-              "bg-white/90 text-black shadow-md backdrop-blur-sm",
+              "absolute top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center",
+              "rounded-full bg-white/90 text-black shadow-md backdrop-blur-sm",
               "transition-colors duration-200 hover:bg-white",
               "focus-visible:outline-none focus-visible:ring-2",
-              "focus-visible:ring-[var(--blue-color)]  cursor-pointer",
-              "click-scale"
+              "focus-visible:ring-[var(--blue-color)]",
+              "click-scale",
+              isRTL ? "start-3" : "end-3",
             )}
           >
-            <ArrowIcon  />
+            <MdKeyboardArrowRight />
           </Button>
 
           {/* Image counter */}
           <span
+            dir="ltr"
             className={cn(
               "absolute bottom-3 left-1/2 z-10 -translate-x-1/2",
               "rounded-full bg-black/60 px-3 py-1",
@@ -163,18 +158,16 @@ function ProductDetailsHeaderImages() {
           <Button
             type="button"
             onClick={() => setIsZoomed((current) => !current)}
-            aria-label={isZoomed ? "Zoom out" : "Zoom in"}
+            aria-label={isZoomed ? t("zoom-out") : t("zoom-in")}
             aria-pressed={isZoomed}
             className={cn(
-              "flex items-center gap-2 rounded-lg px-4 py-2",
-              "text-sm text-blue-utility",
-              "transition-colors duration-200",
+              "flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2",
+              "text-sm text-blue-utility transition-colors duration-200",
               "hover:bg-[var(--blue-opacity-color)]",
+              "hover:text-[var(--blue-hover-color)]",
               "focus-visible:outline-none focus-visible:ring-2",
               "focus-visible:ring-[var(--blue-color)]",
-              "cursor-pointer",
-              "hover:text-[var(--blue-hover-color)]",
-              "click-scale"
+              "click-scale",
             )}
           >
             {isZoomed ? (
@@ -183,7 +176,7 @@ function ProductDetailsHeaderImages() {
               <FaExpand size={15} />
             )}
 
-            <span>{isZoomed ? T("zoom-out") : T("zoom-in")}</span>
+            <span>{isZoomed ? t("zoom-out") : t("zoom-in")}</span>
           </Button>
         </div>
       </div>

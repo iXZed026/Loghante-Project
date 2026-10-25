@@ -9,7 +9,7 @@
         "add-button": "Add to Cart"
     },
     "more-details": {
-        "title": "Product details",
+        "title": "Product Details",
         "material": "Material",
         "dimensions": "Dimensions",
         "height": "Weight",
@@ -19,8 +19,8 @@
         "availability": "Availability"
     },
     "workshop": {
-        "title": "",
-        "description": "",
+        "title": "Loghanteh Workshop",
+        "description": "Discover Loghanteh — a historical and cultural complex bringing together museums, cafés, exhibitions, cultural spaces and unique experiences.",
         "explore-button": "Explore Our Workshops"
     },
     "like-product": {
