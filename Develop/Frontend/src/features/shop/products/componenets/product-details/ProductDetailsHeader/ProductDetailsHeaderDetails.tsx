@@ -6,9 +6,13 @@ import { cn } from "@/lib/utils/cn";
 import { useTranslations } from "next-intl";
 import { FaMinus, FaPlus, FaBoxOpen } from "react-icons/fa6";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
+import { formatPrice } from "@/lib/utils/formatPrice";
 
 function ProductDetailsHeaderDetails() {
+
   const commonT = useTranslations("common");
+  const T =
+    useTranslations("shopProductDetails.header")
 
   const stockQuantity = 12;
   const [quantity, setQuantity] = useState(1);
@@ -44,7 +48,7 @@ function ProductDetailsHeaderDetails() {
 
       <div>
         <span className="text-2xl font-semibold text-blue-utility">
-          {new Intl.NumberFormat("en-US").format(400000)}
+          {formatPrice(40000)}
           {commonT("price-type")}
         </span>
       </div>
@@ -60,7 +64,7 @@ function ProductDetailsHeaderDetails() {
 
       {/* Color */}
       <div className="fcol gap-y-5">
-        <span className="font-medium text-black-utility">Color</span>
+        <span className="font-medium text-black-utility">{T("color")}</span>
 
         <div className="flex gap-3">
           <button
@@ -86,8 +90,8 @@ function ProductDetailsHeaderDetails() {
         <FaBoxOpen size={16} />
         <span>
           {isOutOfStock
-            ? "Out of stock"
-            : `${stockQuantity} items available`}
+            ? T("out-of-stock")
+            : `${stockQuantity} ${T("available")}`}
         </span>
       </div>
 
@@ -95,7 +99,7 @@ function ProductDetailsHeaderDetails() {
       <div className="flex w-full items-end gap-4">
         <div className="fcol min-w-0 flex-1 gap-2">
           <span className="text-sm font-medium text-black-utility">
-            Quantity
+            {T("quantity")}
           </span>
 
           <div
@@ -160,7 +164,9 @@ function ProductDetailsHeaderDetails() {
             )}
           >
             <MdOutlineAddShoppingCart size={22} />
-            <span className="truncate">Add to Cart</span>
+            <span className="truncate">
+              {T("add-button")}
+            </span>
           </Button>
         </div>
       </div>

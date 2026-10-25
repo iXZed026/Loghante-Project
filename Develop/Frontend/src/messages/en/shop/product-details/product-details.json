@@ -1,0 +1,29 @@
+{
+    "header": {
+        "zoom-in": "Zoom In",
+        "zoom-out": "Zoom Out",
+        "color": "Color",
+        "out-of-stock": "Out of stock",
+        "available": "items available",
+        "quantity": "Quantity",
+        "add-button": "Add to Cart"
+    },
+    "More-details": {
+        "title": "Product details",
+        "material": "Material",
+        "dimensions": "Dimensions",
+        "height": "Weight",
+        "year": "Year/Era",
+        "origin": "Origin",
+        "skU": "SkU",
+        "availability": "Availability"
+    },
+    "workshop": {
+        "title": "",
+        "description": "",
+        "explore-button": "Explore Our Workshops"
+    },
+    "like-product": {
+        "title": "You May Also Like"
+    }
+}

@@ -12,6 +12,7 @@ import AppImage from "@/components/ui/AppImage";
 import { cn } from "@/lib/utils/cn";
 import ArrowIcon from "@/components/shared/ArrowIcon";
 import Button from "@/components/ui/Button";
+import { useTranslations } from "next-intl";
 
 const PRODUCT_IMAGES = [
   "/images/loghanteh-cafe.jpg",
@@ -23,6 +24,9 @@ const PRODUCT_IMAGES = [
 function ProductDetailsHeaderImages() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
+
+  const T = 
+    useTranslations("shopProductDetails.header")
 
   const showPrevious = () => {
     setActiveIndex((current) =>
@@ -179,7 +183,7 @@ function ProductDetailsHeaderImages() {
               <FaExpand size={15} />
             )}
 
-            <span>{isZoomed ? "Zoom out" : "Zoom in"}</span>
+            <span>{isZoomed ? T("zoom-out") : T("zoom-in")}</span>
           </Button>
         </div>
       </div>

@@ -1,0 +1,29 @@
+{
+    "header": {
+        "zoom-in": "بزرگ‌نمایی",
+        "zoom-out": "کوچک‌نمایی",
+        "color": "رنگ",
+        "out-of-stock": "ناموجود",
+        "available": "مورد موجود",
+        "quantity": "تعداد",
+        "add-button": "افزودن به سبد خرید"
+    },
+    "More-details": {
+        "title": "جزئیات محصول",
+        "material": "جنس",
+        "dimensions": "ابعاد",
+        "height": "وزن",
+        "year": "سال/دوره",
+        "origin": "خاستگاه",
+        "skU": "کد محصول",
+        "availability": "موجودی"
+    },
+    "workshop": {
+        "title": "کارگاه‌های ما",
+        "description": "در کارگاه‌های لقانطه، هنر و میراث را از نزدیک تجربه کنید.",
+        "explore-button": "کاوش کارگاه‌های ما"
+    },
+    "like-product": {
+        "title": "شاید این‌ها را هم بپسندید"
+    }
+}

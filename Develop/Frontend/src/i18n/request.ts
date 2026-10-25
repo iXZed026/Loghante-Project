@@ -201,8 +201,14 @@ export default getRequestConfig(async ({ requestLocale }) => {
         await import(`../messages/${locale}/shop/gift-product/gift-product.json`)
     ).default;
 
+    //Shop Products
     const shopProducts = (
         await import(`../messages/${locale}/shop/shop-products/shop-products.json`)
+    ).default;
+
+    //Shop Product Details
+    const shopProductDetails = (
+        await import(`../messages/${locale}/shop/product-details/product-details.json`)
     ).default;
 
 
@@ -273,7 +279,9 @@ export default getRequestConfig(async ({ requestLocale }) => {
             shopMusesums,
             shopGiftProduct,
             //Products
-            shopProducts
+            shopProducts,
+            //Shop Product Details
+            shopProductDetails,
         },
     };
 });
