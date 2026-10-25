@@ -1,13 +1,18 @@
+import { useTranslations } from 'next-intl'
 import React from 'react'
 
 function ProductMoreDetails() {
+
+    const t =
+        useTranslations("shopProductDetails.more-details")
+
     return (
         <div className='fcol gap-y-15 md:px-10'>
 
             {/* Title */}
             <div>
                 <h6 className='text-2xl font-semibold'>
-                    Product details
+                    {t("title")}
                 </h6>
             </div>
 
@@ -16,7 +21,7 @@ function ProductMoreDetails() {
             <div className='md:text-base text-sm text-black-light-utility fcol gap-y-5'>
                 <div className='fbc'>
                     <span>
-                        Material
+                        {t("material")}
                     </span>
                     <span>
                         Glass, Gold plated
@@ -24,7 +29,7 @@ function ProductMoreDetails() {
                 </div>
                 <div className='fbc'>
                     <span>
-                        Dimensions
+                        {t("dimensions")}
                     </span>
                     <span>
                         12 cm X 5 cm
@@ -32,7 +37,7 @@ function ProductMoreDetails() {
                 </div>
                 <div className='fbc'>
                     <span>
-                        Weight
+                        {t("height")}
                     </span>
                     <span>
                         250g
@@ -40,7 +45,7 @@ function ProductMoreDetails() {
                 </div>
                 <div className='fbc'>
                     <span>
-                        year/era
+                        {t("year")}
                     </span>
                     <span>
                         Qajar dynasty (19th century)
@@ -48,7 +53,7 @@ function ProductMoreDetails() {
                 </div>
                 <div className='fbc'>
                     <span>
-                        origin
+                        {t("origin")}
                     </span>
                     <span>
                         Iran
@@ -56,7 +61,7 @@ function ProductMoreDetails() {
                 </div>
                 <div className='fbc'>
                     <span>
-                        SkU
+                        {t("skU")}
                     </span>
                     <span>
                         LP-PRF-001
@@ -64,7 +69,7 @@ function ProductMoreDetails() {
                 </div>
                 <div className='fbc'>
                     <span>
-                        Availability
+                        {t("availability")}
                     </span>
                     <span>
                         In Stock
