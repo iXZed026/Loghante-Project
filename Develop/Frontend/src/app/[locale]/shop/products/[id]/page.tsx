@@ -1,4 +1,6 @@
+
 import Container from '@/components/shared/Container'
+import LazySection from '@/components/ui/LazySection'
 import ProductDetailsHeader from '@/features/shop/products/componenets/product-details/ProductDetailsHeader/ProductDetailsHeader'
 import ProductDetailsSuggestionLike from '@/features/shop/products/componenets/product-details/ProductDetailsSuggestionLike'
 import ProductDetailsWorkshop from '@/features/shop/products/componenets/product-details/ProductDetailsWorkshop'
@@ -29,7 +31,13 @@ function ProductDetailsPage() {
                 {/* Like Suggestion */}
 
                 <Container>
-                    <ProductDetailsSuggestionLike />
+
+                    <LazySection
+                        rootMargin="300px 0px"
+                        placeholderClassName="rounded-none"
+                    >
+                        <ProductDetailsSuggestionLike />
+                    </LazySection>
                 </Container>
 
             </div>
