@@ -1,3 +1,5 @@
+"use client"
+
 import ProductBox from '@/features/shop/componenets/ui/ProductBox'
 import { cn } from '@/lib/utils/cn'
 import { useTranslations } from 'next-intl'
@@ -6,6 +8,8 @@ function ProductDetailsSuggestionLike() {
 
     const t = 
         useTranslations("shopProductDetails.like-product")
+
+        console.log("initial")
 
     return (
         <div className='fcol gap-y-10'>
