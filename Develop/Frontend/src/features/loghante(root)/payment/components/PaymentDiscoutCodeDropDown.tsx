@@ -21,6 +21,7 @@ interface PaymentDiscoutCodeDropDownProps {
     onDIscountData: (
         data: Awaited<ReturnType<typeof getDiscountCode>>
     ) => void
+    color?: string
 }
 
 interface IModalState {
@@ -31,6 +32,7 @@ interface IModalState {
 
 function PaymentDiscoutCodeDropDown({
     onDIscountData,
+    color = "var(--crimson-opacity-color)"
 }: PaymentDiscoutCodeDropDownProps) {
     const paymentPaymentDetailsDDT = useTranslations(
         "payment.payment-details.drop-down"
@@ -143,7 +145,7 @@ function PaymentDiscoutCodeDropDown({
             />
 
             <div
-                className="px-5 mb-15"
+                className="px-5"
                 ref={dropDownRef}
             >
                 <Button
@@ -154,7 +156,7 @@ function PaymentDiscoutCodeDropDown({
                         "rounded-md",
                         "text-black-utility",
                         "border-[1px] border-black-opacity",
-                        "hover:bg-[var(--crimson-opacity-color)]",
+                        `hover:opacity-85`,
                     )}
                     onClick={toggleDDHandler}
                 >
@@ -209,10 +211,9 @@ function PaymentDiscoutCodeDropDown({
                             disabled={isLoading}
                             className={cn(
                                 "shrink-0",
-                                "text-lg",
-                                "py-1 px-5",
-                                "bg-crimson",
-                                "hover:bg-[var(--crimson-opacity-color)]",
+                                "py-1.5 px-5",
+                                `bg-[${color}]`,
+                                `hover:opacity-85`,
                             )}
                             onClick={applyDiscountHandle}
                         >

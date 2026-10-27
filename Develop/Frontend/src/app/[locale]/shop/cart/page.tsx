@@ -6,12 +6,12 @@ import React from 'react'
 
 function CartPage() {
     return (
-        <div className='py-27'>
+        <div className='py-30'>
 
             <Container>
                 <div className='fcol gap-y-15'>
                     {/* Cart Header */}
-                    <div className='grid grid-cols-12 gap-5'>
+                    <div className='grid grid-cols-12 xl:gap-20 md:gap-3 gap-y-10'>
                         <CartItemWrraper />
                         <CartOrderOverview />
                     </div>

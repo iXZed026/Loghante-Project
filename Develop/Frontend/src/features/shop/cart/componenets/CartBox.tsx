@@ -158,7 +158,7 @@ function CartBox() {
                         </span>
 
                         <span className="text-base font-bold text-blue-utility sm:text-lg">
-                            {formatPrice(price)} {commonT("price-type")}
+                            {formatPrice(price)} {commonT("price-label")}
                         </span>
 
                         {quantity > 1 && (
