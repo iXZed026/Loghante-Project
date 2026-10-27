@@ -9,7 +9,6 @@ function CartItemWrraper() {
         <div
             className={cn(
                 "lg:col-span-7 col-span-12",
-                "p-5",
                 "fcol gap-y-5"
             )}
         >

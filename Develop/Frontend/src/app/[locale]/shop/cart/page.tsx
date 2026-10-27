@@ -17,7 +17,9 @@ function CartPage() {
                     </div>
 
                     {/* Cart Payment Rules */}
-                    <CartPaymentRules />
+                    <div className='grid grid-cols-12 gap-5'>
+                        <CartPaymentRules />
+                    </div>
                 </div>
             </Container>
 
