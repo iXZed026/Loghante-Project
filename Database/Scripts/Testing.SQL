@@ -520,7 +520,7 @@ SELECT * FROM usertypes;
 
 SELECT * FROM users;
 
-SELECT * FROM discountcodes;
+SELECT * FROM DiscountCodes ;
 
 INSERT INTO DiscountCodes
     (Code, DiscountPercent, MaxDiscountAmount, UsageLimit, UsedCount, StartAt, ExpiresAt)
@@ -676,3 +676,5 @@ VALUES
 SELECT * FROM users WHERE usertypeid = 3;
 
 SELECT * FROM usertypes;
+
+SELECT * FROM languages;
