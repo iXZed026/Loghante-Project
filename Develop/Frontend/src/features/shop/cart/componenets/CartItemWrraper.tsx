@@ -22,7 +22,7 @@ function CartItemWrraper() {
             {/* Box Wrraper */}
             <div
                 className={cn(
-                    "fcol gap-y-1 h-115 overflow-y-scroll"
+                    "fcol gap-y-1"
                 )}
             >
 
