@@ -94,6 +94,7 @@ func New() (*App, error) {
 	bookingRepository := repositories.NewBookingRepository(db)
 	customerRequestRepository := repositories.NewCustomerRequestRepository(db)
 	discountCodeRepository := repositories.NewDiscountCodeRepository(db)
+	productRepository := repositories.NewProductRepository(db)
 
 	// Services
 	authService := services.NewAuthService(
@@ -131,6 +132,10 @@ func New() (*App, error) {
 	discountCodeService := services.NewDiscountCodeService(
 		discountCodeRepository,
 	)
+	productService := services.NewProductService(
+		productRepository,
+		languageRepository,
+	)
 
 	// Handlers
 	authHandler := handlers.NewAuthHandler(authService, logger)
@@ -146,6 +151,7 @@ func New() (*App, error) {
 		discountCodeService,
 		logger,
 	)
+	productHandler := handlers.NewProductHandler(productService, logger)
 
 	// Router
 	r := gin.Default()
@@ -158,6 +164,7 @@ func New() (*App, error) {
 		ticketHandler,
 		customerRequestHandler,
 		discountCodeHandler,
+		productHandler,
 		jwtService,
 		rateLimiter,
 	)
