@@ -76,10 +76,10 @@ INSERT INTO Products (CategoryId, MuseumId, Origin, Material, Weight, Length, Wi
 (3, NULL, 'Iran', 'Paper, Leather Cover', 450.00, 21.00, 14.00, 2.50, 'Modern', 5.00, TRUE),
 -- Product 4: Handwoven Rug (Home)
 (4, NULL, 'Iran', 'Wool, Cotton', 4500.00, 200.00, 150.00, 1.20, 'Traditional', 0.00, TRUE),
--- Product 5: Classic Car Model (Automotive)
-(5, NULL, 'Germany', 'Die-cast Metal', 250.00, 25.00, 10.00, 8.00, '1960s', 20.00, TRUE),
--- Product 6: Specialty Coffee Beans (Coffee)
-(6, NULL, 'Ethiopia', 'Arabica Beans', 250.00, 15.00, 10.00, 5.00, 'Current', 0.00, TRUE);
+-- Product 5: Classic Car Model (Automotive) → Classic Cars Museum
+(5, 1, 'Germany', 'Die-cast Metal', 250.00, 25.00, 10.00, 8.00, '1960s', 20.00, TRUE),
+-- Product 6: Specialty Coffee Beans (Coffee) → Coffee and Chocolate Museum
+(6, 2, 'Ethiopia', 'Arabica Beans', 250.00, 15.00, 10.00, 5.00, 'Current', 0.00, TRUE);
 
 -- =========================================
 -- 4. ProductTranslations

@@ -682,3 +682,10 @@ SELECT * FROM languages;
 SELECT * FROM users;
 
 SELECT * FROM products WHERE isactive = TRUE;
+
+SELECT * FROM museums;
+
+SELECT * FROM museumtranslations;
+
+
+SELECT * FROM products;
