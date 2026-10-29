@@ -678,3 +678,7 @@ SELECT * FROM users WHERE usertypeid = 3;
 SELECT * FROM usertypes;
 
 SELECT * FROM languages;
+
+SELECT * FROM users;
+
+SELECT * FROM products WHERE isactive = TRUE;
