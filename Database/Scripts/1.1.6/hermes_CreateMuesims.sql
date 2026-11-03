@@ -5,11 +5,11 @@
 
 BEGIN;
 
-INSERT INTO public.museums (museumid, establisheddate)
+INSERT INTO public.museums (establisheddate)
 VALUES
-    (4, DATE '2020-01-01'),
-    (5, DATE '2021-01-01'),
-    (6, DATE '2022-01-01');
+    (DATE '2020-01-01'),
+    (DATE '2021-01-01'),
+    (DATE '2022-01-01');
 
 INSERT INTO public.museumtranslations
     (museumid, languagesid, name, description)
@@ -23,7 +23,7 @@ VALUES
     -- Museum 5: Tehran Alef Classic Cars and Motorcycles
     (5, 2, 'Tehran Alef Classic Cars and Motorcycles',
         'A collection of classic cars and motorcycles highlighting the history of transportation and automotive design.'),
-    (5, 1, 'موزه خودروها و موتورسیکلت‌های کلاسیک الف تهران',
+    (5, 1, 'موزه خودروها و موتورسیکلت‌های کلاسیک تهران الف',
         'مجموعه‌ای از خودروها و موتورسیکلت‌های کلاسیک که تاریخ حمل‌ونقل و طراحی وسایل نقلیه را نمایش می‌دهد.'),
 
     -- Museum 6: National Museum of Iranian Trading Houses
