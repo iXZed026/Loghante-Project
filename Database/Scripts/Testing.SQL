@@ -687,5 +687,8 @@ SELECT * FROM museums;
 
 SELECT * FROM museumtranslations;
 
+UPDATE products
+SET isactive =false
+WHERE productid =26;
 
 SELECT * FROM products;
