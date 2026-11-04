@@ -6,6 +6,7 @@ import (
 
 	"loghanteh-project/internal/dto"
 
+	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -25,7 +26,7 @@ const productCardSelect = `
 	COALESCE((
 		SELECT MIN(pv.price)
 		FROM productvariants AS pv
-		WHERE pv.productid = p.productid AND pv.isactive = TRUE
+		WHERE pv.productid = p.productid
 	), 0) AS price,
 	p.discountpercent AS "discountPercent",
 	COALESCE((
@@ -43,7 +44,7 @@ func (r *ProductRepository) productCards(ctx context.Context, languageID uint) *
 		Select(productCardSelect).
 		Joins("LEFT JOIN producttranslations AS pt ON pt.productid = p.productid AND pt.languageid = ?", languageID).
 		Joins("LEFT JOIN museumtranslations AS mt ON mt.museumid = p.museumid AND mt.languagesid = ?", languageID).
-		Joins("INNER JOIN museums AS m ON m.museumid = p.museumid").
+		Joins("LEFT JOIN museums AS m ON m.museumid = p.museumid").
 		Where("p.isactive = TRUE")
 }
 
@@ -79,11 +80,7 @@ func (r *ProductRepository) GetOnePerMuseum(
 	inner := r.productCards(ctx, languageID).
 		Select(productCardSelect + `,
 			p.createdat AS "createdAt",
-			ROW_NUMBER() OVER (PARTITION BY p.museumid ORDER BY p.createdat DESC, p.productid DESC) AS row_num`).
-		Where(`EXISTS (
-			SELECT 1 FROM productvariants AS active_variant
-			WHERE active_variant.productid = p.productid AND active_variant.isactive = TRUE
-		)`)
+			ROW_NUMBER() OVER (PARTITION BY p.museumid ORDER BY p.createdat DESC, p.productid DESC) AS row_num`)
 	var products []dto.ProductCard
 	err := r.db.WithContext(ctx).
 		Table("(?) AS ranked", inner).
@@ -113,7 +110,7 @@ func (r *ProductRepository) List(
 		query = query.Where("p.categoryid IN ?", categoryIDs)
 	}
 	if minPrice != nil || maxPrice != nil {
-		conditions := []string{"pv.productid = p.productid", "pv.isactive = TRUE"}
+		conditions := []string{"pv.productid = p.productid"}
 		arguments := make([]any, 0, 2)
 		if minPrice != nil {
 			conditions = append(conditions, "pv.price >= ?")
@@ -168,7 +165,24 @@ func (r *ProductRepository) GetDetail(
 	languageID uint,
 	productID uint,
 ) (*dto.ProductDetailResponse, error) {
-	var detail dto.ProductDetailResponse
+	var record struct {
+		ProductID       uint             `gorm:"column:productId"`
+		Name            string           `gorm:"column:name"`
+		MuseumName      string           `gorm:"column:museumName"`
+		Price           decimal.Decimal  `gorm:"column:price"`
+		DiscountPercent decimal.Decimal  `gorm:"column:discountPercent"`
+		ImageURL        string           `gorm:"column:imageUrl"`
+		CategoryID      uint             `gorm:"column:categoryId"`
+		MuseumID        uint             `gorm:"column:museumId"`
+		Description     string           `gorm:"column:description"`
+		Origin          string           `gorm:"column:origin"`
+		Material        string           `gorm:"column:material"`
+		Weight          *decimal.Decimal `gorm:"column:weight"`
+		Length          *decimal.Decimal `gorm:"column:length"`
+		Width           *decimal.Decimal `gorm:"column:width"`
+		Height          *decimal.Decimal `gorm:"column:height"`
+		Era             string           `gorm:"column:era"`
+	}
 	err := r.productCards(ctx, languageID).
 		Select(productCardSelect+`,
 			p.categoryid AS "categoryId",
@@ -182,9 +196,28 @@ func (r *ProductRepository) GetDetail(
 			p.height,
 			p.era`).
 		Where("p.productid = ?", productID).
-		Take(&detail).Error
+		Take(&record).Error
 	if err != nil {
 		return nil, err
+	}
+	detail := &dto.ProductDetailResponse{
+		ProductCard: dto.ProductCard{
+			ProductID: record.ProductID, Name: record.Name, MuseumName: record.MuseumName,
+			Price: record.Price, DiscountPercent: record.DiscountPercent, ImageURL: record.ImageURL,
+		},
+		Description: record.Description,
+		CategoryID:  record.CategoryID,
+		MuseumID:    record.MuseumID,
+		Origin:      record.Origin,
+		Material:    record.Material,
+		Weight:      record.Weight,
+		Length:      record.Length,
+		Width:       record.Width,
+		Height:      record.Height,
+		Era:         record.Era,
+		Images:      []dto.ProductImageResponse{},
+		Variants:    []dto.ProductVariantResponse{},
+		Related:     []dto.ProductCard{},
 	}
 
 	if err := r.db.WithContext(ctx).
@@ -217,7 +250,7 @@ func (r *ProductRepository) GetDetail(
 	if err != nil {
 		return nil, err
 	}
-	return &detail, nil
+	return detail, nil
 }
 
 func (r *ProductRepository) GetRelated(
@@ -251,7 +284,7 @@ func (r *ProductRepository) GetRelatedByProduct(
 	err := r.db.WithContext(ctx).
 		Table("products").
 		Select("categoryid, museumid").
-		Where("productid = ? AND isactive = TRUE", productID).
+		Where("productid = ?", productID).
 		Take(&product).Error
 	if err != nil {
 		return nil, err
