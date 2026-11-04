@@ -1,14 +1,24 @@
 "use client"
 
-import React, { Children, useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
-import { IoChevronBack, IoChevronForward } from "react-icons/io5"
 import { cn } from "@/lib/utils/cn"
 import ArrowIcon from "@/components/shared/ArrowIcon"
+import Loading from "@/components/ui/Loading"
+import { useLocale, useTranslations } from "next-intl"
+import {
+    getDiscountedProducts,
+    getNewestProducts,
+    getProductsByMuseum,
+    type ProductResponseData,
+    type ProductsResponse,
+} from "@/lib/api/shop/products/products"
+import ProductBox from "./ProductBox"
+import { formatPrice } from "@/lib/utils/formatPrice"
 
 interface IProductBoxexWrraper {
     endPointAPI: string
-    children: React.ReactNode
+    museumId?: number
 }
 
 const GAP = 24
@@ -21,24 +31,26 @@ function getSlidesPerView(width: number) {
 }
 
 function ProductBoxexWrraper({
-    children,
+    endPointAPI,
+    museumId,
 }: IProductBoxexWrraper) {
-
-
+    const locale = useLocale()
+    const t = useTranslations("shopHeader.search")
     const viewportRef = useRef<HTMLDivElement>(null)
 
     const [viewportWidth, setViewportWidth] = useState(0)
     const [slidesPerView, setSlidesPerView] = useState(1)
     const [currentIndex, setCurrentIndex] = useState(0)
+    const [products, setProducts] = useState<ProductResponseData[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [hasError, setHasError] = useState(false)
 
-    const products = Children.toArray(children)
     const maxIndex = Math.max(0, products.length - slidesPerView)
-
+    const activeIndex = Math.min(currentIndex, maxIndex)
     const cardWidth = Math.max(
         0,
         (viewportWidth - GAP * (slidesPerView - 1)) / slidesPerView,
     )
-
     const maxTranslate = maxIndex * (cardWidth + GAP)
 
     useEffect(() => {
@@ -55,25 +67,72 @@ function ProductBoxexWrraper({
 
         const observer = new ResizeObserver(updateDimensions)
         observer.observe(element)
-
         window.addEventListener("resize", updateDimensions)
 
         return () => {
             observer.disconnect()
             window.removeEventListener("resize", updateDimensions)
         }
-    }, [])
+    }, [isLoading])
 
     useEffect(() => {
-        setCurrentIndex((index) => Math.min(index, maxIndex))
-    }, [maxIndex])
+        let isCurrent = true
+
+        async function loadProducts() {
+            setIsLoading(true)
+
+            try {
+                let response: ProductsResponse
+
+                switch (endPointAPI) {
+                    case "/discount":
+                    case "/products/discounted":
+                        response = await getDiscountedProducts(locale)
+                        break
+                    case "/new":
+                    case "/products/newest":
+                        response = await getNewestProducts(locale)
+                        break
+                    case "/products/by-museum":
+                        response = await getProductsByMuseum(locale, museumId)
+                        break
+                    default:
+                        throw new Error("Unsupported products endpoint")
+                }
+
+                if (!response.success || !Array.isArray(response.data)) {
+                    throw new Error(response.message)
+                }
+
+                if (isCurrent) {
+                    setProducts(response.data)
+                    setHasError(false)
+                }
+            } catch {
+                if (isCurrent) {
+                    setProducts([])
+                    setHasError(true)
+                }
+            } finally {
+                if (isCurrent) {
+                    setIsLoading(false)
+                }
+            }
+        }
+
+        void loadProducts()
+
+        return () => {
+            isCurrent = false
+        }
+    }, [endPointAPI, locale, museumId])
 
     const goToPrevious = () => {
-        setCurrentIndex((index) => Math.max(0, index - 1))
+        setCurrentIndex((index) => Math.max(0, Math.min(index, maxIndex) - 1))
     }
 
     const goToNext = () => {
-        setCurrentIndex((index) => Math.min(maxIndex, index + 1))
+        setCurrentIndex((index) => Math.min(maxIndex, Math.min(index, maxIndex) + 1))
     }
 
     const handleDragEnd = (
@@ -82,7 +141,6 @@ function ProductBoxexWrraper({
     ) => {
         const shouldMoveNext =
             info.offset.x < -50 || info.velocity.x < -500
-
         const shouldMovePrevious =
             info.offset.x > 50 || info.velocity.x > 500
 
@@ -93,9 +151,24 @@ function ProductBoxexWrraper({
         }
     }
 
+    if (isLoading) {
+        return (
+            <div className="fcc min-h-80 w-full py-10">
+                <Loading color="var(--blue-color)" />
+            </div>
+        )
+    }
+
+    if (products.length === 0) {
+        return (
+            <div className="fcc min-h-50 w-full py-10 text-sm text-black-light-utility">
+                {t(hasError ? "load-error" : "not-found")}
+            </div>
+        )
+    }
+
     return (
         <div className="w-full min-w-0 py-10">
-            {/* Carousel */}
             <div
                 ref={viewportRef}
                 className="w-full min-w-0 overflow-hidden"
@@ -103,9 +176,7 @@ function ProductBoxexWrraper({
             >
                 <motion.div
                     className="flex items-stretch py-5"
-                    animate={{
-                        x: -currentIndex * (cardWidth + GAP),
-                    }}
+                    animate={{ x: -activeIndex * (cardWidth + GAP) }}
                     transition={{
                         type: "spring",
                         stiffness: 260,
@@ -113,10 +184,7 @@ function ProductBoxexWrraper({
                         mass: 0.8,
                     }}
                     drag={maxIndex > 0 ? "x" : false}
-                    dragConstraints={{
-                        left: -maxTranslate,
-                        right: 0,
-                    }}
+                    dragConstraints={{ left: -maxTranslate, right: 0 }}
                     dragElastic={0.06}
                     dragMomentum={false}
                     onDragEnd={handleDragEnd}
@@ -129,40 +197,57 @@ function ProductBoxexWrraper({
                         cursor: maxIndex > 0 ? "grabbing" : "default",
                     }}
                 >
-                    {products.map((product, index) => (
-                        <div
-                            key={index}
-                            className="min-w-0 shrink-0"
-                            style={{
-                                width: cardWidth || "100%",
-                            }}
-                        >
-                            {product}
-                        </div>
-                    ))}
+                    {products.map((product) => {
+                        const price = Number(product.price)
+                        const originalPrice = Number.isFinite(price) ? price : 0
+                        const rawDiscount = Number(product.discountPercent ?? 0)
+                        const discountPercent = Number.isFinite(rawDiscount)
+                            ? Math.min(100, Math.max(0, rawDiscount))
+                            : 0
+                        const discountedPrice = Math.round(
+                            originalPrice * (1 - discountPercent / 100),
+                        )
+
+                        return (
+                            <div
+                                key={product.productId}
+                                className="min-w-0 shrink-0"
+                                style={{ width: cardWidth || "100%" }}
+                            >
+                                <ProductBox
+                                    imageSrc={product.imageUrl || undefined}
+                                    imageAlt={product.name || product.museumName}
+                                    title={product.name || `Product #${product.productId}`}
+                                    museum={product.museumName}
+                                    originalPrice={discountPercent > 0
+                                        ? formatPrice(originalPrice)
+                                        : undefined}
+                                    discountedPrice={formatPrice(discountedPrice)}
+                                    discountPercent={discountPercent > 0
+                                        ? String(discountPercent)
+                                        : undefined}
+                                />
+                            </div>
+                        )
+                    })}
                 </motion.div>
             </div>
 
-            {/* Slider Controls */}
-            <div className="flex items-center justify-between gap-4 border-t border-[var(--blue-border-color)] pt-5">
+            <div className="flex items-center justify-between gap-4 border-t border-(--blue-border-color) pt-5">
                 <div className="flex items-center gap-3">
-                    <span className="text-sm font-semibold text-[var(--blue-color)]">
+                    <span className="text-sm font-semibold text-(--blue-color)">
                         {String(
-                            Math.min(
-                                currentIndex + slidesPerView,
-                                products.length,
-                            ),
+                            Math.min(activeIndex + slidesPerView, products.length),
                         ).padStart(2, "0")}
                     </span>
 
-                    <div className="h-1 w-16 overflow-hidden rounded-full bg-[var(--blue-opacity-color)]">
+                    <div className="h-1 w-16 overflow-hidden rounded-full bg-(--blue-opacity-color)">
                         <motion.div
-                            className="h-full rounded-full bg-[var(--blue-color)]"
+                            className="h-full rounded-full bg-(--blue-color)"
                             animate={{
-                                width:
-                                    products.length > slidesPerView
-                                        ? `${((currentIndex + slidesPerView) / products.length) * 100}%`
-                                        : "100%",
+                                width: products.length > slidesPerView
+                                    ? `${((activeIndex + slidesPerView) / products.length) * 100}%`
+                                    : "100%",
                             }}
                             transition={{ duration: 0.3 }}
                         />
@@ -177,38 +262,38 @@ function ProductBoxexWrraper({
                     <button
                         type="button"
                         onClick={goToPrevious}
-                        disabled={currentIndex === 0}
+                        disabled={activeIndex === 0}
                         aria-label="Previous products"
                         className={cn(
                             "fcc size-11 rounded-full border",
-                            "border-[var(--blue-border-color)]",
-                            "text-[var(--blue-color)]",
+                            "border-(--blue-border-color)",
+                            "text-(--blue-color)",
                             "transition-all duration-300",
-                            "hover:border-[var(--blue-color)]",
-                            "hover:bg-[var(--blue-color)] hover:text-white",
+                            "hover:border-(--blue-color)",
+                            "hover:bg-(--blue-color) hover:text-white",
                             "disabled:cursor-not-allowed disabled:opacity-30",
-                            "disabled:hover:bg-transparent disabled:hover:text-[var(--blue-color)]",
+                            "disabled:hover:bg-transparent disabled:hover:text-(--blue-color)",
                         )}
                     >
-                        <ArrowIcon direction="left"/>
+                        <ArrowIcon direction="left" />
                     </button>
 
                     <button
                         type="button"
                         onClick={goToNext}
-                        disabled={currentIndex >= maxIndex}
+                        disabled={activeIndex >= maxIndex}
                         aria-label="Next products"
                         className={cn(
                             "fcc size-11 rounded-full",
-                            "bg-[var(--blue-color)] text-white",
+                            "bg-(--blue-color) text-white",
                             "transition-all duration-300",
-                            "hover:bg-[var(--blue-hover-color)]",
-                            "hover:shadow-lg hover:shadow-[var(--blue-opacity-color)]",
+                            "hover:bg-(--blue-hover-color)",
+                            "hover:shadow-lg",
                             "disabled:cursor-not-allowed disabled:opacity-30",
                             "disabled:hover:shadow-none",
                         )}
                     >
-                        <ArrowIcon/>
+                        <ArrowIcon />
                     </button>
                 </div>
             </div>

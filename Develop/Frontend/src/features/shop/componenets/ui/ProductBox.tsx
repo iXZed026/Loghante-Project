@@ -1,6 +1,4 @@
-
 import React from "react"
-import { IoArrowUpOutline } from "react-icons/io5"
 import AppImage from "@/components/ui/AppImage"
 
 interface IProductBoxProps {
@@ -10,121 +8,68 @@ interface IProductBoxProps {
     museum?: string
     originalPrice?: string
     discountedPrice?: string
+    discountPercent?: string
     col?: string
 }
 
 function ProductBox({
-    imageSrc = "/images/products/merchant-ledger.jpg",
+    imageSrc = "/images/loghanteh-cafe.jpg",
     imageAlt = "Merchant's ledger",
     title = "Merchant's ledger",
     museum = "Tehran Alef Museum",
     originalPrice = "58,000",
     discountedPrice = "40,000",
+    discountPercent,
     col = "4",
 }: IProductBoxProps) {
     return (
-        <article
-            className={`
-                col-span-${col}
-                group relative flex h-full min-w-0 flex-col
-                overflow-hidden rounded-2xl
-                border border-[var(--blue-border-color)]
-                bg-white p-3 sm:p-4
-                transition-shadow duration-500
-                hover:border-[var(--blue-color)]/30
-                hover:shadow-xl hover:shadow-[var(--blue-opacity-color)]
-            `}
-        >
-            {/* Product Image */}
-            {/* relative aspect-[4/4.5] w-full overflow-hidden */}
-            <div
-                className="
-                    relative w-full overflow-hidden
-                    rounded-xl bg-[var(--blue-product-price-color)]
-                "
-            >
+        <article className={`col-span-${col} group relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-(--blue-border-color) bg-white p-3 transition-shadow duration-500 hover:border-(--blue-color)/30 hover:shadow-xl sm:p-4`}>
+            <div className="relative  w-full overflow-hidden rounded-xl bg-(--blue-product-price-color)">
                 <AppImage
-                    src={"/images/loghanteh-cafe.jpg"}
+                    src={imageSrc || "/images/loghanteh-cafe.jpg"}
                     alt={imageAlt}
                     width={300}
                     height={300}
+                    unoptimized={imageSrc.startsWith("http")}
                     draggable={false}
-                    className="
-                        h-full w-full object-cover
-                        transition-transform duration-700 ease-out
-                        group-hover:scale-110
-                    "
+                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                 />
 
-                {/* Image Overlay */}
-                <div
-                    className="
-                        pointer-events-none absolute inset-0
-                        bg-gradient-to-t
-                        from-[var(--blue-color)]/20
-                        via-transparent to-transparent
-                        opacity-60 transition-opacity duration-500
-                        group-hover:opacity-100
-                    "
-                />
+                <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-(--blue-color)/20 via-transparent to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-100" />
 
-                {/* Discount Badge */}
-                <span
-                    className="
-                        absolute left-3 top-3 z-10
-                        rounded-full bg-[var(--blue-color)]
-                        px-3 py-1.5
-                        text-[10px] font-semibold tracking-wide text-white
-                        sm:text-xs
-                    "
-                >
-                    SPECIAL PRICE
-                </span>
-
+                {discountPercent && Number(discountPercent) > 0 && (
+                    <span className="absolute left-3 top-3 z-10 rounded-full bg-(--blue-color) px-3 py-1.5 text-[10px] font-semibold text-white sm:text-xs">
+                        {discountPercent}% OFF
+                    </span>
+                )}
             </div>
 
-            {/* Product Details */}
             <div className="flex flex-1 flex-col px-1 pt-4">
                 <h3
                     title={title}
-                    className="
-                        line-clamp-1 min-h-12
-                        font-wulkan leading-6
-                        text-[var(--blue-color)]
-                        transition-colors duration-300
-                        group-hover:text-[var(--blue-hover-color)]
-                        sm:text-xl
-                        mt-3
-                        text-2xl
-
-                    "
+                    className="mt-3 line-clamp-1 min-h-12 font-wulkan text-2xl leading-6 text-(--blue-color) transition-colors duration-300 group-hover:text-(--blue-hover-color) sm:text-xl"
                 >
                     {title}
                 </h3>
 
                 <span
                     title={museum}
-                    className="
-                        line-clamp-1
-                        mb-1 text-[10px] font-semibold uppercase
-                        tracking-[0.15em]
-                        text-[var(--blue-color)]/55 sm:text-xs
-                        text-base
-                    "
+                    className="mb-1 line-clamp-1 text-base font-semibold uppercase text-(--blue-color)/55 sm:text-xs"
                 >
                     {museum}
                 </span>
 
-                <div className="mb-4 mt-4 h-px w-full bg-[var(--blue-border-color)]" />
+                <div className="mb-4 mt-4 h-px w-full bg-(--blue-border-color)" />
 
-                {/* Price */}
                 <div className="mt-auto flex items-end justify-between gap-2">
                     <div className="flex min-w-0 flex-col gap-1">
-                        <span className="text-xs text-black-light-utility/60 line-through">
-                            {originalPrice}
-                        </span>
+                        {originalPrice && (
+                            <span className="text-xs text-black-light-utility/60 line-through">
+                                {originalPrice}
+                            </span>
+                        )}
 
-                        <span className="text-xl font-semibold tracking-tight text-[var(--blue-color)] sm:text-2xl">
+                        <span className="text-xl font-semibold text-(--blue-color) sm:text-2xl">
                             {discountedPrice}
                         </span>
                     </div>

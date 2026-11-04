@@ -3,31 +3,47 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
+	"log/slog"
 	"strconv"
 	"strings"
+	"time"
 
+	"loghanteh-project/internal/cache"
 	"loghanteh-project/internal/dto"
 	appErrors "loghanteh-project/internal/errors"
 	"loghanteh-project/internal/repositories"
 
+	"github.com/redis/go-redis/v9"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 )
 
-const productPageSize = 9
+const (
+	productPageSize         = 9
+	productListCacheTTL     = 5 * time.Minute
+	productDetailCacheTTL   = time.Minute
+	productLanguageCacheTTL = 24 * time.Hour
+)
 
 type ProductService struct {
 	productRepository  *repositories.ProductRepository
 	languageRepository *repositories.LanguageRepository
+	redisClient        *redis.Client
+	logger             *slog.Logger
 }
 
 func NewProductService(
 	productRepository *repositories.ProductRepository,
 	languageRepository *repositories.LanguageRepository,
+	redisClient *redis.Client,
+	logger *slog.Logger,
 ) *ProductService {
 	return &ProductService{
 		productRepository:  productRepository,
 		languageRepository: languageRepository,
+		redisClient:        redisClient,
+		logger:             logger,
 	}
 }
 
@@ -36,7 +52,13 @@ func (s *ProductService) GetDiscounted(ctx context.Context, language string) ([]
 	if err != nil {
 		return nil, err
 	}
-	return s.productRepository.GetDiscounted(ctx, languageID)
+	key := fmt.Sprintf("loghanteh:products:v1:discounted:lang:%d", languageID)
+	return cache.RememberJSON(
+		ctx, s.redisClient, s.logger, key, productListCacheTTL,
+		func() ([]dto.ProductCard, error) {
+			return s.productRepository.GetDiscounted(ctx, languageID)
+		},
+	)
 }
 
 func (s *ProductService) GetNewest(ctx context.Context, language string) ([]dto.ProductCard, error) {
@@ -44,7 +66,13 @@ func (s *ProductService) GetNewest(ctx context.Context, language string) ([]dto.
 	if err != nil {
 		return nil, err
 	}
-	return s.productRepository.GetNewest(ctx, languageID)
+	key := fmt.Sprintf("loghanteh:products:v1:newest:lang:%d", languageID)
+	return cache.RememberJSON(
+		ctx, s.redisClient, s.logger, key, productListCacheTTL,
+		func() ([]dto.ProductCard, error) {
+			return s.productRepository.GetNewest(ctx, languageID)
+		},
+	)
 }
 
 func (s *ProductService) GetOnePerMuseum(ctx context.Context, language string) ([]dto.ProductCard, error) {
@@ -52,7 +80,13 @@ func (s *ProductService) GetOnePerMuseum(ctx context.Context, language string) (
 	if err != nil {
 		return nil, err
 	}
-	return s.productRepository.GetOnePerMuseum(ctx, languageID)
+	key := fmt.Sprintf("loghanteh:products:v1:one-per-museum:lang:%d", languageID)
+	return cache.RememberJSON(
+		ctx, s.redisClient, s.logger, key, productListCacheTTL,
+		func() ([]dto.ProductCard, error) {
+			return s.productRepository.GetOnePerMuseum(ctx, languageID)
+		},
+	)
 }
 
 func (s *ProductService) List(
@@ -114,9 +148,32 @@ func (s *ProductService) List(
 		value := max.String()
 		maxValue = &value
 	}
-	return s.productRepository.List(
-		ctx, languageID, museumIDs, categoryIDs, minValue, maxValue,
-		sortBy, page, productPageSize,
+	minCacheValue, maxCacheValue := "", ""
+	if minValue != nil {
+		minCacheValue = *minValue
+	}
+	if maxValue != nil {
+		maxCacheValue = *maxValue
+	}
+	key := fmt.Sprintf(
+		"loghanteh:products:v1:list:lang:%d:museums:%v:categories:%v:min:%s:max:%s:sort:%s:page:%d:size:%d",
+		languageID,
+		museumIDs,
+		categoryIDs,
+		minCacheValue,
+		maxCacheValue,
+		sortBy,
+		page,
+		productPageSize,
+	)
+	return cache.RememberJSON(
+		ctx, s.redisClient, s.logger, key, productListCacheTTL,
+		func() (*dto.ProductListResponse, error) {
+			return s.productRepository.List(
+				ctx, languageID, museumIDs, categoryIDs, minValue, maxValue,
+				sortBy, page, productPageSize,
+			)
+		},
 	)
 }
 
@@ -129,7 +186,17 @@ func (s *ProductService) GetDetail(ctx context.Context, language, productIDValue
 	if err != nil {
 		return nil, err
 	}
-	detail, err := s.productRepository.GetDetail(ctx, languageID, uint(productID))
+	key := fmt.Sprintf(
+		"loghanteh:products:v1:detail:lang:%d:product:%d",
+		languageID,
+		productID,
+	)
+	detail, err := cache.RememberJSON(
+		ctx, s.redisClient, s.logger, key, productDetailCacheTTL,
+		func() (*dto.ProductDetailResponse, error) {
+			return s.productRepository.GetDetail(ctx, languageID, uint(productID))
+		},
+	)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, appErrors.ErrNotFound
 	}
@@ -145,7 +212,17 @@ func (s *ProductService) GetRelated(ctx context.Context, language, productIDValu
 	if err != nil {
 		return nil, err
 	}
-	products, err := s.productRepository.GetRelatedByProduct(ctx, languageID, uint(productID))
+	key := fmt.Sprintf(
+		"loghanteh:products:v1:related:lang:%d:product:%d",
+		languageID,
+		productID,
+	)
+	products, err := cache.RememberJSON(
+		ctx, s.redisClient, s.logger, key, productListCacheTTL,
+		func() ([]dto.ProductCard, error) {
+			return s.productRepository.GetRelatedByProduct(ctx, languageID, uint(productID))
+		},
+	)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, appErrors.ErrNotFound
 	}
@@ -160,7 +237,13 @@ func (s *ProductService) languageID(ctx context.Context, language string) (uint,
 	if separator := strings.IndexAny(language, ",;-_"); separator >= 0 {
 		language = language[:separator]
 	}
-	return s.languageRepository.GetIDByCode(ctx, language)
+	key := fmt.Sprintf("loghanteh:products:v1:language-id:code:%s", language)
+	return cache.RememberJSON(
+		ctx, s.redisClient, s.logger, key, productLanguageCacheTTL,
+		func() (uint, error) {
+			return s.languageRepository.GetIDByCode(ctx, language)
+		},
+	)
 }
 
 func parseIDList(value string) ([]uint, error) {

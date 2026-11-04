@@ -135,6 +135,8 @@ func New() (*App, error) {
 	productService := services.NewProductService(
 		productRepository,
 		languageRepository,
+		config.Redis,
+		logger,
 	)
 
 	// Handlers

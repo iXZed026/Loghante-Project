@@ -2,6 +2,7 @@
     "search": {
         "place-holder": "Search products...",
         "not-found": "No products found.",
+        "load-error": "Could not load products. Please try again later.",
         "searching": "Searching..."
     },
     "cart":{

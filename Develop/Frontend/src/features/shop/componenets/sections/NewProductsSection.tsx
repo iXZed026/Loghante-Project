@@ -19,7 +19,7 @@ function NewProductsSection() {
                 placeholderClassName="rounded-none"
             >
                 <RecommendedProducts
-                    endPointAPI='/new'
+                    endPointAPI='/products/newest'
                     title={t("title")}
                     description={t("description")}
                 />

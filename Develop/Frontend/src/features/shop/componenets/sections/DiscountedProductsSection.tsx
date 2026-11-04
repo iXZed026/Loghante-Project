@@ -11,7 +11,7 @@ function DiscountedProductsSection() {
     return (
         <section
             id="discounted-products"
-            className="min-h-[70vh] py-22.5"
+            className="min-h-[70vh] pt-15"
         >
             <LazySection
                 rootMargin="350px 0px"
@@ -19,7 +19,7 @@ function DiscountedProductsSection() {
                 placeholderClassName="rounded-none"
             >
                 <RecommendedProducts
-                    endPointAPI='/discount'
+                    endPointAPI='/products/discounted'
                     title={t("title")}
                 />
             </LazySection>

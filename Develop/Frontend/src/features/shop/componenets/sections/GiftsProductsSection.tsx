@@ -10,7 +10,7 @@ function GiftsProductsSection() {
 
     return (
         <section
-            id="new-products"
+            id="gifts-products"
             className="min-h-[70vh] py-22.5"
         >
             <LazySection
@@ -19,7 +19,7 @@ function GiftsProductsSection() {
                 placeholderClassName="rounded-none"
             >
                 <RecommendedProducts
-                    endPointAPI='/gifts'
+                    endPointAPI='/products/by-museum'
                     title={t("title")}
                     description={t("description")}
                 />
