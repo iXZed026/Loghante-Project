@@ -156,7 +156,7 @@ func (s *ProductService) List(
 		maxCacheValue = *maxValue
 	}
 	key := fmt.Sprintf(
-		"loghanteh:products:v1:list:lang:%d:museums:%v:categories:%v:min:%s:max:%s:sort:%s:page:%d:size:%d",
+		"loghanteh:products:v2:list:lang:%d:museums:%v:categories:%v:min:%s:max:%s:sort:%s:page:%d:size:%d",
 		languageID,
 		museumIDs,
 		categoryIDs,

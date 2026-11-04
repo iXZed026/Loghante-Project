@@ -46,6 +46,10 @@ func (h *ProductHandler) GetOnePerMuseum(c *gin.Context) {
 }
 
 func (h *ProductHandler) List(c *gin.Context) {
+	sortBy := c.Query("sort")
+	if sortBy == "" {
+		sortBy = c.Query("sortBy")
+	}
 	products, err := h.productService.List(
 		c.Request.Context(),
 		requestLanguage(c),
@@ -54,7 +58,7 @@ func (h *ProductHandler) List(c *gin.Context) {
 		c.Query("minPrice"),
 		c.Query("maxPrice"),
 		c.Query("page"),
-		c.Query("sort"),
+		sortBy,
 	)
 	if err != nil {
 		response.HandleError(c, err, h.logger)

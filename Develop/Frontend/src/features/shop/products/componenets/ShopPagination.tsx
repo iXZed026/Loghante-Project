@@ -10,10 +10,12 @@ import {
 } from "react-icons/fa6";
 
 import { cn } from "@/lib/utils/cn";
+import { useTranslations } from "next-intl";
 
 interface ShopPaginationProps {
   totalItems?: number;
   itemsPerPage?: number;
+  totalPages?: number;
   className?: string;
 }
 
@@ -23,11 +25,13 @@ const DEFAULT_ITEMS_PER_PAGE = 10;
 function ShopPagination({
   totalItems = DEFAULT_TOTAL_ITEMS,
   itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
+  totalPages: providedTotalPages,
   className,
 }: ShopPaginationProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations("shopProducts.pagination");
 
   const currentPage = useMemo(() => {
     const value = Number(searchParams.get("page") ?? 1);
@@ -35,7 +39,10 @@ function ShopPagination({
     return Number.isInteger(value) && value > 0 ? value : 1;
   }, [searchParams]);
 
-  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  const totalPages = Math.max(
+    1,
+    providedTotalPages ?? Math.ceil(totalItems / itemsPerPage),
+  );
   const safeCurrentPage = Math.min(currentPage, totalPages);
 
   const goToPage = useCallback(
@@ -66,7 +73,7 @@ function ShopPagination({
     const half = Math.floor(maxVisiblePages / 2);
 
     let start = Math.max(1, safeCurrentPage - half);
-    let end = Math.min(totalPages, start + maxVisiblePages - 1);
+    const end = Math.min(totalPages, start + maxVisiblePages - 1);
 
     start = Math.max(1, end - maxVisiblePages + 1);
 
@@ -80,11 +87,11 @@ function ShopPagination({
 
   return (
     <nav
-      aria-label="Product pagination"
+      aria-label={t("navigation-label")}
       className={cn("flex flex-wrap items-center justify-center gap-2", className)}
     >
       <PaginationButton
-        label="First page"
+        label={t("first")}
         disabled={safeCurrentPage === 1}
         onClick={() => goToPage(1)}
       >
@@ -92,7 +99,7 @@ function ShopPagination({
       </PaginationButton>
 
       <PaginationButton
-        label="Previous page"
+        label={t("previous")}
         disabled={safeCurrentPage === 1}
         onClick={() => goToPage(safeCurrentPage - 1)}
       >
@@ -103,7 +110,7 @@ function ShopPagination({
         <button
           key={page}
           type="button"
-          aria-label={`Page ${page}`}
+          aria-label={t("page", { page })}
           aria-current={page === safeCurrentPage ? "page" : undefined}
           onClick={() => goToPage(page)}
           className={cn(
@@ -123,7 +130,7 @@ function ShopPagination({
       ))}
 
       <PaginationButton
-        label="Next page"
+        label={t("next")}
         disabled={safeCurrentPage === totalPages}
         onClick={() => goToPage(safeCurrentPage + 1)}
       >
@@ -131,7 +138,7 @@ function ShopPagination({
       </PaginationButton>
 
       <PaginationButton
-        label="Last page"
+        label={t("last")}
         disabled={safeCurrentPage === totalPages}
         onClick={() => goToPage(totalPages)}
       >

@@ -6,35 +6,38 @@ import { useTranslations, useLocale } from "next-intl";
 
 import AppImage from "@/components/ui/AppImage";
 import Button from "@/components/ui/Button";
-import ArrowIcon from "@/components/shared/ArrowIcon";
 import { cn } from "@/lib/utils/cn";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import type { ProductDetailData } from "@/lib/api/shop/products/products";
 
-const PRODUCT_IMAGES = [
-  "/images/loghanteh-cafe.jpg",
-  "/images/loghanteh-cafe.jpg",
-  "/images/loghanteh-cafe.jpg",
-  "/images/loghanteh-cafe.jpg",
-];
+interface ProductDetailsHeaderImagesProps {
+  product: ProductDetailData;
+}
 
-function ProductDetailsHeaderImages() {
+function ProductDetailsHeaderImages({ product }: ProductDetailsHeaderImagesProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
 
   const t = useTranslations("shopProductDetails.header");
   const locale = useLocale();
   const isRTL = locale === "fa";
+  const images = product.images?.filter((image) => image.imageUrl).length
+    ? product.images.filter((image) => image.imageUrl).map((image) => ({
+        key: String(image.productImageId),
+        src: image.imageUrl,
+      }))
+    : [{ key: "primary", src: product.imageUrl || "/images/loghanteh-cafe.jpg" }];
 
   const showPrevious = () => {
     setActiveIndex((current) =>
-      current === 0 ? PRODUCT_IMAGES.length - 1 : current - 1,
+      current === 0 ? images.length - 1 : current - 1,
     );
     setIsZoomed(false);
   };
 
   const showNext = () => {
     setActiveIndex((current) =>
-      current === PRODUCT_IMAGES.length - 1 ? 0 : current + 1,
+      current === images.length - 1 ? 0 : current + 1,
     );
     setIsZoomed(false);
   };
@@ -58,12 +61,12 @@ function ProductDetailsHeaderImages() {
           "sm:order-1 sm:w-20 sm:shrink-0 sm:flex-col",
         )}
       >
-        {PRODUCT_IMAGES.map((src, index) => (
+        {images.map((image, index) => (
           <Button
-            key={`${src}-${index}`}
+            key={image.key}
             type="button"
             onClick={() => selectImage(index)}
-            aria-label={`Show product image ${index + 1}`}
+            aria-label={t("show-image", { index: index + 1 })}
             aria-pressed={activeIndex === index}
             className={cn(
               "relative aspect-square w-16 shrink-0 overflow-hidden rounded-lg p-0 sm:w-20",
@@ -76,10 +79,11 @@ function ProductDetailsHeaderImages() {
             )}
           >
             <AppImage
-              src={src}
+              src={image.src}
               width={160}
               height={160}
-              alt={`Product thumbnail ${index + 1}`}
+              alt={`${product.name} ${index + 1}`}
+              unoptimized={image.src.startsWith("http")}
               className="h-full w-full object-cover"
             />
           </Button>
@@ -95,10 +99,11 @@ function ProductDetailsHeaderImages() {
           )}
         >
           <AppImage
-            src={PRODUCT_IMAGES[activeIndex]}
+            src={images[activeIndex]?.src ?? images[0].src}
             width={800}
             height={800}
-            alt={`Product image ${activeIndex + 1}`}
+            alt={product.name}
+            unoptimized={(images[activeIndex]?.src ?? images[0].src).startsWith("http")}
             className={cn(
               "h-full w-full object-cover",
               "transition-transform duration-300 ease-out",
@@ -149,7 +154,7 @@ function ProductDetailsHeaderImages() {
               "text-xs font-medium text-white backdrop-blur-sm",
             )}
           >
-            {activeIndex + 1} / {PRODUCT_IMAGES.length}
+            {activeIndex + 1} / {images.length}
           </span>
         </div>
 

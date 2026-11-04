@@ -1,81 +1,41 @@
 import { useTranslations } from 'next-intl'
 import React from 'react'
+import type { ProductDetailData } from '@/lib/api/shop/products/products'
 
-function ProductMoreDetails() {
+interface ProductMoreDetailsProps {
+    product: ProductDetailData
+}
 
-    const t =
-        useTranslations("shopProductDetails.more-details")
+function ProductMoreDetails({ product }: ProductMoreDetailsProps) {
+    const t = useTranslations("shopProductDetails.more-details")
+    const headerT = useTranslations("shopProductDetails.header")
+    const valueOrFallback = (value?: string | null) => value?.trim() || t("not-provided")
+    const dimensions = [product.length, product.width, product.height]
+        .filter((value): value is string => Boolean(value?.trim()))
+        .join(" × ")
+    const sku = product.variants?.find((variant) => variant.isActive)?.sku
+
+    const rows = [
+        [t("material"), valueOrFallback(product.material)],
+        [t("dimensions"), dimensions || t("not-provided")],
+        [t("height"), valueOrFallback(product.weight)],
+        [t("year"), valueOrFallback(product.era)],
+        [t("origin"), valueOrFallback(product.origin)],
+        [t("skU"), valueOrFallback(sku)],
+        [t("availability"), product.availability ? t("in-stock") : headerT("out-of-stock")],
+    ]
 
     return (
         <div className='fcol gap-y-15 md:px-10'>
-
-            {/* Title */}
-            <div>
-                <h6 className='text-2xl font-bold'>
-                    {t("title")}
-                </h6>
-            </div>
-
-            {/* Details */}
-
-            <div className='md:text-base text-sm text-black-light-utility fcol gap-y-5'>
-                <div className='fbc'>
-                    <span>
-                        {t("material")}
-                    </span>
-                    <span>
-                        Glass, Gold plated
-                    </span>
-                </div>
-                <div className='fbc'>
-                    <span>
-                        {t("dimensions")}
-                    </span>
-                    <span>
-                        12 cm X 5 cm
-                    </span>
-                </div>
-                <div className='fbc'>
-                    <span>
-                        {t("height")}
-                    </span>
-                    <span>
-                        250g
-                    </span>
-                </div>
-                <div className='fbc'>
-                    <span>
-                        {t("year")}
-                    </span>
-                    <span>
-                        Qajar dynasty (19th century)
-                    </span>
-                </div>
-                <div className='fbc'>
-                    <span>
-                        {t("origin")}
-                    </span>
-                    <span>
-                        Iran
-                    </span>
-                </div>
-                <div className='fbc'>
-                    <span>
-                        {t("skU")}
-                    </span>
-                    <span>
-                        LP-PRF-001
-                    </span>
-                </div>
-                <div className='fbc'>
-                    <span>
-                        {t("availability")}
-                    </span>
-                    <span>
-                        In Stock
-                    </span>
-                </div>
-            </div>
+            <h2 className='text-2xl font-bold'>{t("title")}</h2>
+            <dl className='fcol gap-y-5 text-sm text-black-light-utility md:text-base'>
+                {rows.map(([label, value]) => (
+                    <div className='fbc gap-4' key={label}>
+                        <dt>{label}</dt>
+                        <dd className='text-right'>{value}</dd>
+                    </div>
+                ))}
+            </dl>
         </div>
     )
 }

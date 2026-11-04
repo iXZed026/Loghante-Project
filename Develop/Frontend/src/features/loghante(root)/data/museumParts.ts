@@ -17,7 +17,7 @@ export interface IMuseumPart {
 
 export const museumParts: IMuseumPart[] = [
   {
-    id: 1,
+    id: 3,
     name: {
       en: "Chocolate Coffee",
       fa: "قهوه شکلات",
@@ -31,7 +31,7 @@ export const museumParts: IMuseumPart[] = [
   },
 
   {
-    id: 2,
+    id: 5,
     name: {
       en: "Tehran Alef",
       fa: "تهران الف",
@@ -45,7 +45,7 @@ export const museumParts: IMuseumPart[] = [
   },
 
   {
-    id: 3,
+    id: 4,
     name: {
       en: "Loghanteh Palace",
       fa: "موزه قصر",
@@ -59,7 +59,7 @@ export const museumParts: IMuseumPart[] = [
   },
 
   {
-    id: 4,
+    id: 2,
     name: {
       en: "Loghanteh Cafe",
       fa: "کافه لقانطه",
@@ -73,7 +73,7 @@ export const museumParts: IMuseumPart[] = [
   },
 
   {
-    id: 5,
+    id: 6,
     name: {
       en: "National Museum of Iranian Trade Houses",
       fa: "موزه ملی تجارتخانه ایران",
@@ -87,7 +87,7 @@ export const museumParts: IMuseumPart[] = [
   },
 
   {
-    id: 6,
+    id: 1,
     name: {
       en: "National Museum of Entrepreneurs",
       fa: "موزه ملی کارآفرینان",

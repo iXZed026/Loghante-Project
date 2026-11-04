@@ -2,8 +2,13 @@ import React from 'react'
 import ProductDetailsHeaderImages from './ProductDetailsHeaderImages'
 import { cn } from '@/lib/utils/cn'
 import ProductDetailsHeaderDetails from './ProductDetailsHeaderDetails'
+import type { ProductDetailData } from '@/lib/api/shop/products/products'
 
-function ProductDetailsHeader() {
+interface ProductDetailsHeaderProps {
+  product: ProductDetailData
+}
+
+function ProductDetailsHeader({ product }: ProductDetailsHeaderProps) {
   return (
     <div
       className={cn(
@@ -11,10 +16,10 @@ function ProductDetailsHeader() {
       )}
     >
       {/* Images */}
-      <ProductDetailsHeaderImages />
+      <ProductDetailsHeaderImages product={product} />
 
       {/* Details */}
-      <ProductDetailsHeaderDetails />
+      <ProductDetailsHeaderDetails product={product} />
 
     </div>
   )

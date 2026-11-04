@@ -30,6 +30,7 @@ function ShopFIltersWrraper() {
 
     const toggleFilter = (key: FilterKey, id: string | number) => {
         const params = new URLSearchParams(searchParams.toString())
+        params.delete('page')
         const selectedIds = getSelectedIds(key)
         const normalizedId = String(id)
 
@@ -57,6 +58,7 @@ function ShopFIltersWrraper() {
         params.delete('minPrice')
         params.delete('maxPrice')
         params.delete('sort')
+        params.delete('page')
 
         const query = params.toString()
 

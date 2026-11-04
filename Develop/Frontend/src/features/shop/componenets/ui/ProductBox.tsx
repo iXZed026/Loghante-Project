@@ -1,27 +1,30 @@
 import React from "react"
 import AppImage from "@/components/ui/AppImage"
+import { useTranslations } from "next-intl"
 
 interface IProductBoxProps {
     imageSrc?: string
     imageAlt?: string
-    title?: string
-    museum?: string
+    title: string
+    museum: string
     originalPrice?: string
-    discountedPrice?: string
+    discountedPrice: string
     discountPercent?: string
     col?: string
 }
 
 function ProductBox({
     imageSrc = "/images/loghanteh-cafe.jpg",
-    imageAlt = "Merchant's ledger",
-    title = "Merchant's ledger",
-    museum = "Tehran Alef Museum",
-    originalPrice = "58,000",
-    discountedPrice = "40,000",
+    imageAlt = "",
+    title,
+    museum,
+    originalPrice,
+    discountedPrice,
     discountPercent,
     col = "4",
 }: IProductBoxProps) {
+    const commonT = useTranslations("common")
+
     return (
         <article className={`col-span-${col} group relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-(--blue-border-color) bg-white p-3 transition-shadow duration-500 hover:border-(--blue-color)/30 hover:shadow-xl sm:p-4`}>
             <div className="relative  w-full overflow-hidden rounded-xl bg-(--blue-product-price-color)">
@@ -75,7 +78,7 @@ function ProductBox({
                     </div>
 
                     <span className="pb-1 text-xs text-black-light-utility">
-                        Toman
+                        {commonT("price-type")}
                     </span>
                 </div>
             </div>

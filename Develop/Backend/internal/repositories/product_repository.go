@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"strings"
 
 	"loghanteh-project/internal/dto"
 
@@ -19,23 +18,25 @@ func NewProductRepository(db *gorm.DB) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
+const productPriceExpression = `COALESCE((
+	SELECT MIN(pv.price)
+	FROM productvariants AS pv
+	WHERE pv.productid = p.productid
+), 0)`
+
 const productCardSelect = `
-	p.productid AS "productId",
-	COALESCE(pt.name, '') AS name,
-	COALESCE(mt.name, '') AS "museumName",
-	COALESCE((
-		SELECT MIN(pv.price)
-		FROM productvariants AS pv
-		WHERE pv.productid = p.productid
-	), 0) AS price,
-	p.discountpercent AS "discountPercent",
-	COALESCE((
-		SELECT pi.imageurl
-		FROM productimages AS pi
-		WHERE pi.productid = p.productid
-		ORDER BY pi.isprimary DESC, pi.displayorder ASC, pi.productimageid ASC
-		LIMIT 1
-	), '') AS "imageUrl"
+p.productid AS "productId",
+COALESCE(pt.name, '') AS name,
+COALESCE(mt.name, '') AS "museumName",
+` + productPriceExpression + ` AS price,
+p.discountpercent AS "discountPercent",
+COALESCE((
+	SELECT pi.imageurl
+	FROM productimages AS pi
+	WHERE pi.productid = p.productid
+	ORDER BY pi.isprimary DESC, pi.displayorder ASC, pi.productimageid ASC
+	LIMIT 1
+), '') AS "imageUrl"
 `
 
 func (r *ProductRepository) productCards(ctx context.Context, languageID uint) *gorm.DB {
@@ -79,8 +80,8 @@ func (r *ProductRepository) GetOnePerMuseum(
 ) ([]dto.ProductCard, error) {
 	inner := r.productCards(ctx, languageID).
 		Select(productCardSelect + `,
-			p.createdat AS "createdAt",
-			ROW_NUMBER() OVER (PARTITION BY p.museumid ORDER BY p.createdat DESC, p.productid DESC) AS row_num`)
+		p.createdat AS "createdAt",
+		ROW_NUMBER() OVER (PARTITION BY p.museumid ORDER BY p.createdat DESC, p.productid DESC) AS row_num`)
 	var products []dto.ProductCard
 	err := r.db.WithContext(ctx).
 		Table("(?) AS ranked", inner).
@@ -110,17 +111,12 @@ func (r *ProductRepository) List(
 		query = query.Where("p.categoryid IN ?", categoryIDs)
 	}
 	if minPrice != nil || maxPrice != nil {
-		conditions := []string{"pv.productid = p.productid"}
-		arguments := make([]any, 0, 2)
 		if minPrice != nil {
-			conditions = append(conditions, "pv.price >= ?")
-			arguments = append(arguments, *minPrice)
+			query = query.Where(productPriceExpression+" >= ?", *minPrice)
 		}
 		if maxPrice != nil {
-			conditions = append(conditions, "pv.price <= ?")
-			arguments = append(arguments, *maxPrice)
+			query = query.Where(productPriceExpression+" <= ?", *maxPrice)
 		}
-		query = query.Where("EXISTS (SELECT 1 FROM productvariants AS pv WHERE "+strings.Join(conditions, " AND ")+")", arguments...)
 	}
 
 	var total int64
@@ -131,8 +127,8 @@ func (r *ProductRepository) List(
 	orders := map[string]string{
 		"newest":        "p.createdat DESC, p.productid DESC",
 		"oldest":        "p.createdat ASC, p.productid ASC",
-		"price_asc":     "price ASC, p.productid ASC",
-		"price_desc":    "price DESC, p.productid DESC",
+		"price_asc":     productPriceExpression + " ASC, p.productid ASC",
+		"price_desc":    productPriceExpression + " DESC, p.productid DESC",
 		"popular":       "p.createdat DESC, p.productid DESC",
 		"discount_desc": "p.discountpercent DESC, p.createdat DESC, p.productid DESC",
 	}
@@ -185,16 +181,16 @@ func (r *ProductRepository) GetDetail(
 	}
 	err := r.productCards(ctx, languageID).
 		Select(productCardSelect+`,
-			p.categoryid AS "categoryId",
-			p.museumid AS "museumId",
-			COALESCE(pt.description, '') AS description,
-			p.origin,
-			p.material,
-			p.weight,
-			p.length,
-			p.width,
-			p.height,
-			p.era`).
+		p.categoryid AS "categoryId",
+		p.museumid AS "museumId",
+		COALESCE(pt.description, '') AS description,
+		p.origin,
+		p.material,
+		p.weight,
+		p.length,
+		p.width,
+		p.height,
+		p.era`).
 		Where("p.productid = ?", productID).
 		Take(&record).Error
 	if err != nil {
@@ -223,7 +219,7 @@ func (r *ProductRepository) GetDetail(
 	if err := r.db.WithContext(ctx).
 		Table("productimages").
 		Select(`productimageid AS "productImageId", productvariantid AS "productVariantId",
-			imageurl AS "imageUrl", displayorder AS "displayOrder", isprimary AS "isPrimary"`).
+		imageurl AS "imageUrl", displayorder AS "displayOrder", isprimary AS "isPrimary"`).
 		Where("productid = ?", productID).
 		Order("isprimary DESC, displayorder ASC, productimageid ASC").
 		Find(&detail.Images).Error; err != nil {
@@ -233,7 +229,7 @@ func (r *ProductRepository) GetDetail(
 	if err := r.db.WithContext(ctx).
 		Table("productvariants").
 		Select(`productvariantid AS "productVariantId", color, sku, price,
-			stockquantity AS "stockQuantity", isactive AS "isActive"`).
+		stockquantity AS "stockQuantity", isactive AS "isActive"`).
 		Where("productid = ?", productID).
 		Order("color ASC, productvariantid ASC").
 		Scan(&detail.Variants).Error; err != nil {

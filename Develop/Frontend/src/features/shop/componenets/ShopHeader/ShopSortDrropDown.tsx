@@ -74,7 +74,6 @@ function ShopSortDrropDown() {
 
     const locale = useLocale()
 
-    const dropdownRef = useState<HTMLDivElement | null>(null);
     const selectedValue = searchParams.get("sort");
     const currentSort: SortValue = isSortValue(selectedValue)
         ? selectedValue
@@ -95,6 +94,7 @@ function ShopSortDrropDown() {
 
     const handleSortChange = (value: SortValue) => {
         const params = new URLSearchParams(searchParams.toString());
+        params.delete("page");
 
         if (value === DEFAULT_SORT) {
             params.delete("sort");

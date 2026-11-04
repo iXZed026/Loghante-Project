@@ -6,7 +6,12 @@
         "out-of-stock": "Out of stock",
         "available": "items available",
         "quantity": "Quantity",
-        "add-button": "Add to Cart"
+        "add-button": "Add to Cart",
+        "decrease-quantity": "Decrease quantity",
+        "increase-quantity": "Increase quantity",
+        "show-image": "Show product image {index}",
+        "variant": "Product variant",
+        "product-fallback": "Product #{id}"
     },
     "more-details": {
         "title": "Product Details",
@@ -16,7 +21,10 @@
         "year": "Year/Era",
         "origin": "Origin",
         "skU": "SkU",
-        "availability": "Availability"
+        "availability": "Availability",
+        "not-provided": "Not provided",
+        "in-stock": "In stock",
+        "out-of-stock": "Out of stock"
     },
     "workshop": {
         "title": "Loghanteh Workshop",
@@ -25,5 +33,10 @@
     },
     "like-product": {
         "title": "You May Also Like"
+    },
+    "status": {
+        "loading": "Loading product...",
+        "load-error": "Could not load this product. Please try again later.",
+        "not-found": "Product not found."
     }
 }

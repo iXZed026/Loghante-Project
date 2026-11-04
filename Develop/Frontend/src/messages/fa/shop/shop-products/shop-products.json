@@ -5,6 +5,22 @@
         "museum": "موزه",
         "category": "دسته‌بندی",
         "price-range": "محدوده قیمت",
+        "min-price": "حداقل قیمت",
+        "max-price": "حداکثر قیمت",
         "apply-price-button": "اعمال فیلتر قیمت"
+    },
+    "status": {
+        "loading": "در حال بارگذاری محصولات...",
+        "load-error": "بارگذاری محصولات انجام نشد. لطفاً دوباره تلاش کنید.",
+        "not-found": "محصولی پیدا نشد.",
+        "product-fallback": "محصول شماره {id}"
+    },
+    "pagination": {
+        "navigation-label": "صفحه‌بندی محصولات",
+        "first": "صفحه اول",
+        "previous": "صفحه قبل",
+        "next": "صفحه بعد",
+        "last": "صفحه آخر",
+        "page": "صفحه {page}"
     }
 }

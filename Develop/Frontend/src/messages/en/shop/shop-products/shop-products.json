@@ -5,6 +5,22 @@
         "museum": "Museum",
         "category": "Category",
         "price-range":"Price Range",
+        "min-price": "Minimum price",
+        "max-price": "Maximum price",
         "apply-price-button":"Apply Price Filter"
+    },
+    "status": {
+        "loading": "Loading products...",
+        "load-error": "Could not load products. Please try again later.",
+        "not-found": "No products found.",
+        "product-fallback": "Product #{id}"
+    },
+    "pagination": {
+        "navigation-label": "Product pagination",
+        "first": "First page",
+        "previous": "Previous page",
+        "next": "Next page",
+        "last": "Last page",
+        "page": "Page {page}"
     }
 }
