@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import Button from '@/components/ui/Button'
 import { museumParts } from '@/features/loghante(root)/data/museumParts'
 import { cn } from '@/lib/utils/cn'
@@ -16,8 +17,15 @@ function ShopFIltersWrraper() {
     const pathname = usePathname()
     const searchParams = useSearchParams()
 
-    const T =
-        useTranslations("shopProducts.filters")
+    const T = useTranslations("shopProducts.filters")
+
+    // Scroll to top when filters or query parameters change
+    // useEffect(() => {
+    //     window.scrollTo({
+    //         top: 0,
+    //         behavior: 'smooth',
+    //     })
+    // }, [searchParams])
 
     const getSelectedIds = (key: FilterKey): string[] => {
         return (searchParams.get(key) ?? '')
@@ -31,6 +39,7 @@ function ShopFIltersWrraper() {
     const toggleFilter = (key: FilterKey, id: string | number) => {
         const params = new URLSearchParams(searchParams.toString())
         params.delete('page')
+
         const selectedIds = getSelectedIds(key)
         const normalizedId = String(id)
 
@@ -45,6 +54,7 @@ function ShopFIltersWrraper() {
         }
 
         const query = params.toString()
+
         router.replace(query ? `${pathname}?${query}` : pathname, {
             scroll: false,
         })
@@ -90,7 +100,7 @@ function ShopFIltersWrraper() {
                         'hover:text-[var(--blue-hover-color)]',
                     )}
                 >
-                     {T("reset-button")}
+                    {T("reset-button")}
                 </Button>
             </div>
 
@@ -112,7 +122,6 @@ function ShopFIltersWrraper() {
             </div>
 
             {/* Price Range */}
-
             <PriceRange />
         </aside>
     )

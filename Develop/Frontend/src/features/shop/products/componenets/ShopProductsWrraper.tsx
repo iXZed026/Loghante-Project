@@ -14,6 +14,9 @@ import {
     getProducts,
     type ProductListData,
 } from "@/lib/api/shop/products/products"
+import FadeIn from "@/components/animations/FadeIn"
+import { delay } from "framer-motion/dom"
+import FadeUp from "@/components/animations/FadeUp"
 
 const PAGE_SIZE = 9
 
@@ -96,15 +99,15 @@ function ShopProductsWrraper() {
             </div>
 
             {isLoading ? (
-                <div className="fcc min-h-80 w-full">
-                    <Loading color="var(--blue-color)" aria-label={statusT("loading")} />
+                <div className="fcc min-h-[80vh] w-full">
+                    <Loading size={60} color="var(--blue-color)" aria-label={statusT("loading")} />
                 </div>
             ) : hasError ? (
-                <div className="fcc min-h-50 text-sm text-black-light-utility">
+                <div className="fcc min-h-[80vh] text-sm text-black-light-utility">
                     {statusT("load-error")}
                 </div>
             ) : !productList?.items.length ? (
-                <div className="fcc min-h-50 text-sm text-black-light-utility">
+                <div className="fcc min-h-[80vh] text-sm text-black-light-utility">
                     {statusT("not-found")}
                 </div>
             ) : (
@@ -127,20 +130,25 @@ function ShopProductsWrraper() {
                                     href={`shop/products/${product.productId}`}
                                     className="col-span-4 block h-full min-w-0"
                                 >
-                                    <ProductBox
-                                        imageSrc={product.imageUrl || undefined}
-                                        imageAlt={product.name || product.museumName}
-                                        title={product.name || statusT("product-fallback", { id: product.productId })}
-                                        museum={product.museumName}
-                                        originalPrice={discountPercent > 0
-                                            ? format.format(originalPrice)
-                                            : undefined}
-                                        discountedPrice={format.format(discountedPrice)}
-                                        discountPercent={discountPercent > 0
-                                            ? String(discountPercent)
-                                            : undefined}
-                                        col="12"
-                                    />
+                                    <FadeUp 
+                                        y={20}
+                                        once
+                                    >
+                                        <ProductBox
+                                            imageSrc={product.imageUrl || undefined}
+                                            imageAlt={product.name || product.museumName}
+                                            title={product.name || statusT("product-fallback", { id: product.productId })}
+                                            museum={product.museumName}
+                                            originalPrice={discountPercent > 0
+                                                ? format.format(originalPrice)
+                                                : undefined}
+                                            discountedPrice={format.format(discountedPrice)}
+                                            discountPercent={discountPercent > 0
+                                                ? String(discountPercent)
+                                                : undefined}
+                                            col="12"
+                                        />
+                                    </FadeUp>
                                 </AppLink>
                             )
                         })}

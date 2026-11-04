@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   FaAngleLeft,
@@ -43,7 +43,16 @@ function ShopPagination({
     1,
     providedTotalPages ?? Math.ceil(totalItems / itemsPerPage),
   );
+
   const safeCurrentPage = Math.min(currentPage, totalPages);
+
+  // Scroll to top when pagination changes
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [searchParams.get("page")]);
 
   const goToPage = useCallback(
     (page: number) => {
@@ -88,7 +97,10 @@ function ShopPagination({
   return (
     <nav
       aria-label={t("navigation-label")}
-      className={cn("flex flex-wrap items-center justify-center gap-2", className)}
+      className={cn(
+        "flex flex-wrap items-center justify-center gap-2",
+        className,
+      )}
     >
       <PaginationButton
         label={t("first")}
