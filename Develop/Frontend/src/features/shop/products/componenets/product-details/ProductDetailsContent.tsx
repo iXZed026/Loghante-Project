@@ -61,8 +61,8 @@ function ProductDetailsContent({ productId }: ProductDetailsContentProps) {
 
     if (status === "loading") {
         return (
-            <div className="fcc min-h-[60vh]">
-                <Loading color="var(--blue-color)" aria-label={t("loading")} />
+            <div className="fcc min-h-screen">
+                <Loading size={60} color="var(--blue-color)" aria-label={t("loading")} />
             </div>
         )
     }
@@ -92,7 +92,7 @@ function ProductDetailsContent({ productId }: ProductDetailsContentProps) {
                 {product.related?.length > 0 && (
                     <Container>
                         <LazySection
-                            rootMargin="300px 0px"
+                            rootMargin="200px 0px"
                             placeholderClassName="rounded-none"
                         >
                             <ProductDetailsSuggestionLike products={product.related} />
