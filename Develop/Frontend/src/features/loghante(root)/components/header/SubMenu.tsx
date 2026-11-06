@@ -1,19 +1,20 @@
-
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IoChevronDownOutline, IoArrowForwardOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import AppLink from "@/components/ui/AppLink";
 import Button from "@/components/ui/Button";
+import Loading from "@/components/ui/Loading";
 import AnimatePresenceWrapper from "@/components/animations/AnimatePresenceWrapper";
 import ArrowIcon from "@/components/shared/ArrowIcon";
 
 import { openSlideMenu, openSlideMenuFa } from "@/lib/animations/variants";
 import { getLocalizedValue } from "@/lib/utils/getLocalizedValue";
 import { cn } from "@/lib/utils/cn";
+import { getNewestProducts, type ProductResponseData } from "@/lib/api/shop/products/products";
 
 import type { TranslationFunction } from "@/types/translations";
 import type { IMuseumPart } from "../../data/museumParts";
@@ -41,44 +42,6 @@ interface ISubMenu {
   color?: string;
 }
 
-interface INewProduct {
-  id: number;
-  name: string;
-  href: string;
-  image: string;
-}
-
-const NEW_PRODUCTS: INewProduct[] = [
-  {
-    id: 1,
-    name: "Persian Art Collection",
-    href: "/shop",
-    image:
-      "/images/loghanteh-cafe.jpg",
-  },
-  {
-    id: 2,
-    name: "Classic Art Book",
-    href: "/shop",
-    image:
-      "/images/loghanteh-cafe.jpg",
-  },
-  {
-    id: 3,
-    name: "Decorative Artwork",
-    href: "/shop",
-    image:
-      "/images/loghanteh-cafe.jpg",
-  },
-  {
-    id: 4,
-    name: "Museum Art Piece",
-    href: "/shop",
-    image:
-      "/images/loghanteh-cafe.jpg",
-  },
-];
-
 const subMenuLinkClass = cn(
   "block w-full",
   "px-4 py-5 md:px-7",
@@ -97,15 +60,16 @@ function SubMenu({
   color = "var(--crimson-color)",
 }: ISubMenu) {
   const locale = useLocale();
+  const newestProductsT = useTranslations("shopHeader.new-products");
   const isFa = locale === "fa";
-
   const submenuItems = link.museumParts ?? link.productCategories ?? [];
-
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const [shouldScroll, setShouldScroll] = useState(false);
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const [newProducts, setNewProducts] = useState<ProductResponseData[]>([]);
+  const [newProductsStatus, setNewProductsStatus] = useState<"loading" | "ready" | "error">("loading");
 
   const updateScrollIndicator = useCallback(() => {
     const element = scrollRef.current;
@@ -119,11 +83,9 @@ function SubMenu({
     const hasOverflow = element.scrollHeight > element.clientHeight + 2;
 
     setShouldScroll(hasOverflow);
-
     setShowScrollIndicator(
       hasOverflow &&
-      element.scrollTop + element.clientHeight <
-      element.scrollHeight - 2,
+      element.scrollTop + element.clientHeight < element.scrollHeight - 2,
     );
   }, []);
 
@@ -136,7 +98,6 @@ function SubMenu({
     updateScrollIndicator();
 
     const observer = new ResizeObserver(updateScrollIndicator);
-
     observer.observe(scrollElement);
 
     if (contentElement) {
@@ -144,7 +105,41 @@ function SubMenu({
     }
 
     return () => observer.disconnect();
-  }, [updateScrollIndicator, submenuItems, activeSubMenu]);
+  }, [updateScrollIndicator, link.museumParts, link.productCategories, activeSubMenu]);
+
+  useEffect(() => {
+    if (!link.category || !activeSubMenu) return;
+
+    let isCurrent = true;
+
+    async function loadNewestProducts() {
+      setNewProductsStatus("loading");
+
+      try {
+        const response = await getNewestProducts(locale);
+
+        if (!response.success || !Array.isArray(response.data)) {
+          throw new Error(response.message);
+        }
+
+        if (isCurrent) {
+          setNewProducts(response.data.slice(0, 4));
+          setNewProductsStatus("ready");
+        }
+      } catch {
+        if (isCurrent) {
+          setNewProducts([]);
+          setNewProductsStatus("error");
+        }
+      }
+    }
+
+    void loadNewestProducts();
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [activeSubMenu, link.category, locale]);
 
   return (
     <AnimatePresenceWrapper isActive={activeSubMenu}>
@@ -170,7 +165,6 @@ function SubMenu({
               "bg-white-utility",
             )}
           >
-            {/* Back button */}
             <div
               className="mb-3 shrink-0 border-b-2 px-4 py-4 md:px-7"
               style={{ borderColor: color }}
@@ -185,7 +179,6 @@ function SubMenu({
               </Button>
             </div>
 
-            {/* Navigation links: independent scroll */}
             <div className="relative min-h-0 flex-1">
               <div
                 ref={scrollRef}
@@ -197,9 +190,9 @@ function SubMenu({
                 style={
                   shouldScroll
                     ? {
-                      scrollbarColor: `${color} transparent`,
-                      scrollbarWidth: "thin",
-                    }
+                        scrollbarColor: `${color} transparent`,
+                        scrollbarWidth: "thin",
+                      }
                     : undefined
                 }
               >
@@ -223,11 +216,7 @@ function SubMenu({
                   animate={{ opacity: 1, y: [0, 6, 0] }}
                   transition={{
                     opacity: { duration: 0.2 },
-                    y: {
-                      duration: 1,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    },
+                    y: { duration: 1, repeat: Infinity, ease: "easeInOut" },
                   }}
                   className="pointer-events-none absolute bottom-4 left-1/2 z-10 -translate-x-1/2"
                   style={{ color }}
@@ -237,21 +226,19 @@ function SubMenu({
               )}
             </div>
 
-            {/* New products: rendered only when category exists */}
-
             {link.category && (
               <section className="flex h-[44%] min-h-0 shrink-0 flex-col border-t border-black/10">
                 <div className="flex shrink-0 items-center justify-between px-4 py-3 md:px-5">
                   <h3 className="text-sm font-semibold text-black-utility md:text-base">
-                    New Products
+                    {newestProductsT("title")}
                   </h3>
 
                   <AppLink
                     href="/shop"
                     onClick={UnActiveHumberHandler}
-                    className="flex items-center gap-1 text-xs font-medium text-black-light-utility transition-colors hover:text-[var(--crimson-color)]"
+                    className="flex items-center gap-1 text-xs font-medium text-black-light-utility transition-colors hover:text-(--crimson-color)"
                   >
-                    View All
+                    {newestProductsT("view-all")}
                     <IoArrowForwardOutline size={14} />
                   </AppLink>
                 </div>
@@ -263,19 +250,46 @@ function SubMenu({
                     scrollbarWidth: "thin",
                   }}
                 >
-                  <div className="grid grid-cols-2 gap-3">
-                    {NEW_PRODUCTS.map((product) => (
-                      <ShopHumburgerBox
-                        key={product.id}
-                        product={product}
-                        UnActiveHumberHandler={UnActiveHumberHandler}
+                  {newProductsStatus === "loading" ? (
+                    <div className="fcc min-h-32">
+                      <Loading
+                        size={28}
+                        color={color}
+                        aria-label={newestProductsT("loading")}
                       />
-                    ))}
-                  </div>
+                    </div>
+                  ) : newProductsStatus === "error" ? (
+                    <p className="px-2 py-6 text-center text-xs text-black-light-utility">
+                      {newestProductsT("load-error")}
+                    </p>
+                  ) : newProducts.length === 0 ? (
+                    <p className="px-2 py-6 text-center text-xs text-black-light-utility">
+                      {newestProductsT("not-found")}
+                    </p>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3">
+                      {newProducts.map((product) => (
+                        <ShopHumburgerBox
+                          key={product.productId}
+                          product={{
+                            id: product.productId,
+                            name:
+                              product.name ||
+                              newestProductsT("product-fallback", {
+                                id: product.productId,
+                              }),
+                            href: `/shop/products/${product.productId}`,
+                            image:
+                              product.imageUrl || "/images/loghanteh-cafe.jpg",
+                          }}
+                          UnActiveHumberHandler={UnActiveHumberHandler}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </section>
             )}
-
           </div>
         </motion.div>
       </div>

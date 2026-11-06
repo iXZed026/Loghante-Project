@@ -8,5 +8,14 @@
     "cart":{
         "title":"Your shopping cart summary",
         "order-button":"View Shopping Cart"
+    },
+    "new-products": {
+        "title": "New Products",
+        "view-all": "View All",
+        "view-product": "View Product",
+        "loading": "Loading new products...",
+        "load-error": "Could not load new products.",
+        "not-found": "No new products found.",
+        "product-fallback": "Product #{id}"
     }
 }
