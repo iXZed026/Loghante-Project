@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import PaymentDiscoutCodeDropDown from "@/features/loghante(root)/payment/components/PaymentDiscoutCodeDropDown";
@@ -10,6 +10,7 @@ import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import type { getDiscountCode } from "@/lib/api/discount-codes/discount-codes";
+import { useShopCart } from "../../context/ShopCartProvider";
 
 type PaymentMethod = "saman" | "melat";
 type DiscountData = Awaited<ReturnType<typeof getDiscountCode>>;
@@ -20,19 +21,24 @@ interface IModalState {
     message: string;
 }
 
-const TOTAL_PRODUCTS = 32000;
-const TICKET_VAT = 32000;
-const SHIPPING_COST = 32000;
-
-const TOTAL_AMOUNT = TOTAL_PRODUCTS + TICKET_VAT + SHIPPING_COST;
+// فعلاً هزینه اضافی نداریم؛ بعداً می‌توانی مقادیر واقعی را جایگزین کنی.
+const VAT = 0;
+const SHIPPING_COST = 0;
 
 function calculateDiscountedAmount(
     amount: number,
     discountPercent: string,
     maxDiscountAmount: string,
 ) {
-    const percent = Math.min(100, Math.max(0, Number(discountPercent) || 0));
-    const maxDiscount = Math.max(0, Number(maxDiscountAmount) || 0);
+    const percent = Math.min(
+        100,
+        Math.max(0, Number(discountPercent) || 0),
+    );
+
+    const maxDiscount = Math.max(
+        0,
+        Number(maxDiscountAmount) || 0,
+    );
 
     const calculatedDiscount = (amount * percent) / 100;
     const discount = Math.min(calculatedDiscount, maxDiscount);
@@ -43,19 +49,34 @@ function calculateDiscountedAmount(
 function CartOrderOverview() {
     const commonT = useTranslations("common");
 
+    const { totalPrice, items, isHydrated } = useShopCart();
+
     const [selectedPayment, setSelectedPayment] =
         useState<PaymentMethod | null>(null);
 
     const [discountData, setDiscountData] =
         useState<DiscountData | null>(null);
 
-    const [amountPayable, setAmountPayable] = useState(TOTAL_AMOUNT);
-
     const [modal, setModal] = useState<IModalState>({
         active: false,
         success: false,
         message: "",
     });
+
+    // قیمت نهایی محصولات از Context دریافت می‌شود.
+    const totalAmount = totalPrice + VAT + SHIPPING_COST;
+
+    const amountPayable = useMemo(() => {
+        if (!discountData) return totalAmount;
+
+        return calculateDiscountedAmount(
+            totalAmount,
+            discountData.data.discountPercent,
+            discountData.data.maxDiscountAmount,
+        );
+    }, [totalAmount, discountData]);
+
+    const discountAmount = totalAmount - amountPayable;
 
     const closeModal = useCallback(() => {
         setModal((prev) => ({
@@ -66,28 +87,30 @@ function CartOrderOverview() {
 
     const handleDiscountData = useCallback((data: DiscountData) => {
         setDiscountData(data);
-
-        const discountedAmount = calculateDiscountedAmount(
-            TOTAL_AMOUNT,
-            data.data.discountPercent,
-            data.data.maxDiscountAmount,
-        );
-
-        setAmountPayable(discountedAmount);
     }, []);
 
     const handlePayment = () => {
+        if (!isHydrated) return;
+
+        if (items.length === 0) {
+            setModal({
+                active: true,
+                success: "warning",
+                message: "Your shopping cart is empty.",
+            });
+            return;
+        }
+
         if (!selectedPayment) {
             setModal({
                 active: true,
                 success: "warning",
                 message: "Please select a payment method.",
             });
-
             return;
         }
 
-        // Continue with the payment process here.
+        // Payment API will be connected here.
     };
 
     return (
@@ -122,40 +145,41 @@ function CartOrderOverview() {
                             <span>Total products</span>
 
                             <span className="shrink-0 font-semibold">
-                                {formatPrice(TOTAL_PRODUCTS)}
+                                {formatPrice(totalPrice)}{" "}
                                 {commonT("price-label")}
                             </span>
                         </div>
 
-                        <div className="fbc gap-4">
-                            <span>Ticket VAT</span>
+                        {VAT > 0 && (
+                            <div className="fbc gap-4">
+                                <span>VAT</span>
 
-                            <span className="shrink-0 font-semibold">
-                                {formatPrice(TICKET_VAT)}
-                                {commonT("price-label")}
-                            </span>
-                        </div>
+                                <span className="shrink-0 font-semibold">
+                                    {formatPrice(VAT)}{" "}
+                                    {commonT("price-label")}
+                                </span>
+                            </div>
+                        )}
 
-                        <div className="fbc gap-4">
-                            <span>Shipping cost</span>
+                        {SHIPPING_COST > 0 && (
+                            <div className="fbc gap-4">
+                                <span>Shipping cost</span>
 
-                            <span className="shrink-0 font-semibold">
-                                {formatPrice(SHIPPING_COST)}
-                                {commonT("price-label")}
-                            </span>
-                        </div>
+                                <span className="shrink-0 font-semibold">
+                                    {formatPrice(SHIPPING_COST)}{" "}
+                                    {commonT("price-label")}
+                                </span>
+                            </div>
+                        )}
 
-                        {discountData && (
+                        {discountData && discountAmount > 0 && (
                             <div className="fbc gap-4 text-green-700">
                                 <span>
                                     Discount ({discountData.data.discountPercent}%)
                                 </span>
 
                                 <span className="shrink-0 font-semibold">
-                                    -
-                                    {formatPrice(
-                                        TOTAL_AMOUNT - amountPayable,
-                                    )}
+                                    -{formatPrice(discountAmount)}{" "}
                                     {commonT("price-label")}
                                 </span>
                             </div>
@@ -167,7 +191,7 @@ function CartOrderOverview() {
                             <span>Amount payable</span>
 
                             <span className="shrink-0 text-blue-utility">
-                                {formatPrice(amountPayable)}
+                                {formatPrice(amountPayable)}{" "}
                                 {commonT("price-label")}
                             </span>
                         </div>
@@ -249,19 +273,22 @@ function CartOrderOverview() {
                 <Button
                     type="button"
                     onClick={handlePayment}
+                    disabled={!isHydrated || items.length === 0}
                     className={cn(
                         "w-full gap-2 py-4",
                         "bg-blue-utility",
                         "hover:bg-[var(--blue-hover-color)]",
                         "transition-colors duration-200 font-semibold",
-                        "fbc"
+                        "fbc",
+                        "disabled:cursor-not-allowed disabled:opacity-50",
                     )}
                 >
-                    <span className="text-sm" >
+                    <span className="text-sm">
                         Payment and receipt of tickets
                     </span>
+
                     <span>
-                        {formatPrice(amountPayable)} {" "}
+                        {formatPrice(amountPayable)}{" "}
                         {commonT("price-label")}
                     </span>
                 </Button>

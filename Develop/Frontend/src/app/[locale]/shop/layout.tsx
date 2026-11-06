@@ -2,6 +2,7 @@ import ShopHeader from '@/features/shop/componenets/ShopHeader/ShopHeader'
 import React from 'react'
 import '@/features/shop/styles/shop.css'
 import Footer from '@/components/shared/footer/Footer'
+import { ShopCartProvider } from '@/features/shop/context/ShopCartProvider'
 
 function Shoplayout({
     children,
@@ -10,16 +11,19 @@ function Shoplayout({
 }) {
     return (
         <div className="shop-layout">
-            <ShopHeader />
+            <ShopCartProvider>
+                <ShopHeader />
 
-            <div className="min-h-screen">
-                {children}
-            </div>
+                <div className="min-h-screen">
+                    {children}
 
-            <Footer
-                initial
-                background='var(--blue-color)'
-            />
+                </div>
+
+                <Footer
+                    initial
+                    background='var(--blue-color)'
+                />
+            </ShopCartProvider>
         </div>
     )
 }

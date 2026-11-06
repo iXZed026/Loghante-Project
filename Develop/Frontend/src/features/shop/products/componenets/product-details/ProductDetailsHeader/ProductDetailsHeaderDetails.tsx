@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { FaMinus, FaPlus, FaBoxOpen } from "react-icons/fa6";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import type { ProductDetailData } from "@/lib/api/shop/products/products";
+import { useShopCart } from "@/features/shop/context/ShopCartProvider";
 
 interface ProductDetailsHeaderDetailsProps {
   product: ProductDetailData;
@@ -16,6 +17,7 @@ function ProductDetailsHeaderDetails({ product }: ProductDetailsHeaderDetailsPro
   const commonT = useTranslations("common");
   const t = useTranslations("shopProductDetails.header");
   const locale = useLocale();
+  const { addToCart } = useShopCart();
   const variants = product.variants ?? [];
   const initialVariant = variants.find((variant) => variant.isActive && variant.stockQuantity > 0)
     ?? variants.find((variant) => variant.isActive);
@@ -119,8 +121,29 @@ function ProductDetailsHeaderDetails({ product }: ProductDetailsHeaderDetailsPro
 
         <div className="min-w-0 flex-1">
           <Button
+            type="button"
             disabled={isOutOfStock}
-            className={cn("fcc w-full gap-2 py-3", "bg-blue-utility hover:bg-[var(--blue-hover-color)]", "disabled:cursor-not-allowed disabled:opacity-50")}
+            onClick={() => {
+              addToCart({
+                productId: product.productId,
+                productVariantId: selectedVariant?.productVariantId,
+                name: product.name,
+                museumName: product.museumName,
+                imageUrl: product.imageUrl,
+                price,
+                finalPrice,
+                discountPercent,
+                quantity,
+                stockQuantity,
+                color: selectedVariant?.color,
+                sku: selectedVariant?.sku,
+              });
+            }}
+            className={cn(
+              "fcc w-full gap-2 py-3",
+              "bg-blue-utility hover:bg-[var(--blue-hover-color)]",
+              "disabled:cursor-not-allowed disabled:opacity-50",
+            )}
           >
             <MdOutlineAddShoppingCart size={22} />
             <span className="truncate">{t("add-button")}</span>
