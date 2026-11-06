@@ -1,4 +1,3 @@
-
 "use client";
 
 import { cn } from "@/lib/utils/cn";
@@ -20,18 +19,18 @@ function CartItemWrraper() {
     }
 
     return (
-        <div
-            className={cn(
-                "lg:col-span-7 col-span-12",
-                "fcol gap-y-5",
-            )}
-        >
+        <div className="lg:col-span-7 col-span-12 fcol gap-y-5">
             <h3 className="text-lg font-semibold">
                 Your shopping cart:
             </h3>
 
             {items.length > 0 ? (
-                <div className="fcol gap-y-3">
+                <div
+                    className={cn(
+                        "fcol gap-y-3",
+                        items.length > 2 && "max-h-[500px] overflow-y-auto pr-2"
+                    )}
+                >
                     {items.map((item) => (
                         <CartBox
                             key={`${item.productId}-${item.productVariantId ?? "default"}`}
