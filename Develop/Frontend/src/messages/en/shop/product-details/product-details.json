@@ -11,6 +11,7 @@
         "increase-quantity": "Increase quantity",
         "show-image": "Show product image {index}",
         "variant": "Product variant",
+        "added-to-cart": "Product added to cart successfully.",
         "product-fallback": "Product #{id}"
     },
     "more-details": {

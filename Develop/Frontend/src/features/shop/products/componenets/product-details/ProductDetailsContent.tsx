@@ -42,6 +42,7 @@ function ProductDetailsContent({ productId }: ProductDetailsContentProps) {
 
                 if (isCurrent) {
                     setProduct(response.data)
+                    console.log(response.data)
                     setStatus("ready")
                 }
             } catch {

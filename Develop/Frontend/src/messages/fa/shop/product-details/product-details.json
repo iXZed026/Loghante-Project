@@ -11,6 +11,7 @@
         "increase-quantity": "زیاد کردن تعداد",
         "show-image": "نمایش تصویر محصول {index}",
         "variant": "گونه محصول",
+        "added-to-cart": "محصول با موفقیت به سبد خرید اضافه شد.",
         "product-fallback": "محصول شماره {id}"
     },
     "more-details": {
