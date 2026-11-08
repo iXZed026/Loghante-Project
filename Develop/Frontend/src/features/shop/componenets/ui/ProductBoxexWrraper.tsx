@@ -1,18 +1,22 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
+
 import { cn } from "@/lib/utils/cn"
 import ArrowIcon from "@/components/shared/ArrowIcon"
 import Loading from "@/components/ui/Loading"
 import { useLocale, useTranslations } from "next-intl"
+
 import {
     getDiscountedProducts,
     getNewestProducts,
     getProductsByMuseum,
+    getRelatedProducts,
     type ProductResponseData,
     type ProductsResponse,
 } from "@/lib/api/shop/products/products"
+
 import ProductBox from "./ProductBox"
 import { formatPrice } from "@/lib/utils/formatPrice"
 import AppLink from "@/components/ui/AppLink"
@@ -48,12 +52,15 @@ function ProductBoxexWrraper({
 
     const maxIndex = Math.max(0, products.length - slidesPerView)
     const activeIndex = Math.min(currentIndex, maxIndex)
+
     const cardWidth = Math.max(
         0,
         (viewportWidth - GAP * (slidesPerView - 1)) / slidesPerView,
     )
+
     const maxTranslate = maxIndex * (cardWidth + GAP)
 
+    // Update slider dimensions
     useEffect(() => {
         const element = viewportRef.current
 
@@ -68,6 +75,7 @@ function ProductBoxexWrraper({
 
         const observer = new ResizeObserver(updateDimensions)
         observer.observe(element)
+
         window.addEventListener("resize", updateDimensions)
 
         return () => {
@@ -76,29 +84,50 @@ function ProductBoxexWrraper({
         }
     }, [isLoading])
 
+    // Fetch products
     useEffect(() => {
         let isCurrent = true
 
         async function loadProducts() {
             setIsLoading(true)
+            setHasError(false)
+            setCurrentIndex(0)
 
             try {
                 let response: ProductsResponse
 
-                switch (endPointAPI) {
-                    case "/discount":
-                    case "/products/discounted":
-                        response = await getDiscountedProducts(locale)
-                        break
-                    case "/new":
-                    case "/products/newest":
-                        response = await getNewestProducts(locale)
-                        break
-                    case "/products/by-museum":
-                        response = await getProductsByMuseum(locale, museumId)
-                        break
-                    default:
-                        throw new Error("Unsupported products endpoint")
+                // Related products endpoint: /products/{id}/related
+                const relatedMatch = endPointAPI.match(
+                    /^\/products\/([^/]+)\/related\/?$/
+                )
+
+                if (relatedMatch) {
+                    response = await getRelatedProducts(
+                        relatedMatch[1],
+                        locale,
+                    )
+                } else {
+                    switch (endPointAPI) {
+                        case "/discount":
+                        case "/products/discounted":
+                            response = await getDiscountedProducts(locale)
+                            break
+
+                        case "/new":
+                        case "/products/newest":
+                            response = await getNewestProducts(locale)
+                            break
+
+                        case "/products/by-museum":
+                            response = await getProductsByMuseum(
+                                locale,
+                                museumId,
+                            )
+                            break
+
+                        default:
+                            throw new Error("Unsupported products endpoint")
+                    }
                 }
 
                 if (!response.success || !Array.isArray(response.data)) {
@@ -129,11 +158,15 @@ function ProductBoxexWrraper({
     }, [endPointAPI, locale, museumId])
 
     const goToPrevious = () => {
-        setCurrentIndex((index) => Math.max(0, Math.min(index, maxIndex) - 1))
+        setCurrentIndex((index) =>
+            Math.max(0, Math.min(index, maxIndex) - 1)
+        )
     }
 
     const goToNext = () => {
-        setCurrentIndex((index) => Math.min(maxIndex, Math.min(index, maxIndex) + 1))
+        setCurrentIndex((index) =>
+            Math.min(maxIndex, Math.min(index, maxIndex) + 1)
+        )
     }
 
     const handleDragEnd = (
@@ -142,6 +175,7 @@ function ProductBoxexWrraper({
     ) => {
         const shouldMoveNext =
             info.offset.x < -50 || info.velocity.x < -500
+
         const shouldMovePrevious =
             info.offset.x > 50 || info.velocity.x > 500
 
@@ -177,7 +211,9 @@ function ProductBoxexWrraper({
             >
                 <motion.div
                     className="flex items-stretch py-5"
-                    animate={{ x: -activeIndex * (cardWidth + GAP) }}
+                    animate={{
+                        x: -activeIndex * (cardWidth + GAP),
+                    }}
                     transition={{
                         type: "spring",
                         stiffness: 260,
@@ -185,7 +221,10 @@ function ProductBoxexWrraper({
                         mass: 0.8,
                     }}
                     drag={maxIndex > 0 ? "x" : false}
-                    dragConstraints={{ left: -maxTranslate, right: 0 }}
+                    dragConstraints={{
+                        left: -maxTranslate,
+                        right: 0,
+                    }}
                     dragElastic={0.06}
                     dragMomentum={false}
                     onDragEnd={handleDragEnd}
@@ -200,11 +239,19 @@ function ProductBoxexWrraper({
                 >
                     {products.map((product) => {
                         const price = Number(product.price)
-                        const originalPrice = Number.isFinite(price) ? price : 0
-                        const rawDiscount = Number(product.discountPercent ?? 0)
+
+                        const originalPrice = Number.isFinite(price)
+                            ? price
+                            : 0
+
+                        const rawDiscount = Number(
+                            product.discountPercent ?? 0
+                        )
+
                         const discountPercent = Number.isFinite(rawDiscount)
                             ? Math.min(100, Math.max(0, rawDiscount))
                             : 0
+
                         const discountedPrice = Math.round(
                             originalPrice * (1 - discountPercent / 100),
                         )
@@ -214,20 +261,33 @@ function ProductBoxexWrraper({
                                 href={`/shop/products/${product.productId}`}
                                 key={product.productId}
                                 className="min-w-0 shrink-0"
-                                style={{ width: cardWidth || "100%" }}
+                                style={{
+                                    width: cardWidth || "100%",
+                                }}
                             >
                                 <ProductBox
                                     imageSrc={product.imageUrl || undefined}
-                                    imageAlt={product.name || product.museumName}
-                                    title={product.name || `Product #${product.productId}`}
+                                    imageAlt={
+                                        product.name || product.museumName
+                                    }
+                                    title={
+                                        product.name ||
+                                        `Product #${product.productId}`
+                                    }
                                     museum={product.museumName}
-                                    originalPrice={discountPercent > 0
-                                        ? formatPrice(originalPrice)
-                                        : undefined}
-                                    discountedPrice={formatPrice(discountedPrice)}
-                                    discountPercent={discountPercent > 0
-                                        ? String(discountPercent)
-                                        : undefined}
+                                    originalPrice={
+                                        discountPercent > 0
+                                            ? formatPrice(originalPrice)
+                                            : undefined
+                                    }
+                                    discountedPrice={formatPrice(
+                                        discountedPrice
+                                    )}
+                                    discountPercent={
+                                        discountPercent > 0
+                                            ? String(discountPercent)
+                                            : undefined
+                                    }
                                 />
                             </AppLink>
                         )
@@ -235,11 +295,15 @@ function ProductBoxexWrraper({
                 </motion.div>
             </div>
 
+            {/* Slider controls */}
             <div className="flex items-center justify-between gap-4 border-t border-(--blue-border-color) pt-5">
                 <div className="flex items-center gap-3">
                     <span className="text-sm font-semibold text-(--blue-color)">
                         {String(
-                            Math.min(activeIndex + slidesPerView, products.length),
+                            Math.min(
+                                activeIndex + slidesPerView,
+                                products.length,
+                            ),
                         ).padStart(2, "0")}
                     </span>
 
@@ -247,9 +311,10 @@ function ProductBoxexWrraper({
                         <motion.div
                             className="h-full rounded-full bg-(--blue-color)"
                             animate={{
-                                width: products.length > slidesPerView
-                                    ? `${((activeIndex + slidesPerView) / products.length) * 100}%`
-                                    : "100%",
+                                width:
+                                    products.length > slidesPerView
+                                        ? `${((activeIndex + slidesPerView) / products.length) * 100}%`
+                                        : "100%",
                             }}
                             transition={{ duration: 0.3 }}
                         />

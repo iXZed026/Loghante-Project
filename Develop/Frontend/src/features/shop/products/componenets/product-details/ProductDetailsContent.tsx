@@ -90,16 +90,9 @@ function ProductDetailsContent({ productId }: ProductDetailsContentProps) {
 
                 <ProductDetailsWorkshop />
 
-                {product.related?.length > 0 && (
-                    <Container>
-                        <LazySection
-                            rootMargin="200px 0px"
-                            placeholderClassName="rounded-none"
-                        >
-                            <ProductDetailsSuggestionLike products={product.related} />
-                        </LazySection>
-                    </Container>
-                )}
+                <Container>
+                        <ProductDetailsSuggestionLike productId={product.productId} />
+                </Container>
             </div>
         </div>
     )

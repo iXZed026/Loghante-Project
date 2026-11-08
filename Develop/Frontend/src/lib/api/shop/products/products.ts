@@ -70,7 +70,7 @@ export interface ProductDetailData extends ProductResponseData {
 	availability: boolean
 	images: ProductImageResponse[]
 	variants: ProductVariantResponse[]
-	related: ProductResponseData[]
+	// related: ProductResponseData[]
 }
 
 export interface ProductDetailResponse {
@@ -159,3 +159,18 @@ export async function getProductsByMuseum(
 		locale,
 	)
 }
+
+
+export async function getRelatedProducts(
+    productId: number | string,
+    locale: string,
+): Promise<ProductsResponse> {
+    return fetcher<ProductsResponse>(
+        `/products/${productId}/related`,
+        {
+            method: "GET",
+        },
+        locale,
+    )
+}
+
