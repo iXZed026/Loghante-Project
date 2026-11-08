@@ -51,5 +51,4 @@ type ProductDetailResponse struct {
 	Availability bool                     `json:"availability"`
 	Images       []ProductImageResponse   `json:"images"`
 	Variants     []ProductVariantResponse `json:"variants"`
-	Related      []ProductCard            `json:"related"`
 }

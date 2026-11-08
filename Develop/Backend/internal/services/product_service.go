@@ -187,7 +187,7 @@ func (s *ProductService) GetDetail(ctx context.Context, language, productIDValue
 		return nil, err
 	}
 	key := fmt.Sprintf(
-		"loghanteh:products:v1:detail:lang:%d:product:%d",
+		"loghanteh:products:v2:detail:lang:%d:product:%d",
 		languageID,
 		productID,
 	)

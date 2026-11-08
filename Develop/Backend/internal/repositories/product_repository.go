@@ -213,7 +213,6 @@ func (r *ProductRepository) GetDetail(
 		Era:         record.Era,
 		Images:      []dto.ProductImageResponse{},
 		Variants:    []dto.ProductVariantResponse{},
-		Related:     []dto.ProductCard{},
 	}
 
 	if err := r.db.WithContext(ctx).
@@ -242,10 +241,6 @@ func (r *ProductRepository) GetDetail(
 		}
 	}
 
-	detail.Related, err = r.GetRelated(ctx, languageID, productID, detail.CategoryID, detail.MuseumID)
-	if err != nil {
-		return nil, err
-	}
 	return detail, nil
 }
 
