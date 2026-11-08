@@ -1,27 +1,30 @@
 "use client";
 
-import { useLocale } from "next-intl";
 import Link, { LinkProps } from "next/link";
-import { ReactNode } from "react";
+import { useLocale } from "next-intl";
+import { CSSProperties, ReactNode } from "react";
 
 interface IAppLinkProps extends Omit<LinkProps, "href"> {
     children?: ReactNode;
     href: string;
     className?: string;
+    style?: CSSProperties;
 }
 
 function AppLink({
     children,
     href,
     className,
+    style,
     ...props
 }: IAppLinkProps) {
     const locale = useLocale();
 
     return (
         <Link
-            href={`/${locale}/${href}`}
+            href={`/${locale}/${href.replace(/^\/+/, "")}`}
             className={className}
+            style={style}
             {...props}
         >
             {children}

@@ -15,6 +15,7 @@ import {
 } from "@/lib/api/shop/products/products"
 import ProductBox from "./ProductBox"
 import { formatPrice } from "@/lib/utils/formatPrice"
+import AppLink from "@/components/ui/AppLink"
 
 interface IProductBoxexWrraper {
     endPointAPI: string
@@ -209,7 +210,8 @@ function ProductBoxexWrraper({
                         )
 
                         return (
-                            <div
+                            <AppLink
+                                href={`/shop/products/${product.productId}`}
                                 key={product.productId}
                                 className="min-w-0 shrink-0"
                                 style={{ width: cardWidth || "100%" }}
@@ -227,7 +229,7 @@ function ProductBoxexWrraper({
                                         ? String(discountPercent)
                                         : undefined}
                                 />
-                            </div>
+                            </AppLink>
                         )
                     })}
                 </motion.div>
