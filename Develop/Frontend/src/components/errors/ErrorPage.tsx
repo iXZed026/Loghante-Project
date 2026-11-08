@@ -3,10 +3,12 @@
 import AppImage from "../ui/AppImage"
 import Button from "../ui/Button"
 import Container from "../shared/Container"
+import "@/features/shop/styles/shop.css"
+
+
 
 import {
     poppins,
-    rozname,
     wulkan,
 } from "@/font"
 
@@ -36,20 +38,15 @@ function ErrorPage({
     const router = useRouter()
     const pathname = usePathname()
 
-    const font =
-        `${poppins.variable} ${wulkan.variable}`
+    const font = `${poppins.variable} ${wulkan.variable}`
 
-    /*
-     * Extract locale from the current pathname.
-     *
-     * Examples:
-     *
-     * /en/payment -> en
-     * /fa/payment -> fa
-     */
+    const locale = pathname?.split("/")[1] || "en"
 
-    const locale =
-        pathname?.split("/")[1] || "en"
+    const isShopPage = /^\/(en|fa)\/shop(?:\/|$)/.test(pathname ?? "")
+
+const errorColor = isShopPage
+    ? "#03003D"
+    : "var(--crimson-color)"
 
     return (
         <Container>
@@ -59,6 +56,9 @@ function ErrorPage({
                     "fcc",
                     font,
                 )}
+                style={{
+                    "--error-color": errorColor,
+                } as React.CSSProperties}
             >
                 <div
                     className="
@@ -69,12 +69,9 @@ function ErrorPage({
                         gap-15
                     "
                 >
-
                     {/* Loghanteh Logo */}
                     <div className="fcc">
-                        <Link
-                            href={`/${locale}`}
-                        >
+                        <Link href={`/${locale}`}>
                             <AppImage
                                 width={80}
                                 height={60}
@@ -93,14 +90,13 @@ function ErrorPage({
                             text-center
                         "
                     >
-
                         <span
                             className="
                                 font-wulkan
                                 md:text-[200px]
                                 text-9xl
                                 font-bold
-                                text-crimson
+                                text-[var(--error-color)]
                             "
                         >
                             {statusCode}
@@ -123,39 +119,42 @@ function ErrorPage({
                                 gap-8
                             "
                         >
-
-                            {/* Crimson Line */}
+                            {/* Error Line */}
                             <div
-                                className={cn(
-                                    "w-full h-[2.5px] rounded-2xl",
-                                    "bg-crimson",
-                                )}
+                                className="
+                                    h-[2.5px]
+                                    w-full
+                                    rounded-2xl
+                                    bg-[var(--error-color)]
+                                "
                             />
 
                             <div className="rotate-45">
                                 <div
-                                    className={cn(
-                                        "border-4 border-[var(--crimson-color)]",
-                                        "p-[3px]",
-                                    )}
+                                    className="
+                                        border-4
+                                        border-[var(--error-color)]
+                                        p-[3px]
+                                    "
                                 >
                                     <div
-                                        className={cn(
-                                            "bg-crimson",
-                                            "p-1",
-                                        )}
+                                        className="
+                                            bg-[var(--error-color)]
+                                            p-1
+                                        "
                                     />
                                 </div>
                             </div>
 
-                            {/* Crimson Line */}
+                            {/* Error Line */}
                             <div
-                                className={cn(
-                                    "w-full h-[2.5px] rounded-2xl",
-                                    "bg-crimson",
-                                )}
+                                className="
+                                    h-[2.5px]
+                                    w-full
+                                    rounded-2xl
+                                    bg-[var(--error-color)]
+                                "
                             />
-
                         </div>
 
                         {tryAgainButton ? (
@@ -163,7 +162,7 @@ function ErrorPage({
                                 type="button"
                                 className="
                                     rounded-sm
-                                    bg-crimson
+                                    bg-[var(--error-color)]
                                     px-6
                                     py-2
                                     text-sm
@@ -189,21 +188,18 @@ function ErrorPage({
                                     type="button"
                                     className="
                                         rounded-sm
-                                        bg-crimson
+                                        bg-[var(--error-color)]
                                         px-6
                                         py-2
                                         text-sm
                                         font-semibold
                                     "
-                                    onClick={() =>
-                                        router.back()
-                                    }
+                                    onClick={() => router.back()}
                                 >
                                     Back
                                 </Button>
                             </>
                         )}
-
                     </div>
                 </div>
             </main>
