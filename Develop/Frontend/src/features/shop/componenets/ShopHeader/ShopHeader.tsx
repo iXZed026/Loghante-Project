@@ -99,7 +99,7 @@ function ShopHeader() {
 
           {/* LOGO */}
           <div className="col-span-4 fcc">
-            <AppLink href="/">
+            <AppLink href="/shop">
               <span
                 role="img"
                 aria-label="Loghanteh logo"

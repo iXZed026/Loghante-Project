@@ -3,6 +3,7 @@ import Container from '@/components/shared/Container'
 import React from 'react'
 import { cn } from '@/lib/utils/cn'
 import { useTranslations } from 'next-intl'
+import AppLink from '@/components/ui/AppLink'
 
 function ShopHero() {
 
@@ -45,24 +46,32 @@ function ShopHero() {
             </div>
 
             <div className="flex flex-wrap gap-4 tsm:ext-sm text-xs font-semibold transition-colors">
-              <Button
-                className={cn(
-                  "bg-blue-utility py-3 sm:px-5 px-3",
-                  "hover:bg-[var(--blue-hover-color)]/80",
-                )}
+              <AppLink
+                href='/shop/products'
               >
-                {T("explore-shop-button")}
-              </Button>
+                <Button
+                  className={cn(
+                    "bg-blue-utility py-3 sm:px-5 px-3",
+                    "hover:bg-[var(--blue-hover-color)]/80",
+                  )}
+                >
+                  {T("explore-shop-button")}
+                </Button>
+              </AppLink>
 
-              <Button
-                className={cn(
-                  "border-2",
-                  "py-3 sm:px-5 px-3",
-                  "hover:bg-[var(--white-light-color)]/80",
-                )}
+              <AppLink
+                href='/'
               >
-                {T("explore-loghanteh-button")}
-              </Button>
+                <Button
+                  className={cn(
+                    "border-2",
+                    "py-3 sm:px-5 px-3",
+                    "hover:bg-[var(--white-light-color)]/80",
+                  )}
+                >
+                  {T("explore-loghanteh-button")}
+                </Button>
+              </AppLink>
             </div>
           </div>
         </Container>
