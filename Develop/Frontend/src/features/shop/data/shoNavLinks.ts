@@ -23,6 +23,14 @@ export const shopNavLinks: IShopNavLink[] = [
   {
     id: 1,
     name: {
+      en: "Shop Home Page",
+      fa: "صفحه اصلی فروشگاه",
+    },
+    path: "/shop",
+  },
+  {
+    id: 7,
+    name: {
       en: "Home Page",
       fa: "صفحه اصلی",
     },
@@ -31,8 +39,8 @@ export const shopNavLinks: IShopNavLink[] = [
   {
     id: 2,
     name: {
-      en: "Shop",
-      fa: "فروشگاه",
+      en: "Products",
+      fa: "محصولات",
     },
     path: "/shop",
   },
