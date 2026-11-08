@@ -42,7 +42,7 @@ function ProductBox({
 
                 {discountPercent && Number(discountPercent) > 0 && (
                     <span className="absolute left-3 top-3 z-10 rounded-full bg-(--blue-color) px-3 py-1.5 text-[10px] font-semibold text-white sm:text-xs">
-                        {discountPercent}% OFF
+                        {discountPercent}% {commonT("off")}
                     </span>
                 )}
             </div>

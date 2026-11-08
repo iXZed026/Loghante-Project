@@ -5,5 +5,6 @@
     "price-type":" Toman",
     "price-label":"T",
     "minutes":"minutes",
-    "view-all-product":"View all Products"
+    "view-all-product":"View all Products",
+    "off":"OFF"
 }

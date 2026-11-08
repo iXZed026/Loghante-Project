@@ -2,8 +2,9 @@
     "button": {
         "show-more": "مشاهده بیشتر"
     },
-    "price-type":" تومان ",
-    "price-label":"ت",
-    "minutes":"دقیقه",
-    "view-all-product":"دیدن همه محصولات"
+    "price-type": " تومان ",
+    "price-label": "ت",
+    "minutes": "دقیقه",
+    "view-all-product": "دیدن همه محصولات",
+    "off": "تخفیف"
 }
