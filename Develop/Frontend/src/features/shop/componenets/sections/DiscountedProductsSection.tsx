@@ -2,6 +2,7 @@ import LazySection from '@/components/ui/LazySection'
 import React from 'react'
 import RecommendedProducts from '../ui/RecommendedProducts'
 import { useTranslations } from 'next-intl'
+import { SORT_OPTIONS } from '../../data/productASorts'
 
 function DiscountedProductsSection() {
 
@@ -21,6 +22,7 @@ function DiscountedProductsSection() {
                 <RecommendedProducts
                     endPointAPI='/products/discounted'
                     title={t("title")}
+                    filter={`sort=${SORT_OPTIONS[5].value}`}
                 />
             </LazySection>
         </section>

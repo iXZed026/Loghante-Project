@@ -22,6 +22,7 @@ function GiftsProductsSection() {
                     endPointAPI='/products/by-museum'
                     title={t("title")}
                     description={t("description")}
+                    filter=''
                 />
             </LazySection>
         </section>

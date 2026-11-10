@@ -22,6 +22,7 @@ function NewProductsSection() {
                     endPointAPI='/products/newest'
                     title={t("title")}
                     description={t("description")}
+                    filter={""}
                 />
             </LazySection>
         </section>

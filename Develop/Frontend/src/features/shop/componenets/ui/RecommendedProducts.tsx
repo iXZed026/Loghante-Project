@@ -9,6 +9,7 @@ interface IRecommendedProducts {
     title: string
     description?: string
     museumId?: number
+    filter: string
 }
 
 function RecommendedProducts({
@@ -16,6 +17,7 @@ function RecommendedProducts({
     title,
     description,
     museumId,
+    filter,
 }: IRecommendedProducts) {
     const t = useTranslations("common")
 
@@ -35,7 +37,7 @@ function RecommendedProducts({
 
                 <div className="w-4/6 md:w-auto">
                     <AppLink
-                        href="/products"
+                        href={`/shop/products?${filter}`}
                         className="fec px-3 py-2 text-sm transition-colors hover:text-(--black-light-color)"
                     >
                         <span>{t("view-all-product")}</span>
