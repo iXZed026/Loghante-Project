@@ -8,7 +8,8 @@ import AppLink from '@/components/ui/AppLink'
 function ShopCategoryBox(props: IProductCategory) {
     return (
         <AppLink
-            href={props.href}
+            href={`/shop/products?category=${props.id}`}
+            scroll={true}
             className="
                 col-span-1
                 fcol
