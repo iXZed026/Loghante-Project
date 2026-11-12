@@ -692,3 +692,10 @@ SET isactive =false
 WHERE productid =26;
 
 SELECT * FROM products;
+
+SELECT * FROM productvariants;
+
+SELECT * FROM producttranslations;
+
+
+SELECT * FROM producttranslations WHERE productid = 18;
