@@ -699,3 +699,11 @@ SELECT * FROM producttranslations;
 
 
 SELECT * FROM producttranslations WHERE productid = 18;
+
+SELECT * FROM refreshtoken WHERE userid = 78;
+
+SELECT * FROM users WHERE phonenumber ='09302303576';
+
+SELECT * FROM refreshtoken;
+
+--DELETE FROM refreshtoken;
