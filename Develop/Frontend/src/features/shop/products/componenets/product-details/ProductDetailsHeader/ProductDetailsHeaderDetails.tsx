@@ -101,7 +101,6 @@ function ProductDetailsHeaderDetails({
 
     return (
         <>
-            {/* Add to cart success modal */}
             <Modal
                 active={modalActive}
                 message={t("added-to-cart")}
@@ -151,7 +150,7 @@ function ProductDetailsHeaderDetails({
                             {t("color")}
                         </span>
 
-                        <div className="flex flex-wrap gap-3">
+                        <div className="flex flex-wrap items-center gap-3">
                             {variants
                                 .filter((variant) => variant.isActive)
                                 .map((variant) => {
@@ -167,7 +166,9 @@ function ProductDetailsHeaderDetails({
                                             key={variant.productVariantId}
                                             type="button"
                                             disabled={isUnavailable}
+                                            aria-label={variant.color}
                                             aria-pressed={isSelected}
+                                            title={variant.color}
                                             onClick={() => {
                                                 setSelectedVariantId(
                                                     variant.productVariantId,
@@ -175,23 +176,44 @@ function ProductDetailsHeaderDetails({
                                                 setQuantity(1);
                                             }}
                                             className={cn(
-                                                "inline-flex items-center gap-2 rounded-lg border px-4 py-2.5",
-                                                "text-sm font-medium transition-all duration-200",
-                                                isSelected
-                                                    ? "border-blue-utility bg-blue-utility/10 text-blue-utility ring-1 ring-blue-utility"
-                                                    : "border-black/15 bg-white text-black-utility hover:border-blue-utility/50",
-                                                isUnavailable &&
-                                                    "cursor-not-allowed opacity-40 line-through",
+                                                "group relative fcc size-9 rounded-full transition-all duration-200",
+                                                "border-2 border-transparent",
+                                                isSelected &&
+                                                    "border-blue-utility ring-1 ring-blue-utility/20",
+                                                !isSelected &&
+                                                    "hover:scale-110 hover:ring-1 hover:ring-black/20",
+                                                isUnavailable
+                                                    ? "cursor-not-allowed opacity-30"
+                                                    : "cursor-pointer",
                                             )}
                                         >
-                                            {isSelected && (
-                                                <FaCheck
-                                                    size={12}
-                                                    className="shrink-0"
-                                                />
-                                            )}
+                                            <span
+                                                className="size-7 rounded-full border border-black/10"
+                                                style={{
+                                                    backgroundColor:
+                                                        variant.color,
+                                                }}
+                                            />
 
-                                            <span>{variant.color}</span>
+                                            {isSelected && (
+                                                <span className="absolute inset-0 fcc">
+                                                    <FaCheck
+                                                        size={11}
+                                                        className="drop-shadow-md"
+                                                        style={{
+                                                            color: [
+                                                                "#ffffff",
+                                                                "#fff",
+                                                                "white",
+                                                            ].includes(
+                                                                variant.color.toLowerCase(),
+                                                            )
+                                                                ? "#000"
+                                                                : "#fff",
+                                                        }}
+                                                    />
+                                                </span>
+                                            )}
                                         </button>
                                     );
                                 })}
@@ -285,6 +307,7 @@ function ProductDetailsHeaderDetails({
                             )}
                         >
                             <MdOutlineAddShoppingCart size={22} />
+
                             <span className="truncate">
                                 {t("add-button")}
                             </span>

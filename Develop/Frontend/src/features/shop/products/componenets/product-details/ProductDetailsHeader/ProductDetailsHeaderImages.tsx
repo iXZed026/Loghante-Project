@@ -28,6 +28,8 @@ function ProductDetailsHeaderImages({ product }: ProductDetailsHeaderImagesProps
       }))
     : [{ key: "primary", src: product.imageUrl || "/images/loghanteh-cafe.jpg" }];
 
+    console.log(product.images)
+
   const showPrevious = () => {
     setActiveIndex((current) =>
       current === 0 ? images.length - 1 : current - 1,
