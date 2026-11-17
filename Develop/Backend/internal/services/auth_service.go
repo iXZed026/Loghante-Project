@@ -306,11 +306,6 @@ func (s *AuthService) RefreshAccessToken(
 		return "", "", err
 	}
 
-	err = s.refreshTokenRepository.Revoke(ctx, oldTokenHash)
-	if err != nil {
-		return "", "", appErrors.ErrInternalServer
-	}
-
 	accessToken, err := s.jwtService.GenerateAccessToken(
 		strconv.Itoa(token.UserID),
 	)
@@ -318,24 +313,7 @@ func (s *AuthService) RefreshAccessToken(
 		return "", "", appErrors.ErrInternalServer
 	}
 
-	newRefreshToken, err := appAuth.GenerateRefreshToken()
-	if err != nil {
-		return "", "", appErrors.ErrInternalServer
-	}
-
-	newRefreshTokenModel := &models.RefreshToken{
-		UserID:    token.UserID,
-		Token:     security.HashToken(newRefreshToken),
-		ExpiresAt: time.Now().Add(30 * 24 * time.Hour),
-		Revoked:   false,
-	}
-
-	err = s.refreshTokenRepository.Create(ctx, newRefreshTokenModel)
-	if err != nil {
-		return "", "", appErrors.ErrInternalServer
-	}
-
-	return accessToken, newRefreshToken, nil
+	return accessToken, "", nil
 }
 
 func (s *AuthService) Logout(
