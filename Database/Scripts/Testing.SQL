@@ -707,3 +707,4 @@ SELECT * FROM users WHERE phonenumber ='09302303576';
 SELECT * FROM refreshtoken;
 
 --DELETE FROM refreshtoken;
+SELECT * FROM eventsession;
