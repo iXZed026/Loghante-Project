@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"log/slog"
+	"strconv"
 
+	"loghanteh-project/internal/dto"
 	"loghanteh-project/internal/response"
 	"loghanteh-project/internal/services"
 
@@ -57,6 +59,7 @@ func (h *ProductHandler) List(c *gin.Context) {
 		c.Query("category"),
 		c.Query("minPrice"),
 		c.Query("maxPrice"),
+		c.Query("search"),
 		c.Query("page"),
 		sortBy,
 	)
@@ -83,6 +86,28 @@ func (h *ProductHandler) GetRelated(c *gin.Context) {
 		return
 	}
 	response.Success(c, "products_fetched_successfully", products)
+}
+
+func (h *ProductHandler) SearchSuggestions(c *gin.Context) {
+	query := c.Query("q")
+	if query == "" {
+		response.Success(c, "search_suggestions_fetched_successfully", dto.SearchSuggestionsResponse{Suggestions: []dto.SearchSuggestion{}})
+		return
+	}
+
+	limit := 5
+	if limitStr := c.Query("limit"); limitStr != "" {
+		if parsed, err := strconv.Atoi(limitStr); err == nil && parsed > 0 && parsed <= 20 {
+			limit = parsed
+		}
+	}
+
+	suggestions, err := h.productService.SearchSuggestions(c.Request.Context(), requestLanguage(c), query, limit)
+	if err != nil {
+		response.HandleError(c, err, h.logger)
+		return
+	}
+	response.Success(c, "search_suggestions_fetched_successfully", dto.SearchSuggestionsResponse{Suggestions: suggestions})
 }
 
 func requestLanguage(c *gin.Context) string {

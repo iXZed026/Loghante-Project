@@ -100,6 +100,7 @@ func (r *ProductRepository) List(
 	minPrice *string,
 	maxPrice *string,
 	sortBy string,
+	searchQuery string,
 	page int,
 	pageSize int,
 ) (*dto.ProductListResponse, error) {
@@ -117,6 +118,9 @@ func (r *ProductRepository) List(
 		if maxPrice != nil {
 			query = query.Where(productPriceExpression+" <= ?", *maxPrice)
 		}
+	}
+	if searchQuery != "" {
+		query = query.Where("pt.name ILIKE ?", "%"+searchQuery+"%")
 	}
 
 	var total int64
@@ -281,4 +285,40 @@ func (r *ProductRepository) GetRelatedByProduct(
 		return nil, err
 	}
 	return r.GetRelated(ctx, languageID, productID, product.CategoryID, product.MuseumID)
+}
+
+func (r *ProductRepository) SearchSuggestions(
+	ctx context.Context,
+	languageID uint,
+	query string,
+	limit int,
+) ([]dto.SearchSuggestion, error) {
+	if limit <= 0 {
+		limit = 5
+	}
+	if limit > 20 {
+		limit = 20
+	}
+
+	var suggestions []dto.SearchSuggestion
+	err := r.db.WithContext(ctx).
+		Table("products AS p").
+		Select(`
+			p.productid AS "productId",
+			COALESCE(pt.name, '') AS title,
+			'/shop/products/' || p.productid AS href
+		`).
+		Joins("LEFT JOIN producttranslations AS pt ON pt.productid = p.productid AND pt.languageid = ?", languageID).
+		Where("p.isactive = TRUE AND pt.name ILIKE ?", "%"+query+"%").
+		Order("pt.name ASC").
+		Limit(limit).
+		Scan(&suggestions).Error
+
+	if err != nil {
+		return nil, err
+	}
+	if suggestions == nil {
+		suggestions = []dto.SearchSuggestion{}
+	}
+	return suggestions, nil
 }

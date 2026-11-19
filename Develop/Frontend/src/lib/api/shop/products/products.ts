@@ -34,6 +34,7 @@ export interface ProductListFilters {
 	categoryIds?: Array<string | number>
 	minPrice?: string | number
 	maxPrice?: string | number
+	search?: string
 	sortBy?: string
 	page?: number
 	pageSize?: number
@@ -94,6 +95,7 @@ export async function getProducts(
 	if (filters.minPrice !== undefined) params.set("minPrice", String(filters.minPrice))
 	if (filters.maxPrice !== undefined) params.set("maxPrice", String(filters.maxPrice))
 	if (filters.sortBy) params.set("sortBy", filters.sortBy)
+	if (filters.search) params.set("search", filters.search)
 	params.set("page", String(filters.page ?? 1))
 	params.set("pageSize", String(filters.pageSize ?? 9))
 
@@ -172,5 +174,37 @@ export async function getRelatedProducts(
         },
         locale,
     )
+}
+
+export interface SearchSuggestion {
+	productId: number
+	title: string
+	href: string
+}
+
+export interface SearchSuggestionsResponse {
+	data: {
+		suggestions: SearchSuggestion[]
+	}
+	message: string
+	success: boolean
+}
+
+export async function getSearchSuggestions(
+	query: string,
+	locale: string,
+	limit: number = 5,
+): Promise<SearchSuggestionsResponse> {
+	const params = new URLSearchParams()
+	params.set("q", query)
+	params.set("limit", String(limit))
+
+	return fetcher<SearchSuggestionsResponse>(
+		`/products/search?${params.toString()}`,
+		{
+			method: "GET",
+		},
+		locale,
+	)
 }
 

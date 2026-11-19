@@ -69,6 +69,7 @@ function ShopFIltersWrraper() {
         params.delete('maxPrice')
         params.delete('sort')
         params.delete('page')
+        params.delete('search')
 
         const query = params.toString()
 

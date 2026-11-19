@@ -3,7 +3,8 @@
         "place-holder": "Search products...",
         "not-found": "No products found.",
         "load-error": "Could not load products. Please try again later.",
-        "searching": "Searching..."
+        "searching": "Searching...",
+        "search-button": "Search"
     },
     "cart":{
         "title":"Your shopping cart summary",

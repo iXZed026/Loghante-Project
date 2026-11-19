@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { cn } from "@/lib/utils/cn";
 import AppLink from "@/components/ui/AppLink";
@@ -13,8 +13,8 @@ import ShopSortDrropDown from "../../componenets/ShopHeader/ShopSortDrropDown";
 import ShopPagination from "./ShopPagination";
 
 import {
-    getProducts,
-    type ProductListData,
+	getProducts,
+	type ProductListData,
 } from "@/lib/api/shop/products/products";
 
 import FadeUp from "@/components/animations/FadeUp";
@@ -22,98 +22,114 @@ import FadeUp from "@/components/animations/FadeUp";
 const PAGE_SIZE = 9;
 
 function parseIds(value: string | null): string[] {
-    return (value ?? "").split(",").filter(Boolean);
+	return (value ?? "").split(",").filter(Boolean);
 }
 
 function ShopProductsWrraper() {
-    const locale = useLocale();
-    const searchParams = useSearchParams();
-    const queryString = searchParams.toString();
+	const locale = useLocale();
+	const searchParams = useSearchParams();
+	const router = useRouter();
+	const queryString = searchParams.toString();
 
-    const statusT = useTranslations("shopProducts.status");
+	const statusT = useTranslations("shopProducts.status");
 
-    const [productList, setProductList] = useState<ProductListData | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [hasError, setHasError] = useState(false);
+	const [productList, setProductList] = useState<ProductListData | null>(null);
+	const [isLoading, setIsLoading] = useState(true);
+	const [hasError, setHasError] = useState(false);
 
-    useEffect(() => {
-        let isCurrent = true;
+	useEffect(() => {
+		let isCurrent = true;
 
-        async function loadProducts() {
-            setIsLoading(true);
-            setHasError(false);
+		async function loadProducts() {
+			setIsLoading(true);
+			setHasError(false);
 
-            const params = new URLSearchParams(queryString);
-            const requestedPage = Number(params.get("page") ?? 1);
+			const params = new URLSearchParams(queryString);
+			const requestedPage = Number(params.get("page") ?? 1);
 
-            try {
-                const response = await getProducts(
-                    {
-                        museumIds: parseIds(params.get("museum")),
-                        categoryIds: parseIds(params.get("category")),
-                        minPrice: params.get("minPrice") ?? undefined,
-                        maxPrice: params.get("maxPrice") ?? undefined,
-                        sortBy: params.get("sort") ?? "newest",
-                        page:
-                            Number.isInteger(requestedPage) && requestedPage > 0
-                                ? requestedPage
-                                : 1,
-                        pageSize: PAGE_SIZE,
-                    },
-                    locale,
-                );
+			try {
+				const response = await getProducts(
+					{
+						museumIds: parseIds(params.get("museum")),
+						categoryIds: parseIds(params.get("category")),
+						minPrice: params.get("minPrice") ?? undefined,
+						maxPrice: params.get("maxPrice") ?? undefined,
+						search: params.get("search") ?? undefined,
+						sortBy: params.get("sort") ?? "newest",
+						page:
+							Number.isInteger(requestedPage) && requestedPage > 0
+								? requestedPage
+								: 1,
+						pageSize: PAGE_SIZE,
+					},
+					locale,
+				);
 
-                if (!response.success || !Array.isArray(response.data?.items)) {
-                    throw new Error(response.message);
-                }
+				if (!response.success || !Array.isArray(response.data?.items)) {
+					throw new Error(response.message);
+				}
 
-                if (isCurrent) {
-                    setProductList(response.data);
-                }
-            } catch {
-                if (isCurrent) {
-                    setProductList(null);
-                    setHasError(true);
-                }
-            } finally {
-                if (isCurrent) {
-                    setIsLoading(false);
-                }
-            }
-        }
+				if (isCurrent) {
+					setProductList(response.data);
+				}
+			} catch {
+				if (isCurrent) {
+					setProductList(null);
+					setHasError(true);
+				}
+			} finally {
+				if (isCurrent) {
+					setIsLoading(false);
+				}
+			}
+		}
 
-        void loadProducts();
+		void loadProducts();
 
-        return () => {
-            isCurrent = false;
-        };
-    }, [locale, queryString]);
+		return () => {
+			isCurrent = false;
+		};
+	}, [locale, queryString]);
 
-    // Scroll to top when no products are found
-    useEffect(() => {
-        if (!isLoading && !hasError && productList?.items.length === 0) {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-            });
-        }
-    }, [isLoading, hasError, productList]);
+	const handleSearch = (query: string) => {
+		const params = new URLSearchParams(queryString);
+		if (query.trim()) {
+			params.set("search", query.trim());
+		} else {
+			params.delete("search");
+		}
+		params.delete("page");
+		const nextQuery = params.toString();
+		router.replace(`/${locale}/shop/products${nextQuery ? `?${nextQuery}` : ""}`, {
+			scroll: false,
+		});
+	};
 
-    const format = new Intl.NumberFormat(
-        locale === "fa" ? "fa-IR" : "en-US",
-    );
+	// Scroll to top when no products are found
+	useEffect(() => {
+		if (!isLoading && !hasError && productList?.items.length === 0) {
+			window.scrollTo({
+				top: 0,
+				behavior: "smooth",
+			});
+		}
+	}, [isLoading, hasError, productList]);
 
-    return (
-        <div className="lg:col-span-8 col-span-12 fcol gap-y-10">
-            <div className="fbc">
-                <div className="md:w-full w-4/6">
-                    <ShopSearchDropdown variant="menu" />
-                </div>
+	const format = new Intl.NumberFormat(
+		locale === "fa" ? "fa-IR" : "en-US",
+	);
 
-                <div>
-                    <ShopSortDrropDown />
-                </div>
-            </div>
+	return (
+		<div className="lg:col-span-8 col-span-12 fcol gap-y-10">
+			<div className="fbc">
+				<div className="md:w-full w-4/6">
+					<ShopSearchDropdown variant="menu" onSearch={handleSearch} />
+				</div>
+
+				<div>
+					<ShopSortDrropDown />
+				</div>
+			</div>
 
             {isLoading ? (
                 <div className="fcc min-h-[80vh] w-full">
@@ -196,6 +212,7 @@ function ShopProductsWrraper() {
                         totalItems={productList.total}
                         itemsPerPage={productList.pageSize}
                         totalPages={productList.totalPages}
+                        className="w-full"
                     />
                 </>
             )}

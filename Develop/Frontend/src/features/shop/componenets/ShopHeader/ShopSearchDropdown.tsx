@@ -14,29 +14,27 @@ import useDebouncedSearch from "@/hooks/useDebouncedSearch";
 import useClickOutside from "@/hooks/useClickOutside";
 import { dropdownVariants } from "@/lib/animations/variants";
 import { cn } from "@/lib/utils/cn";
+import { getSearchSuggestions } from "@/lib/api/shop/products/products";
 
 interface ISearchSuggestion {
-  title: string;
-  href: string;
+	productId: number;
+	title: string;
+	href: string;
 }
 
 interface IShopSearchDropdownProps {
   variant?: "header" | "menu";
   placement?: "top" | "bottom";
+  onSearch?: (query: string) => void;
 }
-
-const SUGGESTIONS: ISearchSuggestion[] = [
-  { title: "Naser al-Din Shah's Ring", href: "/" },
-  { title: "Loghanteh Museum Collection", href: "/" },
-];
 
 function ShopSearchDropdown({
   variant = "header",
   placement = "bottom",
+  onSearch,
 }: IShopSearchDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [direction, setDirection] = useState<"ltr" | "rtl">("ltr");
 
   const dropDownRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
@@ -47,23 +45,14 @@ function ShopSearchDropdown({
   const isMenuVariant = variant === "menu";
   const hasQuery = query.trim().length > 0;
   const opensFromTop = placement === "top";
+  const direction: "ltr" | "rtl" = locale === "fa" ? "rtl" : "ltr";
+  const showSearchButton = isMenuVariant && typeof onSearch === "function";
 
   useEffect(() => {
     if (isOpen && !isMenuVariant) {
       searchInputRef.current?.focus();
     }
   }, [isOpen, isMenuVariant]);
-
-  useEffect(() => {
-    const pageDirection = document.documentElement.getAttribute("dir");
-
-    setDirection(
-      pageDirection === "rtl" ||
-        (pageDirection !== "ltr" && locale === "fa")
-        ? "rtl"
-        : "ltr",
-    );
-  }, [locale]);
 
   const searchProducts = useCallback(
     async (
@@ -72,13 +61,15 @@ function ShopSearchDropdown({
     ): Promise<ISearchSuggestion[]> => {
       if (signal.aborted) return [];
 
-      const normalizedQuery = searchTerm.trim().toLowerCase();
-
-      return SUGGESTIONS.filter((item) =>
-        item.title.toLowerCase().includes(normalizedQuery),
-      );
+      try {
+        const response = await getSearchSuggestions(searchTerm, locale, 5);
+        if (!response.success) return [];
+        return response.data.suggestions;
+      } catch {
+        return [];
+      }
     },
-    [],
+    [locale],
   );
 
   const { results, isLoading, error } =
@@ -146,6 +137,28 @@ function ShopSearchDropdown({
           )}
         >
           ×
+        </button>
+      )}
+
+      {showSearchButton && query && (
+        <button
+          type="button"
+          onClick={() => {
+            onSearch(query);
+            closeDropdown();
+            clearSearch();
+          }}
+          aria-label="Search"
+          className={cn(
+            "shrink-0 cursor-pointer px-3 py-1.5 text-sm font-medium",
+            "text-white-utility",
+            "bg-[var(--blue-color)] rounded-lg",
+            "transition-colors duration-200",
+            "hover:bg-blue-utility",
+            "hover:opacity-90",
+          )}
+        >
+          {t("search-button")}
         </button>
       )}
     </div>

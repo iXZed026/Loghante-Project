@@ -24,6 +24,7 @@ const (
 	productListCacheTTL     = 5 * time.Minute
 	productDetailCacheTTL   = time.Minute
 	productLanguageCacheTTL = 24 * time.Hour
+	productSearchCacheTTL   = 2 * time.Minute
 )
 
 type ProductService struct {
@@ -96,6 +97,7 @@ func (s *ProductService) List(
 	categories string,
 	minPrice string,
 	maxPrice string,
+	searchQuery string,
 	pageValue string,
 	sortBy string,
 ) (*dto.ProductListResponse, error) {
@@ -155,13 +157,15 @@ func (s *ProductService) List(
 	if maxValue != nil {
 		maxCacheValue = *maxValue
 	}
+	searchCacheValue := strings.TrimSpace(strings.ToLower(searchQuery))
 	key := fmt.Sprintf(
-		"loghanteh:products:v2:list:lang:%d:museums:%v:categories:%v:min:%s:max:%s:sort:%s:page:%d:size:%d",
+		"loghanteh:products:v2:list:lang:%d:museums:%v:categories:%v:min:%s:max:%s:search:%s:sort:%s:page:%d:size:%d",
 		languageID,
 		museumIDs,
 		categoryIDs,
 		minCacheValue,
 		maxCacheValue,
+		searchCacheValue,
 		sortBy,
 		page,
 		productPageSize,
@@ -171,7 +175,7 @@ func (s *ProductService) List(
 		func() (*dto.ProductListResponse, error) {
 			return s.productRepository.List(
 				ctx, languageID, museumIDs, categoryIDs, minValue, maxValue,
-				sortBy, page, productPageSize,
+				sortBy, searchQuery, page, productPageSize,
 			)
 		},
 	)
@@ -227,6 +231,28 @@ func (s *ProductService) GetRelated(ctx context.Context, language, productIDValu
 		return nil, appErrors.ErrNotFound
 	}
 	return products, err
+}
+
+func (s *ProductService) SearchSuggestions(ctx context.Context, language, query string, limit int) ([]dto.SearchSuggestion, error) {
+	languageID, err := s.languageID(ctx, language)
+	if err != nil {
+		return nil, err
+	}
+	if strings.TrimSpace(query) == "" {
+		return []dto.SearchSuggestion{}, nil
+	}
+	key := fmt.Sprintf(
+		"loghanteh:products:v1:search:lang:%d:q:%s:limit:%d",
+		languageID,
+		strings.ToLower(strings.TrimSpace(query)),
+		limit,
+	)
+	return cache.RememberJSON(
+		ctx, s.redisClient, s.logger, key, productSearchCacheTTL,
+		func() ([]dto.SearchSuggestion, error) {
+			return s.productRepository.SearchSuggestions(ctx, languageID, query, limit)
+		},
+	)
 }
 
 func (s *ProductService) languageID(ctx context.Context, language string) (uint, error) {
