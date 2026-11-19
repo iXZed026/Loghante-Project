@@ -18,6 +18,9 @@ type Config struct {
 	JwtSecret         string
 	EmailWorkerCount  string
 	EnableRateLimiter bool
+	Environment       string
+	CookieSecure      bool
+	CookieSameSite    string
 }
 
 func Load() (Config, error) {
@@ -38,6 +41,23 @@ func Load() (Config, error) {
 		enableRateLimiter = parsed
 	}
 
+	environment := os.Getenv("ENVIRONMENT")
+	if environment == "" {
+		environment = "development"
+	}
+
+	var cookieSecure bool
+	var cookieSameSite string
+
+	switch environment {
+	case "production":
+		cookieSecure = true
+		cookieSameSite = "none"
+	default:
+		cookieSecure = false
+		cookieSameSite = "lax"
+	}
+
 	config := Config{
 		RedisHost:         os.Getenv("REDIS_HOST"),
 		RedisPort:         os.Getenv("REDIS_PORT"),
@@ -48,6 +68,9 @@ func Load() (Config, error) {
 		JwtSecret:         os.Getenv("JWT_SECRET"),
 		EmailWorkerCount:  os.Getenv("EMAIL_WORKER_COUNT"),
 		EnableRateLimiter: enableRateLimiter,
+		Environment:       environment,
+		CookieSecure:      cookieSecure,
+		CookieSameSite:    cookieSameSite,
 	}
 
 	if config.Port == "" {

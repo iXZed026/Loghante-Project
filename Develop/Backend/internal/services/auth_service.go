@@ -313,7 +313,37 @@ func (s *AuthService) RefreshAccessToken(
 		return "", "", appErrors.ErrInternalServer
 	}
 
-	return accessToken, "", nil
+	// Generate new refresh token (rotation)
+	newRefreshToken, err := appAuth.GenerateRefreshToken()
+	if err != nil {
+		return "", "", appErrors.ErrInternalServer
+	}
+
+	newRefreshTokenModel := &models.RefreshToken{
+		UserID:    token.UserID,
+		Token:     security.HashToken(newRefreshToken),
+		ExpiresAt: time.Now().Add(30 * 24 * time.Hour),
+		Revoked:   false,
+	}
+
+	err = s.refreshTokenRepository.Create(
+		ctx,
+		newRefreshTokenModel,
+	)
+	if err != nil {
+		return "", "", appErrors.ErrInternalServer
+	}
+
+	// Revoke old refresh token
+	err = s.refreshTokenRepository.Revoke(
+		ctx,
+		oldTokenHash,
+	)
+	if err != nil {
+		return "", "", appErrors.ErrInternalServer
+	}
+
+	return accessToken, newRefreshToken, nil
 }
 
 func (s *AuthService) Logout(

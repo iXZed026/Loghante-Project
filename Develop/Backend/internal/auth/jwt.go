@@ -2,18 +2,27 @@ package auth
 
 import (
 	"errors"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type JWTService struct {
-	secret string
+	secret        string
+	accessTokenTTL time.Duration
 }
 
 func NewJWTService(secret string) *JWTService {
+	ttl := 15 * time.Minute
+	if v := os.Getenv("ACCESS_TOKEN_TTL_MINUTES"); v != "" {
+		if minutes, err := time.ParseDuration(v + "m"); err == nil {
+			ttl = minutes
+		}
+	}
 	return &JWTService{
-		secret: secret,
+		secret:         secret,
+		accessTokenTTL: ttl,
 	}
 }
 
@@ -28,8 +37,7 @@ func (j *JWTService) GenerateAccessToken(
 		"user_id": userID,
 		// "role":    role,
 		"iat": now.Unix(),
-		"exp": now.Add(15 * time.Minute).Unix(),
-		// "exp": now.Add(15 * time.Minute).Unix(),
+		"exp": now.Add(j.accessTokenTTL).Unix(),
 	}
 
 	token := jwt.NewWithClaims(

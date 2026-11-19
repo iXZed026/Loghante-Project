@@ -140,7 +140,7 @@ func New() (*App, error) {
 	)
 
 	// Handlers
-	authHandler := handlers.NewAuthHandler(authService, logger)
+	authHandler := handlers.NewAuthHandlerWithConfig(authService, logger, cfg)
 	profileHandler := handlers.NewProfileHandler(profileService, logger)
 	ticketHandler := handlers.NewTicketHandler(ticketService, logger)
 

@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"loghanteh-project/internal/config"
 	"loghanteh-project/internal/dto"
 	appErrors "loghanteh-project/internal/errors"
 	"loghanteh-project/internal/response"
@@ -15,6 +16,8 @@ import (
 type AuthHandler struct {
 	authService *services.AuthService
 	logger      *slog.Logger
+	cookieSecure bool
+	cookieSameSite string
 }
 
 func NewAuthHandler(
@@ -24,6 +27,30 @@ func NewAuthHandler(
 	return &AuthHandler{
 		authService: authService,
 		logger:      logger,
+	}
+}
+
+func (h *AuthHandler) cookieSameSiteMode() http.SameSite {
+	switch h.cookieSameSite {
+	case "none":
+		return http.SameSiteNoneMode
+	case "strict":
+		return http.SameSiteStrictMode
+	default:
+		return http.SameSiteLaxMode
+	}
+}
+
+func NewAuthHandlerWithConfig(
+	authService *services.AuthService,
+	logger *slog.Logger,
+	cfg config.Config,
+) *AuthHandler {
+	return &AuthHandler{
+		authService:    authService,
+		logger:         logger,
+		cookieSecure:   cfg.CookieSecure,
+		cookieSameSite: cfg.CookieSameSite,
 	}
 }
 
@@ -212,7 +239,7 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 		return
 	}
 
-	c.SetSameSite(http.SameSiteNoneMode)
+	c.SetSameSite(h.cookieSameSiteMode())
 
 	c.SetCookie(
 		"refresh_token",
@@ -220,7 +247,7 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 		30*24*60*60,
 		"/",
 		"",
-		true,
+		h.cookieSecure,
 		true,
 	)
 
@@ -258,7 +285,7 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 		}
 	}
 
-	c.SetSameSite(http.SameSiteNoneMode)
+	c.SetSameSite(h.cookieSameSiteMode())
 
 	c.SetCookie(
 		"refresh_token",
@@ -266,7 +293,7 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 		-1,
 		"/",
 		"",
-		true,
+		h.cookieSecure,
 		true,
 	)
 
@@ -321,7 +348,7 @@ func (h *AuthHandler) VerifyLogin(c *gin.Context) {
 	}
 
 	// Refresh Token → HttpOnly Cookie
-	c.SetSameSite(http.SameSiteNoneMode)
+	c.SetSameSite(h.cookieSameSiteMode())
 
 	c.SetCookie(
 		"refresh_token",
@@ -329,7 +356,7 @@ func (h *AuthHandler) VerifyLogin(c *gin.Context) {
 		30*24*60*60,
 		"/",
 		"",
-		true,
+		h.cookieSecure,
 		true,
 	)
 
