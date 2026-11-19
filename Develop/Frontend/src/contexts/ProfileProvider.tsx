@@ -5,6 +5,7 @@ import {
     useCallback,
     useContext,
     useEffect,
+    useRef,
     useState,
     type ReactNode,
 } from "react";
@@ -65,27 +66,52 @@ export function ProfileProvider({
 }: {
     children: ReactNode;
 }) {
-    const [profile, setProfile] = useState<Profile | null>(null);
+    const [profile, setProfileState] = useState<Profile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const profileRequestId = useRef(0);
+    const profileRequestController = useRef<AbortController | null>(null);
 
     const locale = useLocale();
 
-    const getProfile = useCallback(async () => {
-        try {
-            setIsLoading(true);
+    const setProfile = useCallback((nextProfile: Profile | null) => {
+        profileRequestId.current += 1;
+        profileRequestController.current?.abort();
+        profileRequestController.current = null;
+        setProfileState(nextProfile);
+        setIsLoading(false);
+    }, []);
 
-            const response = await fetcher<ProfileResponse>("/profile");
+    const getProfile = useCallback(async () => {
+        const requestId = ++profileRequestId.current;
+        profileRequestController.current?.abort();
+
+        const controller = new AbortController();
+        profileRequestController.current = controller;
+
+        try {
+            const response = await fetcher<ProfileResponse>("/profile", {
+                signal: controller.signal,
+            });
+
+            if (requestId !== profileRequestId.current) {
+                return;
+            }
 
             if (response.success) {
-                setProfile(response.data);
+                setProfileState(response.data);
                 console.log("Profile fetched successfully:", response.data);
             } else {
-                setProfile(null);
+                setProfileState(null);
             }
         } catch {
-            setProfile(null);
+            if (requestId === profileRequestId.current && !controller.signal.aborted) {
+                setProfileState(null);
+            }
         } finally {
-            setIsLoading(false);
+            if (requestId === profileRequestId.current) {
+                profileRequestController.current = null;
+                setIsLoading(false);
+            }
         }
     }, []);
 
@@ -102,12 +128,24 @@ export function ProfileProvider({
     }, [locale]);
 
     const clearSession = useCallback(() => {
+        profileRequestId.current += 1;
+        profileRequestController.current?.abort();
+        profileRequestController.current = null;
         removeFromLocalStorage("accessToken");
-        setProfile(null);
+        setProfileState(null);
+        setIsLoading(false);
     }, []);
 
     useEffect(() => {
-        void getProfile();
+        const timeout = window.setTimeout(() => {
+            void getProfile();
+        }, 0);
+
+        return () => {
+            window.clearTimeout(timeout);
+            profileRequestId.current += 1;
+            profileRequestController.current?.abort();
+        };
     }, [getProfile]);
 
     return (

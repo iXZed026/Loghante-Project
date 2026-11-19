@@ -121,7 +121,9 @@ export async function fetcher<T>(
       );
 
       if (!refreshResponse.ok) {
-        removeAccessToken();
+        if (!options?.signal?.aborted) {
+          removeAccessToken();
+        }
 
         throw new Error("Session expired");
       }
@@ -133,7 +135,9 @@ export async function fetcher<T>(
         !refreshData.success ||
         !refreshData.data?.accessToken
       ) {
-        removeAccessToken();
+        if (!options?.signal?.aborted) {
+          removeAccessToken();
+        }
 
         throw new Error("Session expired");
       }
@@ -149,7 +153,9 @@ export async function fetcher<T>(
         true,
       );
     } catch (error) {
-      removeAccessToken();
+      if (!options?.signal?.aborted) {
+        removeAccessToken();
+      }
 
       throw error;
     }
